@@ -1,0 +1,25 @@
+<html>
+
+<head>
+    <title>PixiJS Target</title>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
+    <script src="../dist/xt.js"></script>
+    <script>
+
+        var application = new XT.UIApplication(document.getElementById("myCanvas"), {
+            applicationDidFinishLaunchingWithOptions: function() {
+                console.log("1231234214");
+            }
+        })
+        // var app = new PIXI.Application(800, 600, { backgroundColor: "black" });
+        // document.body.appendChild(app.view);
+        // var view = new XT.UIView(XT.CGRectMake(0, 0, 10, 10));
+        // console.log(view.frame);
+    </script>
+</body>
+
+</html>
