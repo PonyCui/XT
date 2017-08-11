@@ -5,11 +5,11 @@ export class UIView extends I.UIView {
 
     public nativeObject: any;
     public nativeGraphics: any;
-    public nativeContainer: any;
-    private _frame: I.CGRect = I.CGRectZero;
+
+
     private _backgroundColor?: I.UIColor = undefined;
     private _cornerRadius: number = 0;
-    public bounds: I.CGRect = I.CGRectZero;
+
 
     constructor(rect?: I.CGRect) {
         super(rect || I.CGRectZero);
@@ -21,9 +21,90 @@ export class UIView extends I.UIView {
         this.nativeObject.addChild(this.nativeContainer);
         if (typeof rect === "object") {
             this.frame = rect;
-            this.bounds = I.CGRectMake(0, 0, rect.width, rect.height);
         }
     }
+
+    // Mark: View Geometry
+
+    private _frame: I.CGRect = I.CGRectZero;
+
+    public get frame() {
+        return this._frame;
+    }
+
+    public set frame(value: I.CGRect | any) {
+        this._frame = value;
+        this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
+        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, value.width, value.height);
+        this.nativeContainer.hitArea = this.nativeObject.hitArea;
+        this.nativeObject.x = value.x;
+        this.nativeObject.y = value.y;
+    }
+
+    private _bounds: I.CGRect = I.CGRectZero;
+
+    public get bounds() {
+        return this._bounds;
+    }
+
+    public set bounds(value: I.CGRect | any) {
+        if (!I.CGRectEqual(this._bounds, value)) {
+            this._bounds = value;
+            this.draw();
+        }
+    }
+
+    public get center() {
+        return { x: this.frame.x + this.frame.width / 2.0, y: this.frame.y + this.frame.height / 2.0 }
+    }
+
+    public set center(value: I.CGPoint) {
+        const newFrame = this.frame;
+        newFrame.x = value.x - newFrame.width / 2.0;
+        newFrame.y = value.y - newFrame.height / 2.0;
+        this.frame = newFrame;
+    }
+
+    // Mark: View Rendering
+
+    private _clipsToBounds = false
+
+    public get clipsToBounds() {
+        return this._clipsToBounds;
+    }
+
+    public set clipsToBounds(value: boolean) {
+        this._clipsToBounds = value;
+        this.applyMask();
+    }
+
+    private applyMask() {
+        if (this.clipsToBounds) {
+            if (this.maskView === undefined) {
+                this.maskView = new UIView(this.bounds)
+                this.maskView.backgroundColor = new I.UIColor(1, 1, 1)
+            }
+            this.addSubview(this.maskView);
+            this.nativeObject.mask = this.maskView.nativeGraphics;
+        }
+        else {
+            if (this.maskView !== undefined) {
+                this.maskView.removeFromSuperview();
+            }
+            this.nativeObject.mask = undefined;
+        }
+    }
+
+    public get backgroundColor() {
+        return this._backgroundColor;
+    }
+
+    public set backgroundColor(value: I.UIColor | any) {
+        this._backgroundColor = value;
+        this.draw();
+    }
+
+    opaque: boolean = false
 
     public get alpha() {
         return this.nativeObject.alpha;
@@ -41,27 +122,36 @@ export class UIView extends I.UIView {
         this.nativeObject.visible = !value;
     }
 
-    public get frame() {
-        return this._frame;
+    private _maskView: UIView | undefined
+
+    public get maskView(): UIView | undefined {
+        return this._maskView;
     }
 
-    public set frame(value: I.CGRect | any) {
-        this._frame = value;
-        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, value.width, value.height);
-        this.nativeContainer.hitArea = this.nativeObject.hitArea;
-        this.nativeObject.x = value.x;
-        this.nativeObject.y = value.y;
+    public set maskView(value: UIView | undefined) {
+        if (this._maskView !== undefined) {
+            this._maskView.removeFromSuperview();
+        }
+        this._maskView = value;
+        this.applyMask();
     }
 
-    public get backgroundColor() {
-        return this._backgroundColor;
+    private _tintColor: I.UIColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0)
+
+    public get tintColor() {
+        return this._tintColor;
     }
 
-    public set backgroundColor(value: I.UIColor | any) {
-        this._backgroundColor = value;
-        this.draw();
+    public set tintColor(value: I.UIColor) {
+        this._tintColor = value
+        this.tintColorDidChange();
     }
 
+    tintColorDidChange() {
+        this.subviews.forEach((subview: UIView) => { subview.tintColorDidChange() });
+    }
+
+    // Mark: View Layer-Back Rendering
     public get cornerRadius() {
         return this._cornerRadius;
     }
@@ -83,7 +173,24 @@ export class UIView extends I.UIView {
         if (this.backgroundColor instanceof I.UIColor) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
             if (this.cornerRadius > 0) {
-                this.nativeGraphics.drawRoundedRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.cornerRadius);
+                if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
+                    if (this.bounds.width > this.bounds.height) {
+                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.height / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width - this.bounds.height / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(this.bounds.x + this.bounds.height / 2.0, this.bounds.y, this.bounds.width - this.bounds.height, this.bounds.height);
+                    }
+                    else if (this.bounds.width < this.bounds.height) {
+                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.width / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.height - this.bounds.width / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(this.bounds.x, this.bounds.y + this.bounds.width / 2.0, this.bounds.width, this.bounds.height - this.bounds.width);
+                    }
+                    else {
+                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                    }
+                }
+                else {
+                    this.nativeGraphics.drawRoundedRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.cornerRadius);
+                }
             }
             else {
                 this.nativeGraphics.drawRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height);
@@ -92,10 +199,15 @@ export class UIView extends I.UIView {
     }
 
     // Mark: View Hierarchy
+    public nativeContainer: any;
 
     public get superview(): UIView | undefined {
-        if (this.nativeContainer.parent !== undefined && this.nativeContainer.parent.XTView instanceof UIView) {
-            return this.nativeContainer.parent.XTView;
+        let parent: any = undefined;
+        if (this.nativeContainer.parent && this.nativeContainer.parent.parent && this.nativeContainer.parent.parent.parent) {
+            parent = this.nativeContainer.parent.parent.parent
+        }
+        if (parent !== undefined && parent.XTView instanceof UIView) {
+            return parent.XTView;
         }
         return undefined
     }
@@ -113,11 +225,11 @@ export class UIView extends I.UIView {
     }
 
     public removeFromSuperview() {
-        if (this.nativeContainer.parent !== undefined) {
+        if (this.superview !== undefined) {
             this.nativeContainer.parent.XTView.willRemoveSubview(this);
             this.willMoveToSuperview(undefined);
             this.willMoveToWindow(undefined);
-            this.nativeContainer.parent.removeChild(this.nativeObject);
+            this.nativeObject.parent.removeChild(this.nativeObject);
             this.didMoveToSuperview();
             this.didMoveToWindow();
         }
@@ -177,11 +289,39 @@ export class UIView extends I.UIView {
         }
     }
 
-    didAddSubview(subview: UIView) { }
-    willRemoveSubview(subview: UIView) { }
-    willMoveToSuperview(newSuperview?: UIView) { }
-    didMoveToSuperview() { }
-    willMoveToWindow(newWindow?: any) { }
-    didMoveToWindow() { }
+    public didAddSubview(subview: UIView) { }
+    public willRemoveSubview(subview: UIView) { }
+    public willMoveToSuperview(newSuperview?: UIView) { }
+    public didMoveToSuperview() { }
+    public willMoveToWindow(newWindow?: any) { }
+    public didMoveToWindow() { }
+
+    public isDescendantOfView(view: UIView) {
+        let current: UIView | undefined = this;
+        while (current !== undefined) {
+            if (current === view) {
+                return true
+            }
+            current = current.superview;
+        }
+        return false
+    }
+
+    private layoutTimer?: any = undefined
+
+    public setNeedsLayout() {
+        if (this.layoutTimer !== undefined) {
+            clearImmediate(this.layoutTimer)
+        }
+        this.layoutTimer = setImmediate(() => {
+            this.layoutSubviews();
+        });
+    }
+
+    public layoutIfNeeded() {
+        this.layoutSubviews();
+    }
+
+    public layoutSubviews() { }
 
 }

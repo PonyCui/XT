@@ -17,15 +17,35 @@
                 var window = new UIWindow(UIScreen.mainScreen().bounds());
                 window.backgroundColor = new UIColor(0, 0, 0);
                 window.makeKeyAndVisible();
+
+                var nView = new UIView({ x: 20, y: 20, width: 200, height: 200 });
+                window.addSubview(nView);
+
                 var testView = new UIView({ x: 20, y: 20, width: 200, height: 200 });
                 testView.backgroundColor = new UIColor(1, 0, 0);
-                window.addSubview(testView);
-                var testView2 = new UIView({ x: 40, y: 40, width: 200, height: 200 });
+                nView.addSubview(testView);
+
+                var testView2 = new UIView({ x: 44, y: 44, width: 88, height: 88 });
                 testView2.backgroundColor = new UIColor(1, 1, 0);
-                window.addSubview(testView2);
-                var testView3 = new UIView({ x: 30, y: 30, width: 200, height: 200 });
-                testView3.backgroundColor = new UIColor(1, 1, 1);
-                window.addSubview(testView3);
+                testView2.cornerRadius = 44;
+                // testView.addSubview(testView2);
+
+                // setTimeout(function() { testView2.removeFromSuperview(); }, 2000)
+                
+                setTimeout(function () {
+                    testView.maskView = testView2;
+                    testView.clipsToBounds = true;
+                }, 1000)
+
+                setTimeout(function () {
+                    testView.maskView = undefined;
+                    testView.clipsToBounds = true;
+                }, 2000)
+
+                // var testView3 = new UIView({ x: 30, y: 30, width: 200, height: 200 });
+                // testView3.backgroundColor = new UIColor(1, 1, 1);
+                // window.addSubview(testView3);
+                // console.log(testView3.isDescendantOfView(testView));
             }
         })
     </script>
