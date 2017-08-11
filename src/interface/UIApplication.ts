@@ -1,10 +1,12 @@
 import { UIWindow } from './UIWindow'
 
-export interface UIApplicationDelegate {
+export class UIApplicationDelegate {
     window?: UIWindow;
-    applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: Object): void
+    applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: Object): void { }
 }
 
-export interface UIApplication {
+export class UIApplication {
     delegate: UIApplicationDelegate
+    keyWindow?: UIWindow
+    sharedApplication?(): UIApplication { throw "NOT IMPLEMENT!" }
 }

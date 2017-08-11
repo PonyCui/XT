@@ -1,11 +1,13 @@
 import { Factory } from '../Factory'
 import { UIView } from './UIView'
 import { UIApplication } from './UIApplication'
+import { UIWindow } from './UIWindow'
 
 export function usePixi(force = false) {
     const use = () => {
         Factory.UIView = UIView
-        Factory.UIApplication = UIApplication
+        Factory.UIApplication = UIApplication as any
+        Factory.UIWindow = UIWindow
     }
     if (force) {
         use()

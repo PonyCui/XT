@@ -1,5 +1,7 @@
 import { UIView } from './UIView'
 
-export interface UIWindow extends UIView {
-    makeKeyAndVisible(): void;
+export class UIWindow extends UIView {
+
+    makeKeyAndVisible(): void { }
+
 }
