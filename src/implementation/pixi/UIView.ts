@@ -65,6 +65,26 @@ export class UIView extends I.UIView {
         this.frame = newFrame;
     }
 
+    private _transform: I.CGTransformMatrix | undefined;
+
+    public get transform(): I.CGTransformMatrix | undefined {
+        return this._transform
+    }
+
+    public set transform(value: I.CGTransformMatrix | undefined) {
+        this._transform = value;
+        if (value) {
+            const transform = new PIXI.Transform();
+            const matrix = new PIXI.Matrix();
+            matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
+            transform.setFromMatrix(matrix);
+            this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
+        }
+        else {
+            // this.nativeObject.setTransform(0,0,0.5,0.5,0.0,0.0,0.0,0.0,0.0);
+        }
+    }
+
     // Mark: View Rendering
 
     private _clipsToBounds = false

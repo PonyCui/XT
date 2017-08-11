@@ -1,6 +1,7 @@
 import { CGRect, CGRectMake, CGPoint, CGPointMake } from './CGRect'
 import { UIColor } from './UIColor'
 import { UIWindow } from './UIWindow'
+import { CGTransformMatrix } from './CGTransformMatrix'
 
 export class UIView {
 
@@ -13,7 +14,7 @@ export class UIView {
     frame: CGRect;
     bounds: CGRect;
     center: CGPoint;
-    transform: any; //todo
+    transform?: CGTransformMatrix;
 
     // Mark: View Rendering
     clipsToBounds: boolean;

@@ -11,6 +11,7 @@ export class Factory {
     static UIWindow: typeof I.UIWindow = I.UIWindow;
     static UIColor = I.UIColor;
     static UIScreen = I.UIScreen;
+    static CGTransformMatrix = I.CGTransformMatrix;
 
 }
 

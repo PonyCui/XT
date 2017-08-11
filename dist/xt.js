@@ -89,6 +89,8 @@ const UIColor_1 = __webpack_require__(15);
 exports.UIColor = UIColor_1.UIColor;
 const UIScreen_1 = __webpack_require__(16);
 exports.UIScreen = UIScreen_1.UIScreen;
+const CGTransformMatrix_1 = __webpack_require__(19);
+exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
 
 
 /***/ }),
@@ -110,6 +112,7 @@ Factory.UIApplicationDelegate = I.UIApplicationDelegate;
 Factory.UIWindow = I.UIWindow;
 Factory.UIColor = I.UIColor;
 Factory.UIScreen = I.UIScreen;
+Factory.CGTransformMatrix = I.CGTransformMatrix;
 exports.Factory = Factory;
 function SwitchFactory() {
     index_1.usePixi();
@@ -177,6 +180,22 @@ class UIView extends I.UIView {
         newFrame.x = value.x - newFrame.width / 2.0;
         newFrame.y = value.y - newFrame.height / 2.0;
         this.frame = newFrame;
+    }
+    get transform() {
+        return this._transform;
+    }
+    set transform(value) {
+        this._transform = value;
+        if (value) {
+            const transform = new PIXI.Transform();
+            const matrix = new PIXI.Matrix();
+            matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
+            transform.setFromMatrix(matrix);
+            this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
+        }
+        else {
+            // this.nativeObject.setTransform(0,0,0.5,0.5,0.0,0.0,0.0,0.0,0.0);
+        }
     }
     get clipsToBounds() {
         return this._clipsToBounds;
@@ -1125,6 +1144,27 @@ class UIWindow extends UIView_1.UIView {
     }
 }
 exports.UIWindow = UIWindow;
+
+
+/***/ }),
+/* 18 */,
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class CGTransformMatrix {
+    constructor(a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
+    }
+}
+exports.CGTransformMatrix = CGTransformMatrix;
 
 
 /***/ })

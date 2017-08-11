@@ -4,6 +4,7 @@ import { UIWindow } from './UIWindow'
 import { UIApplication, UIApplicationDelegate } from './UIApplication'
 import { UIColor } from './UIColor'
 import { UIScreen } from './UIScreen'
+import { CGTransformMatrix } from './CGTransformMatrix'
 
 export {
     UIView,
@@ -22,4 +23,5 @@ export {
     CGSize,
     CGSizeMake,
     CGSizeZero,
+    CGTransformMatrix,
 }
