@@ -8,7 +8,6 @@ export class UIView {
     constructor(rect: CGRect) { }
 
     tag: number;
-    userInteractionEnabled: boolean;
 
     // Mark: View Geometry
     frame: CGRect;
@@ -25,7 +24,7 @@ export class UIView {
     contentMode?: any; // todo
     maskView?: UIView
     tintColor: UIColor
-    tintColorDidChange() {}
+    tintColorDidChange() { }
 
     // Mark: View Layer-Back Rendering
     cornerRadius: number;
@@ -35,7 +34,7 @@ export class UIView {
     shadowOpacity: number;
     shadowOffset?: CGPoint;
     shadowRadius: number;
-    
+
     // Mark: View Hierarchy
     superview?: UIView
     subviews: UIView[]
@@ -66,4 +65,26 @@ export class UIView {
     layoutIfNeeded() { }
     layoutSubviews() { }
 
+    // Mark: View Interactive
+    userInteractionEnabled: boolean;
+    onTap?: () => void
+    onDoubleTap?: () => void
+    onLongPress?: (state: InteractionState) => void
+    onPan?: (state: InteractionState, viewLocation: CGPoint, absLocation: CGPoint) => void
+    onSwipe?: (direction: SwipeDirection) => void
+
+}
+
+export enum InteractionState {
+    Began,
+    Changed,
+    Ended,
+    Cancelled,
+}
+
+export enum SwipeDirection {
+    ToLeft,
+    ToRight,
+    ToTop,
+    ToBottom,
 }

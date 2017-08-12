@@ -6,11 +6,6 @@ export class UIView extends I.UIView {
     public nativeObject: any;
     public nativeGraphics: any;
 
-
-    private _backgroundColor?: I.UIColor = undefined;
-    private _cornerRadius: number = 0;
-
-
     constructor(rect?: I.CGRect) {
         super(rect || I.CGRectZero);
         this.nativeObject = new PIXI.Container();
@@ -81,7 +76,7 @@ export class UIView extends I.UIView {
             this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
         }
         else {
-            // this.nativeObject.setTransform(0,0,0.5,0.5,0.0,0.0,0.0,0.0,0.0);
+            this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         }
     }
 
@@ -114,6 +109,8 @@ export class UIView extends I.UIView {
             this.nativeObject.mask = undefined;
         }
     }
+
+    private _backgroundColor?: I.UIColor = undefined;
 
     public get backgroundColor() {
         return this._backgroundColor;
@@ -172,6 +169,9 @@ export class UIView extends I.UIView {
     }
 
     // Mark: View Layer-Back Rendering
+
+    private _cornerRadius: number = 0;
+
     public get cornerRadius() {
         return this._cornerRadius;
     }
@@ -181,17 +181,42 @@ export class UIView extends I.UIView {
         this.draw();
     }
 
+    private _borderWidth: number = 0;
+
+    public get borderWidth() {
+        return this._borderWidth;
+    }
+
+    public set borderWidth(value: number) {
+        this._borderWidth = value;
+        this.draw();
+    }
+
+    private _borderColor: I.UIColor | undefined = undefined;
+
+    public get borderColor() {
+        return this._borderColor;
+    }
+
+    public set borderColor(value: I.UIColor | undefined) {
+        this._borderColor = value;
+        this.draw();
+    }
+
     private draw() {
         if (this.nativeGraphics === undefined) {
             return;
         }
         this.nativeGraphics.clear();
-        this.drawBackground();
+        this.drawGraphics();
     }
 
-    private drawBackground() {
+    private drawGraphics() {
         if (this.backgroundColor instanceof I.UIColor) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
+            if (this.borderWidth > 0 && this.borderColor instanceof I.UIColor) {
+                this.nativeGraphics.lineStyle(this.borderWidth, this.borderColor.rgbHexNumber(), this.borderColor.a);
+            }
             if (this.cornerRadius > 0) {
                 if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
                     if (this.bounds.width > this.bounds.height) {
@@ -343,5 +368,69 @@ export class UIView extends I.UIView {
     }
 
     public layoutSubviews() { }
+
+    // Mark: View Interactive
+
+    private _userInteractionEnabled: boolean = false
+
+    public get userInteractionEnabled() {
+        return this._userInteractionEnabled;
+    }
+
+    public set userInteractionEnabled(value: boolean) {
+        this._userInteractionEnabled = value;
+        this.nativeObject.interactive = value;
+    }
+
+    private _onTap: () => void
+    private _maybeTap = false
+    private _firstTapPoint = { x: 0, y: 0 }
+
+    private activeTap() {
+        if (this._onTap !== undefined) {
+            this.activeTouch();
+            const onTap = () => {
+                if (this._maybeTap === true) {
+                    this._onTap && this._onTap();
+                }
+            }
+            this.nativeObject.on('click', onTap)
+            this.nativeObject.on('tap', onTap)
+        }
+    }
+
+    private activeTouch() {
+        this.nativeObject.on('pointerdown', this.handleTouchStart.bind(this))
+        this.nativeObject.on('pointermove', this.handleTouchMove.bind(this))
+        this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this))
+    }
+
+    private handleTouchStart(event: any) {
+        if (this._onTap !== undefined) {
+            this._maybeTap = true;
+            this._firstTapPoint = { ...event.data.global };
+        }
+    }
+
+    private handleTouchMove(event: any) {
+        if (this._maybeTap === true) {
+            if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
+                this._maybeTap = false;
+            }
+        }
+    }
+
+    private handleTouchEnd() {
+
+    }
+
+    public get onTap() {
+        return this._onTap;
+    }
+
+    public set onTap(value: () => void) {
+        this._onTap = value;
+        this.activeTap();
+    }
 
 }

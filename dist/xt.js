@@ -89,7 +89,7 @@ const UIColor_1 = __webpack_require__(15);
 exports.UIColor = UIColor_1.UIColor;
 const UIScreen_1 = __webpack_require__(16);
 exports.UIScreen = UIScreen_1.UIScreen;
-const CGTransformMatrix_1 = __webpack_require__(19);
+const CGTransformMatrix_1 = __webpack_require__(17);
 exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
 
 
@@ -132,16 +132,23 @@ const PIXI = window.PIXI;
 class UIView extends I.UIView {
     constructor(rect) {
         super(rect || I.CGRectZero);
-        this._backgroundColor = undefined;
-        this._cornerRadius = 0;
         // Mark: View Geometry
         this._frame = I.CGRectZero;
         this._bounds = I.CGRectZero;
         // Mark: View Rendering
         this._clipsToBounds = false;
+        this._backgroundColor = undefined;
         this.opaque = false;
         this._tintColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0);
+        // Mark: View Layer-Back Rendering
+        this._cornerRadius = 0;
+        this._borderWidth = 0;
+        this._borderColor = undefined;
         this.layoutTimer = undefined;
+        // Mark: View Interactive
+        this._userInteractionEnabled = false;
+        this._maybeTap = false;
+        this._firstTapPoint = { x: 0, y: 0 };
         this.nativeObject = new PIXI.Container();
         this.nativeObject.XTView = this;
         this.nativeGraphics = new PIXI.Graphics();
@@ -194,7 +201,7 @@ class UIView extends I.UIView {
             this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
         }
         else {
-            // this.nativeObject.setTransform(0,0,0.5,0.5,0.0,0.0,0.0,0.0,0.0);
+            this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         }
     }
     get clipsToBounds() {
@@ -259,7 +266,6 @@ class UIView extends I.UIView {
     tintColorDidChange() {
         this.subviews.forEach((subview) => { subview.tintColorDidChange(); });
     }
-    // Mark: View Layer-Back Rendering
     get cornerRadius() {
         return this._cornerRadius;
     }
@@ -267,16 +273,33 @@ class UIView extends I.UIView {
         this._cornerRadius = value;
         this.draw();
     }
+    get borderWidth() {
+        return this._borderWidth;
+    }
+    set borderWidth(value) {
+        this._borderWidth = value;
+        this.draw();
+    }
+    get borderColor() {
+        return this._borderColor;
+    }
+    set borderColor(value) {
+        this._borderColor = value;
+        this.draw();
+    }
     draw() {
         if (this.nativeGraphics === undefined) {
             return;
         }
         this.nativeGraphics.clear();
-        this.drawBackground();
+        this.drawGraphics();
     }
-    drawBackground() {
+    drawGraphics() {
         if (this.backgroundColor instanceof I.UIColor) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
+            if (this.borderWidth > 0 && this.borderColor instanceof I.UIColor) {
+                this.nativeGraphics.lineStyle(this.borderWidth, this.borderColor.rgbHexNumber(), this.borderColor.a);
+            }
             if (this.cornerRadius > 0) {
                 if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
                     if (this.bounds.width > this.bounds.height) {
@@ -407,6 +430,52 @@ class UIView extends I.UIView {
         this.layoutSubviews();
     }
     layoutSubviews() { }
+    get userInteractionEnabled() {
+        return this._userInteractionEnabled;
+    }
+    set userInteractionEnabled(value) {
+        this._userInteractionEnabled = value;
+        this.nativeObject.interactive = value;
+    }
+    activeTap() {
+        if (this._onTap !== undefined) {
+            this.activeTouch();
+            const onTap = () => {
+                if (this._maybeTap === true) {
+                    this._onTap && this._onTap();
+                }
+            };
+            this.nativeObject.on('click', onTap);
+            this.nativeObject.on('tap', onTap);
+        }
+    }
+    activeTouch() {
+        this.nativeObject.on('pointerdown', this.handleTouchStart.bind(this));
+        this.nativeObject.on('pointermove', this.handleTouchMove.bind(this));
+        this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this));
+    }
+    handleTouchStart(event) {
+        if (this._onTap !== undefined) {
+            this._maybeTap = true;
+            this._firstTapPoint = Object.assign({}, event.data.global);
+        }
+    }
+    handleTouchMove(event) {
+        if (this._maybeTap === true) {
+            if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
+                this._maybeTap = false;
+            }
+        }
+    }
+    handleTouchEnd() {
+    }
+    get onTap() {
+        return this._onTap;
+    }
+    set onTap(value) {
+        this._onTap = value;
+        this.activeTap();
+    }
 }
 exports.UIView = UIView;
 
@@ -529,6 +598,20 @@ class UIView {
     layoutSubviews() { }
 }
 exports.UIView = UIView;
+var InteractionState;
+(function (InteractionState) {
+    InteractionState[InteractionState["Began"] = 0] = "Began";
+    InteractionState[InteractionState["Changed"] = 1] = "Changed";
+    InteractionState[InteractionState["Ended"] = 2] = "Ended";
+    InteractionState[InteractionState["Cancelled"] = 3] = "Cancelled";
+})(InteractionState = exports.InteractionState || (exports.InteractionState = {}));
+var SwipeDirection;
+(function (SwipeDirection) {
+    SwipeDirection[SwipeDirection["ToLeft"] = 0] = "ToLeft";
+    SwipeDirection[SwipeDirection["ToRight"] = 1] = "ToRight";
+    SwipeDirection[SwipeDirection["ToTop"] = 2] = "ToTop";
+    SwipeDirection[SwipeDirection["ToBottom"] = 3] = "ToBottom";
+})(SwipeDirection = exports.SwipeDirection || (exports.SwipeDirection = {}));
 
 
 /***/ }),
@@ -589,7 +672,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Factory_1 = __webpack_require__(1);
 const UIView_1 = __webpack_require__(2);
 const UIApplication_1 = __webpack_require__(6);
-const UIWindow_1 = __webpack_require__(17);
+const UIWindow_1 = __webpack_require__(18);
 function usePixi(force = false) {
     const use = () => {
         Factory_1.Factory.UIView = UIView_1.UIView;
@@ -1122,6 +1205,26 @@ exports.UIScreen = UIScreen;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+class CGTransformMatrix {
+    constructor(a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
+    }
+}
+exports.CGTransformMatrix = CGTransformMatrix;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 const UIApplication_1 = __webpack_require__(6);
 const UIView_1 = __webpack_require__(2);
 const PIXI = window.PIXI;
@@ -1144,27 +1247,6 @@ class UIWindow extends UIView_1.UIView {
     }
 }
 exports.UIWindow = UIWindow;
-
-
-/***/ }),
-/* 18 */,
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-class CGTransformMatrix {
-    constructor(a, b, c, d, tx, ty) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.tx = tx;
-        this.ty = ty;
-    }
-}
-exports.CGTransformMatrix = CGTransformMatrix;
 
 
 /***/ })
