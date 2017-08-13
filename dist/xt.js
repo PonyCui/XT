@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const CGRect_1 = __webpack_require__(12);
+const CGRect_1 = __webpack_require__(5);
 exports.CGRectMake = CGRect_1.CGRectMake;
 exports.CGRectZero = CGRect_1.CGRectZero;
 exports.CGRectEqual = CGRect_1.CGRectEqual;
@@ -78,7 +78,7 @@ exports.CGPointMake = CGRect_1.CGPointMake;
 exports.CGPointZero = CGRect_1.CGPointZero;
 exports.CGSizeMake = CGRect_1.CGSizeMake;
 exports.CGSizeZero = CGRect_1.CGSizeZero;
-const UIView_1 = __webpack_require__(5);
+const UIView_1 = __webpack_require__(6);
 exports.UIView = UIView_1.UIView;
 const UIWindow_1 = __webpack_require__(13);
 exports.UIWindow = UIWindow_1.UIWindow;
@@ -100,7 +100,7 @@ exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = __webpack_require__(8);
+const index_1 = __webpack_require__(9);
 const I = __webpack_require__(0);
 class Factory {
 }
@@ -535,8 +535,8 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(9);
-var global = __webpack_require__(11);
+__webpack_require__(10);
+var global = __webpack_require__(12);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
 
@@ -570,6 +570,34 @@ module.exports = g;
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function CGPointMake(x, y) {
+    return { x, y };
+}
+exports.CGPointMake = CGPointMake;
+exports.CGPointZero = CGPointMake(0, 0);
+function CGSizeMake(width, height) {
+    return { width, height };
+}
+exports.CGSizeMake = CGSizeMake;
+exports.CGSizeZero = CGSizeMake(0, 0);
+function CGRectMake(x, y, width, height) {
+    return { x, y, width, height };
+}
+exports.CGRectMake = CGRectMake;
+exports.CGRectZero = CGRectMake(0, 0, 0, 0);
+function CGRectEqual(rect1, rect2) {
+    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+}
+exports.CGRectEqual = CGRectEqual;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -615,7 +643,7 @@ var SwipeDirection;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -629,16 +657,22 @@ class UIApplication extends I.UIApplication {
         super();
         this.keyWindow = undefined;
         if (sharedApplication === undefined) {
+            UIApplication.resetViewport();
             sharedApplication = this;
             I.UIScreen.mainScreen = () => {
-                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight);
+                return new I.UIScreen(window.screen.width, window.screen.height, window.devicePixelRatio);
             };
         }
-        this.nativeObject = new PIXI.Application({ width: canvas.offsetWidth, height: canvas.offsetHeight, view: canvas, antialias: true, transparent: true });
-        this.delegate = delegate;
-        if (this.delegate) {
-            this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
-        }
+        setTimeout(() => {
+            this.nativeObject = new PIXI.Application({ width: canvas.offsetWidth, height: canvas.offsetHeight, view: canvas, antialias: true, transparent: true });
+            this.delegate = delegate;
+            if (this.delegate) {
+                this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
+            }
+        }, 300);
+    }
+    static resetViewport() {
+        window.document.querySelector("meta[name=viewport]").setAttribute('content', 'width=' + window.screen.width);
     }
     static sharedApplication() {
         return sharedApplication;
@@ -648,7 +682,7 @@ exports.UIApplication = UIApplication;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -663,7 +697,7 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -671,7 +705,7 @@ if (window !== undefined) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Factory_1 = __webpack_require__(1);
 const UIView_1 = __webpack_require__(2);
-const UIApplication_1 = __webpack_require__(6);
+const UIApplication_1 = __webpack_require__(7);
 const UIWindow_1 = __webpack_require__(18);
 function usePixi(force = false) {
     const use = () => {
@@ -693,7 +727,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -883,10 +917,10 @@ exports.usePixi = usePixi;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(11)))
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1076,7 +1110,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -1096,41 +1130,13 @@ module.exports = win;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function CGPointMake(x, y) {
-    return { x, y };
-}
-exports.CGPointMake = CGPointMake;
-exports.CGPointZero = CGPointMake(0, 0);
-function CGSizeMake(width, height) {
-    return { width, height };
-}
-exports.CGSizeMake = CGSizeMake;
-exports.CGSizeZero = CGSizeMake(0, 0);
-function CGRectMake(x, y, width, height) {
-    return { x, y, width, height };
-}
-exports.CGRectMake = CGRectMake;
-exports.CGRectZero = CGRectMake(0, 0, 0, 0);
-function CGRectEqual(rect1, rect2) {
-    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-}
-exports.CGRectEqual = CGRectEqual;
-
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const UIView_1 = __webpack_require__(5);
+const UIView_1 = __webpack_require__(6);
 class UIWindow extends UIView_1.UIView {
     makeKeyAndVisible() { }
 }
@@ -1186,15 +1192,16 @@ exports.UIColor = UIColor;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 class UIScreen {
-    constructor(width, height) {
+    constructor(width, height, scale) {
         this.width = width;
         this.height = height;
+        this.scale = scale;
     }
     bounds() {
         return { x: 0, y: 0, width: this.width, height: this.height };
     }
 }
-UIScreen.mainScreen = () => new UIScreen(0, 0);
+UIScreen.mainScreen = () => new UIScreen(0, 0, 1);
 exports.UIScreen = UIScreen;
 
 
@@ -1225,7 +1232,7 @@ exports.CGTransformMatrix = CGTransformMatrix;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const UIApplication_1 = __webpack_require__(6);
+const UIApplication_1 = __webpack_require__(7);
 const UIView_1 = __webpack_require__(2);
 const PIXI = window.PIXI;
 class UIWindow extends UIView_1.UIView {
