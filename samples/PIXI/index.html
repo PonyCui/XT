@@ -25,7 +25,7 @@
                 testView.borderWidth = 3;
                 testView.borderColor = new UIColor(1, 1, 0, 1)
                 testView.userInteractionEnabled = true;
-                testView.onLongPress = function (state, _, pt) {
+                testView.onPan = function (state, _, pt) {
                     console.log(pt);
                     // testView.backgroundColor = new UIColor(1, 1, 0);
                 }

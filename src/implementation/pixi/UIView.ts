@@ -412,13 +412,17 @@ export class UIView extends I.UIView {
         this.nativeObject.interactive = value;
     }
 
-    private _onTap: () => void;
-    private _onDoubleTap: () => void;
+    private _onTap?: () => void;
+    private _onDoubleTap?: () => void;
+    private _onLongPress?: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void;
+    private _onPan?: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void;
     private _isTapActived = false;
     private _isTouchActived = false;
     private _maybeTap = false;
     private _maybeLongPress = false;
+    private _maybePan = false;
     private _isLongPress = false;
+    private _isPan = false;
     private _firstTapped = false;
     private _firstTapPoint = { x: 0, y: 0 }
     private _secondTapped = false;
@@ -438,7 +442,7 @@ export class UIView extends I.UIView {
                                 }
                             }
                             this._firstTapped = false;
-                        }, 150);
+                        }, 250);
                     }
                     else if (this._firstTapped === true && this._maybeTap === true) {
                         this._secondTapped = true;
@@ -495,6 +499,10 @@ export class UIView extends I.UIView {
     }
 
     private handleTouchStart(event: any) {
+        if (this._onPan !== undefined) {
+            this._maybePan = true;
+            this._isPan = false;
+        }
         if (this._onLongPress !== undefined) {
             this._maybeLongPress = true;
             this._isLongPress = false;
@@ -514,7 +522,19 @@ export class UIView extends I.UIView {
 
     private handleTouchMove(event: any) {
         if (this._isLongPress === true) {
+            this._maybePan = false;
             this._onLongPress && this._onLongPress(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._isPan === true)  {
+            this._onPan && this._onPan(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._maybePan === true) {
+            if (event.data.global.x - this._firstTapPoint.x > 8 || event.data.global.y - this._firstTapPoint.y > 8) {
+                this._isPan = true;
+                this._maybeTap = false;
+                this._maybeLongPress = false;
+                this._onPan && this._onPan(I.UIView.InteractionState.Began);
+            }
         }
         else if (this._maybeTap === true || this._maybeLongPress === true) {
             if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
@@ -528,15 +548,16 @@ export class UIView extends I.UIView {
         if (this._isLongPress !== true) {
             this._maybeLongPress = false;
         }
+        if (this._isPan === true) {
+            this._onPan && this._onPan(I.UIView.InteractionState.Ended);
+            this._maybePan = false;
+            this._isPan = false;
+        }
         else if (this._isLongPress === true) {
             this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended);
             this._maybeTap = false;
             this._isLongPress = false;
         }
-    }
-
-    public get onTap() {
-        return this._onTap;
     }
 
     public set onTap(value: () => void) {
@@ -549,10 +570,13 @@ export class UIView extends I.UIView {
         this.activeTap();
     }
 
-    private _onLongPress?: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void = undefined
-
     public set onLongPress(value: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void) {
         this._onLongPress = value;
+        this.activeTouch();
+    }
+
+    public set onPan(value: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void) {
+        this._onPan = value;
         this.activeTouch();
     }
 

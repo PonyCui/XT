@@ -86,7 +86,6 @@ export class UIView {
     onTap?: () => void
     onDoubleTap?: () => void
     onLongPress?: (state: InteractionState, viewLocation?: CGPoint, absLocation?: CGPoint) => void
-    onPan?: (state: InteractionState, viewLocation: CGPoint, absLocation: CGPoint) => void
-    onSwipe?: (direction: SwipeDirection) => void
+    onPan?: (state: InteractionState, viewLocation?: CGPoint, absLocation?: CGPoint) => void
 
 }

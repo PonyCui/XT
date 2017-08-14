@@ -440,11 +440,12 @@ var UIView = (function (_super) {
         _this._isTouchActived = false;
         _this._maybeTap = false;
         _this._maybeLongPress = false;
+        _this._maybePan = false;
         _this._isLongPress = false;
+        _this._isPan = false;
         _this._firstTapped = false;
         _this._firstTapPoint = { x: 0, y: 0 };
         _this._secondTapped = false;
-        _this._onLongPress = undefined;
         _this.nativeObject = new PIXI.Container();
         _this.nativeObject.XTView = _this;
         _this.nativeGraphics = new PIXI.Graphics();
@@ -864,7 +865,7 @@ var UIView = (function (_super) {
                                 }
                             }
                             _this._firstTapped = false;
-                        }, 150);
+                        }, 250);
                     }
                     else if (_this._firstTapped === true && _this._maybeTap === true) {
                         _this._secondTapped = true;
@@ -920,6 +921,10 @@ var UIView = (function (_super) {
     };
     UIView.prototype.handleTouchStart = function (event) {
         var _this = this;
+        if (this._onPan !== undefined) {
+            this._maybePan = true;
+            this._isPan = false;
+        }
         if (this._onLongPress !== undefined) {
             this._maybeLongPress = true;
             this._isLongPress = false;
@@ -938,7 +943,19 @@ var UIView = (function (_super) {
     };
     UIView.prototype.handleTouchMove = function (event) {
         if (this._isLongPress === true) {
+            this._maybePan = false;
             this._onLongPress && this._onLongPress(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._isPan === true) {
+            this._onPan && this._onPan(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._maybePan === true) {
+            if (event.data.global.x - this._firstTapPoint.x > 8 || event.data.global.y - this._firstTapPoint.y > 8) {
+                this._isPan = true;
+                this._maybeTap = false;
+                this._maybeLongPress = false;
+                this._onPan && this._onPan(I.UIView.InteractionState.Began);
+            }
         }
         else if (this._maybeTap === true || this._maybeLongPress === true) {
             if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
@@ -951,6 +968,11 @@ var UIView = (function (_super) {
         if (this._isLongPress !== true) {
             this._maybeLongPress = false;
         }
+        if (this._isPan === true) {
+            this._onPan && this._onPan(I.UIView.InteractionState.Ended);
+            this._maybePan = false;
+            this._isPan = false;
+        }
         else if (this._isLongPress === true) {
             this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended);
             this._maybeTap = false;
@@ -958,9 +980,6 @@ var UIView = (function (_super) {
         }
     };
     Object.defineProperty(UIView.prototype, "onTap", {
-        get: function () {
-            return this._onTap;
-        },
         set: function (value) {
             this._onTap = value;
             this.activeTap();
@@ -979,6 +998,14 @@ var UIView = (function (_super) {
     Object.defineProperty(UIView.prototype, "onLongPress", {
         set: function (value) {
             this._onLongPress = value;
+            this.activeTouch();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "onPan", {
+        set: function (value) {
+            this._onPan = value;
             this.activeTouch();
         },
         enumerable: true,
