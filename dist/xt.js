@@ -170,8 +170,11 @@ var UIView = (function (_super) {
         _this.layoutTimer = undefined;
         // Mark: View Interactive
         _this._userInteractionEnabled = false;
+        _this._isTapActived = false;
         _this._maybeTap = false;
+        _this._firstTapped = false;
         _this._firstTapPoint = { x: 0, y: 0 };
+        _this._secondTapped = false;
         _this.nativeObject = new PIXI.Container();
         _this.nativeObject.XTView = _this;
         _this.nativeGraphics = new PIXI.Graphics();
@@ -575,15 +578,34 @@ var UIView = (function (_super) {
     });
     UIView.prototype.activeTap = function () {
         var _this = this;
-        if (this._onTap !== undefined) {
+        if (this._isTapActived === true) {
+            return;
+        }
+        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this.activeTouch();
             var onTap = function () {
-                if (_this._maybeTap === true) {
+                if (_this._onDoubleTap !== undefined) {
+                    if (_this._firstTapped !== true && _this._maybeTap === true) {
+                        _this._firstTapped = true;
+                        setTimeout(function () {
+                            if (_this._onTap !== undefined && _this._secondTapped === false) {
+                                _this._onTap && _this._onTap();
+                            }
+                            _this._firstTapped = false;
+                        }, 150);
+                    }
+                    else if (_this._firstTapped === true && _this._maybeTap === true) {
+                        _this._secondTapped = true;
+                        _this._onDoubleTap && _this._onDoubleTap();
+                    }
+                }
+                else if (_this._maybeTap === true) {
                     _this._onTap && _this._onTap();
                 }
             };
             this.nativeObject.on('click', onTap);
             this.nativeObject.on('tap', onTap);
+            this._isTapActived = true;
         }
     };
     UIView.prototype.activeTouch = function () {
@@ -592,9 +614,10 @@ var UIView = (function (_super) {
         this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this));
     };
     UIView.prototype.handleTouchStart = function (event) {
-        if (this._onTap !== undefined) {
+        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this._maybeTap = true;
             this._firstTapPoint = __assign({}, event.data.global);
+            this._secondTapped = false;
         }
     };
     UIView.prototype.handleTouchMove = function (event) {
@@ -612,6 +635,14 @@ var UIView = (function (_super) {
         },
         set: function (value) {
             this._onTap = value;
+            this.activeTap();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "onDoubleTap", {
+        set: function (value) {
+            this._onDoubleTap = value;
             this.activeTap();
         },
         enumerable: true,
@@ -778,6 +809,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
 var PIXI = window.PIXI;
 var sharedApplication = undefined;
+var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = function (trigger) {
+        setTimeout(trigger, 16);
+    };
+}
 var UIApplication = (function (_super) {
     __extends(UIApplication, _super);
     function UIApplication(canvas, delegate) {
@@ -792,11 +829,13 @@ var UIApplication = (function (_super) {
         }
         UIApplication.resetCanvas(canvas, function () {
             _this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
-            window.nativeObject = _this.nativeObject;
-            _this.nativeObject.renderer.on("postrender", function () {
-                console.log("postrender");
-                _this.nativeObject.stop();
-            });
+            _this.nativeObject.stop();
+            if (window.DEBUG === true) {
+                window.nativeObject = _this.nativeObject;
+                _this.nativeObject.renderer.on("postrender", function () {
+                    console.log("[PIXI]: onPostrender.");
+                });
+            }
             _this.delegate = delegate;
             if (_this.delegate) {
                 _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
@@ -814,12 +853,12 @@ var UIApplication = (function (_super) {
     };
     UIApplication.prototype.setNeedsDisplay = function () {
         var _this = this;
-        if (this.isDirty) {
+        if (this.isDirty === true) {
             return;
         }
         this.isDirty = true;
         requestAnimationFrame(function () {
-            _this.nativeObject.start();
+            _this.nativeObject.render();
             _this.isDirty = false;
         });
     };

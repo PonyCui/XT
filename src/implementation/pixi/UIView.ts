@@ -412,20 +412,41 @@ export class UIView extends I.UIView {
         this.nativeObject.interactive = value;
     }
 
-    private _onTap: () => void
-    private _maybeTap = false
+    private _onTap: () => void;
+    private _onDoubleTap: () => void;
+    private _isTapActived = false;
+    private _maybeTap = false;
+    private _firstTapped = false;
     private _firstTapPoint = { x: 0, y: 0 }
+    private _secondTapped = false;
 
     private activeTap() {
-        if (this._onTap !== undefined) {
+        if (this._isTapActived === true) { return; }
+        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this.activeTouch();
             const onTap = () => {
-                if (this._maybeTap === true) {
+                if (this._onDoubleTap !== undefined) {
+                    if (this._firstTapped !== true && this._maybeTap === true) {
+                        this._firstTapped = true;
+                        setTimeout(() => {
+                            if (this._onTap !== undefined && this._secondTapped === false) {
+                                this._onTap && this._onTap();
+                            }
+                            this._firstTapped = false;
+                        }, 150);
+                    }
+                    else if (this._firstTapped === true && this._maybeTap === true) {
+                        this._secondTapped = true;
+                        this._onDoubleTap && this._onDoubleTap();
+                    }
+                }
+                else if (this._maybeTap === true) {
                     this._onTap && this._onTap();
                 }
             }
-            this.nativeObject.on('click', onTap)
-            this.nativeObject.on('tap', onTap)
+            this.nativeObject.on('click', onTap);
+            this.nativeObject.on('tap', onTap);
+            this._isTapActived = true;
         }
     }
 
@@ -436,9 +457,10 @@ export class UIView extends I.UIView {
     }
 
     private handleTouchStart(event: any) {
-        if (this._onTap !== undefined) {
+        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this._maybeTap = true;
             this._firstTapPoint = { ...event.data.global };
+            this._secondTapped = false;
         }
     }
 
@@ -460,6 +482,11 @@ export class UIView extends I.UIView {
 
     public set onTap(value: () => void) {
         this._onTap = value;
+        this.activeTap();
+    }
+
+    public set onDoubleTap(value: () => void) {
+        this._onDoubleTap = value;
         this.activeTap();
     }
 

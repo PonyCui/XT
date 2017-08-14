@@ -10,6 +10,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
     <script src="/dist/xt.js"></script>
     <script>
+        var DEBUG = true;
         for (var aKey in XT) {
             window[aKey] = XT[aKey];
         }
@@ -27,12 +28,15 @@
                 testView.onTap = function () {
                     testView.backgroundColor = new UIColor(1, 1, 0);
                 }
+                // testView.onDoubleTap = function () {
+                //     testView.backgroundColor = new UIColor(1, 1, 1);
+                // }
                 myWindow.addSubview(testView);
 
-                // testView.transform = new CGTransformMatrix(0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
+                
 
                 // setTimeout(function() {
-                //     testView.removeFromSuperview();
+                //     testView.transform = new CGTransformMatrix(0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
                 // }, 2000)
 
                 // testView.center = {x: 160, y: 568 / 2}

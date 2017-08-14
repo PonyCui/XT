@@ -3,6 +3,12 @@ import { UIWindow } from './UIWindow'
 const PIXI = (window as any).PIXI
 
 let sharedApplication: UIApplication | undefined = undefined;
+let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = (trigger: () => void) => {
+        setTimeout(trigger, 16);
+    }
+}
 
 export class UIApplication extends I.UIApplication {
 
@@ -19,11 +25,13 @@ export class UIApplication extends I.UIApplication {
         }
         UIApplication.resetCanvas(canvas, () => {
             this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
-            (window as any).nativeObject = this.nativeObject;
-            this.nativeObject.renderer.on("postrender", () => {
-                console.log("postrender");
-                this.nativeObject.stop();
-            });
+            this.nativeObject.stop();
+            if ((window as any).DEBUG === true) {
+                (window as any).nativeObject = this.nativeObject;
+                this.nativeObject.renderer.on("postrender", () => {
+                    console.log("[PIXI]: onPostrender.");
+                });
+            }
             this.delegate = delegate;
             if (this.delegate as I.UIApplicationDelegate) {
                 this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
@@ -44,14 +52,14 @@ export class UIApplication extends I.UIApplication {
     private isDirty = false
 
     public setNeedsDisplay() {
-        if (this.isDirty) {
+        if (this.isDirty === true) {
             return;
         }
         this.isDirty = true;
         requestAnimationFrame(() => {
-            this.nativeObject.start();
+            this.nativeObject.render();
             this.isDirty = false;
-        })
+        });
     }
 
 }
