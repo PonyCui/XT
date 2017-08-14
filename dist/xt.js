@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const CGRect_1 = __webpack_require__(5);
+var CGRect_1 = __webpack_require__(12);
 exports.CGRectMake = CGRect_1.CGRectMake;
 exports.CGRectZero = CGRect_1.CGRectZero;
 exports.CGRectEqual = CGRect_1.CGRectEqual;
@@ -78,18 +78,18 @@ exports.CGPointMake = CGRect_1.CGPointMake;
 exports.CGPointZero = CGRect_1.CGPointZero;
 exports.CGSizeMake = CGRect_1.CGSizeMake;
 exports.CGSizeZero = CGRect_1.CGSizeZero;
-const UIView_1 = __webpack_require__(6);
+var UIView_1 = __webpack_require__(5);
 exports.UIView = UIView_1.UIView;
-const UIWindow_1 = __webpack_require__(13);
+var UIWindow_1 = __webpack_require__(13);
 exports.UIWindow = UIWindow_1.UIWindow;
-const UIApplication_1 = __webpack_require__(14);
+var UIApplication_1 = __webpack_require__(14);
 exports.UIApplication = UIApplication_1.UIApplication;
 exports.UIApplicationDelegate = UIApplication_1.UIApplicationDelegate;
-const UIColor_1 = __webpack_require__(15);
+var UIColor_1 = __webpack_require__(15);
 exports.UIColor = UIColor_1.UIColor;
-const UIScreen_1 = __webpack_require__(16);
+var UIScreen_1 = __webpack_require__(16);
 exports.UIScreen = UIScreen_1.UIScreen;
-const CGTransformMatrix_1 = __webpack_require__(17);
+var CGTransformMatrix_1 = __webpack_require__(17);
 exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
 
 
@@ -100,19 +100,22 @@ exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = __webpack_require__(9);
-const I = __webpack_require__(0);
-class Factory {
-}
-Factory.CGRectMake = I.CGRectMake;
-Factory.CGRectZero = I.CGRectZero;
-Factory.UIView = I.UIView;
-Factory.UIApplication = I.UIApplication;
-Factory.UIApplicationDelegate = I.UIApplicationDelegate;
-Factory.UIWindow = I.UIWindow;
-Factory.UIColor = I.UIColor;
-Factory.UIScreen = I.UIScreen;
-Factory.CGTransformMatrix = I.CGTransformMatrix;
+var index_1 = __webpack_require__(8);
+var I = __webpack_require__(0);
+var Factory = (function () {
+    function Factory() {
+    }
+    Factory.CGRectMake = I.CGRectMake;
+    Factory.CGRectZero = I.CGRectZero;
+    Factory.UIView = I.UIView;
+    Factory.UIApplication = I.UIApplication;
+    Factory.UIApplicationDelegate = I.UIApplicationDelegate;
+    Factory.UIWindow = I.UIWindow;
+    Factory.UIColor = I.UIColor;
+    Factory.UIScreen = I.UIScreen;
+    Factory.CGTransformMatrix = I.CGTransformMatrix;
+    return Factory;
+}());
 exports.Factory = Factory;
 function SwitchFactory() {
     index_1.usePixi();
@@ -126,92 +129,132 @@ exports.SwitchFactory = SwitchFactory;
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const I = __webpack_require__(0);
-const PIXI = window.PIXI;
-class UIView extends I.UIView {
-    constructor(rect) {
-        super(rect || I.CGRectZero);
+var I = __webpack_require__(0);
+var PIXI = window.PIXI;
+var UIView = (function (_super) {
+    __extends(UIView, _super);
+    function UIView(rect) {
+        var _this = _super.call(this, rect || I.CGRectZero) || this;
         // Mark: View Geometry
-        this._frame = I.CGRectZero;
-        this._bounds = I.CGRectZero;
+        _this._frame = I.CGRectZero;
+        _this._bounds = I.CGRectZero;
         // Mark: View Rendering
-        this._clipsToBounds = false;
-        this._backgroundColor = undefined;
-        this.opaque = false;
-        this._tintColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0);
+        _this._clipsToBounds = false;
+        _this._backgroundColor = undefined;
+        _this.opaque = false;
+        _this._tintColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0);
         // Mark: View Layer-Back Rendering
-        this._cornerRadius = 0;
-        this._borderWidth = 0;
-        this._borderColor = undefined;
-        this.layoutTimer = undefined;
+        _this._cornerRadius = 0;
+        _this._borderWidth = 0;
+        _this._borderColor = undefined;
+        _this.layoutTimer = undefined;
         // Mark: View Interactive
-        this._userInteractionEnabled = false;
-        this._maybeTap = false;
-        this._firstTapPoint = { x: 0, y: 0 };
-        this.nativeObject = new PIXI.Container();
-        this.nativeObject.XTView = this;
-        this.nativeGraphics = new PIXI.Graphics();
-        this.nativeObject.addChild(this.nativeGraphics);
-        this.nativeContainer = new PIXI.Container();
-        this.nativeObject.addChild(this.nativeContainer);
+        _this._userInteractionEnabled = false;
+        _this._maybeTap = false;
+        _this._firstTapPoint = { x: 0, y: 0 };
+        _this.nativeObject = new PIXI.Container();
+        _this.nativeObject.XTView = _this;
+        _this.nativeGraphics = new PIXI.Graphics();
+        _this.nativeObject.addChild(_this.nativeGraphics);
+        _this.nativeContainer = new PIXI.Container();
+        _this.nativeObject.addChild(_this.nativeContainer);
         if (typeof rect === "object") {
-            this.frame = rect;
+            _this.frame = rect;
         }
+        return _this;
     }
-    get frame() {
-        return this._frame;
-    }
-    set frame(value) {
-        this._frame = value;
-        this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
-        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, value.width, value.height);
-        this.nativeContainer.hitArea = this.nativeObject.hitArea;
-        this.nativeObject.x = value.x;
-        this.nativeObject.y = value.y;
-    }
-    get bounds() {
-        return this._bounds;
-    }
-    set bounds(value) {
-        if (!I.CGRectEqual(this._bounds, value)) {
-            this._bounds = value;
-            this.draw();
-        }
-    }
-    get center() {
-        return { x: this.frame.x + this.frame.width / 2.0, y: this.frame.y + this.frame.height / 2.0 };
-    }
-    set center(value) {
-        const newFrame = this.frame;
-        newFrame.x = value.x - newFrame.width / 2.0;
-        newFrame.y = value.y - newFrame.height / 2.0;
-        this.frame = newFrame;
-    }
-    get transform() {
-        return this._transform;
-    }
-    set transform(value) {
-        this._transform = value;
-        if (value) {
-            const transform = new PIXI.Transform();
-            const matrix = new PIXI.Matrix();
-            matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
-            transform.setFromMatrix(matrix);
-            this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
-        }
-        else {
-            this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-        }
-    }
-    get clipsToBounds() {
-        return this._clipsToBounds;
-    }
-    set clipsToBounds(value) {
-        this._clipsToBounds = value;
-        this.applyMask();
-    }
-    applyMask() {
+    Object.defineProperty(UIView.prototype, "frame", {
+        get: function () {
+            return this._frame;
+        },
+        set: function (value) {
+            this._frame = value;
+            this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
+            this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
+            this.nativeContainer.hitArea = this.nativeObject.hitArea;
+            this.nativeObject.x = I.UIScreen.withScale(value.x);
+            this.nativeObject.y = I.UIScreen.withScale(value.y);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "bounds", {
+        get: function () {
+            return this._bounds;
+        },
+        set: function (value) {
+            if (!I.CGRectEqual(this._bounds, value)) {
+                this._bounds = value;
+                this.draw();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "center", {
+        get: function () {
+            return { x: this.frame.x + this.frame.width / 2.0, y: this.frame.y + this.frame.height / 2.0 };
+        },
+        set: function (value) {
+            var newFrame = this.frame;
+            newFrame.x = value.x - newFrame.width / 2.0;
+            newFrame.y = value.y - newFrame.height / 2.0;
+            this.frame = newFrame;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "transform", {
+        get: function () {
+            return this._transform;
+        },
+        set: function (value) {
+            this._transform = value;
+            if (value) {
+                var transform = new PIXI.Transform();
+                var matrix = new PIXI.Matrix();
+                matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
+                transform.setFromMatrix(matrix);
+                this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
+            }
+            else {
+                this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "clipsToBounds", {
+        get: function () {
+            return this._clipsToBounds;
+        },
+        set: function (value) {
+            this._clipsToBounds = value;
+            this.applyMask();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UIView.prototype.applyMask = function () {
         if (this.clipsToBounds) {
             if (this.maskView === undefined) {
                 this.maskView = new UIView(this.bounds);
@@ -226,126 +269,176 @@ class UIView extends I.UIView {
             }
             this.nativeObject.mask = undefined;
         }
-    }
-    get backgroundColor() {
-        return this._backgroundColor;
-    }
-    set backgroundColor(value) {
-        this._backgroundColor = value;
-        this.draw();
-    }
-    get alpha() {
-        return this.nativeObject.alpha;
-    }
-    set alpha(value) {
-        this.nativeObject.alpha = value;
-    }
-    get hidden() {
-        return !this.nativeObject.visible;
-    }
-    set hidden(value) {
-        this.nativeObject.visible = !value;
-    }
-    get maskView() {
-        return this._maskView;
-    }
-    set maskView(value) {
-        if (this._maskView !== undefined) {
-            this._maskView.removeFromSuperview();
-        }
-        this._maskView = value;
-        this.applyMask();
-    }
-    get tintColor() {
-        return this._tintColor;
-    }
-    set tintColor(value) {
-        this._tintColor = value;
-        this.tintColorDidChange();
-    }
-    tintColorDidChange() {
-        this.subviews.forEach((subview) => { subview.tintColorDidChange(); });
-    }
-    get cornerRadius() {
-        return this._cornerRadius;
-    }
-    set cornerRadius(value) {
-        this._cornerRadius = value;
-        this.draw();
-    }
-    get borderWidth() {
-        return this._borderWidth;
-    }
-    set borderWidth(value) {
-        this._borderWidth = value;
-        this.draw();
-    }
-    get borderColor() {
-        return this._borderColor;
-    }
-    set borderColor(value) {
-        this._borderColor = value;
-        this.draw();
-    }
-    draw() {
+    };
+    Object.defineProperty(UIView.prototype, "backgroundColor", {
+        get: function () {
+            return this._backgroundColor;
+        },
+        set: function (value) {
+            this._backgroundColor = value;
+            this.draw();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "alpha", {
+        get: function () {
+            return this.nativeObject.alpha;
+        },
+        set: function (value) {
+            this.nativeObject.alpha = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "hidden", {
+        get: function () {
+            return !this.nativeObject.visible;
+        },
+        set: function (value) {
+            this.nativeObject.visible = !value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "maskView", {
+        get: function () {
+            return this._maskView;
+        },
+        set: function (value) {
+            if (this._maskView !== undefined) {
+                this._maskView.removeFromSuperview();
+            }
+            this._maskView = value;
+            this.applyMask();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "tintColor", {
+        get: function () {
+            return this._tintColor;
+        },
+        set: function (value) {
+            this._tintColor = value;
+            this.tintColorDidChange();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UIView.prototype.tintColorDidChange = function () {
+        this.subviews.forEach(function (subview) { subview.tintColorDidChange(); });
+    };
+    Object.defineProperty(UIView.prototype, "cornerRadius", {
+        get: function () {
+            return this._cornerRadius;
+        },
+        set: function (value) {
+            this._cornerRadius = value;
+            this.draw();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "borderWidth", {
+        get: function () {
+            return this._borderWidth;
+        },
+        set: function (value) {
+            this._borderWidth = value;
+            this.draw();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "borderColor", {
+        get: function () {
+            return this._borderColor;
+        },
+        set: function (value) {
+            this._borderColor = value;
+            this.draw();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UIView.prototype.draw = function () {
         if (this.nativeGraphics === undefined) {
             return;
         }
         this.nativeGraphics.clear();
         this.drawGraphics();
-    }
-    drawGraphics() {
+    };
+    UIView.prototype.drawGraphics = function () {
         if (this.backgroundColor instanceof I.UIColor) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
             if (this.borderWidth > 0 && this.borderColor instanceof I.UIColor) {
-                this.nativeGraphics.lineStyle(this.borderWidth, this.borderColor.rgbHexNumber(), this.borderColor.a);
+                this.nativeGraphics.lineStyle(I.UIScreen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
             }
+            var scaledBounds = {
+                x: I.UIScreen.withScale(this.bounds.x),
+                y: I.UIScreen.withScale(this.bounds.y),
+                width: I.UIScreen.withScale(this.bounds.width),
+                height: I.UIScreen.withScale(this.bounds.height),
+            };
             if (this.cornerRadius > 0) {
                 if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
-                    if (this.bounds.width > this.bounds.height) {
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.height / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width - this.bounds.height / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawRect(this.bounds.x + this.bounds.height / 2.0, this.bounds.y, this.bounds.width - this.bounds.height, this.bounds.height);
+                    if (scaledBounds.width > scaledBounds.height) {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width - scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y, scaledBounds.width - scaledBounds.height, scaledBounds.height);
                     }
-                    else if (this.bounds.width < this.bounds.height) {
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.width / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.height - this.bounds.width / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawRect(this.bounds.x, this.bounds.y + this.bounds.width / 2.0, this.bounds.width, this.bounds.height - this.bounds.width);
+                    else if (scaledBounds.width < scaledBounds.height) {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height - scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y + scaledBounds.width / 2.0, scaledBounds.width, scaledBounds.height - scaledBounds.width);
                     }
                     else {
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
                     }
                 }
                 else {
-                    this.nativeGraphics.drawRoundedRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.cornerRadius);
+                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.UIScreen.withScale(this.cornerRadius));
                 }
             }
             else {
-                this.nativeGraphics.drawRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height);
+                this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height);
             }
         }
-    }
-    get superview() {
-        let parent = undefined;
-        if (this.nativeContainer.parent && this.nativeContainer.parent.parent && this.nativeContainer.parent.parent.parent) {
-            parent = this.nativeContainer.parent.parent.parent;
-        }
-        if (parent !== undefined && parent.XTView instanceof UIView) {
-            return parent.XTView;
-        }
-        return undefined;
-    }
-    get subviews() {
-        return this.nativeContainer.children.map((item) => item.XTView);
-    }
-    get window() {
-        let current = this.superview;
-        while (current !== undefined && current.XTClassName !== "UIWindow") {
-            current = current.superview;
-        }
-        return current;
-    }
-    removeFromSuperview() {
+    };
+    Object.defineProperty(UIView.prototype, "superview", {
+        get: function () {
+            var parent = undefined;
+            if (this.nativeContainer.parent && this.nativeContainer.parent.parent && this.nativeContainer.parent.parent.parent) {
+                parent = this.nativeContainer.parent.parent.parent;
+            }
+            if (parent !== undefined && parent.XTView instanceof UIView) {
+                return parent.XTView;
+            }
+            return undefined;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "subviews", {
+        get: function () {
+            return this.nativeContainer.children.map(function (item) { return item.XTView; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "window", {
+        get: function () {
+            var current = this.superview;
+            while (current !== undefined && current.XTClassName !== "UIWindow") {
+                current = current.superview;
+            }
+            return current;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UIView.prototype.removeFromSuperview = function () {
         if (this.superview !== undefined) {
             this.nativeContainer.parent.XTView.willRemoveSubview(this);
             this.willMoveToSuperview(undefined);
@@ -354,62 +447,62 @@ class UIView extends I.UIView {
             this.didMoveToSuperview();
             this.didMoveToWindow();
         }
-    }
-    insertSubviewAtIndex(subview, atIndex) {
+    };
+    UIView.prototype.insertSubviewAtIndex = function (subview, atIndex) {
         subview.willMoveToSuperview(this);
         subview.willMoveToWindow(this.window);
         this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
-    }
-    exchangeSubviewAtIndex(index1, index2) {
-        const child1 = this.nativeContainer.getChildAt(index1);
-        const child2 = this.nativeContainer.getChildAt(index2);
+    };
+    UIView.prototype.exchangeSubviewAtIndex = function (index1, index2) {
+        var child1 = this.nativeContainer.getChildAt(index1);
+        var child2 = this.nativeContainer.getChildAt(index2);
         this.nativeContainer.swapChildren(child1, child2);
-    }
-    addSubview(subview) {
+    };
+    UIView.prototype.addSubview = function (subview) {
         subview.willMoveToSuperview(this);
         subview.willMoveToWindow(this.window);
         this.nativeContainer.addChild(subview.nativeObject);
         this.didAddSubview(subview);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
-    }
-    insertSubviewBelow(subview, siblingSubview) {
-        const siblingIndex = this.subviews.indexOf(siblingSubview);
+    };
+    UIView.prototype.insertSubviewBelow = function (subview, siblingSubview) {
+        var siblingIndex = this.subviews.indexOf(siblingSubview);
         if (siblingIndex >= 0) {
             this.insertSubviewAtIndex(subview, siblingIndex);
         }
-    }
-    insertSubviewAbove(subview, siblingSubview) {
-        const siblingIndex = this.subviews.indexOf(siblingSubview);
+    };
+    UIView.prototype.insertSubviewAbove = function (subview, siblingSubview) {
+        var siblingIndex = this.subviews.indexOf(siblingSubview);
         if (siblingIndex >= 0 && siblingIndex == this.subviews.length - 1) {
             this.addSubview(subview);
         }
         else if (siblingIndex >= 0) {
             this.insertSubviewAtIndex(subview, siblingIndex + 1);
         }
-    }
-    bringSubviewToFront(subview) {
-        const currentIndex = this.subviews.indexOf(subview);
+    };
+    UIView.prototype.bringSubviewToFront = function (subview) {
+        var currentIndex = this.subviews.indexOf(subview);
         if (currentIndex < this.subviews.length - 1 && this.subviews.length > 1) {
             this.exchangeSubviewAtIndex(this.subviews.length - 1, currentIndex);
         }
-    }
-    sendSubviewToBack(subview) {
-        const currentIndex = this.subviews.indexOf(subview);
+    };
+    UIView.prototype.sendSubviewToBack = function (subview) {
+        var currentIndex = this.subviews.indexOf(subview);
         if (currentIndex > 0 && this.subviews.length > 1) {
             this.exchangeSubviewAtIndex(0, currentIndex);
         }
-    }
-    didAddSubview(subview) { }
-    willRemoveSubview(subview) { }
-    willMoveToSuperview(newSuperview) { }
-    didMoveToSuperview() { }
-    willMoveToWindow(newWindow) { }
-    didMoveToWindow() { }
-    isDescendantOfView(view) {
-        let current = this;
+    };
+    UIView.prototype.didAddSubview = function (subview) { };
+    UIView.prototype.willRemoveSubview = function (subview) { };
+    UIView.prototype.willMoveToSuperview = function (newSuperview) { };
+    UIView.prototype.didMoveToSuperview = function () { };
+    UIView.prototype.willMoveToWindow = function (newWindow) { };
+    UIView.prototype.didMoveToWindow = function () { };
+    UIView.prototype.isDescendantOfView = function (view) {
+        var current = this;
         while (current !== undefined) {
             if (current === view) {
                 return true;
@@ -417,66 +510,77 @@ class UIView extends I.UIView {
             current = current.superview;
         }
         return false;
-    }
-    setNeedsLayout() {
+    };
+    UIView.prototype.setNeedsLayout = function () {
+        var _this = this;
         if (this.layoutTimer !== undefined) {
             clearImmediate(this.layoutTimer);
         }
-        this.layoutTimer = setImmediate(() => {
-            this.layoutSubviews();
+        this.layoutTimer = setImmediate(function () {
+            _this.layoutSubviews();
         });
-    }
-    layoutIfNeeded() {
+    };
+    UIView.prototype.layoutIfNeeded = function () {
         this.layoutSubviews();
-    }
-    layoutSubviews() { }
-    get userInteractionEnabled() {
-        return this._userInteractionEnabled;
-    }
-    set userInteractionEnabled(value) {
-        this._userInteractionEnabled = value;
-        this.nativeObject.interactive = value;
-    }
-    activeTap() {
+    };
+    UIView.prototype.layoutSubviews = function () { };
+    Object.defineProperty(UIView.prototype, "userInteractionEnabled", {
+        get: function () {
+            return this._userInteractionEnabled;
+        },
+        set: function (value) {
+            this._userInteractionEnabled = value;
+            this.nativeObject.interactive = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UIView.prototype.activeTap = function () {
+        var _this = this;
         if (this._onTap !== undefined) {
             this.activeTouch();
-            const onTap = () => {
-                if (this._maybeTap === true) {
-                    this._onTap && this._onTap();
+            var onTap = function () {
+                if (_this._maybeTap === true) {
+                    _this._onTap && _this._onTap();
                 }
             };
             this.nativeObject.on('click', onTap);
             this.nativeObject.on('tap', onTap);
         }
-    }
-    activeTouch() {
+    };
+    UIView.prototype.activeTouch = function () {
         this.nativeObject.on('pointerdown', this.handleTouchStart.bind(this));
         this.nativeObject.on('pointermove', this.handleTouchMove.bind(this));
         this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this));
-    }
-    handleTouchStart(event) {
+    };
+    UIView.prototype.handleTouchStart = function (event) {
         if (this._onTap !== undefined) {
             this._maybeTap = true;
-            this._firstTapPoint = Object.assign({}, event.data.global);
+            this._firstTapPoint = __assign({}, event.data.global);
         }
-    }
-    handleTouchMove(event) {
+    };
+    UIView.prototype.handleTouchMove = function (event) {
         if (this._maybeTap === true) {
             if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
                 this._maybeTap = false;
             }
         }
-    }
-    handleTouchEnd() {
-    }
-    get onTap() {
-        return this._onTap;
-    }
-    set onTap(value) {
-        this._onTap = value;
-        this.activeTap();
-    }
-}
+    };
+    UIView.prototype.handleTouchEnd = function () {
+    };
+    Object.defineProperty(UIView.prototype, "onTap", {
+        get: function () {
+            return this._onTap;
+        },
+        set: function (value) {
+            this._onTap = value;
+            this.activeTap();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return UIView;
+}(I.UIView));
 exports.UIView = UIView;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
@@ -535,8 +639,8 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(10);
-var global = __webpack_require__(12);
+__webpack_require__(9);
+var global = __webpack_require__(11);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
 
@@ -575,56 +679,30 @@ module.exports = g;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-function CGPointMake(x, y) {
-    return { x, y };
-}
-exports.CGPointMake = CGPointMake;
-exports.CGPointZero = CGPointMake(0, 0);
-function CGSizeMake(width, height) {
-    return { width, height };
-}
-exports.CGSizeMake = CGSizeMake;
-exports.CGSizeZero = CGSizeMake(0, 0);
-function CGRectMake(x, y, width, height) {
-    return { x, y, width, height };
-}
-exports.CGRectMake = CGRectMake;
-exports.CGRectZero = CGRectMake(0, 0, 0, 0);
-function CGRectEqual(rect1, rect2) {
-    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-}
-exports.CGRectEqual = CGRectEqual;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-class UIView {
-    constructor(rect) { }
-    tintColorDidChange() { }
-    removeFromSuperview() { }
-    insertSubviewAtIndex(subview, atIndex) { }
-    exchangeSubviewAtIndex(index1, index2) { }
-    addSubview(subview) { }
-    insertSubviewBelow(subview, siblingSubview) { }
-    insertSubviewAbove(subview, siblingSubview) { }
-    bringSubviewToFront(subview) { }
-    sendSubviewToBack(subview) { }
-    didAddSubview(subview) { }
-    willRemoveSubview(subview) { }
-    willMoveToSuperview(newSuperview) { }
-    didMoveToSuperview() { }
-    willMoveToWindow(newWindow) { }
-    didMoveToWindow() { }
-    isDescendantOfView(view) { return false; }
-    setNeedsLayout() { }
-    layoutIfNeeded() { }
-    layoutSubviews() { }
-}
+var UIView = (function () {
+    function UIView(rect) {
+    }
+    UIView.prototype.tintColorDidChange = function () { };
+    UIView.prototype.removeFromSuperview = function () { };
+    UIView.prototype.insertSubviewAtIndex = function (subview, atIndex) { };
+    UIView.prototype.exchangeSubviewAtIndex = function (index1, index2) { };
+    UIView.prototype.addSubview = function (subview) { };
+    UIView.prototype.insertSubviewBelow = function (subview, siblingSubview) { };
+    UIView.prototype.insertSubviewAbove = function (subview, siblingSubview) { };
+    UIView.prototype.bringSubviewToFront = function (subview) { };
+    UIView.prototype.sendSubviewToBack = function (subview) { };
+    UIView.prototype.didAddSubview = function (subview) { };
+    UIView.prototype.willRemoveSubview = function (subview) { };
+    UIView.prototype.willMoveToSuperview = function (newSuperview) { };
+    UIView.prototype.didMoveToSuperview = function () { };
+    UIView.prototype.willMoveToWindow = function (newWindow) { };
+    UIView.prototype.didMoveToWindow = function () { };
+    UIView.prototype.isDescendantOfView = function (view) { return false; };
+    UIView.prototype.setNeedsLayout = function () { };
+    UIView.prototype.layoutIfNeeded = function () { };
+    UIView.prototype.layoutSubviews = function () { };
+    return UIView;
+}());
 exports.UIView = UIView;
 var InteractionState;
 (function (InteractionState) {
@@ -643,42 +721,74 @@ var SwipeDirection;
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var PIXI = window.PIXI;
+var sharedApplication = undefined;
+var UIApplication = (function (_super) {
+    __extends(UIApplication, _super);
+    function UIApplication(canvas, delegate) {
+        var _this = _super.call(this) || this;
+        _this.keyWindow = undefined;
+        if (sharedApplication === undefined) {
+            sharedApplication = _this;
+            I.UIScreen.mainScreen = function () {
+                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight, window.devicePixelRatio);
+            };
+        }
+        UIApplication.resetCanvas(canvas, function () {
+            _this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
+            _this.nativeObject.renderer.postrender = function () {
+                console.log("postrender");
+            };
+            _this.delegate = delegate;
+            if (_this.delegate) {
+                _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
+            }
+        });
+        return _this;
+    }
+    UIApplication.resetCanvas = function (canvas, callback) {
+        canvas.style.width = "375";
+        canvas.style.height = document.body.offsetHeight.toString();
+        setTimeout(callback);
+    };
+    UIApplication.sharedApplication = function () {
+        return sharedApplication;
+    };
+    return UIApplication;
+}(I.UIApplication));
+exports.UIApplication = UIApplication;
+
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const I = __webpack_require__(0);
-const PIXI = window.PIXI;
-let sharedApplication = undefined;
-class UIApplication extends I.UIApplication {
-    constructor(canvas, delegate) {
-        super();
-        this.keyWindow = undefined;
-        if (sharedApplication === undefined) {
-            UIApplication.resetViewport();
-            sharedApplication = this;
-            I.UIScreen.mainScreen = () => {
-                return new I.UIScreen(window.screen.width, window.screen.height, window.devicePixelRatio);
-            };
-        }
-        setTimeout(() => {
-            this.nativeObject = new PIXI.Application({ width: canvas.offsetWidth, height: canvas.offsetHeight, view: canvas, antialias: true, transparent: true });
-            this.delegate = delegate;
-            if (this.delegate) {
-                this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
-            }
-        }, 300);
-    }
-    static resetViewport() {
-        window.document.querySelector("meta[name=viewport]").setAttribute('content', 'width=' + window.screen.width);
-    }
-    static sharedApplication() {
-        return sharedApplication;
-    }
+var Factory_1 = __webpack_require__(1);
+Factory_1.SwitchFactory();
+exports.default = Factory_1.Factory;
+if (window !== undefined) {
+    window.XT = Factory_1.Factory;
 }
-exports.UIApplication = UIApplication;
 
 
 /***/ }),
@@ -688,27 +798,13 @@ exports.UIApplication = UIApplication;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Factory_1 = __webpack_require__(1);
-Factory_1.SwitchFactory();
-exports.default = Factory_1.Factory;
-if (window !== undefined) {
-    window.XT = Factory_1.Factory;
-}
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const Factory_1 = __webpack_require__(1);
-const UIView_1 = __webpack_require__(2);
-const UIApplication_1 = __webpack_require__(7);
-const UIWindow_1 = __webpack_require__(18);
-function usePixi(force = false) {
-    const use = () => {
+var Factory_1 = __webpack_require__(1);
+var UIView_1 = __webpack_require__(2);
+var UIApplication_1 = __webpack_require__(6);
+var UIWindow_1 = __webpack_require__(18);
+function usePixi(force) {
+    if (force === void 0) { force = false; }
+    var use = function () {
         Factory_1.Factory.UIView = UIView_1.UIView;
         Factory_1.Factory.UIApplication = UIApplication_1.UIApplication;
         Factory_1.Factory.UIWindow = UIWindow_1.UIWindow;
@@ -717,7 +813,7 @@ function usePixi(force = false) {
         use();
     }
     else if (window !== undefined) {
-        const $window = window;
+        var $window = window;
         if ($window.PIXI !== undefined) {
             use();
         }
@@ -727,7 +823,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -917,10 +1013,10 @@ exports.usePixi = usePixi;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(11)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(10)))
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1110,7 +1206,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -1130,16 +1226,59 @@ module.exports = win;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const UIView_1 = __webpack_require__(6);
-class UIWindow extends UIView_1.UIView {
-    makeKeyAndVisible() { }
+function CGPointMake(x, y) {
+    return { x: x, y: y };
 }
+exports.CGPointMake = CGPointMake;
+exports.CGPointZero = CGPointMake(0, 0);
+function CGSizeMake(width, height) {
+    return { width: width, height: height };
+}
+exports.CGSizeMake = CGSizeMake;
+exports.CGSizeZero = CGSizeMake(0, 0);
+function CGRectMake(x, y, width, height) {
+    return { x: x, y: y, width: width, height: height };
+}
+exports.CGRectMake = CGRectMake;
+exports.CGRectZero = CGRectMake(0, 0, 0, 0);
+function CGRectEqual(rect1, rect2) {
+    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+}
+exports.CGRectEqual = CGRectEqual;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIView_1 = __webpack_require__(5);
+var UIWindow = (function (_super) {
+    __extends(UIWindow, _super);
+    function UIWindow() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    UIWindow.prototype.makeKeyAndVisible = function () { };
+    return UIWindow;
+}(UIView_1.UIView));
 exports.UIWindow = UIWindow;
 
 
@@ -1150,13 +1289,19 @@ exports.UIWindow = UIWindow;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class UIApplicationDelegate {
-    applicationDidFinishLaunchingWithOptions(application, launchOptions) { }
-}
+var UIApplicationDelegate = (function () {
+    function UIApplicationDelegate() {
+    }
+    UIApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
+    return UIApplicationDelegate;
+}());
 exports.UIApplicationDelegate = UIApplicationDelegate;
-class UIApplication {
-    sharedApplication() { throw "NOT IMPLEMENT!"; }
-}
+var UIApplication = (function () {
+    function UIApplication() {
+    }
+    UIApplication.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
+    return UIApplication;
+}());
 exports.UIApplication = UIApplication;
 
 
@@ -1167,20 +1312,21 @@ exports.UIApplication = UIApplication;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class UIColor {
-    constructor(r, g, b, a) {
+var UIColor = (function () {
+    function UIColor(r, g, b, a) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a || 1.0;
     }
-    rgbHexNumber() {
-        const r = Math.ceil(this.r * 255).toString(16);
-        const g = Math.ceil(this.g * 255).toString(16);
-        const b = Math.ceil(this.b * 255).toString(16);
+    UIColor.prototype.rgbHexNumber = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
-    }
-}
+    };
+    return UIColor;
+}());
 exports.UIColor = UIColor;
 
 
@@ -1191,17 +1337,24 @@ exports.UIColor = UIColor;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class UIScreen {
-    constructor(width, height, scale) {
+var UIScreen = (function () {
+    function UIScreen(width, height, scale) {
         this.width = width;
         this.height = height;
         this.scale = scale;
     }
-    bounds() {
+    UIScreen.prototype.bounds = function () {
         return { x: 0, y: 0, width: this.width, height: this.height };
-    }
-}
-UIScreen.mainScreen = () => new UIScreen(0, 0, 1);
+    };
+    UIScreen.withScale = function (value) {
+        return value * UIScreen.mainScreen().scale;
+    };
+    UIScreen.outScale = function (value) {
+        return value / UIScreen.mainScreen().scale;
+    };
+    UIScreen.mainScreen = function () { return new UIScreen(0, 0, 1); };
+    return UIScreen;
+}());
 exports.UIScreen = UIScreen;
 
 
@@ -1212,8 +1365,8 @@ exports.UIScreen = UIScreen;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class CGTransformMatrix {
-    constructor(a, b, c, d, tx, ty) {
+var CGTransformMatrix = (function () {
+    function CGTransformMatrix(a, b, c, d, tx, ty) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -1221,7 +1374,8 @@ class CGTransformMatrix {
         this.tx = tx;
         this.ty = ty;
     }
-}
+    return CGTransformMatrix;
+}());
 exports.CGTransformMatrix = CGTransformMatrix;
 
 
@@ -1231,28 +1385,41 @@ exports.CGTransformMatrix = CGTransformMatrix;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const UIApplication_1 = __webpack_require__(7);
-const UIView_1 = __webpack_require__(2);
-const PIXI = window.PIXI;
-class UIWindow extends UIView_1.UIView {
-    constructor(rect) {
-        super(rect);
-        this.XTClassName = "UIWindow";
-        const application = UIApplication_1.UIApplication.sharedApplication();
+var UIApplication_1 = __webpack_require__(6);
+var UIView_1 = __webpack_require__(2);
+var PIXI = window.PIXI;
+var UIWindow = (function (_super) {
+    __extends(UIWindow, _super);
+    function UIWindow(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.XTClassName = "UIWindow";
+        var application = UIApplication_1.UIApplication.sharedApplication();
         if (application instanceof UIApplication_1.UIApplication) {
-            application.nativeObject.stage.addChild(this.nativeObject);
+            application.nativeObject.stage.addChild(_this.nativeObject);
         }
-        this.hidden = true;
+        _this.hidden = true;
+        return _this;
     }
-    makeKeyAndVisible() {
-        const application = UIApplication_1.UIApplication.sharedApplication();
+    UIWindow.prototype.makeKeyAndVisible = function () {
+        var application = UIApplication_1.UIApplication.sharedApplication();
         if (application instanceof UIApplication_1.UIApplication) {
             application.keyWindow = this;
         }
         this.hidden = false;
-    }
-}
+    };
+    return UIWindow;
+}(UIView_1.UIView));
 exports.UIWindow = UIWindow;
 
 

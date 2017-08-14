@@ -30,10 +30,10 @@ export class UIView extends I.UIView {
     public set frame(value: I.CGRect | any) {
         this._frame = value;
         this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
-        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, value.width, value.height);
+        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
         this.nativeContainer.hitArea = this.nativeObject.hitArea;
-        this.nativeObject.x = value.x;
-        this.nativeObject.y = value.y;
+        this.nativeObject.x = I.UIScreen.withScale(value.x);
+        this.nativeObject.y = I.UIScreen.withScale(value.y);
     }
 
     private _bounds: I.CGRect = I.CGRectZero;
@@ -160,7 +160,7 @@ export class UIView extends I.UIView {
     }
 
     public set tintColor(value: I.UIColor) {
-        this._tintColor = value
+        this._tintColor = value;
         this.tintColorDidChange();
     }
 
@@ -215,30 +215,36 @@ export class UIView extends I.UIView {
         if (this.backgroundColor instanceof I.UIColor) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
             if (this.borderWidth > 0 && this.borderColor instanceof I.UIColor) {
-                this.nativeGraphics.lineStyle(this.borderWidth, this.borderColor.rgbHexNumber(), this.borderColor.a);
+                this.nativeGraphics.lineStyle(I.UIScreen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
+            }
+            const scaledBounds = {
+                x: I.UIScreen.withScale(this.bounds.x),
+                y: I.UIScreen.withScale(this.bounds.y),
+                width: I.UIScreen.withScale(this.bounds.width),
+                height: I.UIScreen.withScale(this.bounds.height),
             }
             if (this.cornerRadius > 0) {
                 if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
-                    if (this.bounds.width > this.bounds.height) {
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.height / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width - this.bounds.height / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawRect(this.bounds.x + this.bounds.height / 2.0, this.bounds.y, this.bounds.width - this.bounds.height, this.bounds.height);
+                    if (scaledBounds.width > scaledBounds.height) {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width - scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y, scaledBounds.width - scaledBounds.height, scaledBounds.height);
                     }
-                    else if (this.bounds.width < this.bounds.height) {
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.width / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.height - this.bounds.width / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
-                        this.nativeGraphics.drawRect(this.bounds.x, this.bounds.y + this.bounds.width / 2.0, this.bounds.width, this.bounds.height - this.bounds.width);
+                    else if (scaledBounds.width < scaledBounds.height) {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height - scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y + scaledBounds.width / 2.0, scaledBounds.width, scaledBounds.height - scaledBounds.width);
                     }
                     else {
-                        this.nativeGraphics.drawCircle(this.bounds.x + this.bounds.width / 2.0, this.bounds.y + this.bounds.height / 2.0, Math.min(this.bounds.width, this.bounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
                     }
                 }
                 else {
-                    this.nativeGraphics.drawRoundedRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.cornerRadius);
+                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.UIScreen.withScale(this.cornerRadius));
                 }
             }
             else {
-                this.nativeGraphics.drawRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height);
+                this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height);
             }
         }
     }

@@ -2,11 +2,11 @@
 
 <head>
     <title>PixiJS Target</title>
-    <meta name="viewport" content="width=320" />
+    <meta name="viewport" content="width=375" />
 </head>
 
 <body style="margin: 0">
-    <canvas id="myCanvas" style="width: 100%; height: 100%"></canvas>
+    <canvas id="myCanvas"></canvas>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
     <script src="/dist/xt.js"></script>
     <script>
@@ -15,12 +15,10 @@
         }
         var application = new UIApplication(document.getElementById("myCanvas"), {
             applicationDidFinishLaunchingWithOptions: function () {
-                var window = new UIWindow(UIScreen.mainScreen().bounds());
-                window.backgroundColor = new UIColor(0, 0, 0);
-                window.makeKeyAndVisible();
-
-
-                var testView = new UIView({ x: 0, y: 0, width: 310, height: 200 });
+                var myWindow = new UIWindow(UIScreen.mainScreen().bounds());
+                myWindow.backgroundColor = new UIColor(0, 0, 0);
+                myWindow.makeKeyAndVisible();
+                var testView = new UIView({ x: 10, y: 10, width: 310, height: 200 });
                 testView.backgroundColor = new UIColor(1, 0, 0);
                 testView.cornerRadius = 12;
                 testView.borderWidth = 3;
@@ -29,8 +27,7 @@
                 testView.onTap = function () {
                     testView.backgroundColor = new UIColor(1, 1, 0);
                 }
-
-                window.addSubview(testView);
+                myWindow.addSubview(testView);
 
                 // testView.transform = new CGTransformMatrix(0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
 

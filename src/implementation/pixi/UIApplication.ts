@@ -9,26 +9,30 @@ export class UIApplication extends I.UIApplication {
     nativeObject: any;
     keyWindow?: UIWindow = undefined;
 
-    static resetViewport() {
-        (window as any).document.querySelector("meta[name=viewport]").setAttribute('content', 'width=' + window.screen.width);
-    }
-
     constructor(canvas: HTMLCanvasElement, delegate: I.UIApplicationDelegate) {
         super()
         if (sharedApplication === undefined) {
-            UIApplication.resetViewport();
             sharedApplication = this;
             I.UIScreen.mainScreen = () => {
-                return new I.UIScreen(window.screen.width, window.screen.height, window.devicePixelRatio);
+                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight, window.devicePixelRatio);
             }
         }
-        setTimeout(() => {
-            this.nativeObject = new PIXI.Application({ width: canvas.offsetWidth, height: canvas.offsetHeight, view: canvas, antialias: true, transparent: true });
+        UIApplication.resetCanvas(canvas, () => {
+            this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
+            this.nativeObject.renderer.postrender = () => {
+                console.log("postrender")
+            }
             this.delegate = delegate;
             if (this.delegate as I.UIApplicationDelegate) {
                 this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
             }
-        }, 300)
+        })
+    }
+
+    static resetCanvas(canvas: HTMLCanvasElement, callback: () => void) {
+        canvas.style.width = "375";
+        canvas.style.height = document.body.offsetHeight.toString();
+        setTimeout(callback);
     }
 
     static sharedApplication(): UIApplication | undefined {

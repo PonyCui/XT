@@ -18,4 +18,12 @@ export class UIScreen {
         return { x: 0, y: 0, width: this.width, height: this.height }
     }
 
+    static withScale(value: number): number {
+        return value * UIScreen.mainScreen().scale;
+    }
+
+    static outScale(value: number): number {
+        return value / UIScreen.mainScreen().scale;
+    }
+
 }
