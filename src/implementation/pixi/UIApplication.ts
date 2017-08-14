@@ -19,9 +19,11 @@ export class UIApplication extends I.UIApplication {
         }
         UIApplication.resetCanvas(canvas, () => {
             this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
-            this.nativeObject.renderer.postrender = () => {
-                console.log("postrender")
-            }
+            (window as any).nativeObject = this.nativeObject;
+            this.nativeObject.renderer.on("postrender", () => {
+                console.log("postrender");
+                this.nativeObject.stop();
+            });
             this.delegate = delegate;
             if (this.delegate as I.UIApplicationDelegate) {
                 this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
@@ -39,4 +41,23 @@ export class UIApplication extends I.UIApplication {
         return sharedApplication;
     }
 
+    private isDirty = false
+
+    public setNeedsDisplay() {
+        if (this.isDirty) {
+            return;
+        }
+        this.isDirty = true;
+        requestAnimationFrame(() => {
+            this.nativeObject.start();
+            this.isDirty = false;
+        })
+    }
+
+}
+
+export function setNeedsDisplay() {
+    if (sharedApplication !== undefined) {
+        sharedApplication.setNeedsDisplay();
+    }
 }

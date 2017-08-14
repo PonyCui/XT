@@ -20,4 +20,11 @@ export class UIColor {
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     }
 
+    equals(toColor: UIColor) {
+        if (toColor instanceof UIColor) {
+            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
+        }
+        return false;
+    }
+
 }

@@ -149,6 +149,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
+var UIApplication_1 = __webpack_require__(6);
 var PIXI = window.PIXI;
 var UIView = (function (_super) {
     __extends(UIView, _super);
@@ -193,6 +194,7 @@ var UIView = (function (_super) {
             this.nativeContainer.hitArea = this.nativeObject.hitArea;
             this.nativeObject.x = I.UIScreen.withScale(value.x);
             this.nativeObject.y = I.UIScreen.withScale(value.y);
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -205,6 +207,7 @@ var UIView = (function (_super) {
             if (!I.CGRectEqual(this._bounds, value)) {
                 this._bounds = value;
                 this.draw();
+                UIApplication_1.setNeedsDisplay();
             }
         },
         enumerable: true,
@@ -239,6 +242,7 @@ var UIView = (function (_super) {
             else {
                 this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
             }
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -269,14 +273,19 @@ var UIView = (function (_super) {
             }
             this.nativeObject.mask = undefined;
         }
+        UIApplication_1.setNeedsDisplay();
     };
     Object.defineProperty(UIView.prototype, "backgroundColor", {
         get: function () {
             return this._backgroundColor;
         },
         set: function (value) {
+            if (this._backgroundColor instanceof I.UIColor && this._backgroundColor.equals(value)) {
+                return;
+            }
             this._backgroundColor = value;
             this.draw();
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -286,7 +295,11 @@ var UIView = (function (_super) {
             return this.nativeObject.alpha;
         },
         set: function (value) {
+            if (this.nativeObject.alpha === value) {
+                return;
+            }
             this.nativeObject.alpha = value;
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -296,7 +309,11 @@ var UIView = (function (_super) {
             return !this.nativeObject.visible;
         },
         set: function (value) {
+            if (this.nativeObject.visible === value) {
+                return;
+            }
             this.nativeObject.visible = !value;
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -311,6 +328,7 @@ var UIView = (function (_super) {
             }
             this._maskView = value;
             this.applyMask();
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -320,8 +338,12 @@ var UIView = (function (_super) {
             return this._tintColor;
         },
         set: function (value) {
+            if (this._tintColor instanceof I.UIColor && this._tintColor.equals(value)) {
+                return;
+            }
             this._tintColor = value;
             this.tintColorDidChange();
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -334,8 +356,12 @@ var UIView = (function (_super) {
             return this._cornerRadius;
         },
         set: function (value) {
+            if (this._cornerRadius === value) {
+                return;
+            }
             this._cornerRadius = value;
             this.draw();
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -345,8 +371,12 @@ var UIView = (function (_super) {
             return this._borderWidth;
         },
         set: function (value) {
+            if (this._borderWidth === value) {
+                return;
+            }
             this._borderWidth = value;
             this.draw();
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -356,8 +386,12 @@ var UIView = (function (_super) {
             return this._borderColor;
         },
         set: function (value) {
+            if (this._borderColor === value) {
+                return;
+            }
             this._borderColor = value;
             this.draw();
+            UIApplication_1.setNeedsDisplay();
         },
         enumerable: true,
         configurable: true
@@ -446,6 +480,7 @@ var UIView = (function (_super) {
             this.nativeObject.parent.removeChild(this.nativeObject);
             this.didMoveToSuperview();
             this.didMoveToWindow();
+            UIApplication_1.setNeedsDisplay();
         }
     };
     UIView.prototype.insertSubviewAtIndex = function (subview, atIndex) {
@@ -454,11 +489,13 @@ var UIView = (function (_super) {
         this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
+        UIApplication_1.setNeedsDisplay();
     };
     UIView.prototype.exchangeSubviewAtIndex = function (index1, index2) {
         var child1 = this.nativeContainer.getChildAt(index1);
         var child2 = this.nativeContainer.getChildAt(index2);
         this.nativeContainer.swapChildren(child1, child2);
+        UIApplication_1.setNeedsDisplay();
     };
     UIView.prototype.addSubview = function (subview) {
         subview.willMoveToSuperview(this);
@@ -467,6 +504,7 @@ var UIView = (function (_super) {
         this.didAddSubview(subview);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
+        UIApplication_1.setNeedsDisplay();
     };
     UIView.prototype.insertSubviewBelow = function (subview, siblingSubview) {
         var siblingIndex = this.subviews.indexOf(siblingSubview);
@@ -745,6 +783,7 @@ var UIApplication = (function (_super) {
     function UIApplication(canvas, delegate) {
         var _this = _super.call(this) || this;
         _this.keyWindow = undefined;
+        _this.isDirty = false;
         if (sharedApplication === undefined) {
             sharedApplication = _this;
             I.UIScreen.mainScreen = function () {
@@ -753,9 +792,11 @@ var UIApplication = (function (_super) {
         }
         UIApplication.resetCanvas(canvas, function () {
             _this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
-            _this.nativeObject.renderer.postrender = function () {
+            window.nativeObject = _this.nativeObject;
+            _this.nativeObject.renderer.on("postrender", function () {
                 console.log("postrender");
-            };
+                _this.nativeObject.stop();
+            });
             _this.delegate = delegate;
             if (_this.delegate) {
                 _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
@@ -771,9 +812,26 @@ var UIApplication = (function (_super) {
     UIApplication.sharedApplication = function () {
         return sharedApplication;
     };
+    UIApplication.prototype.setNeedsDisplay = function () {
+        var _this = this;
+        if (this.isDirty) {
+            return;
+        }
+        this.isDirty = true;
+        requestAnimationFrame(function () {
+            _this.nativeObject.start();
+            _this.isDirty = false;
+        });
+    };
     return UIApplication;
 }(I.UIApplication));
 exports.UIApplication = UIApplication;
+function setNeedsDisplay() {
+    if (sharedApplication !== undefined) {
+        sharedApplication.setNeedsDisplay();
+    }
+}
+exports.setNeedsDisplay = setNeedsDisplay;
 
 
 /***/ }),
@@ -1324,6 +1382,12 @@ var UIColor = (function () {
         var g = Math.ceil(this.g * 255).toString(16);
         var b = Math.ceil(this.b * 255).toString(16);
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
+    };
+    UIColor.prototype.equals = function (toColor) {
+        if (toColor instanceof UIColor) {
+            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
+        }
+        return false;
     };
     return UIColor;
 }());
