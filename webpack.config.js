@@ -1,7 +1,10 @@
 module.exports = {
-    entry: "./src/main.ts",
+    entry: {
+        "xt": "./src/main.ts",
+        "xt.pixi": "./src/main.pixi.ts",
+    },
     output: {
-        filename: "xt.js",
+        filename: "[name].js",
         path: __dirname + "/dist"
     },
     devtool: "source-map",

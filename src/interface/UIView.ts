@@ -3,6 +3,20 @@ import { UIColor } from './UIColor'
 import { UIWindow } from './UIWindow'
 import { CGTransformMatrix } from './CGTransformMatrix'
 
+export enum InteractionState {
+    Began,
+    Changed,
+    Ended,
+    Cancelled,
+}
+
+export enum SwipeDirection {
+    ToLeft,
+    ToRight,
+    ToTop,
+    ToBottom,
+}
+
 export class UIView {
 
     constructor(rect: CGRect) { }
@@ -66,25 +80,13 @@ export class UIView {
     layoutSubviews() { }
 
     // Mark: View Interactive
+    static InteractionState = InteractionState
+    static SwipeDirection = SwipeDirection
     userInteractionEnabled: boolean;
     onTap?: () => void
     onDoubleTap?: () => void
-    onLongPress?: (state: InteractionState) => void
+    onLongPress?: (state: InteractionState, viewLocation?: CGPoint, absLocation?: CGPoint) => void
     onPan?: (state: InteractionState, viewLocation: CGPoint, absLocation: CGPoint) => void
     onSwipe?: (direction: SwipeDirection) => void
 
-}
-
-export enum InteractionState {
-    Began,
-    Changed,
-    Ended,
-    Cancelled,
-}
-
-export enum SwipeDirection {
-    ToLeft,
-    ToRight,
-    ToTop,
-    ToBottom,
 }

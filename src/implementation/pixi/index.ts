@@ -1,4 +1,4 @@
-import { Factory } from '../Factory'
+import { Factory } from '../Factory.pixi'
 import { UIView } from './UIView'
 import { UIApplication } from './UIApplication'
 import { UIWindow } from './UIWindow'

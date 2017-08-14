@@ -8,7 +8,7 @@
 <body style="margin: 0">
     <canvas id="myCanvas"></canvas>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
-    <script src="/dist/xt.js"></script>
+    <script src="/dist/xt.pixi.js"></script>
     <script>
         var DEBUG = true;
         for (var aKey in XT) {
@@ -19,18 +19,22 @@
                 var myWindow = new UIWindow(UIScreen.mainScreen().bounds());
                 myWindow.backgroundColor = new UIColor(0, 0, 0);
                 myWindow.makeKeyAndVisible();
-                var testView = new UIView({ x: 10, y: 10, width: 310, height: 200 });
+                var testView = new UIView({ x: 80, y: 80, width: 88, height: 88 });
                 testView.backgroundColor = new UIColor(1, 0, 0);
                 testView.cornerRadius = 12;
                 testView.borderWidth = 3;
                 testView.borderColor = new UIColor(1, 1, 0, 1)
                 testView.userInteractionEnabled = true;
+                testView.onLongPress = function (state, _, pt) {
+                    console.log(pt);
+                    // testView.backgroundColor = new UIColor(1, 1, 0);
+                }
                 testView.onTap = function () {
+                    testView.backgroundColor = new UIColor(1, 1, 1);
+                }
+                testView.onDoubleTap = function () {
                     testView.backgroundColor = new UIColor(1, 1, 0);
                 }
-                // testView.onDoubleTap = function () {
-                //     testView.backgroundColor = new UIColor(1, 1, 1);
-                // }
                 myWindow.addSubview(testView);
 
                 

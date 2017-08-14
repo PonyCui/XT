@@ -1,3 +1,4 @@
+import { usePixi } from './pixi/index'
 import * as I from '../interface/Abstract'
 
 export class Factory {
@@ -15,5 +16,5 @@ export class Factory {
 }
 
 export function SwitchFactory() {
-    
+    usePixi();
 }

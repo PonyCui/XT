@@ -415,7 +415,10 @@ export class UIView extends I.UIView {
     private _onTap: () => void;
     private _onDoubleTap: () => void;
     private _isTapActived = false;
+    private _isTouchActived = false;
     private _maybeTap = false;
+    private _maybeLongPress = false;
+    private _isLongPress = false;
     private _firstTapped = false;
     private _firstTapPoint = { x: 0, y: 0 }
     private _secondTapped = false;
@@ -429,19 +432,25 @@ export class UIView extends I.UIView {
                     if (this._firstTapped !== true && this._maybeTap === true) {
                         this._firstTapped = true;
                         setTimeout(() => {
-                            if (this._onTap !== undefined && this._secondTapped === false) {
-                                this._onTap && this._onTap();
+                            if (this._onTap !== undefined && this._secondTapped === false && this._maybeTap === true) {
+                                if (this._isLongPress === false) {
+                                    this._onTap && this._onTap();
+                                }
                             }
                             this._firstTapped = false;
                         }, 150);
                     }
                     else if (this._firstTapped === true && this._maybeTap === true) {
                         this._secondTapped = true;
-                        this._onDoubleTap && this._onDoubleTap();
+                        if (this._isLongPress === false) {
+                            this._onDoubleTap && this._onDoubleTap();
+                        }
                     }
                 }
                 else if (this._maybeTap === true) {
-                    this._onTap && this._onTap();
+                    if (this._isLongPress === false) {
+                        this._onTap && this._onTap();
+                    }
                 }
             }
             this.nativeObject.on('click', onTap);
@@ -451,12 +460,51 @@ export class UIView extends I.UIView {
     }
 
     private activeTouch() {
+        if (this._isTouchActived === true) { return; }
         this.nativeObject.on('pointerdown', this.handleTouchStart.bind(this))
         this.nativeObject.on('pointermove', this.handleTouchMove.bind(this))
         this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this))
+        this.nativeObject.on('pointerupoutside', this.handleTouchEnd.bind(this))
+        this._isTouchActived = true;
+    }
+
+    private requestTouchPointInView(event: any): I.CGPoint {
+        const absPoint = {
+            x: I.UIScreen.outScale(event.data.global.x),
+            y: I.UIScreen.outScale(event.data.global.y),
+        }
+        let viewPoint = {
+            x: absPoint.x,
+            y: absPoint.y,
+        }
+        let currentView: UIView | undefined = this;
+        while (currentView.superview !== undefined) {
+            viewPoint.x -= currentView.frame.x;
+            viewPoint.y -= currentView.frame.y;
+            currentView = currentView.superview;
+        }
+        return viewPoint;
+    }
+
+    private requestTouchPointInWindow(event: any): I.CGPoint {
+        const absPoint = {
+            x: I.UIScreen.outScale(event.data.global.x),
+            y: I.UIScreen.outScale(event.data.global.y),
+        }
+        return absPoint;
     }
 
     private handleTouchStart(event: any) {
+        if (this._onLongPress !== undefined) {
+            this._maybeLongPress = true;
+            this._isLongPress = false;
+            setTimeout(() => {
+                if (this._maybeLongPress === true) {
+                    this._isLongPress = true;
+                    this._onLongPress && this._onLongPress(I.UIView.InteractionState.Began);
+                }
+            }, 300);
+        }
         if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this._maybeTap = true;
             this._firstTapPoint = { ...event.data.global };
@@ -465,15 +513,26 @@ export class UIView extends I.UIView {
     }
 
     private handleTouchMove(event: any) {
-        if (this._maybeTap === true) {
+        if (this._isLongPress === true) {
+            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._maybeTap === true || this._maybeLongPress === true) {
             if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
                 this._maybeTap = false;
+                this._maybeLongPress = false;
             }
         }
     }
 
     private handleTouchEnd() {
-
+        if (this._isLongPress !== true) {
+            this._maybeLongPress = false;
+        }
+        else if (this._isLongPress === true) {
+            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended);
+            this._maybeTap = false;
+            this._isLongPress = false;
+        }
     }
 
     public get onTap() {
@@ -488,6 +547,13 @@ export class UIView extends I.UIView {
     public set onDoubleTap(value: () => void) {
         this._onDoubleTap = value;
         this.activeTap();
+    }
+
+    private _onLongPress?: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void = undefined
+
+    public set onLongPress(value: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void) {
+        this._onLongPress = value;
+        this.activeTouch();
     }
 
 }
