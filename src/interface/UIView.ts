@@ -2,6 +2,7 @@ import { CGRect, CGRectMake, CGPoint, CGPointMake } from './CGRect'
 import { UIColor } from './UIColor'
 import { UIWindow } from './UIWindow'
 import { CGTransformMatrix } from './CGTransformMatrix'
+import { NSLayoutConstraint } from "./NSLayoutConstraint";
 
 export enum InteractionState {
     Began,
@@ -20,8 +21,6 @@ export enum SwipeDirection {
 export class UIView {
 
     constructor(rect: CGRect) { }
-
-    tag: number;
 
     // Mark: View Geometry
     frame: CGRect;
@@ -50,6 +49,7 @@ export class UIView {
     shadowRadius: number;
 
     // Mark: View Hierarchy
+    tag?: number;
     superview?: UIView
     subviews: UIView[]
     window?: UIWindow
@@ -74,10 +74,19 @@ export class UIView {
     didMoveToWindow() { }
 
     isDescendantOfView(view: UIView) { return false }
+    viewWithTag(tag: number): UIView | undefined { return undefined }
 
     setNeedsLayout() { }
     layoutIfNeeded() { }
     layoutSubviews() { }
+
+    // Mark: View LayoutConstraint
+
+    constraints: NSLayoutConstraint[]
+    addConstraint(constraint: NSLayoutConstraint) { }
+    addConstraints(constraints: NSLayoutConstraint[]) { }
+    removeConstraint(constraint: NSLayoutConstraint) { }
+    removeAllConstraints() { }
 
     // Mark: View Interactive
     static InteractionState = InteractionState

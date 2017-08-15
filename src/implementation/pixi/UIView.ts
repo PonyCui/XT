@@ -1,6 +1,8 @@
+declare function require(name: string): any;
 import * as I from '../../interface/Abstract'
 import { setNeedsDisplay } from './UIApplication'
 const PIXI = (window as any).PIXI
+const AutoLayout = require("autolayout");
 
 export class UIView extends I.UIView {
 
@@ -49,6 +51,7 @@ export class UIView extends I.UIView {
             this._bounds = value;
             this.draw();
             setNeedsDisplay();
+            this.setNeedsLayout();
         }
     }
 
@@ -271,6 +274,7 @@ export class UIView extends I.UIView {
 
     // Mark: View Hierarchy
     public nativeContainer: any;
+    public tag?: number;
 
     public get superview(): UIView | undefined {
         let parent: any = undefined;
@@ -382,6 +386,19 @@ export class UIView extends I.UIView {
         return false
     }
 
+    public viewWithTag(tag: number): UIView | undefined {
+        if (this.tag !== undefined && this.tag === tag) {
+            return this;
+        }
+        else {
+            const target = this.subviews.filter(item => item.viewWithTag(tag));
+            if (target.length > 0) {
+                return target[0];
+            }
+        }
+        return undefined
+    }
+
     private layoutTimer?: any = undefined
 
     public setNeedsLayout() {
@@ -397,7 +414,77 @@ export class UIView extends I.UIView {
         this.layoutSubviews();
     }
 
-    public layoutSubviews() { }
+    public layoutSubviews() {
+        if (this._constraints.length > 0) {
+            let viewMapping: { [key: string]: UIView } = {}
+            this._constraints.forEach(item => {
+                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any)._layoutID] = item.firstItem as any }
+                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any)._layoutID] = item.secondItem as any }
+            })
+            const view = new AutoLayout.View({
+                constraints: this._constraints.map(item => item.toALObject()),
+                width: this.bounds.width,
+                height: this.bounds.height,
+            });
+            for (const layoutID in view.subViews) {
+                const value = view.subViews[layoutID];
+                if (viewMapping[layoutID] !== undefined) {
+                    viewMapping[layoutID].frame = {
+                        x: value.left,
+                        y: value.top,
+                        width: value.width,
+                        height: value.height,
+                    }
+                }
+            }
+        }
+    }
+
+    // Mark: View LayoutConstraint
+
+    private _layoutID: string = UIView.generateLayoutUUID();
+
+    private static generateLayoutUUID(): string {
+        var s: any[] = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+        var uuid = s.join("");
+        return uuid;
+    }
+
+    private _constraints: I.NSLayoutConstraint[] = [];
+
+    public get constraints(): I.NSLayoutConstraint[] {
+        return []
+    }
+
+    addConstraint(constraint: I.NSLayoutConstraint) {
+        this._constraints.push(constraint);
+        this.setNeedsLayout();
+    }
+
+    addConstraints(constraints: I.NSLayoutConstraint[]) {
+        constraints.forEach(constraint => this._constraints.push(constraint));
+        this.setNeedsLayout();
+    }
+
+    removeConstraint(constraint: I.NSLayoutConstraint) {
+        const idx = this._constraints.indexOf(constraint);
+        if (idx >= 0) {
+            this._constraints.splice(idx, 1);
+        }
+        this.setNeedsLayout();
+    }
+
+    removeAllConstraints() {
+        this._constraints = [];
+        this.setNeedsLayout();
+    }
 
     // Mark: View Interactive
 
@@ -525,36 +612,36 @@ export class UIView extends I.UIView {
             this._maybePan = false;
             this._onLongPress && this._onLongPress(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
         }
-        else if (this._isPan === true)  {
+        else if (this._isPan === true) {
             this._onPan && this._onPan(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
         }
         else if (this._maybePan === true) {
-            if (event.data.global.x - this._firstTapPoint.x > 8 || event.data.global.y - this._firstTapPoint.y > 8) {
+            if (event.data.global.x - this._firstTapPoint.x > I.UIScreen.withScale(8) || event.data.global.y - this._firstTapPoint.y > I.UIScreen.withScale(8)) {
                 this._isPan = true;
                 this._maybeTap = false;
                 this._maybeLongPress = false;
-                this._onPan && this._onPan(I.UIView.InteractionState.Began);
+                this._onPan && this._onPan(I.UIView.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             }
         }
         else if (this._maybeTap === true || this._maybeLongPress === true) {
-            if (event.data.global.x - this._firstTapPoint.x > 12 || event.data.global.y - this._firstTapPoint.y > 12) {
+            if (event.data.global.x - this._firstTapPoint.x > I.UIScreen.withScale(12) || event.data.global.y - this._firstTapPoint.y > I.UIScreen.withScale(12)) {
                 this._maybeTap = false;
                 this._maybeLongPress = false;
             }
         }
     }
 
-    private handleTouchEnd() {
+    private handleTouchEnd(event: any) {
         if (this._isLongPress !== true) {
             this._maybeLongPress = false;
         }
         if (this._isPan === true) {
-            this._onPan && this._onPan(I.UIView.InteractionState.Ended);
+            this._onPan && this._onPan(I.UIView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             this._maybePan = false;
             this._isPan = false;
         }
         else if (this._isLongPress === true) {
-            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended);
+            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             this._maybeTap = false;
             this._isLongPress = false;
         }

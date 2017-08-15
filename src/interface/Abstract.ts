@@ -5,6 +5,7 @@ import { UIApplication, UIApplicationDelegate } from './UIApplication'
 import { UIColor } from './UIColor'
 import { UIScreen } from './UIScreen'
 import { CGTransformMatrix } from './CGTransformMatrix'
+import { NSLayoutConstraint } from "./NSLayoutConstraint";
 
 export {
     UIView,
@@ -24,4 +25,5 @@ export {
     CGSizeMake,
     CGSizeZero,
     CGTransformMatrix,
+    NSLayoutConstraint,
 }

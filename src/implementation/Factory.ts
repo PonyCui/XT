@@ -11,6 +11,7 @@ export class Factory {
     static UIColor = I.UIColor;
     static UIScreen = I.UIScreen;
     static CGTransformMatrix = I.CGTransformMatrix;
+    static NSLayoutConstraint = I.NSLayoutConstraint;
 
 }
 

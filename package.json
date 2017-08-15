@@ -12,5 +12,8 @@
     "awesome-typescript-loader": "^3.2.2",
     "typescript": "^2.4.2",
     "webpack": "^3.5.2"
+  },
+  "dependencies": {
+    "autolayout": "^0.7.0"
   }
 }
