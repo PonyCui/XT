@@ -517,15 +517,35 @@ var UIApplication = (function (_super) {
             _this.isDirty = false;
         });
     };
+    UIApplication.prototype.displayNow = function () {
+        if (window.DEBUG) {
+            displayStartTime = performance.now();
+        }
+        this.remarkRenderable();
+        this.nativeObject.render();
+        this.dirtyTargets = [];
+    };
     return UIApplication;
 }(I.UIApplication));
 exports.UIApplication = UIApplication;
+var displayPaused = false;
 function setNeedsDisplay(target) {
-    if (sharedApplication !== undefined) {
+    if (sharedApplication !== undefined && displayPaused === false) {
         sharedApplication.setNeedsDisplay(target);
     }
 }
 exports.setNeedsDisplay = setNeedsDisplay;
+function displayPause() {
+    displayPaused = true;
+}
+exports.displayPause = displayPause;
+function displayNow() {
+    displayPaused = false;
+    if (sharedApplication !== undefined) {
+        sharedApplication.displayNow();
+    }
+}
+exports.displayNow = displayNow;
 
 
 /***/ }),
@@ -1362,9 +1382,11 @@ var UIView = (function (_super) {
         });
         var startTime = performance.now();
         var runnable = function () {
+            UIApplication_1.displayPause();
             if (!runAnimation(startTime, animationViewProps)) {
                 requestAnimationFrame(runnable);
             }
+            UIApplication_1.displayNow();
         };
         runnable();
         UIView._animationViews = [];

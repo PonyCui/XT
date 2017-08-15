@@ -137,10 +137,32 @@ export class UIApplication extends I.UIApplication {
         });
     }
 
+    public displayNow() {
+        if ((window as any).DEBUG) {
+            displayStartTime = performance.now();
+        }
+        this.remarkRenderable();
+        this.nativeObject.render();
+        this.dirtyTargets = [];
+    }
+
 }
 
+let displayPaused = false;
+
 export function setNeedsDisplay(target: UIView) {
-    if (sharedApplication !== undefined) {
+    if (sharedApplication !== undefined && displayPaused === false) {
         sharedApplication.setNeedsDisplay(target);
+    }
+}
+
+export function displayPause() {
+    displayPaused = true;
+}
+
+export function displayNow() {
+    displayPaused = false;
+    if (sharedApplication !== undefined) {
+        sharedApplication.displayNow();
     }
 }

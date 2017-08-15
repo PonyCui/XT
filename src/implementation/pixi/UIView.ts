@@ -1,6 +1,6 @@
 declare function require(name: string): any;
 import * as I from '../../interface/Abstract'
-import { setNeedsDisplay } from './UIApplication'
+import { setNeedsDisplay, displayPause, displayNow } from './UIApplication'
 const PIXI = (window as any).PIXI
 const AutoLayout = require("autolayout");
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
@@ -740,9 +740,11 @@ export class UIView extends I.UIView {
         })
         const startTime = performance.now();
         const runnable = () => {
+            displayPause();
             if (!runAnimation(startTime, animationViewProps)) {
                 requestAnimationFrame(runnable);
             }
+            displayNow();
         }
         runnable();
         UIView._animationViews = [];
