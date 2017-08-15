@@ -59,6 +59,10 @@ export class UIApplication extends I.UIApplication {
             const opaqueRects: I.CGRect[] = [];
             for (let index = allViews.length - 1; index >= 0; index--) {
                 const view = allViews[index];
+                if ((view as any)._childRenderable === true) {
+                    view.nativeObject.renderable = true;
+                    continue;
+                }
                 if (view.transform !== undefined) {
                     view.nativeObject.renderable = true;
                 }
@@ -71,6 +75,13 @@ export class UIApplication extends I.UIApplication {
                 else {
                     view.nativeObject.renderable = false;
                 }
+                if (view.nativeObject.renderable === true) {
+                    let current: any = view.superview;
+                    while (current !== undefined) {
+                        current._childRenderable = true
+                        current = current.superview;
+                    }
+                }
             }
         }
     }
@@ -79,6 +90,7 @@ export class UIApplication extends I.UIApplication {
         const views = view.subviews;
         view.subviews.forEach(subview => {
             (subview as any)._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
+            (view as any)._childRenderable = false;
         })
         view.subviews.forEach(subview => {
             const subviewss = this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });

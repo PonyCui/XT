@@ -385,6 +385,10 @@ var UIApplication = (function (_super) {
             var opaqueRects = [];
             var _loop_1 = function (index) {
                 var view = allViews[index];
+                if (view._childRenderable === true) {
+                    view.nativeObject.renderable = true;
+                    return "continue";
+                }
                 if (view.transform !== undefined) {
                     view.nativeObject.renderable = true;
                 }
@@ -397,6 +401,13 @@ var UIApplication = (function (_super) {
                 else {
                     view.nativeObject.renderable = false;
                 }
+                if (view.nativeObject.renderable === true) {
+                    var current = view.superview;
+                    while (current !== undefined) {
+                        current._childRenderable = true;
+                        current = current.superview;
+                    }
+                }
             };
             for (var index = allViews.length - 1; index >= 0; index--) {
                 _loop_1(index);
@@ -408,6 +419,7 @@ var UIApplication = (function (_super) {
         var views = view.subviews;
         view.subviews.forEach(function (subview) {
             subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
+            view._childRenderable = false;
         });
         view.subviews.forEach(function (subview) {
             var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
