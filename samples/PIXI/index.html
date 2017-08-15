@@ -2,7 +2,7 @@
 
 <head>
     <title>PixiJS Target</title>
-    <meta name="viewport" content="width=375, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=375, user-scalable=no" />
 </head>
 
 <body style="margin: 0">
@@ -20,9 +20,12 @@
                 var myWindow = new UIWindow(UIScreen.mainScreen().bounds());
                 myWindow.backgroundColor = new UIColor(0, 0, 0);
                 myWindow.makeKeyAndVisible();
-                var testView = new UIView({ x: 80, y: 80, width: 88, height: 88 });
+                var smallView = new UIView({x:40,y:40, width:40, height:40});
+                smallView.backgroundColor = new UIColor(1, 1, 0);
+                myWindow.addSubview(smallView);
+                var testView = new UIView();
                 testView.backgroundColor = new UIColor(1, 0, 0);
-                testView.cornerRadius = 12;
+                // testView.cornerRadius = 12;
                 testView.borderWidth = 3;
                 testView.borderColor = new UIColor(1, 1, 0, 1)
                 testView.userInteractionEnabled = true;
@@ -30,8 +33,7 @@
                     testView.backgroundColor = new UIColor(1, 1, 1);
                 }
                 myWindow.addSubview(testView);
-
-                myWindow.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat('|-88-[testView]-20-|', {testView}));
+                myWindow.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat('|-20-[testView]-20-|', {testView}));
                 myWindow.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat('V:|-20-[testView(200)]', {testView}));
 
                 // setTimeout(function() {

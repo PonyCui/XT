@@ -1,5 +1,6 @@
 import * as I from '../../interface/Abstract'
 import { UIWindow } from './UIWindow'
+import { UIView } from './UIView'
 const PIXI = (window as any).PIXI
 
 let sharedApplication: UIApplication | undefined = undefined;
@@ -50,22 +51,74 @@ export class UIApplication extends I.UIApplication {
     }
 
     private isDirty = false
+    private dirtyTargets: UIView[] = [];
 
-    public setNeedsDisplay() {
+    public remarkRenderable() {
+        if (this.keyWindow !== undefined) {
+            const allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
+            const opaqueRects: I.CGRect[] = [];
+            for (let index = allViews.length - 1; index >= 0; index--) {
+                const view = allViews[index];
+                if (view.transform !== undefined) {
+                    view.nativeObject.renderable = true;
+                }
+                else if (opaqueRects.filter(item => I.CGRectInside(item, (view as any)._absRect)).length == 0) {
+                    if (view.opaque === true) {
+                        opaqueRects.push((view as any)._absRect);
+                    }
+                    view.nativeObject.renderable = true;
+                }
+                else {
+                    view.nativeObject.renderable = false;
+                }
+            }
+        }
+    }
+
+    private combineViews(view: UIView, absPoint: { x: number, y: number }): UIView[] {
+        const views = view.subviews;
+        view.subviews.forEach(subview => {
+            (subview as any)._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
+        })
+        view.subviews.forEach(subview => {
+            const subviewss = this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
+            subviewss.forEach(subview => {
+                views.push(subview);
+            });
+        })
+        return views;
+    }
+
+    public setNeedsDisplay(target: UIView) {
+        if (this.dirtyTargets.indexOf(target) < 0) {
+            this.dirtyTargets.push(target);
+        }
         if (this.isDirty === true) {
             return;
         }
         this.isDirty = true;
         requestAnimationFrame(() => {
-            this.nativeObject.render();
+            this.remarkRenderable();
+            let stillDirty = false;
+            for (let index = 0; index < this.dirtyTargets.length; index++) {
+                let element = this.dirtyTargets[index];
+                if (element.nativeObject.renderable === true) {
+                    stillDirty = true;
+                    break;
+                }
+            }
+            if (stillDirty) {
+                this.nativeObject.render();
+            }
+            this.dirtyTargets = [];
             this.isDirty = false;
         });
     }
 
 }
 
-export function setNeedsDisplay() {
+export function setNeedsDisplay(target: UIView) {
     if (sharedApplication !== undefined) {
-        sharedApplication.setNeedsDisplay();
+        sharedApplication.setNeedsDisplay(target);
     }
 }

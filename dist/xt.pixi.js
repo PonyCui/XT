@@ -78,6 +78,7 @@ exports.CGPointMake = CGRect_1.CGPointMake;
 exports.CGPointZero = CGRect_1.CGPointZero;
 exports.CGSizeMake = CGRect_1.CGSizeMake;
 exports.CGSizeZero = CGRect_1.CGSizeZero;
+exports.CGRectInside = CGRect_1.CGRectInside;
 var UIView_1 = __webpack_require__(1);
 exports.UIView = UIView_1.UIView;
 var UIWindow_1 = __webpack_require__(3);
@@ -177,6 +178,10 @@ function CGRectEqual(rect1, rect2) {
     return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
 }
 exports.CGRectEqual = CGRectEqual;
+function CGRectInside(rect1, rect2) {
+    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
+}
+exports.CGRectInside = CGRectInside;
 
 
 /***/ }),
@@ -343,6 +348,7 @@ var UIApplication = (function (_super) {
         var _this = _super.call(this) || this;
         _this.keyWindow = undefined;
         _this.isDirty = false;
+        _this.dirtyTargets = [];
         if (sharedApplication === undefined) {
             sharedApplication = _this;
             I.UIScreen.mainScreen = function () {
@@ -373,23 +379,76 @@ var UIApplication = (function (_super) {
     UIApplication.sharedApplication = function () {
         return sharedApplication;
     };
-    UIApplication.prototype.setNeedsDisplay = function () {
+    UIApplication.prototype.remarkRenderable = function () {
+        if (this.keyWindow !== undefined) {
+            var allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
+            var opaqueRects = [];
+            var _loop_1 = function (index) {
+                var view = allViews[index];
+                if (view.transform !== undefined) {
+                    view.nativeObject.renderable = true;
+                }
+                else if (opaqueRects.filter(function (item) { return I.CGRectInside(item, view._absRect); }).length == 0) {
+                    if (view.opaque === true) {
+                        opaqueRects.push(view._absRect);
+                    }
+                    view.nativeObject.renderable = true;
+                }
+                else {
+                    view.nativeObject.renderable = false;
+                }
+            };
+            for (var index = allViews.length - 1; index >= 0; index--) {
+                _loop_1(index);
+            }
+        }
+    };
+    UIApplication.prototype.combineViews = function (view, absPoint) {
         var _this = this;
+        var views = view.subviews;
+        view.subviews.forEach(function (subview) {
+            subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
+        });
+        view.subviews.forEach(function (subview) {
+            var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
+            subviewss.forEach(function (subview) {
+                views.push(subview);
+            });
+        });
+        return views;
+    };
+    UIApplication.prototype.setNeedsDisplay = function (target) {
+        var _this = this;
+        if (this.dirtyTargets.indexOf(target) < 0) {
+            this.dirtyTargets.push(target);
+        }
         if (this.isDirty === true) {
             return;
         }
         this.isDirty = true;
         requestAnimationFrame(function () {
-            _this.nativeObject.render();
+            _this.remarkRenderable();
+            var stillDirty = false;
+            for (var index = 0; index < _this.dirtyTargets.length; index++) {
+                var element = _this.dirtyTargets[index];
+                if (element.nativeObject.renderable === true) {
+                    stillDirty = true;
+                    break;
+                }
+            }
+            if (stillDirty) {
+                _this.nativeObject.render();
+            }
+            _this.dirtyTargets = [];
             _this.isDirty = false;
         });
     };
     return UIApplication;
 }(I.UIApplication));
 exports.UIApplication = UIApplication;
-function setNeedsDisplay() {
+function setNeedsDisplay(target) {
     if (sharedApplication !== undefined) {
-        sharedApplication.setNeedsDisplay();
+        sharedApplication.setNeedsDisplay(target);
     }
 }
 exports.setNeedsDisplay = setNeedsDisplay;
@@ -409,6 +468,8 @@ var Factory = (function () {
     }
     Factory.CGRectMake = I.CGRectMake;
     Factory.CGRectZero = I.CGRectZero;
+    Factory.CGRectEqual = I.CGRectEqual;
+    Factory.CGRectInside = I.CGRectInside;
     Factory.UIView = I.UIView;
     Factory.UIApplication = I.UIApplication;
     Factory.UIApplicationDelegate = I.UIApplicationDelegate;
@@ -465,7 +526,7 @@ var UIView = (function (_super) {
         // Mark: View Rendering
         _this._clipsToBounds = false;
         _this._backgroundColor = undefined;
-        _this.opaque = false;
+        _this._opaque = false;
         _this._tintColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0);
         // Mark: View Layer-Back Rendering
         _this._cornerRadius = 0;
@@ -509,7 +570,7 @@ var UIView = (function (_super) {
             this.nativeContainer.hitArea = this.nativeObject.hitArea;
             this.nativeObject.x = I.UIScreen.withScale(value.x);
             this.nativeObject.y = I.UIScreen.withScale(value.y);
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -522,7 +583,7 @@ var UIView = (function (_super) {
             if (!I.CGRectEqual(this._bounds, value)) {
                 this._bounds = value;
                 this.draw();
-                UIApplication_1.setNeedsDisplay();
+                UIApplication_1.setNeedsDisplay(this);
                 this.setNeedsLayout();
             }
         },
@@ -558,7 +619,7 @@ var UIView = (function (_super) {
             else {
                 this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
             }
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -589,7 +650,7 @@ var UIView = (function (_super) {
             }
             this.nativeObject.mask = undefined;
         }
-        UIApplication_1.setNeedsDisplay();
+        UIApplication_1.setNeedsDisplay(this);
     };
     Object.defineProperty(UIView.prototype, "backgroundColor", {
         get: function () {
@@ -601,7 +662,23 @@ var UIView = (function (_super) {
             }
             this._backgroundColor = value;
             this.draw();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "opaque", {
+        get: function () {
+            if (this._opaque === true) {
+                return true;
+            }
+            else if (this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
+                return true;
+            }
+            return this._opaque;
+        },
+        set: function (value) {
+            this._opaque = value;
         },
         enumerable: true,
         configurable: true
@@ -615,7 +692,7 @@ var UIView = (function (_super) {
                 return;
             }
             this.nativeObject.alpha = value;
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -629,7 +706,7 @@ var UIView = (function (_super) {
                 return;
             }
             this.nativeObject.visible = !value;
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -644,7 +721,7 @@ var UIView = (function (_super) {
             }
             this._maskView = value;
             this.applyMask();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -659,7 +736,7 @@ var UIView = (function (_super) {
             }
             this._tintColor = value;
             this.tintColorDidChange();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -677,7 +754,7 @@ var UIView = (function (_super) {
             }
             this._cornerRadius = value;
             this.draw();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -692,7 +769,7 @@ var UIView = (function (_super) {
             }
             this._borderWidth = value;
             this.draw();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
@@ -707,13 +784,13 @@ var UIView = (function (_super) {
             }
             this._borderColor = value;
             this.draw();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         },
         enumerable: true,
         configurable: true
     });
     UIView.prototype.draw = function () {
-        if (this.nativeGraphics === undefined) {
+        if (this.nativeGraphics === undefined || this.bounds.width == 0 || this.bounds.height == 0) {
             return;
         }
         this.nativeGraphics.clear();
@@ -796,7 +873,7 @@ var UIView = (function (_super) {
             this.nativeObject.parent.removeChild(this.nativeObject);
             this.didMoveToSuperview();
             this.didMoveToWindow();
-            UIApplication_1.setNeedsDisplay();
+            UIApplication_1.setNeedsDisplay(this);
         }
     };
     UIView.prototype.insertSubviewAtIndex = function (subview, atIndex) {
@@ -805,13 +882,13 @@ var UIView = (function (_super) {
         this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
-        UIApplication_1.setNeedsDisplay();
+        UIApplication_1.setNeedsDisplay(this);
     };
     UIView.prototype.exchangeSubviewAtIndex = function (index1, index2) {
         var child1 = this.nativeContainer.getChildAt(index1);
         var child2 = this.nativeContainer.getChildAt(index2);
         this.nativeContainer.swapChildren(child1, child2);
-        UIApplication_1.setNeedsDisplay();
+        UIApplication_1.setNeedsDisplay(this);
     };
     UIView.prototype.addSubview = function (subview) {
         subview.willMoveToSuperview(this);
@@ -820,7 +897,7 @@ var UIView = (function (_super) {
         this.didAddSubview(subview);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
-        UIApplication_1.setNeedsDisplay();
+        UIApplication_1.setNeedsDisplay(this);
     };
     UIView.prototype.insertSubviewBelow = function (subview, siblingSubview) {
         var siblingIndex = this.subviews.indexOf(siblingSubview);

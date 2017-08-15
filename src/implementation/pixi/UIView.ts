@@ -37,7 +37,7 @@ export class UIView extends I.UIView {
         this.nativeContainer.hitArea = this.nativeObject.hitArea;
         this.nativeObject.x = I.UIScreen.withScale(value.x);
         this.nativeObject.y = I.UIScreen.withScale(value.y);
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private _bounds: I.CGRect = I.CGRectZero;
@@ -50,7 +50,7 @@ export class UIView extends I.UIView {
         if (!I.CGRectEqual(this._bounds, value)) {
             this._bounds = value;
             this.draw();
-            setNeedsDisplay();
+            setNeedsDisplay(this);
             this.setNeedsLayout();
         }
     }
@@ -84,7 +84,7 @@ export class UIView extends I.UIView {
         else {
             this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         }
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     // Mark: View Rendering
@@ -115,7 +115,7 @@ export class UIView extends I.UIView {
             }
             this.nativeObject.mask = undefined;
         }
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private _backgroundColor?: I.UIColor = undefined;
@@ -128,10 +128,24 @@ export class UIView extends I.UIView {
         if (this._backgroundColor instanceof I.UIColor && this._backgroundColor.equals(value)) { return; }
         this._backgroundColor = value;
         this.draw();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
-    opaque: boolean = false
+    private _opaque: boolean = false
+
+    public set opaque(value: boolean) {
+        this._opaque = value;
+    }
+
+    public get opaque() {
+        if (this._opaque === true) {
+            return true;
+        }
+        else if (this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
+            return true;
+        }
+        return this._opaque;
+    }
 
     public get alpha() {
         return this.nativeObject.alpha;
@@ -140,7 +154,7 @@ export class UIView extends I.UIView {
     public set alpha(value: number) {
         if (this.nativeObject.alpha === value) { return; }
         this.nativeObject.alpha = value;
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     public get hidden() {
@@ -150,7 +164,7 @@ export class UIView extends I.UIView {
     public set hidden(value: boolean) {
         if (this.nativeObject.visible === value) { return; }
         this.nativeObject.visible = !value;
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private _maskView: UIView | undefined
@@ -165,7 +179,7 @@ export class UIView extends I.UIView {
         }
         this._maskView = value;
         this.applyMask();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private _tintColor: I.UIColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0)
@@ -178,7 +192,7 @@ export class UIView extends I.UIView {
         if (this._tintColor instanceof I.UIColor && this._tintColor.equals(value)) { return; }
         this._tintColor = value;
         this.tintColorDidChange();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     tintColorDidChange() {
@@ -197,7 +211,7 @@ export class UIView extends I.UIView {
         if (this._cornerRadius === value) { return; }
         this._cornerRadius = value;
         this.draw();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private _borderWidth: number = 0;
@@ -210,7 +224,7 @@ export class UIView extends I.UIView {
         if (this._borderWidth === value) { return; }
         this._borderWidth = value;
         this.draw();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private _borderColor: I.UIColor | undefined = undefined;
@@ -223,11 +237,11 @@ export class UIView extends I.UIView {
         if (this._borderColor === value) { return; }
         this._borderColor = value;
         this.draw();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     private draw() {
-        if (this.nativeGraphics === undefined) {
+        if (this.nativeGraphics === undefined || this.bounds.width == 0 || this.bounds.height == 0) {
             return;
         }
         this.nativeGraphics.clear();
@@ -307,7 +321,7 @@ export class UIView extends I.UIView {
             this.nativeObject.parent.removeChild(this.nativeObject);
             this.didMoveToSuperview();
             this.didMoveToWindow();
-            setNeedsDisplay();
+            setNeedsDisplay(this);
         }
     }
 
@@ -317,14 +331,14 @@ export class UIView extends I.UIView {
         this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     public exchangeSubviewAtIndex(index1: number, index2: number) {
         const child1 = this.nativeContainer.getChildAt(index1);
         const child2 = this.nativeContainer.getChildAt(index2);
         this.nativeContainer.swapChildren(child1, child2);
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     public addSubview(subview: UIView) {
@@ -334,7 +348,7 @@ export class UIView extends I.UIView {
         this.didAddSubview(subview);
         subview.didMoveToSuperview();
         subview.didMoveToWindow();
-        setNeedsDisplay();
+        setNeedsDisplay(this);
     }
 
     public insertSubviewBelow(subview: UIView, siblingSubview: UIView) {

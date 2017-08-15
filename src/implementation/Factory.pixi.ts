@@ -5,6 +5,8 @@ export class Factory {
 
     static CGRectMake = I.CGRectMake;
     static CGRectZero = I.CGRectZero;
+    static CGRectEqual = I.CGRectEqual;
+    static CGRectInside = I.CGRectInside;
     static UIView: typeof I.UIView = I.UIView;
     static UIApplication: typeof I.UIApplication = I.UIApplication;
     static UIApplicationDelegate: typeof I.UIApplicationDelegate = I.UIApplicationDelegate;
