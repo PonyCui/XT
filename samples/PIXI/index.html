@@ -18,7 +18,6 @@
         var application = new UIApplication(document.getElementById("myCanvas"), {
             applicationDidFinishLaunchingWithOptions: function () {
                 var myWindow = new UIWindow(UIScreen.mainScreen().bounds());
-                myWindow.backgroundColor = new UIColor(0, 0, 0);
                 myWindow.makeKeyAndVisible();
                 // var smallView = new UIView({ x: 40, y: 40, width: 40, height: 40 });
                 // smallView.backgroundColor = new UIColor(1, 1, 0);
@@ -30,8 +29,9 @@
                 testView.borderColor = new UIColor(1, 1, 0, 1)
                 testView.userInteractionEnabled = true;
                 testView.onTap = function () {
-                    UIView.animationWithDuration(0.6, function() {
-                        testView.frame = { x: 40, y: 500, width: 40, height: 40 }
+                    UIView.animationWithDuration(0.25, function() {
+                        testView.frame = { x: 40, y: 40, width: 160, height: 160 }
+                        testView.alpha = 0.25
                     });
                     // smallView.backgroundColor = new UIColor(1, 1, 1);
                 }

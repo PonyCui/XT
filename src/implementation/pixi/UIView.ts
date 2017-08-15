@@ -738,7 +738,7 @@ export class UIView extends I.UIView {
             }
             view._animationProps = {};
         })
-        const startTime = new Date().getTime();
+        const startTime = performance.now();
         const runnable = () => {
             if (!runAnimation(startTime, animationViewProps)) {
                 requestAnimationFrame(runnable);
@@ -751,7 +751,7 @@ export class UIView extends I.UIView {
 
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
         this.commonAnimation(animations, (startTime, animationViewProps) => {
-            const currentTime = new Date().getTime();
+            const currentTime = performance.now();
             const delta = currentTime - startTime;
             animationViewProps.forEach(item => {
                 const currentValue = (item.to - item.from) * Math.min(1.0, delta / (duration * 1000));

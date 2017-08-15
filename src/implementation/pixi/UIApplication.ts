@@ -10,6 +10,8 @@ if (requestAnimationFrame === undefined) {
     }
 }
 
+let displayStartTime: number = 0;
+
 export class UIApplication extends I.UIApplication {
 
     nativeObject: any;
@@ -19,17 +21,23 @@ export class UIApplication extends I.UIApplication {
         super()
         if (sharedApplication === undefined) {
             sharedApplication = this;
+            const scale = Math.floor(window.devicePixelRatio);
             I.UIScreen.mainScreen = () => {
-                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight, window.devicePixelRatio);
+                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight, scale);
             }
         }
         UIApplication.resetCanvas(canvas, () => {
-            this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: true });
+            this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
             this.nativeObject.stop();
             if ((window as any).DEBUG === true) {
                 (window as any).nativeObject = this.nativeObject;
+                let renderStartTime: number = 0;
+                this.nativeObject.renderer.on("prerender", () => {
+                    renderStartTime = performance.now();
+                });
                 this.nativeObject.renderer.on("postrender", () => {
-                    console.log("[PIXI]: onPostrender.");
+                    console.log("[PIXI]: Render Time > " + (performance.now() - renderStartTime))
+                    console.log("[PIXI]: Display Time > " + (performance.now() - displayStartTime))
                 });
             }
             this.delegate = delegate;
@@ -109,6 +117,9 @@ export class UIApplication extends I.UIApplication {
         }
         this.isDirty = true;
         requestAnimationFrame(() => {
+            if ((window as any).DEBUG) {
+                displayStartTime = performance.now();
+            }
             this.remarkRenderable();
             let stillDirty = false;
             for (let index = 0; index < this.dirtyTargets.length; index++) {
