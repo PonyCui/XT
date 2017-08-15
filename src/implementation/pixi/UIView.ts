@@ -3,6 +3,12 @@ import * as I from '../../interface/Abstract'
 import { setNeedsDisplay } from './UIApplication'
 const PIXI = (window as any).PIXI
 const AutoLayout = require("autolayout");
+let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = (trigger: () => void) => {
+        setTimeout(trigger, 16);
+    }
+}
 
 export class UIView extends I.UIView {
 
@@ -31,6 +37,14 @@ export class UIView extends I.UIView {
     }
 
     public set frame(value: I.CGRect | any) {
+        if (I.CGRectEqual(this._frame, value)) { return; }
+        if (UIView._animationEnabled) {
+            if (this._frame.x != value.x) { UIView.addAnimation(this, "frameX", this._frame.x, value.x); }
+            if (this._frame.y != value.y) { UIView.addAnimation(this, "frameY", this._frame.y, value.y); }
+            if (this._frame.width != value.width) { UIView.addAnimation(this, "frameWidth", this._frame.width, value.width); }
+            if (this._frame.height != value.height) { UIView.addAnimation(this, "frameHeight", this._frame.height, value.height); }
+            return;
+        }
         this._frame = value;
         this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
         this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
@@ -40,6 +54,22 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
+    private set frameX(value: number) {
+        this.frame = {...this.frame, x: value};
+    }
+
+    private set frameY(value: number) {
+        this.frame = {...this.frame, y: value};
+    }
+
+    private set frameWidth(value: number) {
+        this.frame = {...this.frame, width: value};
+    }
+
+    private set frameHeight(value: number) {
+        this.frame = {...this.frame, height: value};
+    }
+
     private _bounds: I.CGRect = I.CGRectZero;
 
     public get bounds() {
@@ -47,12 +77,11 @@ export class UIView extends I.UIView {
     }
 
     public set bounds(value: I.CGRect | any) {
-        if (!I.CGRectEqual(this._bounds, value)) {
-            this._bounds = value;
-            this.draw();
-            setNeedsDisplay(this);
-            this.setNeedsLayout();
-        }
+        if (I.CGRectEqual(this._bounds, value)) { return; }
+        this._bounds = value;
+        this.draw();
+        setNeedsDisplay(this);
+        this.setNeedsLayout();
     }
 
     public get center() {
@@ -153,6 +182,10 @@ export class UIView extends I.UIView {
 
     public set alpha(value: number) {
         if (this.nativeObject.alpha === value) { return; }
+        if (UIView._animationEnabled) {
+            UIView.addAnimation(this, "alpha", this.nativeObject.alpha, value);
+            return;
+        }
         this.nativeObject.alpha = value;
         setNeedsDisplay(this);
     }
@@ -209,6 +242,10 @@ export class UIView extends I.UIView {
 
     public set cornerRadius(value: number) {
         if (this._cornerRadius === value) { return; }
+        if (UIView._animationEnabled) {
+            UIView.addAnimation(this, "cornerRadius", this._cornerRadius, value);
+            return;
+        }
         this._cornerRadius = value;
         this.draw();
         setNeedsDisplay(this);
@@ -222,6 +259,10 @@ export class UIView extends I.UIView {
 
     public set borderWidth(value: number) {
         if (this._borderWidth === value) { return; }
+        if (UIView._animationEnabled) {
+            UIView.addAnimation(this, "borderWidth", this._borderWidth, value);
+            return;
+        }
         this._borderWidth = value;
         this.draw();
         setNeedsDisplay(this);
@@ -679,6 +720,60 @@ export class UIView extends I.UIView {
     public set onPan(value: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void) {
         this._onPan = value;
         this.activeTouch();
+    }
+
+    // Mark: View Animation
+    static _animationEnabled = false;
+    private static _animationViews: UIView[] = [];
+    private _animationProps: { [key: string]: { from: number, to: number } } = {};
+
+    private static commonAnimation(animations: () => void, runAnimation: (startTime: number, animationViewProps: { view: UIView, propName: string, from: number, to: number }[]) => void) {
+        UIView._animationEnabled = true;
+        animations();
+        let animationViewProps: { view: UIView, propName: string, from: number, to: number }[] = [];
+        UIView._animationViews.forEach(view => {
+            for (var propName in view._animationProps) {
+                var element = view._animationProps[propName];
+                animationViewProps.push({ view, propName, from: element.from, to: element.to });
+            }
+            view._animationProps = {};
+        })
+        const startTime = new Date().getTime();
+        const runnable = () => {
+            if (!runAnimation(startTime, animationViewProps)) {
+                requestAnimationFrame(runnable);
+            }
+        }
+        runnable();
+        UIView._animationViews = [];
+        UIView._animationEnabled = false;
+    }
+
+    static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
+        this.commonAnimation(animations, (startTime, animationViewProps) => {
+            const currentTime = new Date().getTime();
+            const delta = currentTime - startTime;
+            animationViewProps.forEach(item => {
+                const currentValue = (item.to - item.from) * Math.min(1.0, delta / (duration * 1000));
+                (item.view as any)[item.propName] = item.from + currentValue;
+            })
+            if (delta < (duration * 1000)) {
+                return false;
+            }
+            else {
+                completion && completion();
+                return true;
+            }
+        })
+    }
+
+    static animationWithSpring(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) {
+
+    }
+
+    static addAnimation(view: UIView, propName: string, from: number, to: number) {
+        if (UIView._animationViews.indexOf(view) < 0) { UIView._animationViews.push(view); }
+        view._animationProps[propName] = { from, to }
     }
 
 }

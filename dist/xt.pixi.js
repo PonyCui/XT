@@ -580,6 +580,12 @@ var I = __webpack_require__(0);
 var UIApplication_1 = __webpack_require__(9);
 var PIXI = window.PIXI;
 var AutoLayout = __webpack_require__(21);
+var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = function (trigger) {
+        setTimeout(trigger, 16);
+    };
+}
 var UIView = (function (_super) {
     __extends(UIView, _super);
     function UIView(rect) {
@@ -612,6 +618,7 @@ var UIView = (function (_super) {
         _this._firstTapped = false;
         _this._firstTapPoint = { x: 0, y: 0 };
         _this._secondTapped = false;
+        _this._animationProps = {};
         _this.nativeObject = new PIXI.Container();
         _this.nativeObject.XTView = _this;
         _this.nativeGraphics = new PIXI.Graphics();
@@ -628,6 +635,24 @@ var UIView = (function (_super) {
             return this._frame;
         },
         set: function (value) {
+            if (I.CGRectEqual(this._frame, value)) {
+                return;
+            }
+            if (UIView._animationEnabled) {
+                if (this._frame.x != value.x) {
+                    UIView.addAnimation(this, "frameX", this._frame.x, value.x);
+                }
+                if (this._frame.y != value.y) {
+                    UIView.addAnimation(this, "frameY", this._frame.y, value.y);
+                }
+                if (this._frame.width != value.width) {
+                    UIView.addAnimation(this, "frameWidth", this._frame.width, value.width);
+                }
+                if (this._frame.height != value.height) {
+                    UIView.addAnimation(this, "frameHeight", this._frame.height, value.height);
+                }
+                return;
+            }
             this._frame = value;
             this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
             this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
@@ -639,17 +664,46 @@ var UIView = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(UIView.prototype, "frameX", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { x: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "frameY", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { y: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "frameWidth", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { width: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "frameHeight", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { height: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(UIView.prototype, "bounds", {
         get: function () {
             return this._bounds;
         },
         set: function (value) {
-            if (!I.CGRectEqual(this._bounds, value)) {
-                this._bounds = value;
-                this.draw();
-                UIApplication_1.setNeedsDisplay(this);
-                this.setNeedsLayout();
+            if (I.CGRectEqual(this._bounds, value)) {
+                return;
             }
+            this._bounds = value;
+            this.draw();
+            UIApplication_1.setNeedsDisplay(this);
+            this.setNeedsLayout();
         },
         enumerable: true,
         configurable: true
@@ -755,6 +809,10 @@ var UIView = (function (_super) {
             if (this.nativeObject.alpha === value) {
                 return;
             }
+            if (UIView._animationEnabled) {
+                UIView.addAnimation(this, "alpha", this.nativeObject.alpha, value);
+                return;
+            }
             this.nativeObject.alpha = value;
             UIApplication_1.setNeedsDisplay(this);
         },
@@ -816,6 +874,10 @@ var UIView = (function (_super) {
             if (this._cornerRadius === value) {
                 return;
             }
+            if (UIView._animationEnabled) {
+                UIView.addAnimation(this, "cornerRadius", this._cornerRadius, value);
+                return;
+            }
             this._cornerRadius = value;
             this.draw();
             UIApplication_1.setNeedsDisplay(this);
@@ -829,6 +891,10 @@ var UIView = (function (_super) {
         },
         set: function (value) {
             if (this._borderWidth === value) {
+                return;
+            }
+            if (UIView._animationEnabled) {
+                UIView.addAnimation(this, "borderWidth", this._borderWidth, value);
                 return;
             }
             this._borderWidth = value;
@@ -1273,6 +1339,55 @@ var UIView = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    UIView.commonAnimation = function (animations, runAnimation) {
+        UIView._animationEnabled = true;
+        animations();
+        var animationViewProps = [];
+        UIView._animationViews.forEach(function (view) {
+            for (var propName in view._animationProps) {
+                var element = view._animationProps[propName];
+                animationViewProps.push({ view: view, propName: propName, from: element.from, to: element.to });
+            }
+            view._animationProps = {};
+        });
+        var startTime = new Date().getTime();
+        var runnable = function () {
+            if (!runAnimation(startTime, animationViewProps)) {
+                requestAnimationFrame(runnable);
+            }
+        };
+        runnable();
+        UIView._animationViews = [];
+        UIView._animationEnabled = false;
+    };
+    UIView.animationWithDuration = function (duration, animations, completion) {
+        this.commonAnimation(animations, function (startTime, animationViewProps) {
+            var currentTime = new Date().getTime();
+            var delta = currentTime - startTime;
+            animationViewProps.forEach(function (item) {
+                var currentValue = (item.to - item.from) * Math.min(1.0, delta / (duration * 1000));
+                item.view[item.propName] = item.from + currentValue;
+            });
+            if (delta < (duration * 1000)) {
+                return false;
+            }
+            else {
+                completion && completion();
+                return true;
+            }
+        });
+    };
+    UIView.animationWithSpring = function (duration, damping, velocity, animations, completion) {
+    };
+    UIView.addAnimation = function (view, propName, from, to) {
+        if (UIView._animationViews.indexOf(view) < 0) {
+            UIView._animationViews.push(view);
+        }
+        view._animationProps[propName] = { from: from, to: to };
+    };
+    // Mark: View Animation
+    UIView._animationEnabled = false;
+    UIView._animationViews = [];
     return UIView;
 }(I.UIView));
 exports.UIView = UIView;

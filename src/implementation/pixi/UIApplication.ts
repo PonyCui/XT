@@ -2,7 +2,6 @@ import * as I from '../../interface/Abstract'
 import { UIWindow } from './UIWindow'
 import { UIView } from './UIView'
 const PIXI = (window as any).PIXI
-
 let sharedApplication: UIApplication | undefined = undefined;
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {
