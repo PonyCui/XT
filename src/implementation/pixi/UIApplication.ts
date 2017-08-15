@@ -78,7 +78,7 @@ export class UIApplication extends I.UIApplication {
                 if (view.nativeObject.renderable === true) {
                     let current: any = view.superview;
                     while (current !== undefined) {
-                        current._childRenderable = true
+                        current._childRenderable = true;
                         current = current.superview;
                     }
                 }

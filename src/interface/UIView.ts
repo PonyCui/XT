@@ -97,4 +97,8 @@ export class UIView {
     onLongPress?: (state: InteractionState, viewLocation?: CGPoint, absLocation?: CGPoint) => void
     onPan?: (state: InteractionState, viewLocation?: CGPoint, absLocation?: CGPoint) => void
 
+    // Mark: View Animation
+    animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
+    animationWithSpring(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+
 }

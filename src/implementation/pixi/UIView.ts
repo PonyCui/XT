@@ -436,7 +436,7 @@ export class UIView extends I.UIView {
                 if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any)._layoutID] = item.secondItem as any }
             })
             const view = new AutoLayout.View({
-                constraints: this._constraints.map(item => item.toALObject()),
+                constraints: this._constraints.map(item => (item as any).toALObject()),
                 width: this.bounds.width,
                 height: this.bounds.height,
             });

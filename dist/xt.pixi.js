@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -92,7 +92,7 @@ var UIScreen_1 = __webpack_require__(6);
 exports.UIScreen = UIScreen_1.UIScreen;
 var CGTransformMatrix_1 = __webpack_require__(7);
 exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
-var NSLayoutConstraint_1 = __webpack_require__(22);
+var NSLayoutConstraint_1 = __webpack_require__(8);
 exports.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
 
 
@@ -144,6 +144,9 @@ var UIView = (function () {
     UIView.prototype.addConstraints = function (constraints) { };
     UIView.prototype.removeConstraint = function (constraint) { };
     UIView.prototype.removeAllConstraints = function () { };
+    // Mark: View Animation
+    UIView.prototype.animationWithDuration = function (duration, animations, completion) { };
+    UIView.prototype.animationWithSpring = function (duration, damping, velocity, animations, completion) { };
     // Mark: View Interactive
     UIView.InteractionState = InteractionState;
     UIView.SwipeDirection = SwipeDirection;
@@ -322,6 +325,55 @@ exports.CGTransformMatrix = CGTransformMatrix;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+var Attribute;
+(function (Attribute) {
+    Attribute[Attribute["Const"] = 0] = "Const";
+    Attribute[Attribute["Left"] = 1] = "Left";
+    Attribute[Attribute["Right"] = 2] = "Right";
+    Attribute[Attribute["Top"] = 3] = "Top";
+    Attribute[Attribute["Bottom"] = 4] = "Bottom";
+    Attribute[Attribute["Width"] = 7] = "Width";
+    Attribute[Attribute["Height"] = 8] = "Height";
+    Attribute[Attribute["CenterX"] = 9] = "CenterX";
+    Attribute[Attribute["CenterY"] = 10] = "CenterY";
+})(Attribute = exports.Attribute || (exports.Attribute = {}));
+var Relation;
+(function (Relation) {
+    Relation[Relation["Less"] = -1] = "Less";
+    Relation[Relation["Equal"] = 0] = "Equal";
+    Relation[Relation["Greater"] = 1] = "Greater";
+})(Relation = exports.Relation || (exports.Relation = {}));
+var NSLayoutConstraint = (function () {
+    function NSLayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
+        if (constant === void 0) { constant = 0; }
+        if (multiplier === void 0) { multiplier = 1; }
+        this.relation = Relation.Equal;
+        this.constant = 0;
+        this.multiplier = 1;
+        this.priority = 750;
+        this.firstItem = firstItem;
+        this.firstAttr = firstAttr;
+        this.relation = relation || Relation.Equal;
+        this.secondItem = secondItem;
+        this.secondAttr = secondAttr;
+        this.constant = constant;
+        this.multiplier = multiplier;
+    }
+    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
+    NSLayoutConstraint.Attribute = Attribute;
+    NSLayoutConstraint.Relation = Relation;
+    return NSLayoutConstraint;
+}());
+exports.NSLayoutConstraint = NSLayoutConstraint;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -467,13 +519,13 @@ exports.setNeedsDisplay = setNeedsDisplay;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(16);
+var index_1 = __webpack_require__(17);
 var I = __webpack_require__(0);
 var Factory = (function () {
     function Factory() {
@@ -500,7 +552,7 @@ exports.SwitchFactory = SwitchFactory;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -525,7 +577,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
-var UIApplication_1 = __webpack_require__(8);
+var UIApplication_1 = __webpack_require__(9);
 var PIXI = window.PIXI;
 var AutoLayout = __webpack_require__(21);
 var UIView = (function (_super) {
@@ -1225,10 +1277,10 @@ var UIView = (function (_super) {
 }(I.UIView));
 exports.UIView = UIView;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).clearImmediate, __webpack_require__(11).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).clearImmediate, __webpack_require__(12).setImmediate))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -1281,14 +1333,14 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(17);
-var global = __webpack_require__(19);
+__webpack_require__(18);
+var global = __webpack_require__(20);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1315,15 +1367,15 @@ module.exports = g;
 
 
 /***/ }),
-/* 13 */,
 /* 14 */,
-/* 15 */
+/* 15 */,
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(9);
+var Factory_pixi_1 = __webpack_require__(10);
 Factory_pixi_1.SwitchFactory();
 exports.default = Factory_pixi_1.Factory;
 if (window !== undefined) {
@@ -1332,22 +1384,24 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(9);
-var UIView_1 = __webpack_require__(10);
-var UIApplication_1 = __webpack_require__(8);
-var UIWindow_1 = __webpack_require__(20);
+var Factory_pixi_1 = __webpack_require__(10);
+var UIView_1 = __webpack_require__(11);
+var UIApplication_1 = __webpack_require__(9);
+var UIWindow_1 = __webpack_require__(22);
+var NSLayoutConstraint_1 = __webpack_require__(23);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
         Factory_pixi_1.Factory.UIView = UIView_1.UIView;
         Factory_pixi_1.Factory.UIApplication = UIApplication_1.UIApplication;
         Factory_pixi_1.Factory.UIWindow = UIWindow_1.UIWindow;
+        Factory_pixi_1.Factory.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
     };
     if (force) {
         use();
@@ -1363,7 +1417,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1553,10 +1607,10 @@ exports.usePixi = usePixi;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(19)))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1746,7 +1800,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -1763,51 +1817,7 @@ if (typeof window !== "undefined") {
 
 module.exports = win;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIApplication_1 = __webpack_require__(8);
-var UIView_1 = __webpack_require__(10);
-var PIXI = window.PIXI;
-var UIWindow = (function (_super) {
-    __extends(UIWindow, _super);
-    function UIWindow(rect) {
-        var _this = _super.call(this, rect) || this;
-        _this.XTClassName = "UIWindow";
-        var application = UIApplication_1.UIApplication.sharedApplication();
-        if (application instanceof UIApplication_1.UIApplication) {
-            application.nativeObject.stage.addChild(_this.nativeObject);
-        }
-        _this.hidden = true;
-        return _this;
-    }
-    UIWindow.prototype.makeKeyAndVisible = function () {
-        var application = UIApplication_1.UIApplication.sharedApplication();
-        if (application instanceof UIApplication_1.UIApplication) {
-            application.keyWindow = this;
-        }
-        this.hidden = false;
-    };
-    return UIWindow;
-}(UIView_1.UIView));
-exports.UIWindow = UIWindow;
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
 /* 21 */
@@ -7185,80 +7195,106 @@ var l=this.rows.get(this._objective);l.setVariable(i,b.strength.symbolicWeight.v
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
+var UIApplication_1 = __webpack_require__(9);
+var UIView_1 = __webpack_require__(11);
+var PIXI = window.PIXI;
+var UIWindow = (function (_super) {
+    __extends(UIWindow, _super);
+    function UIWindow(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.XTClassName = "UIWindow";
+        var application = UIApplication_1.UIApplication.sharedApplication();
+        if (application instanceof UIApplication_1.UIApplication) {
+            application.nativeObject.stage.addChild(_this.nativeObject);
+        }
+        _this.hidden = true;
+        return _this;
+    }
+    UIWindow.prototype.makeKeyAndVisible = function () {
+        var application = UIApplication_1.UIApplication.sharedApplication();
+        if (application instanceof UIApplication_1.UIApplication) {
+            application.keyWindow = this;
+        }
+        this.hidden = false;
+    };
+    return UIWindow;
+}(UIView_1.UIView));
+exports.UIWindow = UIWindow;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
 var AutoLayout = __webpack_require__(21);
-var Attribute;
-(function (Attribute) {
-    Attribute[Attribute["Const"] = 0] = "Const";
-    Attribute[Attribute["Left"] = 1] = "Left";
-    Attribute[Attribute["Right"] = 2] = "Right";
-    Attribute[Attribute["Top"] = 3] = "Top";
-    Attribute[Attribute["Bottom"] = 4] = "Bottom";
-    Attribute[Attribute["Width"] = 7] = "Width";
-    Attribute[Attribute["Height"] = 8] = "Height";
-    Attribute[Attribute["CenterX"] = 9] = "CenterX";
-    Attribute[Attribute["CenterY"] = 10] = "CenterY";
-})(Attribute = exports.Attribute || (exports.Attribute = {}));
-var Relation;
-(function (Relation) {
-    Relation[Relation["Less"] = -1] = "Less";
-    Relation[Relation["Equal"] = 0] = "Equal";
-    Relation[Relation["Greater"] = 1] = "Greater";
-})(Relation = exports.Relation || (exports.Relation = {}));
-var NSLayoutConstraint = (function () {
-    function NSLayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
-        if (constant === void 0) { constant = 0; }
-        if (multiplier === void 0) { multiplier = 1; }
-        this.relation = Relation.Equal;
-        this.constant = 0;
-        this.multiplier = 1;
-        this.priority = 750;
-        this.firstItem = firstItem;
-        this.firstAttr = firstAttr;
-        this.relation = relation || Relation.Equal;
-        this.secondItem = secondItem;
-        this.secondAttr = secondAttr;
-        this.constant = constant;
-        this.multiplier = multiplier;
+var NSLayoutConstraint = (function (_super) {
+    __extends(NSLayoutConstraint, _super);
+    function NSLayoutConstraint() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     NSLayoutConstraint.fromALObject = function (obj, views) {
         var toAttr = function (attr) {
             if (attr == "const") {
-                return Attribute.Const;
+                return I.NSLayoutConstraint.Attribute.Const;
             }
             if (attr == "left") {
-                return Attribute.Left;
+                return I.NSLayoutConstraint.Attribute.Left;
             }
             if (attr == "right") {
-                return Attribute.Right;
+                return I.NSLayoutConstraint.Attribute.Right;
             }
             if (attr == "top") {
-                return Attribute.Top;
+                return I.NSLayoutConstraint.Attribute.Top;
             }
             if (attr == "bottom") {
-                return Attribute.Bottom;
+                return I.NSLayoutConstraint.Attribute.Bottom;
             }
             if (attr == "width") {
-                return Attribute.Width;
+                return I.NSLayoutConstraint.Attribute.Width;
             }
             if (attr == "height") {
-                return Attribute.Height;
+                return I.NSLayoutConstraint.Attribute.Height;
             }
             if (attr == "centerX") {
-                return Attribute.CenterX;
+                return I.NSLayoutConstraint.Attribute.CenterX;
             }
             if (attr == "centerY") {
-                return Attribute.CenterY;
+                return I.NSLayoutConstraint.Attribute.CenterY;
             }
         };
         var toRelation = function (rel) {
             if (rel == "leq") {
-                return Relation.Less;
+                return I.NSLayoutConstraint.Relation.Less;
             }
             if (rel == "geq") {
-                return Relation.Greater;
+                return I.NSLayoutConstraint.Relation.Greater;
             }
-            return Relation.Equal;
+            return I.NSLayoutConstraint.Relation.Equal;
         };
         var constant = obj.constant == "default" ? 8 : parseInt(obj.constant);
         var layoutConstraint = new NSLayoutConstraint(views[obj.view1], toAttr(obj.attr1), toRelation(obj.relation), views[obj.view2], toAttr(obj.attr2), constant, obj.multiplier);
@@ -7279,43 +7315,43 @@ var NSLayoutConstraint = (function () {
     };
     NSLayoutConstraint.prototype.toALObject = function () {
         var toAttr = function (attr) {
-            if (attr == Attribute.Const) {
+            if (attr == I.NSLayoutConstraint.Attribute.Const) {
                 return "const";
             }
-            if (attr == Attribute.Left) {
+            if (attr == I.NSLayoutConstraint.Attribute.Left) {
                 return "left";
             }
-            if (attr == Attribute.Right) {
+            if (attr == I.NSLayoutConstraint.Attribute.Right) {
                 return "right";
             }
-            if (attr == Attribute.Top) {
+            if (attr == I.NSLayoutConstraint.Attribute.Top) {
                 return "top";
             }
-            if (attr == Attribute.Bottom) {
+            if (attr == I.NSLayoutConstraint.Attribute.Bottom) {
                 return "bottom";
             }
-            if (attr == Attribute.Width) {
+            if (attr == I.NSLayoutConstraint.Attribute.Width) {
                 return "width";
             }
-            if (attr == Attribute.Height) {
+            if (attr == I.NSLayoutConstraint.Attribute.Height) {
                 return "height";
             }
-            if (attr == Attribute.CenterX) {
+            if (attr == I.NSLayoutConstraint.Attribute.CenterX) {
                 return "centerX";
             }
-            if (attr == Attribute.CenterY) {
+            if (attr == I.NSLayoutConstraint.Attribute.CenterY) {
                 return "centerY";
             }
             return undefined;
         };
         var toRelation = function (rel) {
-            if (rel == Relation.Equal) {
+            if (rel == I.NSLayoutConstraint.Relation.Equal) {
                 return "equ";
             }
-            else if (rel == Relation.Less) {
+            else if (rel == I.NSLayoutConstraint.Relation.Less) {
                 return "leq";
             }
-            else if (rel == Relation.Greater) {
+            else if (rel == I.NSLayoutConstraint.Relation.Greater) {
                 return "geq";
             }
             return "equ";
@@ -7331,10 +7367,8 @@ var NSLayoutConstraint = (function () {
             priority: this.priority,
         };
     };
-    NSLayoutConstraint.Attribute = Attribute;
-    NSLayoutConstraint.Relation = Relation;
     return NSLayoutConstraint;
-}());
+}(I.NSLayoutConstraint));
 exports.NSLayoutConstraint = NSLayoutConstraint;
 
 
