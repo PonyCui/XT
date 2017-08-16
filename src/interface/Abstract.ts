@@ -1,4 +1,4 @@
-import { CGRect, CGRectMake, CGRectZero, CGRectEqual, CGPoint, CGPointMake, CGPointZero, CGSize, CGSizeMake, CGSizeZero, CGRectInside } from './CGRect'
+import { CGRect, CGRectMake, CGRectZero, CGRectEqual, CGPoint, CGPointMake, CGPointZero, CGSize, CGSizeMake, CGSizeZero, CGRectInside, CGPointEqual, CGSizeEqual } from './CGRect'
 import { UIView } from './UIView'
 import { UIWindow } from './UIWindow'
 import { UIApplication, UIApplicationDelegate } from './UIApplication'
@@ -22,9 +22,11 @@ export {
     CGPoint,
     CGPointMake,
     CGPointZero,
+    CGPointEqual,
     CGSize,
     CGSizeMake,
     CGSizeZero,
+    CGSizeEqual,
     CGTransformMatrix,
     NSLayoutConstraint,
 }

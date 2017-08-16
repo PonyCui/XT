@@ -79,6 +79,8 @@ exports.CGPointZero = CGRect_1.CGPointZero;
 exports.CGSizeMake = CGRect_1.CGSizeMake;
 exports.CGSizeZero = CGRect_1.CGSizeZero;
 exports.CGRectInside = CGRect_1.CGRectInside;
+exports.CGPointEqual = CGRect_1.CGPointEqual;
+exports.CGSizeEqual = CGRect_1.CGSizeEqual;
 var UIView_1 = __webpack_require__(1);
 exports.UIView = UIView_1.UIView;
 var UIWindow_1 = __webpack_require__(3);
@@ -166,11 +168,19 @@ function CGPointMake(x, y) {
     return { x: x, y: y };
 }
 exports.CGPointMake = CGPointMake;
+function CGPointEqual(point1, point2) {
+    return point1.x === point2.x && point1.y === point2.y;
+}
+exports.CGPointEqual = CGPointEqual;
 exports.CGPointZero = CGPointMake(0, 0);
 function CGSizeMake(width, height) {
     return { width: width, height: height };
 }
 exports.CGSizeMake = CGSizeMake;
+function CGSizeEqual(size1, size2) {
+    return size1.width === size2.width && size1.height === size2.height;
+}
+exports.CGSizeEqual = CGSizeEqual;
 exports.CGSizeZero = CGSizeMake(0, 0);
 function CGRectMake(x, y, width, height) {
     return { x: x, y: y, width: width, height: height };
@@ -563,6 +573,9 @@ var I = __webpack_require__(0);
 var Factory = (function () {
     function Factory() {
     }
+    Factory.CGPointMake = I.CGPointMake;
+    Factory.CGPointEqual = I.CGPointEqual;
+    Factory.CGPointZero = I.CGPointZero;
     Factory.CGRectMake = I.CGRectMake;
     Factory.CGRectZero = I.CGRectZero;
     Factory.CGRectEqual = I.CGRectEqual;

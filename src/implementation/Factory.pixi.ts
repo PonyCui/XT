@@ -3,6 +3,9 @@ import * as I from '../interface/Abstract'
 
 export class Factory {
 
+    static CGPointMake = I.CGPointMake
+    static CGPointEqual = I.CGPointEqual
+    static CGPointZero = I.CGPointZero
     static CGRectMake = I.CGRectMake;
     static CGRectZero = I.CGRectZero;
     static CGRectEqual = I.CGRectEqual;

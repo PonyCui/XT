@@ -7,6 +7,10 @@ export function CGPointMake(x: number, y: number): CGPoint {
     return { x, y };
 }
 
+export function CGPointEqual(point1: CGPoint, point2: CGPoint): boolean {
+    return point1.x === point2.x && point1.y === point2.y;
+}
+
 export const CGPointZero = CGPointMake(0, 0)
 
 export interface CGSize {
@@ -16,6 +20,10 @@ export interface CGSize {
 
 export function CGSizeMake(width: number, height: number): CGSize {
     return { width, height };
+}
+
+export function CGSizeEqual(size1: CGSize, size2: CGSize): boolean {
+    return size1.width === size2.width && size1.height === size2.height;
 }
 
 export const CGSizeZero = CGSizeMake(0, 0)
