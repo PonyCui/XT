@@ -13,6 +13,9 @@ export class Factory {
     static CGSizeMake = I.CGSizeMake;
     static CGSizeZero = I.CGSizeZero;
     static CGSizeEqual = I.CGSizeEqual;
+    static UILabel = I.UILabel;
+    static UITextAlignment = I.UITextAlignment;
+    static UIFont = I.UIFont;
     static UIView: typeof I.UIView = I.UIView;
     static UIApplication: typeof I.UIApplication = I.UIApplication;
     static UIApplicationDelegate: typeof I.UIApplicationDelegate = I.UIApplicationDelegate;

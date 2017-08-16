@@ -6,6 +6,8 @@ import { UIColor } from './UIColor'
 import { UIScreen } from './UIScreen'
 import { CGTransformMatrix } from './CGTransformMatrix'
 import { NSLayoutConstraint } from "./NSLayoutConstraint";
+import { UILabel, UITextAlignment, UITextVerticalAlignment } from "./UILabel";
+import { UIFont } from "./UIFont";
 
 export {
     UIView,
@@ -29,4 +31,8 @@ export {
     CGSizeEqual,
     CGTransformMatrix,
     NSLayoutConstraint,
+    UILabel,
+    UITextAlignment,
+    UITextVerticalAlignment,
+    UIFont,
 }

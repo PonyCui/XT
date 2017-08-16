@@ -17,36 +17,22 @@
         }
         var application = new UIApplication(document.getElementById("myCanvas"), {
             applicationDidFinishLaunchingWithOptions: function () {
-                var myWindow = new UIWindow(UIScreen.mainScreen().bounds());
-                myWindow.makeKeyAndVisible();
-                // var smallView = new UIView({ x: 40, y: 40, width: 40, height: 40 });
-                // smallView.backgroundColor = new UIColor(1, 1, 0);
-                // myWindow.addSubview(smallView);
-                var testView = new UIView({ x: 40, y: 40, width: 40, height: 40 });
-                testView.backgroundColor = new UIColor(1, 1, 0);
-                // testView.cornerRadius = 12;
-                testView.borderWidth = 3;
-                testView.borderColor = new UIColor(1, 1, 0, 1)
-                testView.userInteractionEnabled = true;
-                testView.onTap = function () {
+                var window = new UIWindow(UIScreen.mainScreen().bounds());
+                window.makeKeyAndVisible();
+                var label = new UILabel(CGRectMake(0, 0, 300, 200));
+                label.backgroundColor = new UIColor(0.2, 0.2, 0.2)
+                // label.text = "娱乐圈HAha的风尚总是瞬息万变。在目不暇接、花样层出的娱乐圈中，明星都爱用配饰凸显个人气质。作为点睛配饰，飞行员腕表以其百搭而独特的复古气质却能一直大行其道，收获了一代又一代时尚弄潮儿的青睐。身处娱乐圈潮流至上的明星艺人也对它极为推崇。男女通杀的它，在无数次的明星机场抓拍、活动出席，甚至私服出街中夺人眼球，其中特别是有一款飞行员腕表的出镜率极高。现在，就让我们来看一看它的明星粉丝有哪些。"
+                label.text = "Hello, World!"
+                label.font = UIFont.systemFontOfSize(17)
+                label.textColor = new UIColor(1, 1, 1)
+                // label.textAlignment = UITextAlignment.Left;
+                window.addSubview(label);
+                label.userInteractionEnabled = true;
+                label.onTap = function () {
                     UIView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
-                        testView.borderColor = new UIColor(1, 0, 0, 0)
-                        // testView.alpha = 0.80
-                    }, function () {
-                        // testView.backgroundColor = new UIColor(1, 0, 0)
-                    });
-                    // smallView.backgroundColor = new UIColor(1, 1, 1);
+                        label.frame = CGRectMake(0, 100, 300, 200)
+                    })
                 }
-                myWindow.addSubview(testView);
-                // myWindow.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat('|-20-[testView]-20-|', { testView }));
-                // myWindow.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat('V:|-20-[testView(200)]', { testView }));
-
-                // setTimeout(function() {
-                //     testView.transform = new CGTransformMatrix(0.5, 0.0, 0.0, 0.5, 0.0, 0.0);
-                // }, 2000)
-
-                // testView.center = {x: 160, y: 568 / 2}
-
             }
         })
     </script>

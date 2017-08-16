@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var CGRect_1 = __webpack_require__(2);
+var CGRect_1 = __webpack_require__(4);
 exports.CGRectMake = CGRect_1.CGRectMake;
 exports.CGRectZero = CGRect_1.CGRectZero;
 exports.CGRectEqual = CGRect_1.CGRectEqual;
@@ -83,19 +83,25 @@ exports.CGPointEqual = CGRect_1.CGPointEqual;
 exports.CGSizeEqual = CGRect_1.CGSizeEqual;
 var UIView_1 = __webpack_require__(1);
 exports.UIView = UIView_1.UIView;
-var UIWindow_1 = __webpack_require__(3);
+var UIWindow_1 = __webpack_require__(5);
 exports.UIWindow = UIWindow_1.UIWindow;
-var UIApplication_1 = __webpack_require__(4);
+var UIApplication_1 = __webpack_require__(6);
 exports.UIApplication = UIApplication_1.UIApplication;
 exports.UIApplicationDelegate = UIApplication_1.UIApplicationDelegate;
-var UIColor_1 = __webpack_require__(5);
+var UIColor_1 = __webpack_require__(2);
 exports.UIColor = UIColor_1.UIColor;
-var UIScreen_1 = __webpack_require__(6);
+var UIScreen_1 = __webpack_require__(7);
 exports.UIScreen = UIScreen_1.UIScreen;
-var CGTransformMatrix_1 = __webpack_require__(7);
+var CGTransformMatrix_1 = __webpack_require__(8);
 exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
-var NSLayoutConstraint_1 = __webpack_require__(8);
+var NSLayoutConstraint_1 = __webpack_require__(9);
 exports.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
+var UILabel_1 = __webpack_require__(10);
+exports.UILabel = UILabel_1.UILabel;
+exports.UITextAlignment = UILabel_1.UITextAlignment;
+exports.UITextVerticalAlignment = UILabel_1.UITextVerticalAlignment;
+var UIFont_1 = __webpack_require__(11);
+exports.UIFont = UIFont_1.UIFont;
 
 
 /***/ }),
@@ -164,98 +170,6 @@ exports.UIView = UIView;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-function CGPointMake(x, y) {
-    return { x: x, y: y };
-}
-exports.CGPointMake = CGPointMake;
-function CGPointEqual(point1, point2) {
-    return point1.x === point2.x && point1.y === point2.y;
-}
-exports.CGPointEqual = CGPointEqual;
-exports.CGPointZero = CGPointMake(0, 0);
-function CGSizeMake(width, height) {
-    return { width: width, height: height };
-}
-exports.CGSizeMake = CGSizeMake;
-function CGSizeEqual(size1, size2) {
-    return size1.width === size2.width && size1.height === size2.height;
-}
-exports.CGSizeEqual = CGSizeEqual;
-exports.CGSizeZero = CGSizeMake(0, 0);
-function CGRectMake(x, y, width, height) {
-    return { x: x, y: y, width: width, height: height };
-}
-exports.CGRectMake = CGRectMake;
-exports.CGRectZero = CGRectMake(0, 0, 0, 0);
-function CGRectEqual(rect1, rect2) {
-    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-}
-exports.CGRectEqual = CGRectEqual;
-function CGRectInside(rect1, rect2) {
-    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
-}
-exports.CGRectInside = CGRectInside;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIView_1 = __webpack_require__(1);
-var UIWindow = (function (_super) {
-    __extends(UIWindow, _super);
-    function UIWindow() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    UIWindow.prototype.makeKeyAndVisible = function () { };
-    return UIWindow;
-}(UIView_1.UIView));
-exports.UIWindow = UIWindow;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIApplicationDelegate = (function () {
-    function UIApplicationDelegate() {
-    }
-    UIApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
-    return UIApplicationDelegate;
-}());
-exports.UIApplicationDelegate = UIApplicationDelegate;
-var UIApplication = (function () {
-    function UIApplication() {
-    }
-    UIApplication.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
-    return UIApplication;
-}());
-exports.UIApplication = UIApplication;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var UIColor = (function () {
     function UIColor(r, g, b, a) {
         this.r = Math.min(1.0, Math.max(0.0, r));
@@ -284,105 +198,7 @@ exports.UIColor = UIColor;
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIScreen = (function () {
-    function UIScreen(width, height, scale) {
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-    }
-    UIScreen.prototype.bounds = function () {
-        return { x: 0, y: 0, width: this.width, height: this.height };
-    };
-    UIScreen.withScale = function (value) {
-        return value * UIScreen.mainScreen().scale;
-    };
-    UIScreen.outScale = function (value) {
-        return value / UIScreen.mainScreen().scale;
-    };
-    UIScreen.mainScreen = function () { return new UIScreen(0, 0, 1); };
-    return UIScreen;
-}());
-exports.UIScreen = UIScreen;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var CGTransformMatrix = (function () {
-    function CGTransformMatrix(a, b, c, d, tx, ty) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.tx = tx;
-        this.ty = ty;
-    }
-    return CGTransformMatrix;
-}());
-exports.CGTransformMatrix = CGTransformMatrix;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Attribute;
-(function (Attribute) {
-    Attribute[Attribute["Const"] = 0] = "Const";
-    Attribute[Attribute["Left"] = 1] = "Left";
-    Attribute[Attribute["Right"] = 2] = "Right";
-    Attribute[Attribute["Top"] = 3] = "Top";
-    Attribute[Attribute["Bottom"] = 4] = "Bottom";
-    Attribute[Attribute["Width"] = 7] = "Width";
-    Attribute[Attribute["Height"] = 8] = "Height";
-    Attribute[Attribute["CenterX"] = 9] = "CenterX";
-    Attribute[Attribute["CenterY"] = 10] = "CenterY";
-})(Attribute = exports.Attribute || (exports.Attribute = {}));
-var Relation;
-(function (Relation) {
-    Relation[Relation["Less"] = -1] = "Less";
-    Relation[Relation["Equal"] = 0] = "Equal";
-    Relation[Relation["Greater"] = 1] = "Greater";
-})(Relation = exports.Relation || (exports.Relation = {}));
-var NSLayoutConstraint = (function () {
-    function NSLayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
-        if (constant === void 0) { constant = 0; }
-        if (multiplier === void 0) { multiplier = 1; }
-        this.relation = Relation.Equal;
-        this.constant = 0;
-        this.multiplier = 1;
-        this.priority = 750;
-        this.firstItem = firstItem;
-        this.firstAttr = firstAttr;
-        this.relation = relation || Relation.Equal;
-        this.secondItem = secondItem;
-        this.secondAttr = secondAttr;
-        this.constant = constant;
-        this.multiplier = multiplier;
-    }
-    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
-    NSLayoutConstraint.Attribute = Attribute;
-    NSLayoutConstraint.Relation = Relation;
-    return NSLayoutConstraint;
-}());
-exports.NSLayoutConstraint = NSLayoutConstraint;
-
-
-/***/ }),
-/* 9 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -492,6 +308,7 @@ var UIApplication = (function (_super) {
         view.subviews.forEach(function (subview) {
             subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
             view._childRenderable = false;
+            view._frameChanged = false;
         });
         view.subviews.forEach(function (subview) {
             var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
@@ -513,6 +330,12 @@ var UIApplication = (function (_super) {
         requestAnimationFrame(function () {
             if (window.DEBUG) {
                 displayStartTime = performance.now();
+            }
+            if (_this.dirtyTargets.filter(function (item) { return item._frameChanged || item.nativeObject.renderable; }).length == 0) {
+                _this.dirtyTargets.forEach(function (item) { item._frameChanged = false; });
+                _this.dirtyTargets = [];
+                _this.isDirty = false;
+                return;
             }
             _this.remarkRenderable();
             var stillDirty = false;
@@ -562,46 +385,273 @@ exports.displayNow = displayNow;
 
 
 /***/ }),
-/* 10 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(18);
-var I = __webpack_require__(0);
-var Factory = (function () {
-    function Factory() {
-    }
-    Factory.CGPointMake = I.CGPointMake;
-    Factory.CGPointEqual = I.CGPointEqual;
-    Factory.CGPointZero = I.CGPointZero;
-    Factory.CGRectMake = I.CGRectMake;
-    Factory.CGRectZero = I.CGRectZero;
-    Factory.CGRectEqual = I.CGRectEqual;
-    Factory.CGRectInside = I.CGRectInside;
-    Factory.CGSizeMake = I.CGSizeMake;
-    Factory.CGSizeZero = I.CGSizeZero;
-    Factory.CGSizeEqual = I.CGSizeEqual;
-    Factory.UIView = I.UIView;
-    Factory.UIApplication = I.UIApplication;
-    Factory.UIApplicationDelegate = I.UIApplicationDelegate;
-    Factory.UIWindow = I.UIWindow;
-    Factory.UIColor = I.UIColor;
-    Factory.UIScreen = I.UIScreen;
-    Factory.CGTransformMatrix = I.CGTransformMatrix;
-    Factory.NSLayoutConstraint = I.NSLayoutConstraint;
-    return Factory;
-}());
-exports.Factory = Factory;
-function SwitchFactory() {
-    index_1.usePixi();
+function CGPointMake(x, y) {
+    return { x: x, y: y };
 }
-exports.SwitchFactory = SwitchFactory;
+exports.CGPointMake = CGPointMake;
+function CGPointEqual(point1, point2) {
+    return point1.x === point2.x && point1.y === point2.y;
+}
+exports.CGPointEqual = CGPointEqual;
+exports.CGPointZero = CGPointMake(0, 0);
+function CGSizeMake(width, height) {
+    return { width: width, height: height };
+}
+exports.CGSizeMake = CGSizeMake;
+function CGSizeEqual(size1, size2) {
+    return size1.width === size2.width && size1.height === size2.height;
+}
+exports.CGSizeEqual = CGSizeEqual;
+exports.CGSizeZero = CGSizeMake(0, 0);
+function CGRectMake(x, y, width, height) {
+    return { x: x, y: y, width: width, height: height };
+}
+exports.CGRectMake = CGRectMake;
+exports.CGRectZero = CGRectMake(0, 0, 0, 0);
+function CGRectEqual(rect1, rect2) {
+    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+}
+exports.CGRectEqual = CGRectEqual;
+function CGRectInside(rect1, rect2) {
+    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
+}
+exports.CGRectInside = CGRectInside;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIView_1 = __webpack_require__(1);
+var UIWindow = (function (_super) {
+    __extends(UIWindow, _super);
+    function UIWindow() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    UIWindow.prototype.makeKeyAndVisible = function () { };
+    return UIWindow;
+}(UIView_1.UIView));
+exports.UIWindow = UIWindow;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIApplicationDelegate = (function () {
+    function UIApplicationDelegate() {
+    }
+    UIApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
+    return UIApplicationDelegate;
+}());
+exports.UIApplicationDelegate = UIApplicationDelegate;
+var UIApplication = (function () {
+    function UIApplication() {
+    }
+    UIApplication.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
+    return UIApplication;
+}());
+exports.UIApplication = UIApplication;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIScreen = (function () {
+    function UIScreen(width, height, scale) {
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
+    }
+    UIScreen.prototype.bounds = function () {
+        return { x: 0, y: 0, width: this.width, height: this.height };
+    };
+    UIScreen.withScale = function (value) {
+        return value * UIScreen.mainScreen().scale;
+    };
+    UIScreen.outScale = function (value) {
+        return value / UIScreen.mainScreen().scale;
+    };
+    UIScreen.mainScreen = function () { return new UIScreen(0, 0, 1); };
+    return UIScreen;
+}());
+exports.UIScreen = UIScreen;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CGTransformMatrix = (function () {
+    function CGTransformMatrix(a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
+    }
+    return CGTransformMatrix;
+}());
+exports.CGTransformMatrix = CGTransformMatrix;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Attribute;
+(function (Attribute) {
+    Attribute[Attribute["Const"] = 0] = "Const";
+    Attribute[Attribute["Left"] = 1] = "Left";
+    Attribute[Attribute["Right"] = 2] = "Right";
+    Attribute[Attribute["Top"] = 3] = "Top";
+    Attribute[Attribute["Bottom"] = 4] = "Bottom";
+    Attribute[Attribute["Width"] = 7] = "Width";
+    Attribute[Attribute["Height"] = 8] = "Height";
+    Attribute[Attribute["CenterX"] = 9] = "CenterX";
+    Attribute[Attribute["CenterY"] = 10] = "CenterY";
+})(Attribute = exports.Attribute || (exports.Attribute = {}));
+var Relation;
+(function (Relation) {
+    Relation[Relation["Less"] = -1] = "Less";
+    Relation[Relation["Equal"] = 0] = "Equal";
+    Relation[Relation["Greater"] = 1] = "Greater";
+})(Relation = exports.Relation || (exports.Relation = {}));
+var NSLayoutConstraint = (function () {
+    function NSLayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
+        if (constant === void 0) { constant = 0; }
+        if (multiplier === void 0) { multiplier = 1; }
+        this.relation = Relation.Equal;
+        this.constant = 0;
+        this.multiplier = 1;
+        this.priority = 750;
+        this.firstItem = firstItem;
+        this.firstAttr = firstAttr;
+        this.relation = relation || Relation.Equal;
+        this.secondItem = secondItem;
+        this.secondAttr = secondAttr;
+        this.constant = constant;
+        this.multiplier = multiplier;
+    }
+    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
+    NSLayoutConstraint.Attribute = Attribute;
+    NSLayoutConstraint.Relation = Relation;
+    return NSLayoutConstraint;
+}());
+exports.NSLayoutConstraint = NSLayoutConstraint;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIView_1 = __webpack_require__(1);
+var UIColor_1 = __webpack_require__(2);
+var UITextAlignment;
+(function (UITextAlignment) {
+    UITextAlignment[UITextAlignment["Left"] = 0] = "Left";
+    UITextAlignment[UITextAlignment["Center"] = 1] = "Center";
+    UITextAlignment[UITextAlignment["Right"] = 2] = "Right";
+})(UITextAlignment = exports.UITextAlignment || (exports.UITextAlignment = {}));
+var UITextVerticalAlignment;
+(function (UITextVerticalAlignment) {
+    UITextVerticalAlignment[UITextVerticalAlignment["Top"] = 0] = "Top";
+    UITextVerticalAlignment[UITextVerticalAlignment["Center"] = 1] = "Center";
+    UITextVerticalAlignment[UITextVerticalAlignment["Bottom"] = 2] = "Bottom";
+})(UITextVerticalAlignment = exports.UITextVerticalAlignment || (exports.UITextVerticalAlignment = {}));
+var UILabel = (function (_super) {
+    __extends(UILabel, _super);
+    function UILabel() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.textColor = new UIColor_1.UIColor(0, 0, 0);
+        return _this;
+    }
+    return UILabel;
+}(UIView_1.UIView));
+exports.UILabel = UILabel;
 
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIFont = (function () {
+    function UIFont(pointSize, fontWeight, fontStyle, familyName) {
+        if (fontWeight === void 0) { fontWeight = '400'; }
+        if (fontStyle === void 0) { fontStyle = 'normal'; }
+        this.fontWeight = '400';
+        this.fontStyle = 'normal';
+        this.pointSize = pointSize;
+        this.fontWeight = fontWeight;
+        this.fontStyle = fontStyle;
+        this.familyName = familyName;
+    }
+    UIFont.systemFontOfSize = function (pointSize, weight) {
+        if (weight === void 0) { weight = '400'; }
+        return new UIFont(pointSize, weight);
+    };
+    UIFont.boldSystemFontOfSize = function (pointSize) {
+        return new UIFont(pointSize, '700');
+    };
+    UIFont.italicSystemFontOfSize = function (pointSize) {
+        return new UIFont(pointSize, '400', 'italic');
+    };
+    return UIFont;
+}());
+exports.UIFont = UIFont;
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -626,10 +676,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
-var UIApplication_1 = __webpack_require__(9);
+var UIApplication_1 = __webpack_require__(3);
 var Rebound = __webpack_require__(24);
 var PIXI = window.PIXI;
-var AutoLayout = __webpack_require__(14);
+var AutoLayout = __webpack_require__(17);
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {
     requestAnimationFrame = function (trigger) {
@@ -642,6 +692,7 @@ var UIView = (function (_super) {
         var _this = _super.call(this, rect || I.CGRectZero) || this;
         // Mark: View Geometry
         _this._frame = I.CGRectZero;
+        _this._frameChanged = false;
         _this._bounds = I.CGRectZero;
         // Mark: View Rendering
         _this._clipsToBounds = false;
@@ -704,6 +755,7 @@ var UIView = (function (_super) {
                 return;
             }
             this._frame = value;
+            this._frameChanged = true;
             this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
             this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
             this.nativeContainer.hitArea = this.nativeObject.hitArea;
@@ -1610,10 +1662,10 @@ var UIView = (function (_super) {
 }(I.UIView));
 exports.UIView = UIView;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).clearImmediate, __webpack_require__(12).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).clearImmediate, __webpack_require__(13).setImmediate))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -1666,14 +1718,56 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(19);
-var global = __webpack_require__(21);
+__webpack_require__(22);
+var global = __webpack_require__(23);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(21);
+var I = __webpack_require__(0);
+var Factory = (function () {
+    function Factory() {
+    }
+    Factory.CGPointMake = I.CGPointMake;
+    Factory.CGPointEqual = I.CGPointEqual;
+    Factory.CGPointZero = I.CGPointZero;
+    Factory.CGRectMake = I.CGRectMake;
+    Factory.CGRectZero = I.CGRectZero;
+    Factory.CGRectEqual = I.CGRectEqual;
+    Factory.CGRectInside = I.CGRectInside;
+    Factory.CGSizeMake = I.CGSizeMake;
+    Factory.CGSizeZero = I.CGSizeZero;
+    Factory.CGSizeEqual = I.CGSizeEqual;
+    Factory.UILabel = I.UILabel;
+    Factory.UITextAlignment = I.UITextAlignment;
+    Factory.UIFont = I.UIFont;
+    Factory.UIView = I.UIView;
+    Factory.UIApplication = I.UIApplication;
+    Factory.UIApplicationDelegate = I.UIApplicationDelegate;
+    Factory.UIWindow = I.UIWindow;
+    Factory.UIColor = I.UIColor;
+    Factory.UIScreen = I.UIScreen;
+    Factory.CGTransformMatrix = I.CGTransformMatrix;
+    Factory.NSLayoutConstraint = I.NSLayoutConstraint;
+    return Factory;
+}());
+exports.Factory = Factory;
+function SwitchFactory() {
+    index_1.usePixi();
+}
+exports.SwitchFactory = SwitchFactory;
+
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1700,7 +1794,197 @@ module.exports = g;
 
 
 /***/ }),
-/* 14 */
+/* 16 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var require;var require;/**
@@ -7070,15 +7354,15 @@ var l=this.rows.get(this._objective);l.setVariable(i,b.strength.symbolicWeight.v
 });
 
 /***/ }),
-/* 15 */,
-/* 16 */,
-/* 17 */
+/* 18 */,
+/* 19 */,
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(10);
+var Factory_pixi_1 = __webpack_require__(14);
 Factory_pixi_1.SwitchFactory();
 exports.default = Factory_pixi_1.Factory;
 if (window !== undefined) {
@@ -7087,17 +7371,18 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(10);
-var UIView_1 = __webpack_require__(11);
-var UIApplication_1 = __webpack_require__(9);
-var UIWindow_1 = __webpack_require__(22);
-var NSLayoutConstraint_1 = __webpack_require__(23);
+var Factory_pixi_1 = __webpack_require__(14);
+var UIView_1 = __webpack_require__(12);
+var UIApplication_1 = __webpack_require__(3);
+var UIWindow_1 = __webpack_require__(25);
+var NSLayoutConstraint_1 = __webpack_require__(26);
+var UILabel_1 = __webpack_require__(27);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
@@ -7105,6 +7390,7 @@ function usePixi(force) {
         Factory_pixi_1.Factory.UIApplication = UIApplication_1.UIApplication;
         Factory_pixi_1.Factory.UIWindow = UIWindow_1.UIWindow;
         Factory_pixi_1.Factory.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
+        Factory_pixi_1.Factory.UILabel = UILabel_1.UILabel;
     };
     if (force) {
         use();
@@ -7120,7 +7406,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -7310,200 +7596,10 @@ exports.usePixi = usePixi;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(16)))
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -7520,190 +7616,7 @@ if (typeof window !== "undefined") {
 
 module.exports = win;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIApplication_1 = __webpack_require__(9);
-var UIView_1 = __webpack_require__(11);
-var PIXI = window.PIXI;
-var UIWindow = (function (_super) {
-    __extends(UIWindow, _super);
-    function UIWindow(rect) {
-        var _this = _super.call(this, rect) || this;
-        _this.XTClassName = "UIWindow";
-        var application = UIApplication_1.UIApplication.sharedApplication();
-        if (application instanceof UIApplication_1.UIApplication) {
-            application.nativeObject.stage.addChild(_this.nativeObject);
-        }
-        _this.hidden = true;
-        return _this;
-    }
-    UIWindow.prototype.makeKeyAndVisible = function () {
-        var application = UIApplication_1.UIApplication.sharedApplication();
-        if (application instanceof UIApplication_1.UIApplication) {
-            application.keyWindow = this;
-        }
-        this.hidden = false;
-    };
-    return UIWindow;
-}(UIView_1.UIView));
-exports.UIWindow = UIWindow;
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var AutoLayout = __webpack_require__(14);
-var NSLayoutConstraint = (function (_super) {
-    __extends(NSLayoutConstraint, _super);
-    function NSLayoutConstraint() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NSLayoutConstraint.fromALObject = function (obj, views) {
-        var toAttr = function (attr) {
-            if (attr == "const") {
-                return I.NSLayoutConstraint.Attribute.Const;
-            }
-            if (attr == "left") {
-                return I.NSLayoutConstraint.Attribute.Left;
-            }
-            if (attr == "right") {
-                return I.NSLayoutConstraint.Attribute.Right;
-            }
-            if (attr == "top") {
-                return I.NSLayoutConstraint.Attribute.Top;
-            }
-            if (attr == "bottom") {
-                return I.NSLayoutConstraint.Attribute.Bottom;
-            }
-            if (attr == "width") {
-                return I.NSLayoutConstraint.Attribute.Width;
-            }
-            if (attr == "height") {
-                return I.NSLayoutConstraint.Attribute.Height;
-            }
-            if (attr == "centerX") {
-                return I.NSLayoutConstraint.Attribute.CenterX;
-            }
-            if (attr == "centerY") {
-                return I.NSLayoutConstraint.Attribute.CenterY;
-            }
-        };
-        var toRelation = function (rel) {
-            if (rel == "leq") {
-                return I.NSLayoutConstraint.Relation.Less;
-            }
-            if (rel == "geq") {
-                return I.NSLayoutConstraint.Relation.Greater;
-            }
-            return I.NSLayoutConstraint.Relation.Equal;
-        };
-        var constant = obj.constant == "default" ? 8 : parseInt(obj.constant);
-        var layoutConstraint = new NSLayoutConstraint(views[obj.view1], toAttr(obj.attr1), toRelation(obj.relation), views[obj.view2], toAttr(obj.attr2), constant, obj.multiplier);
-        layoutConstraint.priority = obj.priority || 750;
-        return layoutConstraint;
-    };
-    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) {
-        try {
-            var result = AutoLayout.VisualFormat.parse(format);
-            return result.map(function (item) {
-                return NSLayoutConstraint.fromALObject(item, views);
-            });
-        }
-        catch (error) {
-            console.error(error);
-            return [];
-        }
-    };
-    NSLayoutConstraint.prototype.toALObject = function () {
-        var toAttr = function (attr) {
-            if (attr == I.NSLayoutConstraint.Attribute.Const) {
-                return "const";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.Left) {
-                return "left";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.Right) {
-                return "right";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.Top) {
-                return "top";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.Bottom) {
-                return "bottom";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.Width) {
-                return "width";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.Height) {
-                return "height";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.CenterX) {
-                return "centerX";
-            }
-            if (attr == I.NSLayoutConstraint.Attribute.CenterY) {
-                return "centerY";
-            }
-            return undefined;
-        };
-        var toRelation = function (rel) {
-            if (rel == I.NSLayoutConstraint.Relation.Equal) {
-                return "equ";
-            }
-            else if (rel == I.NSLayoutConstraint.Relation.Less) {
-                return "leq";
-            }
-            else if (rel == I.NSLayoutConstraint.Relation.Greater) {
-                return "geq";
-            }
-            return "equ";
-        };
-        return {
-            view1: this.firstItem !== undefined ? this.firstItem._layoutID : undefined,
-            attr1: toAttr(this.firstAttr),
-            relation: toRelation(this.relation),
-            view2: this.secondItem !== undefined ? this.secondItem._layoutID : undefined,
-            attr2: toAttr(this.secondAttr),
-            multiplier: this.multiplier,
-            constant: this.constant,
-            priority: this.priority,
-        };
-    };
-    return NSLayoutConstraint;
-}(I.NSLayoutConstraint));
-exports.NSLayoutConstraint = NSLayoutConstraint;
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ }),
 /* 24 */
@@ -8861,7 +8774,940 @@ exports.NSLayoutConstraint = NSLayoutConstraint;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(12).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(13).setImmediate))
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIApplication_1 = __webpack_require__(3);
+var UIView_1 = __webpack_require__(12);
+var PIXI = window.PIXI;
+var UIWindow = (function (_super) {
+    __extends(UIWindow, _super);
+    function UIWindow(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.XTClassName = "UIWindow";
+        var application = UIApplication_1.UIApplication.sharedApplication();
+        if (application instanceof UIApplication_1.UIApplication) {
+            application.nativeObject.stage.addChild(_this.nativeObject);
+        }
+        _this.hidden = true;
+        return _this;
+    }
+    UIWindow.prototype.makeKeyAndVisible = function () {
+        var application = UIApplication_1.UIApplication.sharedApplication();
+        if (application instanceof UIApplication_1.UIApplication) {
+            application.keyWindow = this;
+        }
+        this.hidden = false;
+    };
+    return UIWindow;
+}(UIView_1.UIView));
+exports.UIWindow = UIWindow;
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var AutoLayout = __webpack_require__(17);
+var NSLayoutConstraint = (function (_super) {
+    __extends(NSLayoutConstraint, _super);
+    function NSLayoutConstraint() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NSLayoutConstraint.fromALObject = function (obj, views) {
+        var toAttr = function (attr) {
+            if (attr == "const") {
+                return I.NSLayoutConstraint.Attribute.Const;
+            }
+            if (attr == "left") {
+                return I.NSLayoutConstraint.Attribute.Left;
+            }
+            if (attr == "right") {
+                return I.NSLayoutConstraint.Attribute.Right;
+            }
+            if (attr == "top") {
+                return I.NSLayoutConstraint.Attribute.Top;
+            }
+            if (attr == "bottom") {
+                return I.NSLayoutConstraint.Attribute.Bottom;
+            }
+            if (attr == "width") {
+                return I.NSLayoutConstraint.Attribute.Width;
+            }
+            if (attr == "height") {
+                return I.NSLayoutConstraint.Attribute.Height;
+            }
+            if (attr == "centerX") {
+                return I.NSLayoutConstraint.Attribute.CenterX;
+            }
+            if (attr == "centerY") {
+                return I.NSLayoutConstraint.Attribute.CenterY;
+            }
+        };
+        var toRelation = function (rel) {
+            if (rel == "leq") {
+                return I.NSLayoutConstraint.Relation.Less;
+            }
+            if (rel == "geq") {
+                return I.NSLayoutConstraint.Relation.Greater;
+            }
+            return I.NSLayoutConstraint.Relation.Equal;
+        };
+        var constant = obj.constant == "default" ? 8 : parseInt(obj.constant);
+        var layoutConstraint = new NSLayoutConstraint(views[obj.view1], toAttr(obj.attr1), toRelation(obj.relation), views[obj.view2], toAttr(obj.attr2), constant, obj.multiplier);
+        layoutConstraint.priority = obj.priority || 750;
+        return layoutConstraint;
+    };
+    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) {
+        try {
+            var result = AutoLayout.VisualFormat.parse(format);
+            return result.map(function (item) {
+                return NSLayoutConstraint.fromALObject(item, views);
+            });
+        }
+        catch (error) {
+            console.error(error);
+            return [];
+        }
+    };
+    NSLayoutConstraint.prototype.toALObject = function () {
+        var toAttr = function (attr) {
+            if (attr == I.NSLayoutConstraint.Attribute.Const) {
+                return "const";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.Left) {
+                return "left";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.Right) {
+                return "right";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.Top) {
+                return "top";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.Bottom) {
+                return "bottom";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.Width) {
+                return "width";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.Height) {
+                return "height";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.CenterX) {
+                return "centerX";
+            }
+            if (attr == I.NSLayoutConstraint.Attribute.CenterY) {
+                return "centerY";
+            }
+            return undefined;
+        };
+        var toRelation = function (rel) {
+            if (rel == I.NSLayoutConstraint.Relation.Equal) {
+                return "equ";
+            }
+            else if (rel == I.NSLayoutConstraint.Relation.Less) {
+                return "leq";
+            }
+            else if (rel == I.NSLayoutConstraint.Relation.Greater) {
+                return "geq";
+            }
+            return "equ";
+        };
+        return {
+            view1: this.firstItem !== undefined ? this.firstItem._layoutID : undefined,
+            attr1: toAttr(this.firstAttr),
+            relation: toRelation(this.relation),
+            view2: this.secondItem !== undefined ? this.secondItem._layoutID : undefined,
+            attr2: toAttr(this.secondAttr),
+            multiplier: this.multiplier,
+            constant: this.constant,
+            priority: this.priority,
+        };
+    };
+    return NSLayoutConstraint;
+}(I.NSLayoutConstraint));
+exports.NSLayoutConstraint = NSLayoutConstraint;
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var UIView_1 = __webpack_require__(12);
+var UIApplication_1 = __webpack_require__(3);
+var UITextLayout_1 = __webpack_require__(31);
+var PIXI = window.PIXI;
+var UILabel = (function (_super) {
+    __extends(UILabel, _super);
+    function UILabel(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.textContainer = new PIXI.Container();
+        _this._font = new I.UIFont(14);
+        _this._textColor = new I.UIColor(0, 0, 0);
+        _this._textAlignment = I.UITextAlignment.Left;
+        _this.nativeObject.addChild(_this.textContainer);
+        return _this;
+    }
+    Object.defineProperty(UILabel.prototype, "text", {
+        get: function () {
+            return this._text;
+        },
+        set: function (value) {
+            this._text = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UILabel.prototype, "font", {
+        get: function () {
+            return this._font;
+        },
+        set: function (value) {
+            this._font = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UILabel.prototype, "textColor", {
+        get: function () {
+            return this._textColor;
+        },
+        set: function (value) {
+            this._textColor = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UILabel.prototype, "textAlignment", {
+        get: function () {
+            return this._textAlignment;
+        },
+        set: function (value) {
+            this._textAlignment = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    UILabel.prototype.drawText = function () {
+        var _this = this;
+        clearImmediate(this._drawTextImmediate);
+        this._drawTextImmediate = setImmediate(function () {
+            _this.textContainer.removeChildren();
+            if (_this.text) {
+                var textStyle_1 = new PIXI.TextStyle({
+                    fontSize: I.UIScreen.withScale(_this.font.pointSize),
+                    fill: "#ffffff",
+                });
+                var textLayout = new UITextLayout_1.UIStaticTextLayout(_this.text, _this.font, _this.bounds);
+                textLayout.textLines(_this.bounds, I.UITextAlignment.Center, I.UITextVerticalAlignment.Center).forEach(function (line) {
+                    var text = new PIXI.Text(line.text, textStyle_1);
+                    text.x = I.UIScreen.withScale(line.x);
+                    text.y = I.UIScreen.withScale(line.y);
+                    _this.textContainer.addChild(text);
+                });
+                // const textSequence = this.text.split('').map(character => {
+                //     return {
+                //         fontSize: I.UIScreen.withScale(this.font.pointSize),
+                //         character,
+                //     }
+                // });
+                // const layoutSequence = huozi(textSequence, {
+                //     gridSize: I.UIScreen.withScale(this.font.pointSize),
+                //     column: Math.floor(this.bounds.width / this.font.pointSize),
+                //     row: Infinity,
+                // });
+                // const offsetY = Math.min(0.0, Math.min.apply(null, layoutSequence.map((element: any) => element.y)));
+                // let line = { text: "", x: 0, y: 0, }
+                // layoutSequence.forEach((element: any) => {
+                //     if (line.y != (element.y - offsetY)) {
+                //         if (line.text.length > 0) {
+                //             const text = new PIXI.Text(line.text, textStyle);
+                //             text.x = line.x;
+                //             text.y = line.y;
+                //             this.textContainer.addChild(text);
+                //         }
+                //         line = { text: "", x: element.x, y: (element.y - offsetY), };
+                //     }
+                //     line.text += element.character;
+                // });
+                // if (line.text.length > 0) {
+                //     const text = new PIXI.Text(line.text, textStyle);
+                //     text.x = line.x;
+                //     text.y = line.y;
+                //     this.textContainer.addChild(text);
+                // }
+            }
+            UIApplication_1.setNeedsDisplay(_this);
+        });
+    };
+    return UILabel;
+}(UIView_1.UIView));
+exports.UILabel = UILabel;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).clearImmediate, __webpack_require__(13).setImmediate))
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.default = huozi;
+
+var _code = __webpack_require__(29);
+
+var _isCJK = __webpack_require__(30);
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /*!
+                                                                                                                                                                                                     * @author      Icemic Jia <bingfeng.web@gmail.com>
+                                                                                                                                                                                                     * @copyright   2017 Icemic Jia
+                                                                                                                                                                                                     * @link        https://github.com/Icemic/huozi.js
+                                                                                                                                                                                                     * @license     https://github.com/Icemic/huozi.js/blob/master/LICENSE
+                                                                                                                                                                                                     *
+                                                                                                                                                                                                     * 本程序根据使用目的采用双授权的方式，你可以根据如下条款选择适合你的许可协议：
+                                                                                                                                                                                                     * 
+                                                                                                                                                                                                     * - 对于全部的使用目的，均可选择 GNU Affero General Public License 3.0。
+                                                                                                                                                                                                     * - 对于非商业目的的使用，可选择 Apache License 2.0。此处非商业目的的定义和区分方法与 Creative Commons BY-NC 4.0 International 中的相关条目一致。
+                                                                                                                                                                                                     * - 特别地，当用户将本程序与 AVG.js，或更具体的，avg-core 库同时使用时，无论用于商业或非商业，均可选择 Apache License 2.0。关于 AVG.js 的详情，请访问：https://github.com/avgjs/avg-core
+                                                                                                                                                                                                     * - 特别地，当用户将本程序与 pixi-richtext (https://github.com/avgjs/pixi-richtext) 库同时使用时，无论用于商业或非商业，均可选择 Apache License 2.0。
+                                                                                                                                                                                                     *
+                                                                                                                                                                                                     * English Translation:
+                                                                                                                                                                                                     * 
+                                                                                                                                                                                                     * This software uses a dual license, you can choose the appropriate license under the following terms:
+                                                                                                                                                                                                     * 
+                                                                                                                                                                                                     * - GNU Affero General Public License 3.0 is available for all purposes.
+                                                                                                                                                                                                     * - Apache License 2.0 is available for non-commercial use. The definition of non-commercial use is consistent with the relevant entries in Creative Commons BY-NC 4.0 International.
+                                                                                                                                                                                                     * - In particular, Apache License 2.0 is available for users who use this software with AVG.js, or more specifically, the avg-core library, whether for commercial or non-commercial use. For more details about AVG.js, see: https://github.com/avgjs/avg-core
+                                                                                                                                                                                                     * - In particular, Apache License 2.0 is available for users who use the pixi-richtext (https://github.com/avgjs/pixi-richtext) library, whether for commercial or non-commercial use.
+                                                                                                                                                                                                     */
+
+var canvas = document.createElement('canvas');
+var context = canvas.getContext('2d');
+
+// 检测中文字符宽度是否等于字号
+context.font = '18px sans-serif';
+var FLAG_STDWIDTH = context.measureText('中').width === 18;
+
+var defaultOptions = {
+  fontFamily: 'sans-serif',
+  gridSize: 26,
+  column: 25,
+  row: Infinity,
+  xInterval: 0,
+  yInterval: 12,
+  letterSpacing: 0,
+  inlineCompression: true,
+  forceGridAlignment: true,
+  westernCharacterFirst: false,
+  forceSpaceBetweenCJKAndWestern: false,
+  fixLeftQuote: true
+};
+
+function huozi(textSequence, layoutOptions, onSequence) {
+
+  layoutOptions = Object.assign({}, defaultOptions, layoutOptions);
+
+  var _layoutOptions = layoutOptions,
+      fontFamily = _layoutOptions.fontFamily,
+      gridSize = _layoutOptions.gridSize,
+      column = _layoutOptions.column,
+      row = _layoutOptions.row,
+      xInterval = _layoutOptions.xInterval,
+      yInterval = _layoutOptions.yInterval,
+      FLAG_INLINE_COMPRESSION = _layoutOptions.inlineCompression,
+      forceGridAlignment = _layoutOptions.forceGridAlignment,
+      westernCharacterFirst = _layoutOptions.westernCharacterFirst,
+      forceSpaceBetweenCJKAndWestern = _layoutOptions.forceSpaceBetweenCJKAndWestern,
+      fixLeftQuote = _layoutOptions.fixLeftQuote;
+
+
+  var currentX = 0;
+  var currentY = 0;
+
+  var currentColumn = 0;
+  var currentRow = 0;
+
+  // 判断上一个是否为标点，以此判断标点挤压
+  var lastIsPunctuation = false;
+  var lastCharFontSize = 0;
+  var needForceWrap = false;
+
+  // 存储一行字中的最大字号，用以确定真实行高
+  var maxFontSize = gridSize;
+
+  // 缓存英文字符直到遇到下一个中文字符为止
+  var westernTextCache = [];
+  var lastIsWesternChar = westernCharacterFirst;
+
+  var layoutSequence = [];
+
+  var lineWrap = function lineWrap() {
+    currentX = 0;
+    currentColumn = 0;
+    currentRow += 1;
+    currentY += maxFontSize + yInterval;
+    maxFontSize = gridSize;
+    lastIsPunctuation = false;
+    lastCharFontSize = 0;
+    needForceWrap = false;
+  };
+
+  // 在末尾插入一个表意文字（CJK）空格，hack在文本以西文字符结尾时结尾的西文不会显示的问题。
+
+  var _arr = [].concat(_toConsumableArray(textSequence), [{ fontSize: 12, character: '　' }]);
+
+  for (var _i = 0; _i < _arr.length; _i++) {
+    var char = _arr[_i];
+
+    // 读取字符数据
+    var charFontSize = char.fontSize,
+        character = char.character;
+
+    // 处理行内上一个字符是标点（已预先压缩），但本字符是非标点（因而需要取消之前的压缩）的情况
+
+    if (FLAG_INLINE_COMPRESSION && lastIsPunctuation && !_code.BIAODIAN.includes(character)) {
+      currentX += lastCharFontSize / 2 + xInterval;
+      currentColumn += 0.5;
+      lastIsPunctuation = false;
+    }
+
+    if (/[ “”‘’]/.test(character)) {
+      if (lastIsWesternChar) {
+        westernTextCache.push(char);
+        continue;
+      }
+    }
+
+    if (!(0, _isCJK.isCJK)(character) && !/[\n “”‘’]/.test(character)) {
+      lastIsWesternChar = true;
+      westernTextCache.push(char);
+      continue;
+    } else if (westernTextCache.length) {
+      var forceSpace = forceSpaceBetweenCJKAndWestern ? 0.25 * gridSize : 0;
+
+      if (currentX) {
+        currentX += forceSpace;
+      }
+
+      var westernLayoutSequence = void 0,
+          isMultiLine = void 0,
+          currentX_tmp = void 0;
+
+      var _processWesternText = processWesternText(westernTextCache, layoutOptions, currentX, currentY, currentRow, column * gridSize, row);
+
+      var _processWesternText2 = _slicedToArray(_processWesternText, 5);
+
+      westernLayoutSequence = _processWesternText2[0];
+      currentX_tmp = _processWesternText2[1];
+      currentY = _processWesternText2[2];
+      currentRow = _processWesternText2[3];
+      isMultiLine = _processWesternText2[4];
+
+
+      currentColumn = Math.ceil(currentX_tmp / (gridSize + xInterval));
+      currentX = currentColumn * (gridSize + xInterval);
+
+      // 单行的情况下自动对齐两端空格
+      if (!isMultiLine) {
+        (function () {
+          // 两端总余量不足 0.5em 时，增加 1em 宽度
+          if (currentX - currentX_tmp < forceSpace) {
+            currentColumn += 1;
+            currentX = currentColumn * gridSize;
+          }
+
+          var offsetX = (forceSpace + currentX - currentX_tmp) / 2 - forceSpace;
+
+          westernLayoutSequence = westernLayoutSequence.map(function (value) {
+            value.x += offsetX;
+            return onSequence ? onSequence(value) || value : value;
+          });
+        })();
+      }
+
+      layoutSequence.push.apply(layoutSequence, _toConsumableArray(westernLayoutSequence));
+      lastIsWesternChar = false;
+      westernTextCache = [];
+    }
+
+    // NOTE: 必须在循环开头折行，因需要考虑下一个字符是否需要标点挤压
+    // 折行
+    var isLineEnd = false;
+    if (currentColumn >= column) {
+      isLineEnd = true;
+
+      // 正常折行
+      if (!_code.BIAODIANVALIDATEND.includes(character) || _code.BIAODIANVALIDATSTART.includes(character) || needForceWrap) {
+        lineWrap();
+      }
+    }
+
+    if (character === '\n') {
+      lineWrap();
+      continue;
+    }
+
+    // 测量文字宽度
+    context.font = charFontSize + 'px ' + fontFamily;
+    var width = context.measureText(character).width;
+
+    // 在前后字号不一致的时候施行强制纵横对齐
+    var offsetX = 0;
+    var offsetY = (charFontSize - gridSize) / 2;
+    var doubleX = false;
+
+    if (forceGridAlignment && charFontSize !== gridSize) {
+      offsetX = +forceGridAlignment * (charFontSize - gridSize) / 2;
+      currentColumn += offsetX > 0 ? Math.ceil(offsetX * 2 / (gridSize + xInterval)) : 0;
+
+      offsetX = ((1 + Math.ceil(offsetX * 2 / (gridSize + xInterval))) * (gridSize + xInterval) - charFontSize) / 2;
+      currentX += offsetX;
+
+      if (currentColumn >= column) {
+        lineWrap();
+        doubleX = true;
+      }
+    }
+
+    // 这里假设引号永远是在 em 格左侧的。fix 指修复一些并非在左侧时的情况。
+    var quoteFix = 0;
+    quoteFix += !lastIsPunctuation && character === '“' ? charFontSize / 2 : 0;
+    if (fixLeftQuote) {
+      // 一些平台上引号量取结果是<0.5em宽，但绘制时却是1em宽，导致错位。下面的代码修正这一问题
+      // OS X 无需此修复（FLAG_STDWIDTH === true）
+      if (character === '“' && !FLAG_STDWIDTH) {
+        quoteFix += -charFontSize / 2;
+      } else if (character === '“' && width === charFontSize) {
+        quoteFix += -charFontSize / 2;
+      }
+    }
+
+    var item = Object.assign({}, char, {
+      x: currentX + quoteFix,
+      y: currentY - offsetY,
+      width: width,
+      height: charFontSize
+    });
+
+    // 确定文字位置并添加到返回数组中
+    layoutSequence.push(onSequence ? onSequence(item) || item : item);
+
+    // 当正好在行首时，因两边空格全部加到一边，可能使得总宽度大于1em，此时应该删去多出的1em宽度
+    var offsetX2 = offsetX * (doubleX ? 2 : 1);
+    if (offsetX2 > gridSize) {
+      offsetX2 -= gridSize;
+      currentColumn -= 1;
+    }
+
+    currentX += offsetX2;
+
+    // 判断是否进行压缩，并更新位置
+    if (isLineEnd && _code.BIAODIANVALIDATEND.includes(character) && !_code.INCOMPRESSIBLE.includes(character)) {
+      currentX += charFontSize / 2;
+      currentColumn += 0.5;
+      if (currentColumn % 1 !== 0.5) {
+        needForceWrap = true;
+      }
+    } else if (FLAG_INLINE_COMPRESSION && _code.BIAODIAN.includes(character) && !_code.INCOMPRESSIBLE.includes(character)) {
+      currentX += charFontSize / 2 + xInterval * +lastIsPunctuation;
+      currentColumn += 0.5;
+      lastIsPunctuation = !lastIsPunctuation;
+    } else {
+      currentX += charFontSize + xInterval;
+      currentColumn += 1;
+    }
+
+    // 更新行高
+    maxFontSize = Math.max(maxFontSize, charFontSize);
+
+    // 杂七杂八的状态更新
+    lastCharFontSize = charFontSize;
+
+    // 超出高度，直接略去后面的字符，返回的数据中也不包含后面的字符。
+    if (currentRow >= row) {
+      break;
+    }
+  }
+
+  // 移除表意文字空格
+  layoutSequence.pop();
+
+  return layoutSequence;
+}
+
+// 独立处理西文文本的排版，返回的数据中文本两侧无空格
+function processWesternText(textSequence, _ref, currentX, currentY, currentRow, maxWidth, row) {
+  var fontFamily = _ref.fontFamily,
+      gridSize = _ref.gridSize,
+      yInterval = _ref.yInterval,
+      letterSpacing = _ref.letterSpacing;
+
+  var layoutSequence = [];
+  var maxFontSize = gridSize;
+  var word = '';
+  var wordChar = [];
+  var isMultiLine = false;
+
+  // 若末尾不是空格，则为末尾添加一个空格
+  if (textSequence[textSequence.length - 1].character !== ' ') {
+    textSequence.push({
+      fontSize: 0,
+      character: ' '
+    });
+  }
+
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = textSequence[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var char = _step.value;
+      var charFontSize = char.fontSize,
+          character = char.character;
+
+      // 更新行高
+
+      maxFontSize = Math.max(maxFontSize, charFontSize);
+
+      if (character === ' ') {
+        var restSpace = maxWidth - currentX;
+        var totalWidth = context.measureText(word).width;
+
+        if (restSpace < totalWidth) {
+          currentX = 0;
+          currentY += maxFontSize + yInterval;
+          currentRow += 1;
+          isMultiLine = true;
+
+          // 超出高度，直接略去后面的字符，返回的数据中也不包含后面的字符。
+          if (currentRow >= row) {
+            break;
+          }
+        }
+
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = wordChar[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _char = _step2.value;
+            var _charFontSize = _char.fontSize,
+                _character = _char.character;
+
+            // 确定文字位置并添加到返回数组中
+
+            var offsetY = (_charFontSize - gridSize) / 2;
+            layoutSequence.push(Object.assign({}, _char, {
+              x: currentX,
+              y: currentY - offsetY
+            }));
+
+            currentX += _char.width + letterSpacing;
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+
+        currentX += 0.35 * gridSize;
+
+        word = '';
+        wordChar = [];
+      } else {
+        context.font = charFontSize + 'px ' + fontFamily;
+        var width = context.measureText(character).width;
+
+        word += character;
+
+        // 在这里先装入 width 和 height 信息
+        wordChar.push(Object.assign({}, char, { width: width, height: charFontSize }));
+      }
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  return [layoutSequence, currentX - 0.35 * gridSize, currentY, currentRow, isMultiLine];
+}
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * @author      Icemic Jia <bingfeng.web@gmail.com>
+ * @copyright   2017 Icemic Jia
+ * @link        https://github.com/Icemic/huozi.js
+ * @license     https://github.com/Icemic/huozi.js/blob/master/LICENSE
+ *
+ * 本程序根据使用目的采用双授权的方式，你可以根据如下条款选择适合你的许可协议：
+ * 
+ * - 对于全部的使用目的，均可选择 GNU Affero General Public License 3.0。
+ * - 对于非商业目的的使用，可选择 Apache License 2.0。此处非商业目的的定义和区分方法与 Creative Commons BY-NC 4.0 International 中的相关条目一致。
+ * - 特别地，当用户将本程序与 AVG.js，或更具体的，avg-core 库同时使用时，无论用于商业或非商业，均可选择 Apache License 2.0。关于 AVG.js 的详情，请访问：https://github.com/avgjs/avg-core
+ * - 特别地，当用户将本程序与 pixi-richtext (https://github.com/avgjs/pixi-richtext) 库同时使用时，无论用于商业或非商业，均可选择 Apache License 2.0。
+ *
+ * English Translation:
+ * 
+ * This software uses a dual license, you can choose the appropriate license under the following terms:
+ * 
+ * - GNU Affero General Public License 3.0 is available for all purposes.
+ * - Apache License 2.0 is available for non-commercial use. The definition of non-commercial use is consistent with the relevant entries in Creative Commons BY-NC 4.0 International.
+ * - In particular, Apache License 2.0 is available for users who use this software with AVG.js, or more specifically, the avg-core library, whether for commercial or non-commercial use. For more details about AVG.js, see: https://github.com/avgjs/avg-core
+ * - In particular, Apache License 2.0 is available for users who use the pixi-richtext (https://github.com/avgjs/pixi-richtext) library, whether for commercial or non-commercial use.
+ */
+
+var DIANHAO = exports.DIANHAO = '\u3002\uFF0C\u3001\uFF0E\uFF1A\uFF1B\uFF01\u203C\uFF1F\u2047';
+var BIAOHAO = exports.BIAOHAO = '\u300C\u300D\u300E\u300F\u201C\u201D\u2018\u2019\uFF08\uFF09\u3010\u3011\u3016\u3017\u3014\u3015\uFF3B\uFF3D\uFF5B\uFF5D\u2E3A\u2014\u2026\u25CF\u2022\u2013\uFF5E~\uFF5E\uFF5E\xB7\uFE4F\u300A\u300B\u3008\u3009\uFF3F/\uFF0F';
+var BIAODIAN = exports.BIAODIAN = '' + BIAOHAO + DIANHAO + ' ';
+var BIAODIANVALIDATEND = exports.BIAODIANVALIDATEND = '\u3002\uFF0C\u3001\uFF0E\uFF1A\uFF1B\uFF01\u203C\uFF1F\u2047\u300D\u300F\u201D\u2019\uFF09\u3011\u3017\u3015\uFF3D\uFF5D\u300B\u3009 ';
+var BIAODIANVALIDATSTART = exports.BIAODIANVALIDATSTART = '\u300C\u300E\u201C\u2018\uFF08\u3010\u3016\u3014\uFF3B\uFF5B\u300A\u3008 ';
+var INCOMPRESSIBLE = exports.INCOMPRESSIBLE = '‼⁇⸺—';
+var COMPRESSLEFT = exports.COMPRESSLEFT = '「『“‘（【〖〔［｛《〈';
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isCJK = isCJK;
+/**
+ * @author      Icemic Jia <bingfeng.web@gmail.com>
+ * @copyright   2017 Icemic Jia
+ * @link        https://github.com/Icemic/huozi.js
+ * @license     https://github.com/Icemic/huozi.js/blob/master/LICENSE
+ *
+ * 本程序根据使用目的采用双授权的方式，你可以根据如下条款选择适合你的许可协议：
+ * 
+ * - 对于全部的使用目的，均可选择 GNU Affero General Public License 3.0。
+ * - 对于非商业目的的使用，可选择 Apache License 2.0。此处非商业目的的定义和区分方法与 Creative Commons BY-NC 4.0 International 中的相关条目一致。
+ * - 特别地，当用户将本程序与 AVG.js，或更具体的，avg-core 库同时使用时，无论用于商业或非商业，均可选择 Apache License 2.0。关于 AVG.js 的详情，请访问：https://github.com/avgjs/avg-core
+ * - 特别地，当用户将本程序与 pixi-richtext (https://github.com/avgjs/pixi-richtext) 库同时使用时，无论用于商业或非商业，均可选择 Apache License 2.0。
+ *
+ * English Translation:
+ * 
+ * This software uses a dual license, you can choose the appropriate license under the following terms:
+ * 
+ * - GNU Affero General Public License 3.0 is available for all purposes.
+ * - Apache License 2.0 is available for non-commercial use. The definition of non-commercial use is consistent with the relevant entries in Creative Commons BY-NC 4.0 International.
+ * - In particular, Apache License 2.0 is available for users who use this software with AVG.js, or more specifically, the avg-core library, whether for commercial or non-commercial use. For more details about AVG.js, see: https://github.com/avgjs/avg-core
+ * - In particular, Apache License 2.0 is available for users who use the pixi-richtext (https://github.com/avgjs/pixi-richtext) library, whether for commercial or non-commercial use.
+ */
+
+/**
+ * reference:
+ *  https://en.wikipedia.org/wiki/CJK_Unified_Ideographs
+ *  https://en.wikipedia.org/wiki/CJK_Symbols_and_Punctuation
+ *  http://jrgraphix.net/r/Unicode/
+ */
+
+var list = ['\\u1100-\\u11FF', // Hangul Jamo
+'\\u2E80-\\u2EFF', // CJK Radicals Supplement
+'\\u2F00-\\u2FDF', // Kangxi Radicals
+'\\u2FF0-\\u2FFF', // Ideographic Description Characters
+'\\u3000-\\u303F', // CJK Symbols and Punctuation
+'\\u3040-\\u309F', // Hiragana
+'\\u30A0-\\u30FF', // Katakana
+'\\u3100-\\u312F', // Bopomofo
+'\\u3130-\\u318F', // Hangul Compatibility Jamo
+'\\u3190-\\u319F', // Kanbun 不是很懂你们日本人的“汉”文……
+'\\u31A0-\\u31BF', // Bopomofo Extended
+'\\u31F0-\\u31FF', // Katakana Phonetic Extensions
+'\\u3200-\\u32FF', // Enclosed CJK Letters and Months
+'\\u3300-\\u33FF', // CJK Compatibility
+//  '\\u3300-\\u33FF\\uFE30-\\uFE4F\\uF900-\\uFAFF\\u{2F800}-\\u{2FA1F}', // Other CJK Ideographs in Unicode, not Unified
+'\\u3400-\\u4DBF', // Ext-A
+'\\u4DC0-\\u4DFF', // Yijing Hexagram Symbols, 为了收集这些字符我已经累到怀疑人生了，谁来给我算一卦……
+'\\u4E00-\\u9FFF', // CJK
+'\\uAC00-\\uD7AF', // Hangul Syllables
+'\\uF900-\\uFAFF', // CJK Compatibility Ideograph
+'\\uFE30-\\uFE4F', // CJK Compatibility Forms, 竖排样式的横排字符……
+'\\uFF00-\\uFFEF', // Halfwidth and Fullwidth Forms
+'\\u{1D300}-\\u{1D35F}', // Tai Xuan Jing Symbols,
+'\\u{20000}-\\u{2A6DF}', // Ext-B
+'\\u{2A700}-\\u{2B73F}', // Ext-C
+'\\u{2B740}-\\u{2B81F}', // Ext-D
+'\\u{2B820}-\\u{2CEAF}', // Ext-E
+'\\u{2CEB0}-\\u{2EBEF}', // Ext-F
+'\\u{2F800}-\\u{2FA1F}'];
+
+var regex = void 0;
+
+try {
+  regex = new RegExp('[' + list.join('') + ']', 'u');
+} catch (e) {
+  regex = new RegExp('[' + list.slice(0, 21).join('') + ']');
+}
+
+function isCJK(text) {
+  return regex.test(text);
+}
+
+// old version:
+// /[\u3000-\u3003\u3005-\u303F；？，．：！]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\ud840-\ud868][\udc00-\udfff]|\ud869[\udc00-\uded6\udf00-\udfff]|[\ud86a-\ud86c][\udc00-\udfff]|\ud86d[\udc00-\udf34\udf40-\udfff]|\ud86e[\udc00-\udc1d]/.test(text)
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var huozi_1 = __webpack_require__(28);
+var UIStaticTextLayout = (function () {
+    function UIStaticTextLayout(text, font, bounds, padding) {
+        if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
+        var _this = this;
+        this.bounds = I.CGRectZero;
+        this.padding = { top: 0, left: 0, bottom: 0, right: 0 };
+        this.text = text;
+        this.font = font;
+        this.bounds = bounds;
+        this.padding = padding;
+        // measure function
+        var textSequence = this.text.split('').map(function (character) {
+            return {
+                fontSize: _this.font.pointSize,
+                character: character,
+            };
+        });
+        var layoutSequence = huozi_1.default(textSequence, {
+            gridSize: this.font.pointSize,
+            column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
+            row: Infinity,
+        });
+        var minX = Math.min.apply(null, layoutSequence.map(function (element) { return element.x; }));
+        var minY = Math.min.apply(null, layoutSequence.map(function (element) { return element.y; }));
+        var maxX = Math.max.apply(null, layoutSequence.map(function (element) { return element.x + element.width; }));
+        var maxY = Math.max.apply(null, layoutSequence.map(function (element) { return element.y + element.height; }));
+        this.layoutSequence = layoutSequence;
+        this.textRect = I.CGRectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
+    }
+    UIStaticTextLayout.prototype.textLines = function (onRect, horizonAlignment, verticalAlignment) {
+        var offset = { x: this.textRect.x, y: this.textRect.y };
+        if (horizonAlignment === I.UITextAlignment.Center) {
+            offset.x = ((onRect.x + onRect.width) - this.textRect.width) / 2.0;
+        }
+        if (verticalAlignment === I.UITextVerticalAlignment.Center) {
+            offset.y = ((onRect.y + onRect.height) - this.textRect.height) / 2.0;
+        }
+        var lines = [];
+        var line = { text: "", x: 0, y: 0, };
+        this.layoutSequence.forEach(function (element) {
+            if (line.y != element.y) {
+                if (line.text.length > 0) {
+                    lines.push({
+                        text: line.text,
+                        x: line.x + offset.x,
+                        y: line.y + offset.y,
+                    });
+                }
+                line = { text: "", x: element.x, y: element.y, };
+            }
+            line.text += element.character;
+        });
+        if (line.text.length > 0) {
+            lines.push({
+                text: line.text,
+                x: line.x + offset.x,
+                y: line.y + offset.y,
+            });
+        }
+        return lines;
+    };
+    return UIStaticTextLayout;
+}());
+exports.UIStaticTextLayout = UIStaticTextLayout;
+
 
 /***/ })
 /******/ ]);

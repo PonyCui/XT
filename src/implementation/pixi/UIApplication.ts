@@ -98,6 +98,7 @@ export class UIApplication extends I.UIApplication {
         view.subviews.forEach(subview => {
             (subview as any)._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
             (view as any)._childRenderable = false;
+            (view as any)._frameChanged = false;
         })
         view.subviews.forEach(subview => {
             const subviewss = this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
@@ -119,6 +120,12 @@ export class UIApplication extends I.UIApplication {
         requestAnimationFrame(() => {
             if ((window as any).DEBUG) {
                 displayStartTime = performance.now();
+            }
+            if (this.dirtyTargets.filter(item => { return item._frameChanged || item.nativeObject.renderable; }).length == 0) {
+                this.dirtyTargets.forEach(item => { item._frameChanged = false });
+                this.dirtyTargets = [];
+                this.isDirty = false;
+                return;
             }
             this.remarkRenderable();
             let stillDirty = false;

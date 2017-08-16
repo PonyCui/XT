@@ -32,6 +32,7 @@ export class UIView extends I.UIView {
     // Mark: View Geometry
 
     private _frame: I.CGRect = I.CGRectZero;
+    public _frameChanged = false
 
     public get frame() {
         return this._frame;
@@ -47,6 +48,7 @@ export class UIView extends I.UIView {
             return;
         }
         this._frame = value;
+        this._frameChanged = true;
         this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
         this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
         this.nativeContainer.hitArea = this.nativeObject.hitArea;

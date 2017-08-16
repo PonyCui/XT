@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var CGRect_1 = __webpack_require__(2);
+var CGRect_1 = __webpack_require__(4);
 exports.CGRectMake = CGRect_1.CGRectMake;
 exports.CGRectZero = CGRect_1.CGRectZero;
 exports.CGRectEqual = CGRect_1.CGRectEqual;
@@ -83,19 +83,25 @@ exports.CGPointEqual = CGRect_1.CGPointEqual;
 exports.CGSizeEqual = CGRect_1.CGSizeEqual;
 var UIView_1 = __webpack_require__(1);
 exports.UIView = UIView_1.UIView;
-var UIWindow_1 = __webpack_require__(3);
+var UIWindow_1 = __webpack_require__(5);
 exports.UIWindow = UIWindow_1.UIWindow;
-var UIApplication_1 = __webpack_require__(4);
+var UIApplication_1 = __webpack_require__(6);
 exports.UIApplication = UIApplication_1.UIApplication;
 exports.UIApplicationDelegate = UIApplication_1.UIApplicationDelegate;
-var UIColor_1 = __webpack_require__(5);
+var UIColor_1 = __webpack_require__(2);
 exports.UIColor = UIColor_1.UIColor;
-var UIScreen_1 = __webpack_require__(6);
+var UIScreen_1 = __webpack_require__(7);
 exports.UIScreen = UIScreen_1.UIScreen;
-var CGTransformMatrix_1 = __webpack_require__(7);
+var CGTransformMatrix_1 = __webpack_require__(8);
 exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
-var NSLayoutConstraint_1 = __webpack_require__(8);
+var NSLayoutConstraint_1 = __webpack_require__(9);
 exports.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
+var UILabel_1 = __webpack_require__(10);
+exports.UILabel = UILabel_1.UILabel;
+exports.UITextAlignment = UILabel_1.UITextAlignment;
+exports.UITextVerticalAlignment = UILabel_1.UITextVerticalAlignment;
+var UIFont_1 = __webpack_require__(11);
+exports.UIFont = UIFont_1.UIFont;
 
 
 /***/ }),
@@ -164,6 +170,41 @@ exports.UIView = UIView;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var UIColor = (function () {
+    function UIColor(r, g, b, a) {
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));
+        ;
+        this.b = Math.min(1.0, Math.max(0.0, b));
+        ;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
+        ;
+    }
+    UIColor.prototype.rgbHexNumber = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
+    };
+    UIColor.prototype.equals = function (toColor) {
+        if (toColor instanceof UIColor) {
+            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
+        }
+        return false;
+    };
+    return UIColor;
+}());
+exports.UIColor = UIColor;
+
+
+/***/ }),
+/* 3 */,
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 function CGPointMake(x, y) {
     return { x: x, y: y };
 }
@@ -198,7 +239,7 @@ exports.CGRectInside = CGRectInside;
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -227,7 +268,7 @@ exports.UIWindow = UIWindow;
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -250,41 +291,7 @@ exports.UIApplication = UIApplication;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIColor = (function () {
-    function UIColor(r, g, b, a) {
-        this.r = Math.min(1.0, Math.max(0.0, r));
-        this.g = Math.min(1.0, Math.max(0.0, g));
-        ;
-        this.b = Math.min(1.0, Math.max(0.0, b));
-        ;
-        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
-        ;
-    }
-    UIColor.prototype.rgbHexNumber = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
-    };
-    UIColor.prototype.equals = function (toColor) {
-        if (toColor instanceof UIColor) {
-            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
-        }
-        return false;
-    };
-    return UIColor;
-}());
-exports.UIColor = UIColor;
-
-
-/***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -312,7 +319,7 @@ exports.UIScreen = UIScreen;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -333,7 +340,7 @@ exports.CGTransformMatrix = CGTransformMatrix;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -382,19 +389,95 @@ exports.NSLayoutConstraint = NSLayoutConstraint;
 
 
 /***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var UIView_1 = __webpack_require__(1);
+var UIColor_1 = __webpack_require__(2);
+var UITextAlignment;
+(function (UITextAlignment) {
+    UITextAlignment[UITextAlignment["Left"] = 0] = "Left";
+    UITextAlignment[UITextAlignment["Center"] = 1] = "Center";
+    UITextAlignment[UITextAlignment["Right"] = 2] = "Right";
+})(UITextAlignment = exports.UITextAlignment || (exports.UITextAlignment = {}));
+var UITextVerticalAlignment;
+(function (UITextVerticalAlignment) {
+    UITextVerticalAlignment[UITextVerticalAlignment["Top"] = 0] = "Top";
+    UITextVerticalAlignment[UITextVerticalAlignment["Center"] = 1] = "Center";
+    UITextVerticalAlignment[UITextVerticalAlignment["Bottom"] = 2] = "Bottom";
+})(UITextVerticalAlignment = exports.UITextVerticalAlignment || (exports.UITextVerticalAlignment = {}));
+var UILabel = (function (_super) {
+    __extends(UILabel, _super);
+    function UILabel() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.textColor = new UIColor_1.UIColor(0, 0, 0);
+        return _this;
+    }
+    return UILabel;
+}(UIView_1.UIView));
+exports.UILabel = UILabel;
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_1 = __webpack_require__(16);
+var UIFont = (function () {
+    function UIFont(pointSize, fontWeight, fontStyle, familyName) {
+        if (fontWeight === void 0) { fontWeight = '400'; }
+        if (fontStyle === void 0) { fontStyle = 'normal'; }
+        this.fontWeight = '400';
+        this.fontStyle = 'normal';
+        this.pointSize = pointSize;
+        this.fontWeight = fontWeight;
+        this.fontStyle = fontStyle;
+        this.familyName = familyName;
+    }
+    UIFont.systemFontOfSize = function (pointSize, weight) {
+        if (weight === void 0) { weight = '400'; }
+        return new UIFont(pointSize, weight);
+    };
+    UIFont.boldSystemFontOfSize = function (pointSize) {
+        return new UIFont(pointSize, '700');
+    };
+    UIFont.italicSystemFontOfSize = function (pointSize) {
+        return new UIFont(pointSize, '400', 'italic');
+    };
+    return UIFont;
+}());
+exports.UIFont = UIFont;
+
+
+/***/ }),
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Factory_1 = __webpack_require__(19);
 Factory_1.SwitchFactory();
 exports.default = Factory_1.Factory;
 if (window !== undefined) {
@@ -403,7 +486,7 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -423,6 +506,9 @@ var Factory = (function () {
     Factory.CGSizeMake = I.CGSizeMake;
     Factory.CGSizeZero = I.CGSizeZero;
     Factory.CGSizeEqual = I.CGSizeEqual;
+    Factory.UILabel = I.UILabel;
+    Factory.UITextAlignment = I.UITextAlignment;
+    Factory.UIFont = I.UIFont;
     Factory.UIView = I.UIView;
     Factory.UIApplication = I.UIApplication;
     Factory.UIApplicationDelegate = I.UIApplicationDelegate;
