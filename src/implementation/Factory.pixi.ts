@@ -10,6 +10,9 @@ export class Factory {
     static CGRectZero = I.CGRectZero;
     static CGRectEqual = I.CGRectEqual;
     static CGRectInside = I.CGRectInside;
+    static CGSizeMake = I.CGSizeMake;
+    static CGSizeZero = I.CGSizeZero;
+    static CGSizeEqual = I.CGSizeEqual;
     static UIView: typeof I.UIView = I.UIView;
     static UIApplication: typeof I.UIApplication = I.UIApplication;
     static UIApplicationDelegate: typeof I.UIApplicationDelegate = I.UIApplicationDelegate;
