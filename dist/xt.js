@@ -248,10 +248,13 @@ exports.UIApplication = UIApplication;
 Object.defineProperty(exports, "__esModule", { value: true });
 var UIColor = (function () {
     function UIColor(r, g, b, a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a || 1.0;
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));
+        ;
+        this.b = Math.min(1.0, Math.max(0.0, b));
+        ;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
+        ;
     }
     UIColor.prototype.rgbHexNumber = function () {
         var r = Math.ceil(this.r * 255).toString(16);

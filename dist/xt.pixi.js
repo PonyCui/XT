@@ -248,10 +248,13 @@ exports.UIApplication = UIApplication;
 Object.defineProperty(exports, "__esModule", { value: true });
 var UIColor = (function () {
     function UIColor(r, g, b, a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a || 1.0;
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));
+        ;
+        this.b = Math.min(1.0, Math.max(0.0, b));
+        ;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
+        ;
     }
     UIColor.prototype.rgbHexNumber = function () {
         var r = Math.ceil(this.r * 255).toString(16);
@@ -731,10 +734,53 @@ var UIView = (function (_super) {
             if (I.CGRectEqual(this._bounds, value)) {
                 return;
             }
+            if (UIView._animationEnabled) {
+                if (this._bounds.x != value.x) {
+                    UIView.addAnimation(this, "boundsX", this._bounds.x, value.x);
+                }
+                if (this._bounds.y != value.y) {
+                    UIView.addAnimation(this, "boundsY", this._bounds.y, value.y);
+                }
+                if (this._bounds.width != value.width) {
+                    UIView.addAnimation(this, "boundsWidth", this._bounds.width, value.width);
+                }
+                if (this._bounds.height != value.height) {
+                    UIView.addAnimation(this, "boundsHeight", this._bounds.height, value.height);
+                }
+                return;
+            }
             this._bounds = value;
             this.draw();
             UIApplication_1.setNeedsDisplay(this);
             this.setNeedsLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "boundsX", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { x: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "boundsY", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { y: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "boundsWidth", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { width: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "boundsHeight", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { height: value });
         },
         enumerable: true,
         configurable: true
@@ -809,9 +855,60 @@ var UIView = (function (_super) {
             if (this._backgroundColor instanceof I.UIColor && this._backgroundColor.equals(value)) {
                 return;
             }
+            if (UIView._animationEnabled && this._backgroundColor && value) {
+                if (this._backgroundColor.a != value.a) {
+                    UIView.addAnimation(this, "backgroundColorA", this._backgroundColor.a, value.a);
+                }
+                if (this._backgroundColor.r != value.r) {
+                    UIView.addAnimation(this, "backgroundColorR", this._backgroundColor.r, value.r);
+                }
+                if (this._backgroundColor.g != value.g) {
+                    UIView.addAnimation(this, "backgroundColorG", this._backgroundColor.g, value.g);
+                }
+                if (this._backgroundColor.b != value.b) {
+                    UIView.addAnimation(this, "backgroundColorB", this._backgroundColor.b, value.b);
+                }
+                return;
+            }
             this._backgroundColor = value;
             this.draw();
             UIApplication_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "backgroundColorA", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "backgroundColorR", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.UIColor(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "backgroundColorG", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.UIColor(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "backgroundColorB", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
+            }
         },
         enumerable: true,
         configurable: true
@@ -821,7 +918,7 @@ var UIView = (function (_super) {
             if (this._opaque === true) {
                 return true;
             }
-            else if (this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
+            else if (this.backgroundColor && this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
                 return true;
             }
             return this._opaque;
@@ -943,9 +1040,60 @@ var UIView = (function (_super) {
             if (this._borderColor === value) {
                 return;
             }
+            if (UIView._animationEnabled && this._borderColor && value) {
+                if (this._borderColor.a != value.a) {
+                    UIView.addAnimation(this, "borderColorA", this._borderColor.a, value.a);
+                }
+                if (this._borderColor.r != value.r) {
+                    UIView.addAnimation(this, "borderColorR", this._borderColor.r, value.r);
+                }
+                if (this._borderColor.g != value.g) {
+                    UIView.addAnimation(this, "borderColorG", this._borderColor.g, value.g);
+                }
+                if (this._borderColor.b != value.b) {
+                    UIView.addAnimation(this, "borderColorB", this._borderColor.b, value.b);
+                }
+                return;
+            }
             this._borderColor = value;
             this.draw();
             UIApplication_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "borderColorA", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "borderColorR", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.UIColor(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "borderColorG", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.UIColor(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UIView.prototype, "borderColorB", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
+            }
         },
         enumerable: true,
         configurable: true

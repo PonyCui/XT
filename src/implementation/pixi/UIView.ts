@@ -79,10 +79,33 @@ export class UIView extends I.UIView {
 
     public set bounds(value: I.CGRect | any) {
         if (I.CGRectEqual(this._bounds, value)) { return; }
+        if (UIView._animationEnabled) {
+            if (this._bounds.x != value.x) { UIView.addAnimation(this, "boundsX", this._bounds.x, value.x); }
+            if (this._bounds.y != value.y) { UIView.addAnimation(this, "boundsY", this._bounds.y, value.y); }
+            if (this._bounds.width != value.width) { UIView.addAnimation(this, "boundsWidth", this._bounds.width, value.width); }
+            if (this._bounds.height != value.height) { UIView.addAnimation(this, "boundsHeight", this._bounds.height, value.height); }
+            return;
+        }
         this._bounds = value;
         this.draw();
         setNeedsDisplay(this);
         this.setNeedsLayout();
+    }
+
+    private set boundsX(value: number) {
+        this.bounds = { ...this.bounds, x: value };
+    }
+
+    private set boundsY(value: number) {
+        this.bounds = { ...this.bounds, y: value };
+    }
+
+    private set boundsWidth(value: number) {
+        this.bounds = { ...this.bounds, width: value };
+    }
+
+    private set boundsHeight(value: number) {
+        this.bounds = { ...this.bounds, height: value };
     }
 
     public get center() {
@@ -154,11 +177,42 @@ export class UIView extends I.UIView {
         return this._backgroundColor;
     }
 
-    public set backgroundColor(value: I.UIColor | any) {
+    public set backgroundColor(value: I.UIColor | undefined) {
         if (this._backgroundColor instanceof I.UIColor && this._backgroundColor.equals(value)) { return; }
+        if (UIView._animationEnabled && this._backgroundColor && value) {
+            if (this._backgroundColor.a != value.a) { UIView.addAnimation(this, "backgroundColorA", this._backgroundColor.a, value.a); }
+            if (this._backgroundColor.r != value.r) { UIView.addAnimation(this, "backgroundColorR", this._backgroundColor.r, value.r); }
+            if (this._backgroundColor.g != value.g) { UIView.addAnimation(this, "backgroundColorG", this._backgroundColor.g, value.g); }
+            if (this._backgroundColor.b != value.b) { UIView.addAnimation(this, "backgroundColorB", this._backgroundColor.b, value.b); }
+            return;
+        }
         this._backgroundColor = value;
         this.draw();
         setNeedsDisplay(this);
+    }
+
+    private set backgroundColorA(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
+        }
+    }
+
+    private set backgroundColorR(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new I.UIColor(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
+        }
+    }
+
+    private set backgroundColorG(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new I.UIColor(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
+        }
+    }
+
+    private set backgroundColorB(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
+        }
     }
 
     private _opaque: boolean = false
@@ -171,7 +225,7 @@ export class UIView extends I.UIView {
         if (this._opaque === true) {
             return true;
         }
-        else if (this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
+        else if (this.backgroundColor && this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
             return true;
         }
         return this._opaque;
@@ -277,9 +331,40 @@ export class UIView extends I.UIView {
 
     public set borderColor(value: I.UIColor | undefined) {
         if (this._borderColor === value) { return; }
+        if (UIView._animationEnabled && this._borderColor && value) {
+            if (this._borderColor.a != value.a) { UIView.addAnimation(this, "borderColorA", this._borderColor.a, value.a); }
+            if (this._borderColor.r != value.r) { UIView.addAnimation(this, "borderColorR", this._borderColor.r, value.r); }
+            if (this._borderColor.g != value.g) { UIView.addAnimation(this, "borderColorG", this._borderColor.g, value.g); }
+            if (this._borderColor.b != value.b) { UIView.addAnimation(this, "borderColorB", this._borderColor.b, value.b); }
+            return;
+        }
         this._borderColor = value;
         this.draw();
         setNeedsDisplay(this);
+    }
+
+    private set borderColorA(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
+        }
+    }
+
+    private set borderColorR(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new I.UIColor(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
+        }
+    }
+
+    private set borderColorG(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new I.UIColor(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
+        }
+    }
+
+    private set borderColorB(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
+        }
     }
 
     private draw() {

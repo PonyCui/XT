@@ -7,10 +7,10 @@ export class UIColor {
     readonly a: number;
 
     constructor(r: number, g: number, b: number, a?: number) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a || 1.0;
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));;
+        this.b = Math.min(1.0, Math.max(0.0, b));;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));;
     }
 
     rgbHexNumber(): number {
@@ -20,7 +20,7 @@ export class UIColor {
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     }
 
-    equals(toColor: UIColor) {
+    equals(toColor: UIColor | undefined) {
         if (toColor instanceof UIColor) {
             return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
         }

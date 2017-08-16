@@ -25,12 +25,12 @@
                 var testView = new UIView({ x: 40, y: 40, width: 40, height: 40 });
                 testView.backgroundColor = new UIColor(1, 1, 0);
                 // testView.cornerRadius = 12;
-                // testView.borderWidth = 3;
+                testView.borderWidth = 3;
                 testView.borderColor = new UIColor(1, 1, 0, 1)
                 testView.userInteractionEnabled = true;
                 testView.onTap = function () {
                     UIView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
-                        testView.frame = { x: 40, y: 40, width: 160, height: 160 }
+                        testView.borderColor = new UIColor(1, 0, 0, 0)
                         // testView.alpha = 0.80
                     }, function () {
                         // testView.backgroundColor = new UIColor(1, 0, 0)
