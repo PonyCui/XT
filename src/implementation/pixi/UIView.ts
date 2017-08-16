@@ -1,6 +1,7 @@
 declare function require(name: string): any;
 import * as I from '../../interface/Abstract'
 import { setNeedsDisplay, displayPause, displayNow } from './UIApplication'
+import * as Rebound from 'rebound'
 const PIXI = (window as any).PIXI
 const AutoLayout = require("autolayout");
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
@@ -55,19 +56,19 @@ export class UIView extends I.UIView {
     }
 
     private set frameX(value: number) {
-        this.frame = {...this.frame, x: value};
+        this.frame = { ...this.frame, x: value };
     }
 
     private set frameY(value: number) {
-        this.frame = {...this.frame, y: value};
+        this.frame = { ...this.frame, y: value };
     }
 
     private set frameWidth(value: number) {
-        this.frame = {...this.frame, width: value};
+        this.frame = { ...this.frame, width: value };
     }
 
     private set frameHeight(value: number) {
-        this.frame = {...this.frame, height: value};
+        this.frame = { ...this.frame, height: value };
     }
 
     private _bounds: I.CGRect = I.CGRectZero;
@@ -769,8 +770,28 @@ export class UIView extends I.UIView {
         })
     }
 
-    static animationWithSpring(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) {
-
+    static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
+        const springSystem = new Rebound.SpringSystem();
+        let rested = false;
+        this.commonAnimation(animations, (startTime, animationViewProps) => {
+            animationViewProps.forEach(item => {
+                const spring = springSystem.createSpringWithBouncinessAndSpeed(bounciness, speed);
+                spring.addListener({
+                    onSpringUpdate: (spring) => {
+                        (item.view as any)[item.propName] = spring.getCurrentValue();
+                    },
+                    onSpringAtRest: () => {
+                        if (!rested) {
+                            rested = true;
+                            completion && completion();
+                        }
+                    }
+                });
+                spring.setCurrentValue(item.from);
+                spring.setEndValue(item.to);
+            })
+            return true;
+        })
     }
 
     static addAnimation(view: UIView, propName: string, from: number, to: number) {

@@ -29,9 +29,11 @@
                 testView.borderColor = new UIColor(1, 1, 0, 1)
                 testView.userInteractionEnabled = true;
                 testView.onTap = function () {
-                    UIView.animationWithDuration(0.25, function() {
+                    UIView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
                         testView.frame = { x: 40, y: 40, width: 160, height: 160 }
-                        testView.alpha = 0.25
+                        // testView.alpha = 0.80
+                    }, function () {
+                        // testView.backgroundColor = new UIColor(1, 0, 0)
                     });
                     // smallView.backgroundColor = new UIColor(1, 1, 1);
                 }
