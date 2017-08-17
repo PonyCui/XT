@@ -100,6 +100,7 @@ var Label_1 = __webpack_require__(11);
 exports.Label = Label_1.Label;
 exports.TextAlignment = Label_1.TextAlignment;
 exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
+exports.LineBreakMode = Label_1.LineBreakMode;
 var Font_1 = __webpack_require__(12);
 exports.Font = Font_1.Font;
 
@@ -420,6 +421,11 @@ var TextVerticalAlignment;
     TextVerticalAlignment[TextVerticalAlignment["Center"] = 1] = "Center";
     TextVerticalAlignment[TextVerticalAlignment["Bottom"] = 2] = "Bottom";
 })(TextVerticalAlignment = exports.TextVerticalAlignment || (exports.TextVerticalAlignment = {}));
+var LineBreakMode;
+(function (LineBreakMode) {
+    LineBreakMode[LineBreakMode["WordWrapping"] = 0] = "WordWrapping";
+    LineBreakMode[LineBreakMode["TruncatingTail"] = 4] = "TruncatingTail";
+})(LineBreakMode = exports.LineBreakMode || (exports.LineBreakMode = {}));
 var Label = (function (_super) {
     __extends(Label, _super);
     function Label() {
@@ -427,6 +433,7 @@ var Label = (function (_super) {
         _this.textColor = new Color_1.Color(0, 0, 0);
         _this.textAlignment = TextAlignment.Left;
         _this.numberOfLines = 1;
+        _this.lineBreakMode = LineBreakMode.WordWrapping;
         return _this;
     }
     return Label;
@@ -510,6 +517,8 @@ var Factory = (function () {
     Factory.SizeEqual = I.SizeEqual;
     Factory.Label = I.Label;
     Factory.TextAlignment = I.TextAlignment;
+    Factory.TextVerticalAlignment = I.TextVerticalAlignment;
+    Factory.LineBreakMode = I.LineBreakMode;
     Factory.Font = I.Font;
     Factory.View = I.View;
     Factory.Application = I.Application;

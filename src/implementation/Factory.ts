@@ -14,6 +14,8 @@ export class Factory {
     static SizeEqual = I.SizeEqual;
     static Label = I.Label;
     static TextAlignment = I.TextAlignment;
+    static TextVerticalAlignment = I.TextVerticalAlignment;
+    static LineBreakMode = I.LineBreakMode;
     static Font = I.Font;
     static View: typeof I.View = I.View;
     static Application: typeof I.Application = I.Application;

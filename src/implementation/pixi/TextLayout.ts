@@ -52,10 +52,11 @@ export class StaticTextLayout {
         this.layoutSequence = layoutSequence;
         this.textRect = I.RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
     }
+
     readonly layoutSequence: any[]
     readonly textRect: I.Rect
 
-    textLines(onRect: I.Rect, horizonAlignment: I.TextAlignment, verticalAlignment: I.TextVerticalAlignment): any[] {
+    textLines(onRect: I.Rect, horizonAlignment: I.TextAlignment, verticalAlignment: I.TextVerticalAlignment, lineBreakMode: I.LineBreakMode): any[] {
         const offset: { x: number, y: number } = { x: this.textRect.x, y: this.textRect.y }
         if (verticalAlignment === I.TextVerticalAlignment.Center) {
             offset.y = Math.max(this.padding.top, ((onRect.y + onRect.height) - this.textRect.height) / 2.0)
@@ -88,7 +89,17 @@ export class StaticTextLayout {
         if (line.text.length > 0) {
             addLine(line);
         }
-        return lines.filter(line => line.y + line.height < onRect.height);
+        const breakedLines = lines.filter(line => line.y + line.height < onRect.height);
+        if (breakedLines.length != lines.length || breakedLines.map(item => item.text).join("").length < this.text.length) {
+            switch (lineBreakMode) {
+                case I.LineBreakMode.TruncatingTail:
+                    if (breakedLines[breakedLines.length - 1].text.length > 0) {
+                        breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -1) + "...";
+                    }
+                    break;
+            }
+        }
+        return breakedLines
     }
 
 }

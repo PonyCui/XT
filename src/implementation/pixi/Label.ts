@@ -72,6 +72,18 @@ export class Label extends View {
         this.drawText();
     }
 
+    private _lineBreakMode: I.LineBreakMode = I.LineBreakMode.WordWrapping;
+
+    public get lineBreakMode(): I.LineBreakMode {
+        return this._lineBreakMode
+    }
+
+    public set lineBreakMode(value: I.LineBreakMode) {
+        if (this._lineBreakMode === value) { return; }
+        this._lineBreakMode = value;
+        this.drawText();
+    }
+
     private _drawTextImmediate: any;
 
     drawText() {
@@ -84,8 +96,7 @@ export class Label extends View {
                     fill: "#ffffff",
                 })
                 const textLayout = new StaticTextLayout(this.numberOfLines, this.text, this.font, this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
-                textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center).forEach(line => {
-                    console.log(line);
+                textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center, this.lineBreakMode).forEach(line => {
                     const text = new PIXI.Text(line.text, textStyle);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);

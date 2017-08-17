@@ -6,7 +6,7 @@ import { Color } from './Color'
 import { Screen } from './Screen'
 import { TransformMatrix } from './TransformMatrix'
 import { LayoutConstraint } from "./LayoutConstraint";
-import { Label, TextAlignment, TextVerticalAlignment } from "./Label";
+import { Label, TextAlignment, TextVerticalAlignment, LineBreakMode } from "./Label";
 import { Font } from "./Font";
 
 export {
@@ -34,5 +34,6 @@ export {
     Label,
     TextAlignment,
     TextVerticalAlignment,
+    LineBreakMode,
     Font,
 }

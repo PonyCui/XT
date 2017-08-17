@@ -100,6 +100,7 @@ var Label_1 = __webpack_require__(11);
 exports.Label = Label_1.Label;
 exports.TextAlignment = Label_1.TextAlignment;
 exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
+exports.LineBreakMode = Label_1.LineBreakMode;
 var Font_1 = __webpack_require__(12);
 exports.Font = Font_1.Font;
 
@@ -665,6 +666,11 @@ var TextVerticalAlignment;
     TextVerticalAlignment[TextVerticalAlignment["Center"] = 1] = "Center";
     TextVerticalAlignment[TextVerticalAlignment["Bottom"] = 2] = "Bottom";
 })(TextVerticalAlignment = exports.TextVerticalAlignment || (exports.TextVerticalAlignment = {}));
+var LineBreakMode;
+(function (LineBreakMode) {
+    LineBreakMode[LineBreakMode["WordWrapping"] = 0] = "WordWrapping";
+    LineBreakMode[LineBreakMode["TruncatingTail"] = 4] = "TruncatingTail";
+})(LineBreakMode = exports.LineBreakMode || (exports.LineBreakMode = {}));
 var Label = (function (_super) {
     __extends(Label, _super);
     function Label() {
@@ -672,6 +678,7 @@ var Label = (function (_super) {
         _this.textColor = new Color_1.Color(0, 0, 0);
         _this.textAlignment = TextAlignment.Left;
         _this.numberOfLines = 1;
+        _this.lineBreakMode = LineBreakMode.WordWrapping;
         return _this;
     }
     return Label;
@@ -1750,6 +1757,8 @@ var Factory = (function () {
     Factory.SizeEqual = I.SizeEqual;
     Factory.Label = I.Label;
     Factory.TextAlignment = I.TextAlignment;
+    Factory.TextVerticalAlignment = I.TextVerticalAlignment;
+    Factory.LineBreakMode = I.LineBreakMode;
     Factory.Font = I.Font;
     Factory.View = I.View;
     Factory.Application = I.Application;
@@ -8992,6 +9001,7 @@ var Label = (function (_super) {
         _this._textColor = new I.Color(0, 0, 0);
         _this._textAlignment = I.TextAlignment.Left;
         _this._numberOfLines = 1;
+        _this._lineBreakMode = I.LineBreakMode.WordWrapping;
         _this.nativeObject.addChild(_this.textContainer);
         return _this;
     }
@@ -9061,6 +9071,20 @@ var Label = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Label.prototype, "lineBreakMode", {
+        get: function () {
+            return this._lineBreakMode;
+        },
+        set: function (value) {
+            if (this._lineBreakMode === value) {
+                return;
+            }
+            this._lineBreakMode = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
     Label.prototype.drawText = function () {
         var _this = this;
         clearImmediate(this._drawTextImmediate);
@@ -9072,8 +9096,7 @@ var Label = (function (_super) {
                     fill: "#ffffff",
                 });
                 var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.text, _this.font, _this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
-                textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center).forEach(function (line) {
-                    console.log(line);
+                textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center, _this.lineBreakMode).forEach(function (line) {
                     var text = new PIXI.Text(line.text, textStyle_1);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);
@@ -9132,7 +9155,7 @@ var StaticTextLayout = (function () {
         this.layoutSequence = layoutSequence;
         this.textRect = I.RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
     }
-    StaticTextLayout.prototype.textLines = function (onRect, horizonAlignment, verticalAlignment) {
+    StaticTextLayout.prototype.textLines = function (onRect, horizonAlignment, verticalAlignment, lineBreakMode) {
         var _this = this;
         var offset = { x: this.textRect.x, y: this.textRect.y };
         if (verticalAlignment === I.TextVerticalAlignment.Center) {
@@ -9166,7 +9189,17 @@ var StaticTextLayout = (function () {
         if (line.text.length > 0) {
             addLine(line);
         }
-        return lines.filter(function (line) { return line.y + line.height < onRect.height; });
+        var breakedLines = lines.filter(function (line) { return line.y + line.height < onRect.height; });
+        if (breakedLines.length != lines.length || breakedLines.map(function (item) { return item.text; }).join("").length < this.text.length) {
+            switch (lineBreakMode) {
+                case I.LineBreakMode.TruncatingTail:
+                    if (breakedLines[breakedLines.length - 1].text.length > 0) {
+                        breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -1) + "...";
+                    }
+                    break;
+            }
+        }
+        return breakedLines;
     };
     return StaticTextLayout;
 }());
@@ -9302,8 +9335,9 @@ function huozi(textSequence, layoutOptions, onSequence) {
     var charFontSize = char.fontSize,
         character = char.character;
 
-    // 处理行内上一个字符是标点（已预先压缩），但本字符是非标点（因而需要取消之前的压缩）的情况
+    var isSpace = character == " ";
 
+    // 处理行内上一个字符是标点（已预先压缩），但本字符是非标点（因而需要取消之前的压缩）的情况
     if (FLAG_INLINE_COMPRESSION && lastIsPunctuation && !_code.BIAODIAN.includes(character)) {
       currentX += lastCharFontSize / 2 + xInterval;
       currentColumn += 0.5;
@@ -9481,6 +9515,7 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
       yInterval = _ref.yInterval,
       letterSpacing = _ref.letterSpacing;
 
+
   var layoutSequence = [];
   var maxFontSize = gridSize;
   var word = '';
@@ -9535,6 +9570,11 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
 
         currentX += _char.width + letterSpacing;
       }
+      layoutSequence.push(Object.assign({}, layoutSequence[layoutSequence.length - 1], {
+        character: " ",
+        x: layoutSequence[layoutSequence.length - 1].x + layoutSequence[layoutSequence.length - 1].width,
+        width: currentX - layoutSequence[layoutSequence.length - 1].x + layoutSequence[layoutSequence.length - 1].width
+      }));
 
       currentX += 0.35 * gridSize;
 
@@ -9550,7 +9590,6 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
       wordChar.push(Object.assign({}, char, { width: width, height: charFontSize }));
     }
   }
-
   return [layoutSequence, currentX - 0.35 * gridSize, currentY, currentRow, isMultiLine];
 }
 
