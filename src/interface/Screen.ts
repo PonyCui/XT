@@ -1,8 +1,8 @@
-import { CGRect } from './CGRect'
+import { Rect } from './Rect'
 
-export class UIScreen {
+export class Screen {
 
-    static mainScreen: () => UIScreen = () => new UIScreen(0, 0, 1)
+    static mainScreen: () => Screen = () => new Screen(0, 0, 1)
 
     readonly width: number;
     readonly height: number;
@@ -14,16 +14,16 @@ export class UIScreen {
         this.scale = scale;
     }
 
-    bounds(): CGRect {
+    bounds(): Rect {
         return { x: 0, y: 0, width: this.width, height: this.height }
     }
 
     static withScale(value: number): number {
-        return value * UIScreen.mainScreen().scale;
+        return value * Screen.mainScreen().scale;
     }
 
     static outScale(value: number): number {
-        return value / UIScreen.mainScreen().scale;
+        return value / Screen.mainScreen().scale;
     }
 
 }

@@ -1,4 +1,4 @@
-export class CGTransformMatrix {
+export class TransformMatrix {
 
     a: number;
     b: number;

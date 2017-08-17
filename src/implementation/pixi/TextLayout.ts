@@ -14,14 +14,14 @@ export interface TextLine {
     y: number;
 }
 
-export class UIStaticTextLayout {
+export class StaticTextLayout {
 
     readonly text: string;
-    readonly font: I.UIFont;
-    readonly bounds: I.CGRect = I.CGRectZero
+    readonly font: I.Font;
+    readonly bounds: I.Rect = I.RectZero
     readonly padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }
 
-    constructor(text: string, font: I.UIFont, bounds: I.CGRect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
+    constructor(text: string, font: I.Font, bounds: I.Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
         this.text = text;
         this.font = font;
         this.bounds = bounds;
@@ -43,17 +43,17 @@ export class UIStaticTextLayout {
         const maxX = Math.max.apply(null, layoutSequence.map((element: any) => element.x + element.width));
         const maxY = Math.max.apply(null, layoutSequence.map((element: any) => element.y + element.height));
         this.layoutSequence = layoutSequence;
-        this.textRect = I.CGRectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
+        this.textRect = I.RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
     }
     readonly layoutSequence: any[]
-    readonly textRect: I.CGRect
+    readonly textRect: I.Rect
 
-    textLines(onRect: I.CGRect, horizonAlignment: I.UITextAlignment, verticalAlignment: I.UITextVerticalAlignment): any[] {
+    textLines(onRect: I.Rect, horizonAlignment: I.TextAlignment, verticalAlignment: I.TextVerticalAlignment): any[] {
         const offset: { x: number, y: number } = { x: this.textRect.x, y: this.textRect.y }
-        if (horizonAlignment === I.UITextAlignment.Center) {
+        if (horizonAlignment === I.TextAlignment.Center) {
             offset.x = ((onRect.x + onRect.width) - this.textRect.width) / 2.0
         }
-        if (verticalAlignment === I.UITextVerticalAlignment.Center) {
+        if (verticalAlignment === I.TextVerticalAlignment.Center) {
             offset.y = ((onRect.y + onRect.height) - this.textRect.height) / 2.0
         }
         let lines: TextLine[] = [];

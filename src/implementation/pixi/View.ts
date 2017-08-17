@@ -1,6 +1,6 @@
 declare function require(name: string): any;
 import * as I from '../../interface/Abstract'
-import { setNeedsDisplay, displayPause, displayNow } from './UIApplication'
+import { setNeedsDisplay, displayPause, displayNow } from './Application'
 import * as Rebound from 'rebound'
 const PIXI = (window as any).PIXI
 const AutoLayout = require("autolayout");
@@ -11,13 +11,13 @@ if (requestAnimationFrame === undefined) {
     }
 }
 
-export class UIView extends I.UIView {
+export class View extends I.View {
 
     public nativeObject: any;
     public nativeGraphics: any;
 
-    constructor(rect?: I.CGRect) {
-        super(rect || I.CGRectZero);
+    constructor(rect?: I.Rect) {
+        super(rect || I.RectZero);
         this.nativeObject = new PIXI.Container();
         this.nativeObject.XTView = this;
         this.nativeGraphics = new PIXI.Graphics();
@@ -31,29 +31,29 @@ export class UIView extends I.UIView {
 
     // Mark: View Geometry
 
-    private _frame: I.CGRect = I.CGRectZero;
+    private _frame: I.Rect = I.RectZero;
     public _frameChanged = false
 
     public get frame() {
         return this._frame;
     }
 
-    public set frame(value: I.CGRect | any) {
-        if (I.CGRectEqual(this._frame, value)) { return; }
-        if (UIView._animationEnabled) {
-            if (this._frame.x != value.x) { UIView.addAnimation(this, "frameX", this._frame.x, value.x); }
-            if (this._frame.y != value.y) { UIView.addAnimation(this, "frameY", this._frame.y, value.y); }
-            if (this._frame.width != value.width) { UIView.addAnimation(this, "frameWidth", this._frame.width, value.width); }
-            if (this._frame.height != value.height) { UIView.addAnimation(this, "frameHeight", this._frame.height, value.height); }
+    public set frame(value: I.Rect | any) {
+        if (I.RectEqual(this._frame, value)) { return; }
+        if (View._animationEnabled) {
+            if (this._frame.x != value.x) { View.addAnimation(this, "frameX", this._frame.x, value.x); }
+            if (this._frame.y != value.y) { View.addAnimation(this, "frameY", this._frame.y, value.y); }
+            if (this._frame.width != value.width) { View.addAnimation(this, "frameWidth", this._frame.width, value.width); }
+            if (this._frame.height != value.height) { View.addAnimation(this, "frameHeight", this._frame.height, value.height); }
             return;
         }
         this._frame = value;
         this._frameChanged = true;
         this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
-        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
+        this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.Screen.withScale(value.width), I.Screen.withScale(value.height));
         this.nativeContainer.hitArea = this.nativeObject.hitArea;
-        this.nativeObject.x = I.UIScreen.withScale(value.x);
-        this.nativeObject.y = I.UIScreen.withScale(value.y);
+        this.nativeObject.x = I.Screen.withScale(value.x);
+        this.nativeObject.y = I.Screen.withScale(value.y);
         setNeedsDisplay(this);
     }
 
@@ -73,19 +73,19 @@ export class UIView extends I.UIView {
         this.frame = { ...this.frame, height: value };
     }
 
-    private _bounds: I.CGRect = I.CGRectZero;
+    private _bounds: I.Rect = I.RectZero;
 
     public get bounds() {
         return this._bounds;
     }
 
-    public set bounds(value: I.CGRect | any) {
-        if (I.CGRectEqual(this._bounds, value)) { return; }
-        if (UIView._animationEnabled) {
-            if (this._bounds.x != value.x) { UIView.addAnimation(this, "boundsX", this._bounds.x, value.x); }
-            if (this._bounds.y != value.y) { UIView.addAnimation(this, "boundsY", this._bounds.y, value.y); }
-            if (this._bounds.width != value.width) { UIView.addAnimation(this, "boundsWidth", this._bounds.width, value.width); }
-            if (this._bounds.height != value.height) { UIView.addAnimation(this, "boundsHeight", this._bounds.height, value.height); }
+    public set bounds(value: I.Rect | any) {
+        if (I.RectEqual(this._bounds, value)) { return; }
+        if (View._animationEnabled) {
+            if (this._bounds.x != value.x) { View.addAnimation(this, "boundsX", this._bounds.x, value.x); }
+            if (this._bounds.y != value.y) { View.addAnimation(this, "boundsY", this._bounds.y, value.y); }
+            if (this._bounds.width != value.width) { View.addAnimation(this, "boundsWidth", this._bounds.width, value.width); }
+            if (this._bounds.height != value.height) { View.addAnimation(this, "boundsHeight", this._bounds.height, value.height); }
             return;
         }
         this._bounds = value;
@@ -114,20 +114,20 @@ export class UIView extends I.UIView {
         return { x: this.frame.x + this.frame.width / 2.0, y: this.frame.y + this.frame.height / 2.0 }
     }
 
-    public set center(value: I.CGPoint) {
+    public set center(value: I.Point) {
         const newFrame = this.frame;
         newFrame.x = value.x - newFrame.width / 2.0;
         newFrame.y = value.y - newFrame.height / 2.0;
         this.frame = newFrame;
     }
 
-    private _transform: I.CGTransformMatrix | undefined;
+    private _transform: I.TransformMatrix | undefined;
 
-    public get transform(): I.CGTransformMatrix | undefined {
+    public get transform(): I.TransformMatrix | undefined {
         return this._transform
     }
 
-    public set transform(value: I.CGTransformMatrix | undefined) {
+    public set transform(value: I.TransformMatrix | undefined) {
         this._transform = value;
         if (value) {
             const transform = new PIXI.Transform();
@@ -158,8 +158,8 @@ export class UIView extends I.UIView {
     private applyMask() {
         if (this.clipsToBounds) {
             if (this.maskView === undefined) {
-                this.maskView = new UIView(this.bounds)
-                this.maskView.backgroundColor = new I.UIColor(1, 1, 1)
+                this.maskView = new View(this.bounds)
+                this.maskView.backgroundColor = new I.Color(1, 1, 1)
             }
             this.addSubview(this.maskView);
             this.nativeObject.mask = this.maskView.nativeGraphics;
@@ -173,19 +173,19 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
-    private _backgroundColor?: I.UIColor = undefined;
+    private _backgroundColor?: I.Color = undefined;
 
     public get backgroundColor() {
         return this._backgroundColor;
     }
 
-    public set backgroundColor(value: I.UIColor | undefined) {
-        if (this._backgroundColor instanceof I.UIColor && this._backgroundColor.equals(value)) { return; }
-        if (UIView._animationEnabled && this._backgroundColor && value) {
-            if (this._backgroundColor.a != value.a) { UIView.addAnimation(this, "backgroundColorA", this._backgroundColor.a, value.a); }
-            if (this._backgroundColor.r != value.r) { UIView.addAnimation(this, "backgroundColorR", this._backgroundColor.r, value.r); }
-            if (this._backgroundColor.g != value.g) { UIView.addAnimation(this, "backgroundColorG", this._backgroundColor.g, value.g); }
-            if (this._backgroundColor.b != value.b) { UIView.addAnimation(this, "backgroundColorB", this._backgroundColor.b, value.b); }
+    public set backgroundColor(value: I.Color | undefined) {
+        if (this._backgroundColor instanceof I.Color && this._backgroundColor.equals(value)) { return; }
+        if (View._animationEnabled && this._backgroundColor && value) {
+            if (this._backgroundColor.a != value.a) { View.addAnimation(this, "backgroundColorA", this._backgroundColor.a, value.a); }
+            if (this._backgroundColor.r != value.r) { View.addAnimation(this, "backgroundColorR", this._backgroundColor.r, value.r); }
+            if (this._backgroundColor.g != value.g) { View.addAnimation(this, "backgroundColorG", this._backgroundColor.g, value.g); }
+            if (this._backgroundColor.b != value.b) { View.addAnimation(this, "backgroundColorB", this._backgroundColor.b, value.b); }
             return;
         }
         this._backgroundColor = value;
@@ -195,25 +195,25 @@ export class UIView extends I.UIView {
 
     private set backgroundColorA(value: number) {
         if (this.backgroundColor) {
-            this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
+            this.backgroundColor = new I.Color(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
         }
     }
 
     private set backgroundColorR(value: number) {
         if (this.backgroundColor) {
-            this.backgroundColor = new I.UIColor(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
+            this.backgroundColor = new I.Color(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
         }
     }
 
     private set backgroundColorG(value: number) {
         if (this.backgroundColor) {
-            this.backgroundColor = new I.UIColor(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
+            this.backgroundColor = new I.Color(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
         }
     }
 
     private set backgroundColorB(value: number) {
         if (this.backgroundColor) {
-            this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
+            this.backgroundColor = new I.Color(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
         }
     }
 
@@ -239,8 +239,8 @@ export class UIView extends I.UIView {
 
     public set alpha(value: number) {
         if (this.nativeObject.alpha === value) { return; }
-        if (UIView._animationEnabled) {
-            UIView.addAnimation(this, "alpha", this.nativeObject.alpha, value);
+        if (View._animationEnabled) {
+            View.addAnimation(this, "alpha", this.nativeObject.alpha, value);
             return;
         }
         this.nativeObject.alpha = value;
@@ -257,13 +257,13 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
-    private _maskView: UIView | undefined
+    private _maskView: View | undefined
 
-    public get maskView(): UIView | undefined {
+    public get maskView(): View | undefined {
         return this._maskView;
     }
 
-    public set maskView(value: UIView | undefined) {
+    public set maskView(value: View | undefined) {
         if (this._maskView !== undefined) {
             this._maskView.removeFromSuperview();
         }
@@ -272,21 +272,21 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
-    private _tintColor: I.UIColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0)
+    private _tintColor: I.Color = new I.Color(0.0, 122.0 / 255.0, 1.0)
 
     public get tintColor() {
         return this._tintColor;
     }
 
-    public set tintColor(value: I.UIColor) {
-        if (this._tintColor instanceof I.UIColor && this._tintColor.equals(value)) { return; }
+    public set tintColor(value: I.Color) {
+        if (this._tintColor instanceof I.Color && this._tintColor.equals(value)) { return; }
         this._tintColor = value;
         this.tintColorDidChange();
         setNeedsDisplay(this);
     }
 
     tintColorDidChange() {
-        this.subviews.forEach((subview: UIView) => { subview.tintColorDidChange() });
+        this.subviews.forEach((subview: View) => { subview.tintColorDidChange() });
     }
 
     // Mark: View Layer-Back Rendering
@@ -299,8 +299,8 @@ export class UIView extends I.UIView {
 
     public set cornerRadius(value: number) {
         if (this._cornerRadius === value) { return; }
-        if (UIView._animationEnabled) {
-            UIView.addAnimation(this, "cornerRadius", this._cornerRadius, value);
+        if (View._animationEnabled) {
+            View.addAnimation(this, "cornerRadius", this._cornerRadius, value);
             return;
         }
         this._cornerRadius = value;
@@ -316,8 +316,8 @@ export class UIView extends I.UIView {
 
     public set borderWidth(value: number) {
         if (this._borderWidth === value) { return; }
-        if (UIView._animationEnabled) {
-            UIView.addAnimation(this, "borderWidth", this._borderWidth, value);
+        if (View._animationEnabled) {
+            View.addAnimation(this, "borderWidth", this._borderWidth, value);
             return;
         }
         this._borderWidth = value;
@@ -325,19 +325,19 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
-    private _borderColor: I.UIColor | undefined = undefined;
+    private _borderColor: I.Color | undefined = undefined;
 
     public get borderColor() {
         return this._borderColor;
     }
 
-    public set borderColor(value: I.UIColor | undefined) {
+    public set borderColor(value: I.Color | undefined) {
         if (this._borderColor === value) { return; }
-        if (UIView._animationEnabled && this._borderColor && value) {
-            if (this._borderColor.a != value.a) { UIView.addAnimation(this, "borderColorA", this._borderColor.a, value.a); }
-            if (this._borderColor.r != value.r) { UIView.addAnimation(this, "borderColorR", this._borderColor.r, value.r); }
-            if (this._borderColor.g != value.g) { UIView.addAnimation(this, "borderColorG", this._borderColor.g, value.g); }
-            if (this._borderColor.b != value.b) { UIView.addAnimation(this, "borderColorB", this._borderColor.b, value.b); }
+        if (View._animationEnabled && this._borderColor && value) {
+            if (this._borderColor.a != value.a) { View.addAnimation(this, "borderColorA", this._borderColor.a, value.a); }
+            if (this._borderColor.r != value.r) { View.addAnimation(this, "borderColorR", this._borderColor.r, value.r); }
+            if (this._borderColor.g != value.g) { View.addAnimation(this, "borderColorG", this._borderColor.g, value.g); }
+            if (this._borderColor.b != value.b) { View.addAnimation(this, "borderColorB", this._borderColor.b, value.b); }
             return;
         }
         this._borderColor = value;
@@ -347,25 +347,25 @@ export class UIView extends I.UIView {
 
     private set borderColorA(value: number) {
         if (this.borderColor) {
-            this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
+            this.borderColor = new I.Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
         }
     }
 
     private set borderColorR(value: number) {
         if (this.borderColor) {
-            this.borderColor = new I.UIColor(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
+            this.borderColor = new I.Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
         }
     }
 
     private set borderColorG(value: number) {
         if (this.borderColor) {
-            this.borderColor = new I.UIColor(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
+            this.borderColor = new I.Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
         }
     }
 
     private set borderColorB(value: number) {
         if (this.borderColor) {
-            this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
+            this.borderColor = new I.Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
         }
     }
 
@@ -378,16 +378,16 @@ export class UIView extends I.UIView {
     }
 
     private drawGraphics() {
-        if (this.backgroundColor instanceof I.UIColor) {
+        if (this.backgroundColor instanceof I.Color) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
-            if (this.borderWidth > 0 && this.borderColor instanceof I.UIColor) {
-                this.nativeGraphics.lineStyle(I.UIScreen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
+            if (this.borderWidth > 0 && this.borderColor instanceof I.Color) {
+                this.nativeGraphics.lineStyle(I.Screen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
             }
             const scaledBounds = {
-                x: I.UIScreen.withScale(this.bounds.x),
-                y: I.UIScreen.withScale(this.bounds.y),
-                width: I.UIScreen.withScale(this.bounds.width),
-                height: I.UIScreen.withScale(this.bounds.height),
+                x: I.Screen.withScale(this.bounds.x),
+                y: I.Screen.withScale(this.bounds.y),
+                width: I.Screen.withScale(this.bounds.width),
+                height: I.Screen.withScale(this.bounds.height),
             }
             if (this.cornerRadius > 0) {
                 if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
@@ -406,7 +406,7 @@ export class UIView extends I.UIView {
                     }
                 }
                 else {
-                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.UIScreen.withScale(this.cornerRadius));
+                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.Screen.withScale(this.cornerRadius));
                 }
             }
             else {
@@ -419,24 +419,24 @@ export class UIView extends I.UIView {
     public nativeContainer: any;
     public tag?: number;
 
-    public get superview(): UIView | undefined {
+    public get superview(): View | undefined {
         let parent: any = undefined;
         if (this.nativeContainer.parent && this.nativeContainer.parent.parent && this.nativeContainer.parent.parent.parent) {
             parent = this.nativeContainer.parent.parent.parent
         }
-        if (parent !== undefined && parent.XTView instanceof UIView) {
+        if (parent !== undefined && parent.XTView instanceof View) {
             return parent.XTView;
         }
         return undefined
     }
 
-    public get subviews(): UIView[] {
+    public get subviews(): View[] {
         return this.nativeContainer.children.map((item: any) => item.XTView);
     }
 
     public get window(): any {
         let current = this.superview
-        while (current !== undefined && (current as any).XTClassName !== "UIWindow") {
+        while (current !== undefined && (current as any).XTClassName !== "Window") {
             current = current.superview;
         }
         return current;
@@ -454,7 +454,7 @@ export class UIView extends I.UIView {
         }
     }
 
-    public insertSubviewAtIndex(subview: UIView, atIndex: number) {
+    public insertSubviewAtIndex(subview: View, atIndex: number) {
         subview.willMoveToSuperview(this);
         subview.willMoveToWindow(this.window);
         this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
@@ -470,7 +470,7 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
-    public addSubview(subview: UIView) {
+    public addSubview(subview: View) {
         subview.willMoveToSuperview(this);
         subview.willMoveToWindow(this.window);
         this.nativeContainer.addChild(subview.nativeObject);
@@ -480,14 +480,14 @@ export class UIView extends I.UIView {
         setNeedsDisplay(this);
     }
 
-    public insertSubviewBelow(subview: UIView, siblingSubview: UIView) {
+    public insertSubviewBelow(subview: View, siblingSubview: View) {
         const siblingIndex = this.subviews.indexOf(siblingSubview);
         if (siblingIndex >= 0) {
             this.insertSubviewAtIndex(subview, siblingIndex);
         }
     }
 
-    public insertSubviewAbove(subview: UIView, siblingSubview: UIView) {
+    public insertSubviewAbove(subview: View, siblingSubview: View) {
         const siblingIndex = this.subviews.indexOf(siblingSubview);
         if (siblingIndex >= 0 && siblingIndex == this.subviews.length - 1) {
             this.addSubview(subview)
@@ -497,29 +497,29 @@ export class UIView extends I.UIView {
         }
     }
 
-    public bringSubviewToFront(subview: UIView) {
+    public bringSubviewToFront(subview: View) {
         const currentIndex = this.subviews.indexOf(subview)
         if (currentIndex < this.subviews.length - 1 && this.subviews.length > 1) {
             this.exchangeSubviewAtIndex(this.subviews.length - 1, currentIndex);
         }
     }
 
-    public sendSubviewToBack(subview: UIView) {
+    public sendSubviewToBack(subview: View) {
         const currentIndex = this.subviews.indexOf(subview)
         if (currentIndex > 0 && this.subviews.length > 1) {
             this.exchangeSubviewAtIndex(0, currentIndex);
         }
     }
 
-    public didAddSubview(subview: UIView) { }
-    public willRemoveSubview(subview: UIView) { }
-    public willMoveToSuperview(newSuperview?: UIView) { }
+    public didAddSubview(subview: View) { }
+    public willRemoveSubview(subview: View) { }
+    public willMoveToSuperview(newSuperview?: View) { }
     public didMoveToSuperview() { }
     public willMoveToWindow(newWindow?: any) { }
     public didMoveToWindow() { }
 
-    public isDescendantOfView(view: UIView) {
-        let current: UIView | undefined = this;
+    public isDescendantOfView(view: View) {
+        let current: View | undefined = this;
         while (current !== undefined) {
             if (current === view) {
                 return true
@@ -529,7 +529,7 @@ export class UIView extends I.UIView {
         return false
     }
 
-    public viewWithTag(tag: number): UIView | undefined {
+    public viewWithTag(tag: number): View | undefined {
         if (this.tag !== undefined && this.tag === tag) {
             return this;
         }
@@ -559,7 +559,7 @@ export class UIView extends I.UIView {
 
     public layoutSubviews() {
         if (this._constraints.length > 0) {
-            let viewMapping: { [key: string]: UIView } = {}
+            let viewMapping: { [key: string]: View } = {}
             this._constraints.forEach(item => {
                 if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any)._layoutID] = item.firstItem as any }
                 if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any)._layoutID] = item.secondItem as any }
@@ -585,9 +585,9 @@ export class UIView extends I.UIView {
 
     // Mark: View LayoutConstraint
 
-    private _layoutID: string = UIView.generateLayoutUUID();
+    private _layoutID: string = View.generateLayoutUD();
 
-    private static generateLayoutUUID(): string {
+    private static generateLayoutUD(): string {
         var s: any[] = [];
         var hexDigits = "0123456789abcdef";
         for (var i = 0; i < 36; i++) {
@@ -600,23 +600,23 @@ export class UIView extends I.UIView {
         return uuid;
     }
 
-    private _constraints: I.NSLayoutConstraint[] = [];
+    private _constraints: I.LayoutConstraint[] = [];
 
-    public get constraints(): I.NSLayoutConstraint[] {
+    public get constraints(): I.LayoutConstraint[] {
         return []
     }
 
-    addConstraint(constraint: I.NSLayoutConstraint) {
+    addConstraint(constraint: I.LayoutConstraint) {
         this._constraints.push(constraint);
         this.setNeedsLayout();
     }
 
-    addConstraints(constraints: I.NSLayoutConstraint[]) {
+    addConstraints(constraints: I.LayoutConstraint[]) {
         constraints.forEach(constraint => this._constraints.push(constraint));
         this.setNeedsLayout();
     }
 
-    removeConstraint(constraint: I.NSLayoutConstraint) {
+    removeConstraint(constraint: I.LayoutConstraint) {
         const idx = this._constraints.indexOf(constraint);
         if (idx >= 0) {
             this._constraints.splice(idx, 1);
@@ -644,8 +644,8 @@ export class UIView extends I.UIView {
 
     private _onTap?: () => void;
     private _onDoubleTap?: () => void;
-    private _onLongPress?: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void;
-    private _onPan?: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void;
+    private _onLongPress?: (state: any, viewLocation?: I.Point, absLocation?: I.Point) => void;
+    private _onPan?: (state: any, viewLocation?: I.Point, absLocation?: I.Point) => void;
     private _isTapActived = false;
     private _isTouchActived = false;
     private _maybeTap = false;
@@ -702,16 +702,16 @@ export class UIView extends I.UIView {
         this._isTouchActived = true;
     }
 
-    private requestTouchPointInView(event: any): I.CGPoint {
+    private requestTouchPointInView(event: any): I.Point {
         const absPoint = {
-            x: I.UIScreen.outScale(event.data.global.x),
-            y: I.UIScreen.outScale(event.data.global.y),
+            x: I.Screen.outScale(event.data.global.x),
+            y: I.Screen.outScale(event.data.global.y),
         }
         let viewPoint = {
             x: absPoint.x,
             y: absPoint.y,
         }
-        let currentView: UIView | undefined = this;
+        let currentView: View | undefined = this;
         while (currentView.superview !== undefined) {
             viewPoint.x -= currentView.frame.x;
             viewPoint.y -= currentView.frame.y;
@@ -720,10 +720,10 @@ export class UIView extends I.UIView {
         return viewPoint;
     }
 
-    private requestTouchPointInWindow(event: any): I.CGPoint {
+    private requestTouchPointInWindow(event: any): I.Point {
         const absPoint = {
-            x: I.UIScreen.outScale(event.data.global.x),
-            y: I.UIScreen.outScale(event.data.global.y),
+            x: I.Screen.outScale(event.data.global.x),
+            y: I.Screen.outScale(event.data.global.y),
         }
         return absPoint;
     }
@@ -739,7 +739,7 @@ export class UIView extends I.UIView {
             setTimeout(() => {
                 if (this._maybeLongPress === true) {
                     this._isLongPress = true;
-                    this._onLongPress && this._onLongPress(I.UIView.InteractionState.Began);
+                    this._onLongPress && this._onLongPress(I.View.InteractionState.Began);
                 }
             }, 300);
         }
@@ -753,21 +753,21 @@ export class UIView extends I.UIView {
     private handleTouchMove(event: any) {
         if (this._isLongPress === true) {
             this._maybePan = false;
-            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onLongPress && this._onLongPress(I.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
         }
         else if (this._isPan === true) {
-            this._onPan && this._onPan(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onPan && this._onPan(I.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
         }
         else if (this._maybePan === true) {
-            if (event.data.global.x - this._firstTapPoint.x > I.UIScreen.withScale(8) || event.data.global.y - this._firstTapPoint.y > I.UIScreen.withScale(8)) {
+            if (event.data.global.x - this._firstTapPoint.x > I.Screen.withScale(8) || event.data.global.y - this._firstTapPoint.y > I.Screen.withScale(8)) {
                 this._isPan = true;
                 this._maybeTap = false;
                 this._maybeLongPress = false;
-                this._onPan && this._onPan(I.UIView.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+                this._onPan && this._onPan(I.View.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             }
         }
         else if (this._maybeTap === true || this._maybeLongPress === true) {
-            if (event.data.global.x - this._firstTapPoint.x > I.UIScreen.withScale(12) || event.data.global.y - this._firstTapPoint.y > I.UIScreen.withScale(12)) {
+            if (event.data.global.x - this._firstTapPoint.x > I.Screen.withScale(12) || event.data.global.y - this._firstTapPoint.y > I.Screen.withScale(12)) {
                 this._maybeTap = false;
                 this._maybeLongPress = false;
             }
@@ -779,12 +779,12 @@ export class UIView extends I.UIView {
             this._maybeLongPress = false;
         }
         if (this._isPan === true) {
-            this._onPan && this._onPan(I.UIView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onPan && this._onPan(I.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             this._maybePan = false;
             this._isPan = false;
         }
         else if (this._isLongPress === true) {
-            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onLongPress && this._onLongPress(I.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             this._maybeTap = false;
             this._isLongPress = false;
         }
@@ -800,26 +800,26 @@ export class UIView extends I.UIView {
         this.activeTap();
     }
 
-    public set onLongPress(value: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void) {
+    public set onLongPress(value: (state: any, viewLocation?: I.Point, absLocation?: I.Point) => void) {
         this._onLongPress = value;
         this.activeTouch();
     }
 
-    public set onPan(value: (state: any, viewLocation?: I.CGPoint, absLocation?: I.CGPoint) => void) {
+    public set onPan(value: (state: any, viewLocation?: I.Point, absLocation?: I.Point) => void) {
         this._onPan = value;
         this.activeTouch();
     }
 
     // Mark: View Animation
     static _animationEnabled = false;
-    private static _animationViews: UIView[] = [];
+    private static _animationViews: View[] = [];
     private _animationProps: { [key: string]: { from: number, to: number } } = {};
 
-    private static commonAnimation(animations: () => void, runAnimation: (startTime: number, animationViewProps: { view: UIView, propName: string, from: number, to: number }[]) => void) {
-        UIView._animationEnabled = true;
+    private static commonAnimation(animations: () => void, runAnimation: (startTime: number, animationViewProps: { view: View, propName: string, from: number, to: number }[]) => void) {
+        View._animationEnabled = true;
         animations();
-        let animationViewProps: { view: UIView, propName: string, from: number, to: number }[] = [];
-        UIView._animationViews.forEach(view => {
+        let animationViewProps: { view: View, propName: string, from: number, to: number }[] = [];
+        View._animationViews.forEach(view => {
             for (var propName in view._animationProps) {
                 var element = view._animationProps[propName];
                 animationViewProps.push({ view, propName, from: element.from, to: element.to });
@@ -835,8 +835,8 @@ export class UIView extends I.UIView {
             displayNow();
         }
         runnable();
-        UIView._animationViews = [];
-        UIView._animationEnabled = false;
+        View._animationViews = [];
+        View._animationEnabled = false;
     }
 
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
@@ -881,8 +881,8 @@ export class UIView extends I.UIView {
         })
     }
 
-    static addAnimation(view: UIView, propName: string, from: number, to: number) {
-        if (UIView._animationViews.indexOf(view) < 0) { UIView._animationViews.push(view); }
+    static addAnimation(view: View, propName: string, from: number, to: number) {
+        if (View._animationViews.indexOf(view) < 0) { View._animationViews.push(view); }
         view._animationProps[propName] = { from, to }
     }
 

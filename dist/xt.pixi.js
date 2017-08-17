@@ -70,38 +70,38 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var CGRect_1 = __webpack_require__(4);
-exports.CGRectMake = CGRect_1.CGRectMake;
-exports.CGRectZero = CGRect_1.CGRectZero;
-exports.CGRectEqual = CGRect_1.CGRectEqual;
-exports.CGPointMake = CGRect_1.CGPointMake;
-exports.CGPointZero = CGRect_1.CGPointZero;
-exports.CGSizeMake = CGRect_1.CGSizeMake;
-exports.CGSizeZero = CGRect_1.CGSizeZero;
-exports.CGRectInside = CGRect_1.CGRectInside;
-exports.CGPointEqual = CGRect_1.CGPointEqual;
-exports.CGSizeEqual = CGRect_1.CGSizeEqual;
-var UIView_1 = __webpack_require__(1);
-exports.UIView = UIView_1.UIView;
-var UIWindow_1 = __webpack_require__(5);
-exports.UIWindow = UIWindow_1.UIWindow;
-var UIApplication_1 = __webpack_require__(6);
-exports.UIApplication = UIApplication_1.UIApplication;
-exports.UIApplicationDelegate = UIApplication_1.UIApplicationDelegate;
-var UIColor_1 = __webpack_require__(2);
-exports.UIColor = UIColor_1.UIColor;
-var UIScreen_1 = __webpack_require__(7);
-exports.UIScreen = UIScreen_1.UIScreen;
-var CGTransformMatrix_1 = __webpack_require__(8);
-exports.CGTransformMatrix = CGTransformMatrix_1.CGTransformMatrix;
-var NSLayoutConstraint_1 = __webpack_require__(9);
-exports.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
-var UILabel_1 = __webpack_require__(10);
-exports.UILabel = UILabel_1.UILabel;
-exports.UITextAlignment = UILabel_1.UITextAlignment;
-exports.UITextVerticalAlignment = UILabel_1.UITextVerticalAlignment;
-var UIFont_1 = __webpack_require__(11);
-exports.UIFont = UIFont_1.UIFont;
+var Rect_1 = __webpack_require__(5);
+exports.RectMake = Rect_1.RectMake;
+exports.RectZero = Rect_1.RectZero;
+exports.RectEqual = Rect_1.RectEqual;
+exports.PointMake = Rect_1.PointMake;
+exports.PointZero = Rect_1.PointZero;
+exports.SizeMake = Rect_1.SizeMake;
+exports.SizeZero = Rect_1.SizeZero;
+exports.RectInside = Rect_1.RectInside;
+exports.PointEqual = Rect_1.PointEqual;
+exports.SizeEqual = Rect_1.SizeEqual;
+var View_1 = __webpack_require__(1);
+exports.View = View_1.View;
+var Window_1 = __webpack_require__(6);
+exports.Window = Window_1.Window;
+var Application_1 = __webpack_require__(7);
+exports.Application = Application_1.Application;
+exports.ApplicationDelegate = Application_1.ApplicationDelegate;
+var Color_1 = __webpack_require__(2);
+exports.Color = Color_1.Color;
+var Screen_1 = __webpack_require__(8);
+exports.Screen = Screen_1.Screen;
+var TransformMatrix_1 = __webpack_require__(9);
+exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
+var LayoutConstraint_1 = __webpack_require__(10);
+exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
+var Label_1 = __webpack_require__(11);
+exports.Label = Label_1.Label;
+exports.TextAlignment = Label_1.TextAlignment;
+exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
+var Font_1 = __webpack_require__(12);
+exports.Font = Font_1.Font;
 
 
 /***/ }),
@@ -125,42 +125,42 @@ var SwipeDirection;
     SwipeDirection[SwipeDirection["ToTop"] = 2] = "ToTop";
     SwipeDirection[SwipeDirection["ToBottom"] = 3] = "ToBottom";
 })(SwipeDirection = exports.SwipeDirection || (exports.SwipeDirection = {}));
-var UIView = (function () {
-    function UIView(rect) {
+var View = (function () {
+    function View(rect) {
     }
-    UIView.prototype.tintColorDidChange = function () { };
-    UIView.prototype.removeFromSuperview = function () { };
-    UIView.prototype.insertSubviewAtIndex = function (subview, atIndex) { };
-    UIView.prototype.exchangeSubviewAtIndex = function (index1, index2) { };
-    UIView.prototype.addSubview = function (subview) { };
-    UIView.prototype.insertSubviewBelow = function (subview, siblingSubview) { };
-    UIView.prototype.insertSubviewAbove = function (subview, siblingSubview) { };
-    UIView.prototype.bringSubviewToFront = function (subview) { };
-    UIView.prototype.sendSubviewToBack = function (subview) { };
-    UIView.prototype.didAddSubview = function (subview) { };
-    UIView.prototype.willRemoveSubview = function (subview) { };
-    UIView.prototype.willMoveToSuperview = function (newSuperview) { };
-    UIView.prototype.didMoveToSuperview = function () { };
-    UIView.prototype.willMoveToWindow = function (newWindow) { };
-    UIView.prototype.didMoveToWindow = function () { };
-    UIView.prototype.isDescendantOfView = function (view) { return false; };
-    UIView.prototype.viewWithTag = function (tag) { return undefined; };
-    UIView.prototype.setNeedsLayout = function () { };
-    UIView.prototype.layoutIfNeeded = function () { };
-    UIView.prototype.layoutSubviews = function () { };
-    UIView.prototype.addConstraint = function (constraint) { };
-    UIView.prototype.addConstraints = function (constraints) { };
-    UIView.prototype.removeConstraint = function (constraint) { };
-    UIView.prototype.removeAllConstraints = function () { };
+    View.prototype.tintColorDidChange = function () { };
+    View.prototype.removeFromSuperview = function () { };
+    View.prototype.insertSubviewAtIndex = function (subview, atIndex) { };
+    View.prototype.exchangeSubviewAtIndex = function (index1, index2) { };
+    View.prototype.addSubview = function (subview) { };
+    View.prototype.insertSubviewBelow = function (subview, siblingSubview) { };
+    View.prototype.insertSubviewAbove = function (subview, siblingSubview) { };
+    View.prototype.bringSubviewToFront = function (subview) { };
+    View.prototype.sendSubviewToBack = function (subview) { };
+    View.prototype.didAddSubview = function (subview) { };
+    View.prototype.willRemoveSubview = function (subview) { };
+    View.prototype.willMoveToSuperview = function (newSuperview) { };
+    View.prototype.didMoveToSuperview = function () { };
+    View.prototype.willMoveToWindow = function (newWindow) { };
+    View.prototype.didMoveToWindow = function () { };
+    View.prototype.isDescendantOfView = function (view) { return false; };
+    View.prototype.viewWithTag = function (tag) { return undefined; };
+    View.prototype.setNeedsLayout = function () { };
+    View.prototype.layoutIfNeeded = function () { };
+    View.prototype.layoutSubviews = function () { };
+    View.prototype.addConstraint = function (constraint) { };
+    View.prototype.addConstraints = function (constraints) { };
+    View.prototype.removeConstraint = function (constraint) { };
+    View.prototype.removeAllConstraints = function () { };
     // Mark: View Animation
-    UIView.prototype.animationWithDuration = function (duration, animations, completion) { };
-    UIView.prototype.animationWithSpring = function (duration, damping, velocity, animations, completion) { };
+    View.prototype.animationWithDuration = function (duration, animations, completion) { };
+    View.prototype.animationWithSpring = function (duration, damping, velocity, animations, completion) { };
     // Mark: View Interactive
-    UIView.InteractionState = InteractionState;
-    UIView.SwipeDirection = SwipeDirection;
-    return UIView;
+    View.InteractionState = InteractionState;
+    View.SwipeDirection = SwipeDirection;
+    return View;
 }());
-exports.UIView = UIView;
+exports.View = View;
 
 
 /***/ }),
@@ -170,8 +170,8 @@ exports.UIView = UIView;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var UIColor = (function () {
-    function UIColor(r, g, b, a) {
+var Color = (function () {
+    function Color(r, g, b, a) {
         this.r = Math.min(1.0, Math.max(0.0, r));
         this.g = Math.min(1.0, Math.max(0.0, g));
         ;
@@ -180,1492 +180,25 @@ var UIColor = (function () {
         this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
         ;
     }
-    UIColor.prototype.rgbHexNumber = function () {
+    Color.prototype.rgbHexNumber = function () {
         var r = Math.ceil(this.r * 255).toString(16);
         var g = Math.ceil(this.g * 255).toString(16);
         var b = Math.ceil(this.b * 255).toString(16);
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     };
-    UIColor.prototype.equals = function (toColor) {
-        if (toColor instanceof UIColor) {
+    Color.prototype.equals = function (toColor) {
+        if (toColor instanceof Color) {
             return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
         }
         return false;
     };
-    return UIColor;
+    return Color;
 }());
-exports.UIColor = UIColor;
+exports.Color = Color;
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var PIXI = window.PIXI;
-var sharedApplication = undefined;
-var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-if (requestAnimationFrame === undefined) {
-    requestAnimationFrame = function (trigger) {
-        setTimeout(trigger, 16);
-    };
-}
-var displayStartTime = 0;
-var UIApplication = (function (_super) {
-    __extends(UIApplication, _super);
-    function UIApplication(canvas, delegate) {
-        var _this = _super.call(this) || this;
-        _this.keyWindow = undefined;
-        _this.isDirty = false;
-        _this.dirtyTargets = [];
-        if (sharedApplication === undefined) {
-            sharedApplication = _this;
-            var scale_1 = Math.floor(window.devicePixelRatio);
-            I.UIScreen.mainScreen = function () {
-                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
-            };
-        }
-        UIApplication.resetCanvas(canvas, function () {
-            _this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
-            _this.nativeObject.stop();
-            if (window.DEBUG === true) {
-                window.nativeObject = _this.nativeObject;
-                var renderStartTime_1 = 0;
-                _this.nativeObject.renderer.on("prerender", function () {
-                    renderStartTime_1 = performance.now();
-                });
-                _this.nativeObject.renderer.on("postrender", function () {
-                    console.log("[PIXI]: Render Time > " + (performance.now() - renderStartTime_1));
-                    console.log("[PIXI]: Display Time > " + (performance.now() - displayStartTime));
-                });
-            }
-            _this.delegate = delegate;
-            if (_this.delegate) {
-                _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
-            }
-        });
-        return _this;
-    }
-    UIApplication.resetCanvas = function (canvas, callback) {
-        canvas.style.width = "375";
-        canvas.style.height = document.body.offsetHeight.toString();
-        setTimeout(callback);
-    };
-    UIApplication.sharedApplication = function () {
-        return sharedApplication;
-    };
-    UIApplication.prototype.remarkRenderable = function () {
-        if (this.keyWindow !== undefined) {
-            var allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
-            var opaqueRects = [];
-            var _loop_1 = function (index) {
-                var view = allViews[index];
-                if (view._childRenderable === true) {
-                    view.nativeObject.renderable = true;
-                    return "continue";
-                }
-                if (view.transform !== undefined) {
-                    view.nativeObject.renderable = true;
-                }
-                else if (opaqueRects.filter(function (item) { return I.CGRectInside(item, view._absRect); }).length == 0) {
-                    if (view.opaque === true) {
-                        opaqueRects.push(view._absRect);
-                    }
-                    view.nativeObject.renderable = true;
-                }
-                else {
-                    view.nativeObject.renderable = false;
-                }
-                if (view.nativeObject.renderable === true) {
-                    var current = view.superview;
-                    while (current !== undefined) {
-                        current._childRenderable = true;
-                        current = current.superview;
-                    }
-                }
-            };
-            for (var index = allViews.length - 1; index >= 0; index--) {
-                _loop_1(index);
-            }
-        }
-    };
-    UIApplication.prototype.combineViews = function (view, absPoint) {
-        var _this = this;
-        var views = view.subviews;
-        view.subviews.forEach(function (subview) {
-            subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
-            view._childRenderable = false;
-            view._frameChanged = false;
-        });
-        view.subviews.forEach(function (subview) {
-            var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
-            subviewss.forEach(function (subview) {
-                views.push(subview);
-            });
-        });
-        return views;
-    };
-    UIApplication.prototype.setNeedsDisplay = function (target) {
-        var _this = this;
-        if (this.dirtyTargets.indexOf(target) < 0) {
-            this.dirtyTargets.push(target);
-        }
-        if (this.isDirty === true) {
-            return;
-        }
-        this.isDirty = true;
-        requestAnimationFrame(function () {
-            if (window.DEBUG) {
-                displayStartTime = performance.now();
-            }
-            if (_this.dirtyTargets.filter(function (item) { return item._frameChanged || item.nativeObject.renderable; }).length == 0) {
-                _this.dirtyTargets.forEach(function (item) { item._frameChanged = false; });
-                _this.dirtyTargets = [];
-                _this.isDirty = false;
-                return;
-            }
-            _this.remarkRenderable();
-            var stillDirty = false;
-            for (var index = 0; index < _this.dirtyTargets.length; index++) {
-                var element = _this.dirtyTargets[index];
-                if (element.nativeObject.renderable === true) {
-                    stillDirty = true;
-                    break;
-                }
-            }
-            if (stillDirty) {
-                _this.nativeObject.render();
-            }
-            _this.dirtyTargets = [];
-            _this.isDirty = false;
-        });
-    };
-    UIApplication.prototype.displayNow = function () {
-        if (window.DEBUG) {
-            displayStartTime = performance.now();
-        }
-        this.remarkRenderable();
-        this.nativeObject.render();
-        this.dirtyTargets = [];
-    };
-    return UIApplication;
-}(I.UIApplication));
-exports.UIApplication = UIApplication;
-var displayPaused = false;
-function setNeedsDisplay(target) {
-    if (sharedApplication !== undefined && displayPaused === false) {
-        sharedApplication.setNeedsDisplay(target);
-    }
-}
-exports.setNeedsDisplay = setNeedsDisplay;
-function displayPause() {
-    displayPaused = true;
-}
-exports.displayPause = displayPause;
-function displayNow() {
-    displayPaused = false;
-    if (sharedApplication !== undefined) {
-        sharedApplication.displayNow();
-    }
-}
-exports.displayNow = displayNow;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function CGPointMake(x, y) {
-    return { x: x, y: y };
-}
-exports.CGPointMake = CGPointMake;
-function CGPointEqual(point1, point2) {
-    return point1.x === point2.x && point1.y === point2.y;
-}
-exports.CGPointEqual = CGPointEqual;
-exports.CGPointZero = CGPointMake(0, 0);
-function CGSizeMake(width, height) {
-    return { width: width, height: height };
-}
-exports.CGSizeMake = CGSizeMake;
-function CGSizeEqual(size1, size2) {
-    return size1.width === size2.width && size1.height === size2.height;
-}
-exports.CGSizeEqual = CGSizeEqual;
-exports.CGSizeZero = CGSizeMake(0, 0);
-function CGRectMake(x, y, width, height) {
-    return { x: x, y: y, width: width, height: height };
-}
-exports.CGRectMake = CGRectMake;
-exports.CGRectZero = CGRectMake(0, 0, 0, 0);
-function CGRectEqual(rect1, rect2) {
-    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-}
-exports.CGRectEqual = CGRectEqual;
-function CGRectInside(rect1, rect2) {
-    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
-}
-exports.CGRectInside = CGRectInside;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIView_1 = __webpack_require__(1);
-var UIWindow = (function (_super) {
-    __extends(UIWindow, _super);
-    function UIWindow() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    UIWindow.prototype.makeKeyAndVisible = function () { };
-    return UIWindow;
-}(UIView_1.UIView));
-exports.UIWindow = UIWindow;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIApplicationDelegate = (function () {
-    function UIApplicationDelegate() {
-    }
-    UIApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
-    return UIApplicationDelegate;
-}());
-exports.UIApplicationDelegate = UIApplicationDelegate;
-var UIApplication = (function () {
-    function UIApplication() {
-    }
-    UIApplication.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
-    return UIApplication;
-}());
-exports.UIApplication = UIApplication;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIScreen = (function () {
-    function UIScreen(width, height, scale) {
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-    }
-    UIScreen.prototype.bounds = function () {
-        return { x: 0, y: 0, width: this.width, height: this.height };
-    };
-    UIScreen.withScale = function (value) {
-        return value * UIScreen.mainScreen().scale;
-    };
-    UIScreen.outScale = function (value) {
-        return value / UIScreen.mainScreen().scale;
-    };
-    UIScreen.mainScreen = function () { return new UIScreen(0, 0, 1); };
-    return UIScreen;
-}());
-exports.UIScreen = UIScreen;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var CGTransformMatrix = (function () {
-    function CGTransformMatrix(a, b, c, d, tx, ty) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.tx = tx;
-        this.ty = ty;
-    }
-    return CGTransformMatrix;
-}());
-exports.CGTransformMatrix = CGTransformMatrix;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Attribute;
-(function (Attribute) {
-    Attribute[Attribute["Const"] = 0] = "Const";
-    Attribute[Attribute["Left"] = 1] = "Left";
-    Attribute[Attribute["Right"] = 2] = "Right";
-    Attribute[Attribute["Top"] = 3] = "Top";
-    Attribute[Attribute["Bottom"] = 4] = "Bottom";
-    Attribute[Attribute["Width"] = 7] = "Width";
-    Attribute[Attribute["Height"] = 8] = "Height";
-    Attribute[Attribute["CenterX"] = 9] = "CenterX";
-    Attribute[Attribute["CenterY"] = 10] = "CenterY";
-})(Attribute = exports.Attribute || (exports.Attribute = {}));
-var Relation;
-(function (Relation) {
-    Relation[Relation["Less"] = -1] = "Less";
-    Relation[Relation["Equal"] = 0] = "Equal";
-    Relation[Relation["Greater"] = 1] = "Greater";
-})(Relation = exports.Relation || (exports.Relation = {}));
-var NSLayoutConstraint = (function () {
-    function NSLayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
-        if (constant === void 0) { constant = 0; }
-        if (multiplier === void 0) { multiplier = 1; }
-        this.relation = Relation.Equal;
-        this.constant = 0;
-        this.multiplier = 1;
-        this.priority = 750;
-        this.firstItem = firstItem;
-        this.firstAttr = firstAttr;
-        this.relation = relation || Relation.Equal;
-        this.secondItem = secondItem;
-        this.secondAttr = secondAttr;
-        this.constant = constant;
-        this.multiplier = multiplier;
-    }
-    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
-    NSLayoutConstraint.Attribute = Attribute;
-    NSLayoutConstraint.Relation = Relation;
-    return NSLayoutConstraint;
-}());
-exports.NSLayoutConstraint = NSLayoutConstraint;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIView_1 = __webpack_require__(1);
-var UIColor_1 = __webpack_require__(2);
-var UITextAlignment;
-(function (UITextAlignment) {
-    UITextAlignment[UITextAlignment["Left"] = 0] = "Left";
-    UITextAlignment[UITextAlignment["Center"] = 1] = "Center";
-    UITextAlignment[UITextAlignment["Right"] = 2] = "Right";
-})(UITextAlignment = exports.UITextAlignment || (exports.UITextAlignment = {}));
-var UITextVerticalAlignment;
-(function (UITextVerticalAlignment) {
-    UITextVerticalAlignment[UITextVerticalAlignment["Top"] = 0] = "Top";
-    UITextVerticalAlignment[UITextVerticalAlignment["Center"] = 1] = "Center";
-    UITextVerticalAlignment[UITextVerticalAlignment["Bottom"] = 2] = "Bottom";
-})(UITextVerticalAlignment = exports.UITextVerticalAlignment || (exports.UITextVerticalAlignment = {}));
-var UILabel = (function (_super) {
-    __extends(UILabel, _super);
-    function UILabel() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.textColor = new UIColor_1.UIColor(0, 0, 0);
-        return _this;
-    }
-    return UILabel;
-}(UIView_1.UIView));
-exports.UILabel = UILabel;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var UIFont = (function () {
-    function UIFont(pointSize, fontWeight, fontStyle, familyName) {
-        if (fontWeight === void 0) { fontWeight = '400'; }
-        if (fontStyle === void 0) { fontStyle = 'normal'; }
-        this.fontWeight = '400';
-        this.fontStyle = 'normal';
-        this.pointSize = pointSize;
-        this.fontWeight = fontWeight;
-        this.fontStyle = fontStyle;
-        this.familyName = familyName;
-    }
-    UIFont.systemFontOfSize = function (pointSize, weight) {
-        if (weight === void 0) { weight = '400'; }
-        return new UIFont(pointSize, weight);
-    };
-    UIFont.boldSystemFontOfSize = function (pointSize) {
-        return new UIFont(pointSize, '700');
-    };
-    UIFont.italicSystemFontOfSize = function (pointSize) {
-        return new UIFont(pointSize, '400', 'italic');
-    };
-    return UIFont;
-}());
-exports.UIFont = UIFont;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var UIApplication_1 = __webpack_require__(3);
-var Rebound = __webpack_require__(24);
-var PIXI = window.PIXI;
-var AutoLayout = __webpack_require__(17);
-var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-if (requestAnimationFrame === undefined) {
-    requestAnimationFrame = function (trigger) {
-        setTimeout(trigger, 16);
-    };
-}
-var UIView = (function (_super) {
-    __extends(UIView, _super);
-    function UIView(rect) {
-        var _this = _super.call(this, rect || I.CGRectZero) || this;
-        // Mark: View Geometry
-        _this._frame = I.CGRectZero;
-        _this._frameChanged = false;
-        _this._bounds = I.CGRectZero;
-        // Mark: View Rendering
-        _this._clipsToBounds = false;
-        _this._backgroundColor = undefined;
-        _this._opaque = false;
-        _this._tintColor = new I.UIColor(0.0, 122.0 / 255.0, 1.0);
-        // Mark: View Layer-Back Rendering
-        _this._cornerRadius = 0;
-        _this._borderWidth = 0;
-        _this._borderColor = undefined;
-        _this.layoutTimer = undefined;
-        // Mark: View LayoutConstraint
-        _this._layoutID = UIView.generateLayoutUUID();
-        _this._constraints = [];
-        // Mark: View Interactive
-        _this._userInteractionEnabled = false;
-        _this._isTapActived = false;
-        _this._isTouchActived = false;
-        _this._maybeTap = false;
-        _this._maybeLongPress = false;
-        _this._maybePan = false;
-        _this._isLongPress = false;
-        _this._isPan = false;
-        _this._firstTapped = false;
-        _this._firstTapPoint = { x: 0, y: 0 };
-        _this._secondTapped = false;
-        _this._animationProps = {};
-        _this.nativeObject = new PIXI.Container();
-        _this.nativeObject.XTView = _this;
-        _this.nativeGraphics = new PIXI.Graphics();
-        _this.nativeObject.addChild(_this.nativeGraphics);
-        _this.nativeContainer = new PIXI.Container();
-        _this.nativeObject.addChild(_this.nativeContainer);
-        if (typeof rect === "object") {
-            _this.frame = rect;
-        }
-        return _this;
-    }
-    Object.defineProperty(UIView.prototype, "frame", {
-        get: function () {
-            return this._frame;
-        },
-        set: function (value) {
-            if (I.CGRectEqual(this._frame, value)) {
-                return;
-            }
-            if (UIView._animationEnabled) {
-                if (this._frame.x != value.x) {
-                    UIView.addAnimation(this, "frameX", this._frame.x, value.x);
-                }
-                if (this._frame.y != value.y) {
-                    UIView.addAnimation(this, "frameY", this._frame.y, value.y);
-                }
-                if (this._frame.width != value.width) {
-                    UIView.addAnimation(this, "frameWidth", this._frame.width, value.width);
-                }
-                if (this._frame.height != value.height) {
-                    UIView.addAnimation(this, "frameHeight", this._frame.height, value.height);
-                }
-                return;
-            }
-            this._frame = value;
-            this._frameChanged = true;
-            this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
-            this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.UIScreen.withScale(value.width), I.UIScreen.withScale(value.height));
-            this.nativeContainer.hitArea = this.nativeObject.hitArea;
-            this.nativeObject.x = I.UIScreen.withScale(value.x);
-            this.nativeObject.y = I.UIScreen.withScale(value.y);
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "frameX", {
-        set: function (value) {
-            this.frame = __assign({}, this.frame, { x: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "frameY", {
-        set: function (value) {
-            this.frame = __assign({}, this.frame, { y: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "frameWidth", {
-        set: function (value) {
-            this.frame = __assign({}, this.frame, { width: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "frameHeight", {
-        set: function (value) {
-            this.frame = __assign({}, this.frame, { height: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "bounds", {
-        get: function () {
-            return this._bounds;
-        },
-        set: function (value) {
-            if (I.CGRectEqual(this._bounds, value)) {
-                return;
-            }
-            if (UIView._animationEnabled) {
-                if (this._bounds.x != value.x) {
-                    UIView.addAnimation(this, "boundsX", this._bounds.x, value.x);
-                }
-                if (this._bounds.y != value.y) {
-                    UIView.addAnimation(this, "boundsY", this._bounds.y, value.y);
-                }
-                if (this._bounds.width != value.width) {
-                    UIView.addAnimation(this, "boundsWidth", this._bounds.width, value.width);
-                }
-                if (this._bounds.height != value.height) {
-                    UIView.addAnimation(this, "boundsHeight", this._bounds.height, value.height);
-                }
-                return;
-            }
-            this._bounds = value;
-            this.draw();
-            UIApplication_1.setNeedsDisplay(this);
-            this.setNeedsLayout();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "boundsX", {
-        set: function (value) {
-            this.bounds = __assign({}, this.bounds, { x: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "boundsY", {
-        set: function (value) {
-            this.bounds = __assign({}, this.bounds, { y: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "boundsWidth", {
-        set: function (value) {
-            this.bounds = __assign({}, this.bounds, { width: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "boundsHeight", {
-        set: function (value) {
-            this.bounds = __assign({}, this.bounds, { height: value });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "center", {
-        get: function () {
-            return { x: this.frame.x + this.frame.width / 2.0, y: this.frame.y + this.frame.height / 2.0 };
-        },
-        set: function (value) {
-            var newFrame = this.frame;
-            newFrame.x = value.x - newFrame.width / 2.0;
-            newFrame.y = value.y - newFrame.height / 2.0;
-            this.frame = newFrame;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "transform", {
-        get: function () {
-            return this._transform;
-        },
-        set: function (value) {
-            this._transform = value;
-            if (value) {
-                var transform = new PIXI.Transform();
-                var matrix = new PIXI.Matrix();
-                matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
-                transform.setFromMatrix(matrix);
-                this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
-            }
-            else {
-                this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-            }
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "clipsToBounds", {
-        get: function () {
-            return this._clipsToBounds;
-        },
-        set: function (value) {
-            this._clipsToBounds = value;
-            this.applyMask();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.prototype.applyMask = function () {
-        if (this.clipsToBounds) {
-            if (this.maskView === undefined) {
-                this.maskView = new UIView(this.bounds);
-                this.maskView.backgroundColor = new I.UIColor(1, 1, 1);
-            }
-            this.addSubview(this.maskView);
-            this.nativeObject.mask = this.maskView.nativeGraphics;
-        }
-        else {
-            if (this.maskView !== undefined) {
-                this.maskView.removeFromSuperview();
-            }
-            this.nativeObject.mask = undefined;
-        }
-        UIApplication_1.setNeedsDisplay(this);
-    };
-    Object.defineProperty(UIView.prototype, "backgroundColor", {
-        get: function () {
-            return this._backgroundColor;
-        },
-        set: function (value) {
-            if (this._backgroundColor instanceof I.UIColor && this._backgroundColor.equals(value)) {
-                return;
-            }
-            if (UIView._animationEnabled && this._backgroundColor && value) {
-                if (this._backgroundColor.a != value.a) {
-                    UIView.addAnimation(this, "backgroundColorA", this._backgroundColor.a, value.a);
-                }
-                if (this._backgroundColor.r != value.r) {
-                    UIView.addAnimation(this, "backgroundColorR", this._backgroundColor.r, value.r);
-                }
-                if (this._backgroundColor.g != value.g) {
-                    UIView.addAnimation(this, "backgroundColorG", this._backgroundColor.g, value.g);
-                }
-                if (this._backgroundColor.b != value.b) {
-                    UIView.addAnimation(this, "backgroundColorB", this._backgroundColor.b, value.b);
-                }
-                return;
-            }
-            this._backgroundColor = value;
-            this.draw();
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "backgroundColorA", {
-        set: function (value) {
-            if (this.backgroundColor) {
-                this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "backgroundColorR", {
-        set: function (value) {
-            if (this.backgroundColor) {
-                this.backgroundColor = new I.UIColor(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "backgroundColorG", {
-        set: function (value) {
-            if (this.backgroundColor) {
-                this.backgroundColor = new I.UIColor(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "backgroundColorB", {
-        set: function (value) {
-            if (this.backgroundColor) {
-                this.backgroundColor = new I.UIColor(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "opaque", {
-        get: function () {
-            if (this._opaque === true) {
-                return true;
-            }
-            else if (this.backgroundColor && this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
-                return true;
-            }
-            return this._opaque;
-        },
-        set: function (value) {
-            this._opaque = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "alpha", {
-        get: function () {
-            return this.nativeObject.alpha;
-        },
-        set: function (value) {
-            if (this.nativeObject.alpha === value) {
-                return;
-            }
-            if (UIView._animationEnabled) {
-                UIView.addAnimation(this, "alpha", this.nativeObject.alpha, value);
-                return;
-            }
-            this.nativeObject.alpha = value;
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "hidden", {
-        get: function () {
-            return !this.nativeObject.visible;
-        },
-        set: function (value) {
-            if (this.nativeObject.visible === value) {
-                return;
-            }
-            this.nativeObject.visible = !value;
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "maskView", {
-        get: function () {
-            return this._maskView;
-        },
-        set: function (value) {
-            if (this._maskView !== undefined) {
-                this._maskView.removeFromSuperview();
-            }
-            this._maskView = value;
-            this.applyMask();
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "tintColor", {
-        get: function () {
-            return this._tintColor;
-        },
-        set: function (value) {
-            if (this._tintColor instanceof I.UIColor && this._tintColor.equals(value)) {
-                return;
-            }
-            this._tintColor = value;
-            this.tintColorDidChange();
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.prototype.tintColorDidChange = function () {
-        this.subviews.forEach(function (subview) { subview.tintColorDidChange(); });
-    };
-    Object.defineProperty(UIView.prototype, "cornerRadius", {
-        get: function () {
-            return this._cornerRadius;
-        },
-        set: function (value) {
-            if (this._cornerRadius === value) {
-                return;
-            }
-            if (UIView._animationEnabled) {
-                UIView.addAnimation(this, "cornerRadius", this._cornerRadius, value);
-                return;
-            }
-            this._cornerRadius = value;
-            this.draw();
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "borderWidth", {
-        get: function () {
-            return this._borderWidth;
-        },
-        set: function (value) {
-            if (this._borderWidth === value) {
-                return;
-            }
-            if (UIView._animationEnabled) {
-                UIView.addAnimation(this, "borderWidth", this._borderWidth, value);
-                return;
-            }
-            this._borderWidth = value;
-            this.draw();
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "borderColor", {
-        get: function () {
-            return this._borderColor;
-        },
-        set: function (value) {
-            if (this._borderColor === value) {
-                return;
-            }
-            if (UIView._animationEnabled && this._borderColor && value) {
-                if (this._borderColor.a != value.a) {
-                    UIView.addAnimation(this, "borderColorA", this._borderColor.a, value.a);
-                }
-                if (this._borderColor.r != value.r) {
-                    UIView.addAnimation(this, "borderColorR", this._borderColor.r, value.r);
-                }
-                if (this._borderColor.g != value.g) {
-                    UIView.addAnimation(this, "borderColorG", this._borderColor.g, value.g);
-                }
-                if (this._borderColor.b != value.b) {
-                    UIView.addAnimation(this, "borderColorB", this._borderColor.b, value.b);
-                }
-                return;
-            }
-            this._borderColor = value;
-            this.draw();
-            UIApplication_1.setNeedsDisplay(this);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "borderColorA", {
-        set: function (value) {
-            if (this.borderColor) {
-                this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "borderColorR", {
-        set: function (value) {
-            if (this.borderColor) {
-                this.borderColor = new I.UIColor(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "borderColorG", {
-        set: function (value) {
-            if (this.borderColor) {
-                this.borderColor = new I.UIColor(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "borderColorB", {
-        set: function (value) {
-            if (this.borderColor) {
-                this.borderColor = new I.UIColor(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.prototype.draw = function () {
-        if (this.nativeGraphics === undefined || this.bounds.width == 0 || this.bounds.height == 0) {
-            return;
-        }
-        this.nativeGraphics.clear();
-        this.drawGraphics();
-    };
-    UIView.prototype.drawGraphics = function () {
-        if (this.backgroundColor instanceof I.UIColor) {
-            this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
-            if (this.borderWidth > 0 && this.borderColor instanceof I.UIColor) {
-                this.nativeGraphics.lineStyle(I.UIScreen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
-            }
-            var scaledBounds = {
-                x: I.UIScreen.withScale(this.bounds.x),
-                y: I.UIScreen.withScale(this.bounds.y),
-                width: I.UIScreen.withScale(this.bounds.width),
-                height: I.UIScreen.withScale(this.bounds.height),
-            };
-            if (this.cornerRadius > 0) {
-                if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
-                    if (scaledBounds.width > scaledBounds.height) {
-                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
-                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width - scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
-                        this.nativeGraphics.drawRect(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y, scaledBounds.width - scaledBounds.height, scaledBounds.height);
-                    }
-                    else if (scaledBounds.width < scaledBounds.height) {
-                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
-                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height - scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
-                        this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y + scaledBounds.width / 2.0, scaledBounds.width, scaledBounds.height - scaledBounds.width);
-                    }
-                    else {
-                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
-                    }
-                }
-                else {
-                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.UIScreen.withScale(this.cornerRadius));
-                }
-            }
-            else {
-                this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height);
-            }
-        }
-    };
-    Object.defineProperty(UIView.prototype, "superview", {
-        get: function () {
-            var parent = undefined;
-            if (this.nativeContainer.parent && this.nativeContainer.parent.parent && this.nativeContainer.parent.parent.parent) {
-                parent = this.nativeContainer.parent.parent.parent;
-            }
-            if (parent !== undefined && parent.XTView instanceof UIView) {
-                return parent.XTView;
-            }
-            return undefined;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "subviews", {
-        get: function () {
-            return this.nativeContainer.children.map(function (item) { return item.XTView; });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "window", {
-        get: function () {
-            var current = this.superview;
-            while (current !== undefined && current.XTClassName !== "UIWindow") {
-                current = current.superview;
-            }
-            return current;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.prototype.removeFromSuperview = function () {
-        if (this.superview !== undefined) {
-            this.nativeContainer.parent.XTView.willRemoveSubview(this);
-            this.willMoveToSuperview(undefined);
-            this.willMoveToWindow(undefined);
-            this.nativeObject.parent.removeChild(this.nativeObject);
-            this.didMoveToSuperview();
-            this.didMoveToWindow();
-            UIApplication_1.setNeedsDisplay(this);
-        }
-    };
-    UIView.prototype.insertSubviewAtIndex = function (subview, atIndex) {
-        subview.willMoveToSuperview(this);
-        subview.willMoveToWindow(this.window);
-        this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
-        subview.didMoveToSuperview();
-        subview.didMoveToWindow();
-        UIApplication_1.setNeedsDisplay(this);
-    };
-    UIView.prototype.exchangeSubviewAtIndex = function (index1, index2) {
-        var child1 = this.nativeContainer.getChildAt(index1);
-        var child2 = this.nativeContainer.getChildAt(index2);
-        this.nativeContainer.swapChildren(child1, child2);
-        UIApplication_1.setNeedsDisplay(this);
-    };
-    UIView.prototype.addSubview = function (subview) {
-        subview.willMoveToSuperview(this);
-        subview.willMoveToWindow(this.window);
-        this.nativeContainer.addChild(subview.nativeObject);
-        this.didAddSubview(subview);
-        subview.didMoveToSuperview();
-        subview.didMoveToWindow();
-        UIApplication_1.setNeedsDisplay(this);
-    };
-    UIView.prototype.insertSubviewBelow = function (subview, siblingSubview) {
-        var siblingIndex = this.subviews.indexOf(siblingSubview);
-        if (siblingIndex >= 0) {
-            this.insertSubviewAtIndex(subview, siblingIndex);
-        }
-    };
-    UIView.prototype.insertSubviewAbove = function (subview, siblingSubview) {
-        var siblingIndex = this.subviews.indexOf(siblingSubview);
-        if (siblingIndex >= 0 && siblingIndex == this.subviews.length - 1) {
-            this.addSubview(subview);
-        }
-        else if (siblingIndex >= 0) {
-            this.insertSubviewAtIndex(subview, siblingIndex + 1);
-        }
-    };
-    UIView.prototype.bringSubviewToFront = function (subview) {
-        var currentIndex = this.subviews.indexOf(subview);
-        if (currentIndex < this.subviews.length - 1 && this.subviews.length > 1) {
-            this.exchangeSubviewAtIndex(this.subviews.length - 1, currentIndex);
-        }
-    };
-    UIView.prototype.sendSubviewToBack = function (subview) {
-        var currentIndex = this.subviews.indexOf(subview);
-        if (currentIndex > 0 && this.subviews.length > 1) {
-            this.exchangeSubviewAtIndex(0, currentIndex);
-        }
-    };
-    UIView.prototype.didAddSubview = function (subview) { };
-    UIView.prototype.willRemoveSubview = function (subview) { };
-    UIView.prototype.willMoveToSuperview = function (newSuperview) { };
-    UIView.prototype.didMoveToSuperview = function () { };
-    UIView.prototype.willMoveToWindow = function (newWindow) { };
-    UIView.prototype.didMoveToWindow = function () { };
-    UIView.prototype.isDescendantOfView = function (view) {
-        var current = this;
-        while (current !== undefined) {
-            if (current === view) {
-                return true;
-            }
-            current = current.superview;
-        }
-        return false;
-    };
-    UIView.prototype.viewWithTag = function (tag) {
-        if (this.tag !== undefined && this.tag === tag) {
-            return this;
-        }
-        else {
-            var target = this.subviews.filter(function (item) { return item.viewWithTag(tag); });
-            if (target.length > 0) {
-                return target[0];
-            }
-        }
-        return undefined;
-    };
-    UIView.prototype.setNeedsLayout = function () {
-        var _this = this;
-        if (this.layoutTimer !== undefined) {
-            clearImmediate(this.layoutTimer);
-        }
-        this.layoutTimer = setImmediate(function () {
-            _this.layoutSubviews();
-        });
-    };
-    UIView.prototype.layoutIfNeeded = function () {
-        this.layoutSubviews();
-    };
-    UIView.prototype.layoutSubviews = function () {
-        if (this._constraints.length > 0) {
-            var viewMapping_1 = {};
-            this._constraints.forEach(function (item) {
-                if (item.firstItem !== undefined) {
-                    viewMapping_1[item.firstItem._layoutID] = item.firstItem;
-                }
-                if (item.secondItem !== undefined) {
-                    viewMapping_1[item.secondItem._layoutID] = item.secondItem;
-                }
-            });
-            var view = new AutoLayout.View({
-                constraints: this._constraints.map(function (item) { return item.toALObject(); }),
-                width: this.bounds.width,
-                height: this.bounds.height,
-            });
-            for (var layoutID in view.subViews) {
-                var value = view.subViews[layoutID];
-                if (viewMapping_1[layoutID] !== undefined) {
-                    viewMapping_1[layoutID].frame = {
-                        x: value.left,
-                        y: value.top,
-                        width: value.width,
-                        height: value.height,
-                    };
-                }
-            }
-        }
-    };
-    UIView.generateLayoutUUID = function () {
-        var s = [];
-        var hexDigits = "0123456789abcdef";
-        for (var i = 0; i < 36; i++) {
-            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-        }
-        s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-        s[8] = s[13] = s[18] = s[23] = "-";
-        var uuid = s.join("");
-        return uuid;
-    };
-    Object.defineProperty(UIView.prototype, "constraints", {
-        get: function () {
-            return [];
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.prototype.addConstraint = function (constraint) {
-        this._constraints.push(constraint);
-        this.setNeedsLayout();
-    };
-    UIView.prototype.addConstraints = function (constraints) {
-        var _this = this;
-        constraints.forEach(function (constraint) { return _this._constraints.push(constraint); });
-        this.setNeedsLayout();
-    };
-    UIView.prototype.removeConstraint = function (constraint) {
-        var idx = this._constraints.indexOf(constraint);
-        if (idx >= 0) {
-            this._constraints.splice(idx, 1);
-        }
-        this.setNeedsLayout();
-    };
-    UIView.prototype.removeAllConstraints = function () {
-        this._constraints = [];
-        this.setNeedsLayout();
-    };
-    Object.defineProperty(UIView.prototype, "userInteractionEnabled", {
-        get: function () {
-            return this._userInteractionEnabled;
-        },
-        set: function (value) {
-            this._userInteractionEnabled = value;
-            this.nativeObject.interactive = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.prototype.activeTap = function () {
-        var _this = this;
-        if (this._isTapActived === true) {
-            return;
-        }
-        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
-            this.activeTouch();
-            var onTap = function () {
-                if (_this._onDoubleTap !== undefined) {
-                    if (_this._firstTapped !== true && _this._maybeTap === true) {
-                        _this._firstTapped = true;
-                        setTimeout(function () {
-                            if (_this._onTap !== undefined && _this._secondTapped === false && _this._maybeTap === true) {
-                                if (_this._isLongPress === false) {
-                                    _this._onTap && _this._onTap();
-                                }
-                            }
-                            _this._firstTapped = false;
-                        }, 250);
-                    }
-                    else if (_this._firstTapped === true && _this._maybeTap === true) {
-                        _this._secondTapped = true;
-                        if (_this._isLongPress === false) {
-                            _this._onDoubleTap && _this._onDoubleTap();
-                        }
-                    }
-                }
-                else if (_this._maybeTap === true) {
-                    if (_this._isLongPress === false) {
-                        _this._onTap && _this._onTap();
-                    }
-                }
-            };
-            this.nativeObject.on('click', onTap);
-            this.nativeObject.on('tap', onTap);
-            this._isTapActived = true;
-        }
-    };
-    UIView.prototype.activeTouch = function () {
-        if (this._isTouchActived === true) {
-            return;
-        }
-        this.nativeObject.on('pointerdown', this.handleTouchStart.bind(this));
-        this.nativeObject.on('pointermove', this.handleTouchMove.bind(this));
-        this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this));
-        this.nativeObject.on('pointerupoutside', this.handleTouchEnd.bind(this));
-        this._isTouchActived = true;
-    };
-    UIView.prototype.requestTouchPointInView = function (event) {
-        var absPoint = {
-            x: I.UIScreen.outScale(event.data.global.x),
-            y: I.UIScreen.outScale(event.data.global.y),
-        };
-        var viewPoint = {
-            x: absPoint.x,
-            y: absPoint.y,
-        };
-        var currentView = this;
-        while (currentView.superview !== undefined) {
-            viewPoint.x -= currentView.frame.x;
-            viewPoint.y -= currentView.frame.y;
-            currentView = currentView.superview;
-        }
-        return viewPoint;
-    };
-    UIView.prototype.requestTouchPointInWindow = function (event) {
-        var absPoint = {
-            x: I.UIScreen.outScale(event.data.global.x),
-            y: I.UIScreen.outScale(event.data.global.y),
-        };
-        return absPoint;
-    };
-    UIView.prototype.handleTouchStart = function (event) {
-        var _this = this;
-        if (this._onPan !== undefined) {
-            this._maybePan = true;
-            this._isPan = false;
-        }
-        if (this._onLongPress !== undefined) {
-            this._maybeLongPress = true;
-            this._isLongPress = false;
-            setTimeout(function () {
-                if (_this._maybeLongPress === true) {
-                    _this._isLongPress = true;
-                    _this._onLongPress && _this._onLongPress(I.UIView.InteractionState.Began);
-                }
-            }, 300);
-        }
-        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
-            this._maybeTap = true;
-            this._firstTapPoint = __assign({}, event.data.global);
-            this._secondTapped = false;
-        }
-    };
-    UIView.prototype.handleTouchMove = function (event) {
-        if (this._isLongPress === true) {
-            this._maybePan = false;
-            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-        }
-        else if (this._isPan === true) {
-            this._onPan && this._onPan(I.UIView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-        }
-        else if (this._maybePan === true) {
-            if (event.data.global.x - this._firstTapPoint.x > I.UIScreen.withScale(8) || event.data.global.y - this._firstTapPoint.y > I.UIScreen.withScale(8)) {
-                this._isPan = true;
-                this._maybeTap = false;
-                this._maybeLongPress = false;
-                this._onPan && this._onPan(I.UIView.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-            }
-        }
-        else if (this._maybeTap === true || this._maybeLongPress === true) {
-            if (event.data.global.x - this._firstTapPoint.x > I.UIScreen.withScale(12) || event.data.global.y - this._firstTapPoint.y > I.UIScreen.withScale(12)) {
-                this._maybeTap = false;
-                this._maybeLongPress = false;
-            }
-        }
-    };
-    UIView.prototype.handleTouchEnd = function (event) {
-        if (this._isLongPress !== true) {
-            this._maybeLongPress = false;
-        }
-        if (this._isPan === true) {
-            this._onPan && this._onPan(I.UIView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-            this._maybePan = false;
-            this._isPan = false;
-        }
-        else if (this._isLongPress === true) {
-            this._onLongPress && this._onLongPress(I.UIView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-            this._maybeTap = false;
-            this._isLongPress = false;
-        }
-    };
-    Object.defineProperty(UIView.prototype, "onTap", {
-        set: function (value) {
-            this._onTap = value;
-            this.activeTap();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "onDoubleTap", {
-        set: function (value) {
-            this._onDoubleTap = value;
-            this.activeTap();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "onLongPress", {
-        set: function (value) {
-            this._onLongPress = value;
-            this.activeTouch();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UIView.prototype, "onPan", {
-        set: function (value) {
-            this._onPan = value;
-            this.activeTouch();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UIView.commonAnimation = function (animations, runAnimation) {
-        UIView._animationEnabled = true;
-        animations();
-        var animationViewProps = [];
-        UIView._animationViews.forEach(function (view) {
-            for (var propName in view._animationProps) {
-                var element = view._animationProps[propName];
-                animationViewProps.push({ view: view, propName: propName, from: element.from, to: element.to });
-            }
-            view._animationProps = {};
-        });
-        var startTime = performance.now();
-        var runnable = function () {
-            UIApplication_1.displayPause();
-            if (!runAnimation(startTime, animationViewProps)) {
-                requestAnimationFrame(runnable);
-            }
-            UIApplication_1.displayNow();
-        };
-        runnable();
-        UIView._animationViews = [];
-        UIView._animationEnabled = false;
-    };
-    UIView.animationWithDuration = function (duration, animations, completion) {
-        this.commonAnimation(animations, function (startTime, animationViewProps) {
-            var currentTime = performance.now();
-            var delta = currentTime - startTime;
-            animationViewProps.forEach(function (item) {
-                var currentValue = (item.to - item.from) * Math.min(1.0, delta / (duration * 1000));
-                item.view[item.propName] = item.from + currentValue;
-            });
-            if (delta < (duration * 1000)) {
-                return false;
-            }
-            else {
-                completion && completion();
-                return true;
-            }
-        });
-    };
-    UIView.animationWithBouncinessAndSpeed = function (bounciness, speed, animations, completion) {
-        var springSystem = new Rebound.SpringSystem();
-        var rested = false;
-        this.commonAnimation(animations, function (startTime, animationViewProps) {
-            animationViewProps.forEach(function (item) {
-                var spring = springSystem.createSpringWithBouncinessAndSpeed(bounciness, speed);
-                spring.addListener({
-                    onSpringUpdate: function (spring) {
-                        item.view[item.propName] = spring.getCurrentValue();
-                    },
-                    onSpringAtRest: function () {
-                        if (!rested) {
-                            rested = true;
-                            completion && completion();
-                        }
-                    }
-                });
-                spring.setCurrentValue(item.from);
-                spring.setEndValue(item.to);
-            });
-            return true;
-        });
-    };
-    UIView.addAnimation = function (view, propName, from, to) {
-        if (UIView._animationViews.indexOf(view) < 0) {
-            UIView._animationViews.push(view);
-        }
-        view._animationProps[propName] = { from: from, to: to };
-    };
-    // Mark: View Animation
-    UIView._animationEnabled = false;
-    UIView._animationViews = [];
-    return UIView;
-}(I.UIView));
-exports.UIView = UIView;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).clearImmediate, __webpack_require__(13).setImmediate))
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -1725,6 +258,1473 @@ exports.clearImmediate = global.clearImmediate;
 
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var PIXI = window.PIXI;
+var sharedApplication = undefined;
+var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = function (trigger) {
+        setTimeout(trigger, 16);
+    };
+}
+var displayStartTime = 0;
+var Application = (function (_super) {
+    __extends(Application, _super);
+    function Application(canvas, delegate) {
+        var _this = _super.call(this) || this;
+        _this.keyWindow = undefined;
+        _this.isDirty = false;
+        _this.dirtyTargets = [];
+        if (sharedApplication === undefined) {
+            sharedApplication = _this;
+            var scale_1 = Math.floor(window.devicePixelRatio);
+            I.Screen.mainScreen = function () {
+                return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
+            };
+        }
+        Application.resetCanvas(canvas, function () {
+            _this.nativeObject = new PIXI.Application({ width: I.Screen.withScale(canvas.offsetWidth), height: I.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
+            _this.nativeObject.stop();
+            if (window.DEBUG === true) {
+                window.nativeObject = _this.nativeObject;
+                var renderStartTime_1 = 0;
+                _this.nativeObject.renderer.on("prerender", function () {
+                    renderStartTime_1 = performance.now();
+                });
+                _this.nativeObject.renderer.on("postrender", function () {
+                    console.log("[PIXI]: Render Time > " + (performance.now() - renderStartTime_1));
+                    console.log("[PIXI]: Display Time > " + (performance.now() - displayStartTime));
+                });
+            }
+            _this.delegate = delegate;
+            if (_this.delegate) {
+                _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
+            }
+        });
+        return _this;
+    }
+    Application.resetCanvas = function (canvas, callback) {
+        canvas.style.width = "375";
+        canvas.style.height = document.body.offsetHeight.toString();
+        setTimeout(callback);
+    };
+    Application.sharedApplication = function () {
+        return sharedApplication;
+    };
+    Application.prototype.remarkRenderable = function () {
+        if (this.keyWindow !== undefined) {
+            var allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
+            var opaqueRects = [];
+            var _loop_1 = function (index) {
+                var view = allViews[index];
+                if (view._childRenderable === true) {
+                    view.nativeObject.renderable = true;
+                    return "continue";
+                }
+                if (view.transform !== undefined) {
+                    view.nativeObject.renderable = true;
+                }
+                else if (opaqueRects.filter(function (item) { return I.RectInside(item, view._absRect); }).length == 0) {
+                    if (view.opaque === true) {
+                        opaqueRects.push(view._absRect);
+                    }
+                    view.nativeObject.renderable = true;
+                }
+                else {
+                    view.nativeObject.renderable = false;
+                }
+                if (view.nativeObject.renderable === true) {
+                    var current = view.superview;
+                    while (current !== undefined) {
+                        current._childRenderable = true;
+                        current = current.superview;
+                    }
+                }
+            };
+            for (var index = allViews.length - 1; index >= 0; index--) {
+                _loop_1(index);
+            }
+        }
+    };
+    Application.prototype.combineViews = function (view, absPoint) {
+        var _this = this;
+        var views = view.subviews;
+        view.subviews.forEach(function (subview) {
+            subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
+            view._childRenderable = false;
+            view._frameChanged = false;
+        });
+        view.subviews.forEach(function (subview) {
+            var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
+            subviewss.forEach(function (subview) {
+                views.push(subview);
+            });
+        });
+        return views;
+    };
+    Application.prototype.setNeedsDisplay = function (target) {
+        var _this = this;
+        if (this.dirtyTargets.indexOf(target) < 0) {
+            this.dirtyTargets.push(target);
+        }
+        if (this.isDirty === true) {
+            return;
+        }
+        this.isDirty = true;
+        requestAnimationFrame(function () {
+            if (window.DEBUG) {
+                displayStartTime = performance.now();
+            }
+            if (_this.dirtyTargets.filter(function (item) { return item._frameChanged || item.nativeObject.renderable; }).length == 0) {
+                _this.dirtyTargets.forEach(function (item) { item._frameChanged = false; });
+                _this.dirtyTargets = [];
+                _this.isDirty = false;
+                return;
+            }
+            _this.remarkRenderable();
+            var stillDirty = false;
+            for (var index = 0; index < _this.dirtyTargets.length; index++) {
+                var element = _this.dirtyTargets[index];
+                if (element.nativeObject.renderable === true) {
+                    stillDirty = true;
+                    break;
+                }
+            }
+            if (stillDirty) {
+                _this.nativeObject.render();
+            }
+            _this.dirtyTargets = [];
+            _this.isDirty = false;
+        });
+    };
+    Application.prototype.displayNow = function () {
+        if (window.DEBUG) {
+            displayStartTime = performance.now();
+        }
+        this.remarkRenderable();
+        this.nativeObject.render();
+        this.dirtyTargets = [];
+    };
+    return Application;
+}(I.Application));
+exports.Application = Application;
+var displayPaused = false;
+function setNeedsDisplay(target) {
+    if (sharedApplication !== undefined && displayPaused === false) {
+        sharedApplication.setNeedsDisplay(target);
+    }
+}
+exports.setNeedsDisplay = setNeedsDisplay;
+function displayPause() {
+    displayPaused = true;
+}
+exports.displayPause = displayPause;
+function displayNow() {
+    displayPaused = false;
+    if (sharedApplication !== undefined) {
+        sharedApplication.displayNow();
+    }
+}
+exports.displayNow = displayNow;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function PointMake(x, y) {
+    return { x: x, y: y };
+}
+exports.PointMake = PointMake;
+function PointEqual(point1, point2) {
+    return point1.x === point2.x && point1.y === point2.y;
+}
+exports.PointEqual = PointEqual;
+exports.PointZero = PointMake(0, 0);
+function SizeMake(width, height) {
+    return { width: width, height: height };
+}
+exports.SizeMake = SizeMake;
+function SizeEqual(size1, size2) {
+    return size1.width === size2.width && size1.height === size2.height;
+}
+exports.SizeEqual = SizeEqual;
+exports.SizeZero = SizeMake(0, 0);
+function RectMake(x, y, width, height) {
+    return { x: x, y: y, width: width, height: height };
+}
+exports.RectMake = RectMake;
+exports.RectZero = RectMake(0, 0, 0, 0);
+function RectEqual(rect1, rect2) {
+    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+}
+exports.RectEqual = RectEqual;
+function RectInside(rect1, rect2) {
+    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
+}
+exports.RectInside = RectInside;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(1);
+var Window = (function (_super) {
+    __extends(Window, _super);
+    function Window() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Window.prototype.makeKeyAndVisible = function () { };
+    return Window;
+}(View_1.View));
+exports.Window = Window;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ApplicationDelegate = (function () {
+    function ApplicationDelegate() {
+    }
+    ApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
+    return ApplicationDelegate;
+}());
+exports.ApplicationDelegate = ApplicationDelegate;
+var Application = (function () {
+    function Application() {
+    }
+    Application.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
+    return Application;
+}());
+exports.Application = Application;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Screen = (function () {
+    function Screen(width, height, scale) {
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
+    }
+    Screen.prototype.bounds = function () {
+        return { x: 0, y: 0, width: this.width, height: this.height };
+    };
+    Screen.withScale = function (value) {
+        return value * Screen.mainScreen().scale;
+    };
+    Screen.outScale = function (value) {
+        return value / Screen.mainScreen().scale;
+    };
+    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
+    return Screen;
+}());
+exports.Screen = Screen;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var TransformMatrix = (function () {
+    function TransformMatrix(a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
+    }
+    return TransformMatrix;
+}());
+exports.TransformMatrix = TransformMatrix;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Attribute;
+(function (Attribute) {
+    Attribute[Attribute["Const"] = 0] = "Const";
+    Attribute[Attribute["Left"] = 1] = "Left";
+    Attribute[Attribute["Right"] = 2] = "Right";
+    Attribute[Attribute["Top"] = 3] = "Top";
+    Attribute[Attribute["Bottom"] = 4] = "Bottom";
+    Attribute[Attribute["Width"] = 7] = "Width";
+    Attribute[Attribute["Height"] = 8] = "Height";
+    Attribute[Attribute["CenterX"] = 9] = "CenterX";
+    Attribute[Attribute["CenterY"] = 10] = "CenterY";
+})(Attribute = exports.Attribute || (exports.Attribute = {}));
+var Relation;
+(function (Relation) {
+    Relation[Relation["Less"] = -1] = "Less";
+    Relation[Relation["Equal"] = 0] = "Equal";
+    Relation[Relation["Greater"] = 1] = "Greater";
+})(Relation = exports.Relation || (exports.Relation = {}));
+var LayoutConstraint = (function () {
+    function LayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
+        if (constant === void 0) { constant = 0; }
+        if (multiplier === void 0) { multiplier = 1; }
+        this.relation = Relation.Equal;
+        this.constant = 0;
+        this.multiplier = 1;
+        this.priority = 750;
+        this.firstItem = firstItem;
+        this.firstAttr = firstAttr;
+        this.relation = relation || Relation.Equal;
+        this.secondItem = secondItem;
+        this.secondAttr = secondAttr;
+        this.constant = constant;
+        this.multiplier = multiplier;
+    }
+    LayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
+    LayoutConstraint.Attribute = Attribute;
+    LayoutConstraint.Relation = Relation;
+    return LayoutConstraint;
+}());
+exports.LayoutConstraint = LayoutConstraint;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(1);
+var Color_1 = __webpack_require__(2);
+var TextAlignment;
+(function (TextAlignment) {
+    TextAlignment[TextAlignment["Left"] = 0] = "Left";
+    TextAlignment[TextAlignment["Center"] = 1] = "Center";
+    TextAlignment[TextAlignment["Right"] = 2] = "Right";
+})(TextAlignment = exports.TextAlignment || (exports.TextAlignment = {}));
+var TextVerticalAlignment;
+(function (TextVerticalAlignment) {
+    TextVerticalAlignment[TextVerticalAlignment["Top"] = 0] = "Top";
+    TextVerticalAlignment[TextVerticalAlignment["Center"] = 1] = "Center";
+    TextVerticalAlignment[TextVerticalAlignment["Bottom"] = 2] = "Bottom";
+})(TextVerticalAlignment = exports.TextVerticalAlignment || (exports.TextVerticalAlignment = {}));
+var Label = (function (_super) {
+    __extends(Label, _super);
+    function Label() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.textColor = new Color_1.Color(0, 0, 0);
+        return _this;
+    }
+    return Label;
+}(View_1.View));
+exports.Label = Label;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Font = (function () {
+    function Font(pointSize, fontWeight, fontStyle, familyName) {
+        if (fontWeight === void 0) { fontWeight = '400'; }
+        if (fontStyle === void 0) { fontStyle = 'normal'; }
+        this.fontWeight = '400';
+        this.fontStyle = 'normal';
+        this.pointSize = pointSize;
+        this.fontWeight = fontWeight;
+        this.fontStyle = fontStyle;
+        this.familyName = familyName;
+    }
+    Font.systemFontOfSize = function (pointSize, weight) {
+        if (weight === void 0) { weight = '400'; }
+        return new Font(pointSize, weight);
+    };
+    Font.boldSystemFontOfSize = function (pointSize) {
+        return new Font(pointSize, '700');
+    };
+    Font.italicSystemFontOfSize = function (pointSize) {
+        return new Font(pointSize, '400', 'italic');
+    };
+    return Font;
+}());
+exports.Font = Font;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var Application_1 = __webpack_require__(4);
+var Rebound = __webpack_require__(24);
+var PIXI = window.PIXI;
+var AutoLayout = __webpack_require__(17);
+var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = function (trigger) {
+        setTimeout(trigger, 16);
+    };
+}
+var View = (function (_super) {
+    __extends(View, _super);
+    function View(rect) {
+        var _this = _super.call(this, rect || I.RectZero) || this;
+        // Mark: View Geometry
+        _this._frame = I.RectZero;
+        _this._frameChanged = false;
+        _this._bounds = I.RectZero;
+        // Mark: View Rendering
+        _this._clipsToBounds = false;
+        _this._backgroundColor = undefined;
+        _this._opaque = false;
+        _this._tintColor = new I.Color(0.0, 122.0 / 255.0, 1.0);
+        // Mark: View Layer-Back Rendering
+        _this._cornerRadius = 0;
+        _this._borderWidth = 0;
+        _this._borderColor = undefined;
+        _this.layoutTimer = undefined;
+        // Mark: View LayoutConstraint
+        _this._layoutID = View.generateLayoutUD();
+        _this._constraints = [];
+        // Mark: View Interactive
+        _this._userInteractionEnabled = false;
+        _this._isTapActived = false;
+        _this._isTouchActived = false;
+        _this._maybeTap = false;
+        _this._maybeLongPress = false;
+        _this._maybePan = false;
+        _this._isLongPress = false;
+        _this._isPan = false;
+        _this._firstTapped = false;
+        _this._firstTapPoint = { x: 0, y: 0 };
+        _this._secondTapped = false;
+        _this._animationProps = {};
+        _this.nativeObject = new PIXI.Container();
+        _this.nativeObject.XTView = _this;
+        _this.nativeGraphics = new PIXI.Graphics();
+        _this.nativeObject.addChild(_this.nativeGraphics);
+        _this.nativeContainer = new PIXI.Container();
+        _this.nativeObject.addChild(_this.nativeContainer);
+        if (typeof rect === "object") {
+            _this.frame = rect;
+        }
+        return _this;
+    }
+    Object.defineProperty(View.prototype, "frame", {
+        get: function () {
+            return this._frame;
+        },
+        set: function (value) {
+            if (I.RectEqual(this._frame, value)) {
+                return;
+            }
+            if (View._animationEnabled) {
+                if (this._frame.x != value.x) {
+                    View.addAnimation(this, "frameX", this._frame.x, value.x);
+                }
+                if (this._frame.y != value.y) {
+                    View.addAnimation(this, "frameY", this._frame.y, value.y);
+                }
+                if (this._frame.width != value.width) {
+                    View.addAnimation(this, "frameWidth", this._frame.width, value.width);
+                }
+                if (this._frame.height != value.height) {
+                    View.addAnimation(this, "frameHeight", this._frame.height, value.height);
+                }
+                return;
+            }
+            this._frame = value;
+            this._frameChanged = true;
+            this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
+            this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.Screen.withScale(value.width), I.Screen.withScale(value.height));
+            this.nativeContainer.hitArea = this.nativeObject.hitArea;
+            this.nativeObject.x = I.Screen.withScale(value.x);
+            this.nativeObject.y = I.Screen.withScale(value.y);
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "frameX", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { x: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "frameY", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { y: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "frameWidth", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { width: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "frameHeight", {
+        set: function (value) {
+            this.frame = __assign({}, this.frame, { height: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "bounds", {
+        get: function () {
+            return this._bounds;
+        },
+        set: function (value) {
+            if (I.RectEqual(this._bounds, value)) {
+                return;
+            }
+            if (View._animationEnabled) {
+                if (this._bounds.x != value.x) {
+                    View.addAnimation(this, "boundsX", this._bounds.x, value.x);
+                }
+                if (this._bounds.y != value.y) {
+                    View.addAnimation(this, "boundsY", this._bounds.y, value.y);
+                }
+                if (this._bounds.width != value.width) {
+                    View.addAnimation(this, "boundsWidth", this._bounds.width, value.width);
+                }
+                if (this._bounds.height != value.height) {
+                    View.addAnimation(this, "boundsHeight", this._bounds.height, value.height);
+                }
+                return;
+            }
+            this._bounds = value;
+            this.draw();
+            Application_1.setNeedsDisplay(this);
+            this.setNeedsLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "boundsX", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { x: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "boundsY", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { y: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "boundsWidth", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { width: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "boundsHeight", {
+        set: function (value) {
+            this.bounds = __assign({}, this.bounds, { height: value });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "center", {
+        get: function () {
+            return { x: this.frame.x + this.frame.width / 2.0, y: this.frame.y + this.frame.height / 2.0 };
+        },
+        set: function (value) {
+            var newFrame = this.frame;
+            newFrame.x = value.x - newFrame.width / 2.0;
+            newFrame.y = value.y - newFrame.height / 2.0;
+            this.frame = newFrame;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "transform", {
+        get: function () {
+            return this._transform;
+        },
+        set: function (value) {
+            this._transform = value;
+            if (value) {
+                var transform = new PIXI.Transform();
+                var matrix = new PIXI.Matrix();
+                matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
+                transform.setFromMatrix(matrix);
+                this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
+            }
+            else {
+                this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+            }
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "clipsToBounds", {
+        get: function () {
+            return this._clipsToBounds;
+        },
+        set: function (value) {
+            this._clipsToBounds = value;
+            this.applyMask();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.prototype.applyMask = function () {
+        if (this.clipsToBounds) {
+            if (this.maskView === undefined) {
+                this.maskView = new View(this.bounds);
+                this.maskView.backgroundColor = new I.Color(1, 1, 1);
+            }
+            this.addSubview(this.maskView);
+            this.nativeObject.mask = this.maskView.nativeGraphics;
+        }
+        else {
+            if (this.maskView !== undefined) {
+                this.maskView.removeFromSuperview();
+            }
+            this.nativeObject.mask = undefined;
+        }
+        Application_1.setNeedsDisplay(this);
+    };
+    Object.defineProperty(View.prototype, "backgroundColor", {
+        get: function () {
+            return this._backgroundColor;
+        },
+        set: function (value) {
+            if (this._backgroundColor instanceof I.Color && this._backgroundColor.equals(value)) {
+                return;
+            }
+            if (View._animationEnabled && this._backgroundColor && value) {
+                if (this._backgroundColor.a != value.a) {
+                    View.addAnimation(this, "backgroundColorA", this._backgroundColor.a, value.a);
+                }
+                if (this._backgroundColor.r != value.r) {
+                    View.addAnimation(this, "backgroundColorR", this._backgroundColor.r, value.r);
+                }
+                if (this._backgroundColor.g != value.g) {
+                    View.addAnimation(this, "backgroundColorG", this._backgroundColor.g, value.g);
+                }
+                if (this._backgroundColor.b != value.b) {
+                    View.addAnimation(this, "backgroundColorB", this._backgroundColor.b, value.b);
+                }
+                return;
+            }
+            this._backgroundColor = value;
+            this.draw();
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "backgroundColorA", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.Color(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "backgroundColorR", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.Color(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "backgroundColorG", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.Color(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "backgroundColorB", {
+        set: function (value) {
+            if (this.backgroundColor) {
+                this.backgroundColor = new I.Color(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "opaque", {
+        get: function () {
+            if (this._opaque === true) {
+                return true;
+            }
+            else if (this.backgroundColor && this.backgroundColor.a >= 1 && !this.hidden && this.alpha >= 1 && this.cornerRadius == 0) {
+                return true;
+            }
+            return this._opaque;
+        },
+        set: function (value) {
+            this._opaque = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "alpha", {
+        get: function () {
+            return this.nativeObject.alpha;
+        },
+        set: function (value) {
+            if (this.nativeObject.alpha === value) {
+                return;
+            }
+            if (View._animationEnabled) {
+                View.addAnimation(this, "alpha", this.nativeObject.alpha, value);
+                return;
+            }
+            this.nativeObject.alpha = value;
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "hidden", {
+        get: function () {
+            return !this.nativeObject.visible;
+        },
+        set: function (value) {
+            if (this.nativeObject.visible === value) {
+                return;
+            }
+            this.nativeObject.visible = !value;
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "maskView", {
+        get: function () {
+            return this._maskView;
+        },
+        set: function (value) {
+            if (this._maskView !== undefined) {
+                this._maskView.removeFromSuperview();
+            }
+            this._maskView = value;
+            this.applyMask();
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "tintColor", {
+        get: function () {
+            return this._tintColor;
+        },
+        set: function (value) {
+            if (this._tintColor instanceof I.Color && this._tintColor.equals(value)) {
+                return;
+            }
+            this._tintColor = value;
+            this.tintColorDidChange();
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.prototype.tintColorDidChange = function () {
+        this.subviews.forEach(function (subview) { subview.tintColorDidChange(); });
+    };
+    Object.defineProperty(View.prototype, "cornerRadius", {
+        get: function () {
+            return this._cornerRadius;
+        },
+        set: function (value) {
+            if (this._cornerRadius === value) {
+                return;
+            }
+            if (View._animationEnabled) {
+                View.addAnimation(this, "cornerRadius", this._cornerRadius, value);
+                return;
+            }
+            this._cornerRadius = value;
+            this.draw();
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "borderWidth", {
+        get: function () {
+            return this._borderWidth;
+        },
+        set: function (value) {
+            if (this._borderWidth === value) {
+                return;
+            }
+            if (View._animationEnabled) {
+                View.addAnimation(this, "borderWidth", this._borderWidth, value);
+                return;
+            }
+            this._borderWidth = value;
+            this.draw();
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "borderColor", {
+        get: function () {
+            return this._borderColor;
+        },
+        set: function (value) {
+            if (this._borderColor === value) {
+                return;
+            }
+            if (View._animationEnabled && this._borderColor && value) {
+                if (this._borderColor.a != value.a) {
+                    View.addAnimation(this, "borderColorA", this._borderColor.a, value.a);
+                }
+                if (this._borderColor.r != value.r) {
+                    View.addAnimation(this, "borderColorR", this._borderColor.r, value.r);
+                }
+                if (this._borderColor.g != value.g) {
+                    View.addAnimation(this, "borderColorG", this._borderColor.g, value.g);
+                }
+                if (this._borderColor.b != value.b) {
+                    View.addAnimation(this, "borderColorB", this._borderColor.b, value.b);
+                }
+                return;
+            }
+            this._borderColor = value;
+            this.draw();
+            Application_1.setNeedsDisplay(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "borderColorA", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "borderColorR", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "borderColorG", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "borderColorB", {
+        set: function (value) {
+            if (this.borderColor) {
+                this.borderColor = new I.Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.prototype.draw = function () {
+        if (this.nativeGraphics === undefined || this.bounds.width == 0 || this.bounds.height == 0) {
+            return;
+        }
+        this.nativeGraphics.clear();
+        this.drawGraphics();
+    };
+    View.prototype.drawGraphics = function () {
+        if (this.backgroundColor instanceof I.Color) {
+            this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
+            if (this.borderWidth > 0 && this.borderColor instanceof I.Color) {
+                this.nativeGraphics.lineStyle(I.Screen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
+            }
+            var scaledBounds = {
+                x: I.Screen.withScale(this.bounds.x),
+                y: I.Screen.withScale(this.bounds.y),
+                width: I.Screen.withScale(this.bounds.width),
+                height: I.Screen.withScale(this.bounds.height),
+            };
+            if (this.cornerRadius > 0) {
+                if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
+                    if (scaledBounds.width > scaledBounds.height) {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width - scaledBounds.height / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(scaledBounds.x + scaledBounds.height / 2.0, scaledBounds.y, scaledBounds.width - scaledBounds.height, scaledBounds.height);
+                    }
+                    else if (scaledBounds.width < scaledBounds.height) {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height - scaledBounds.width / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                        this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y + scaledBounds.width / 2.0, scaledBounds.width, scaledBounds.height - scaledBounds.width);
+                    }
+                    else {
+                        this.nativeGraphics.drawCircle(scaledBounds.x + scaledBounds.width / 2.0, scaledBounds.y + scaledBounds.height / 2.0, Math.min(scaledBounds.width, scaledBounds.height) / 2.0);
+                    }
+                }
+                else {
+                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.Screen.withScale(this.cornerRadius));
+                }
+            }
+            else {
+                this.nativeGraphics.drawRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height);
+            }
+        }
+    };
+    Object.defineProperty(View.prototype, "superview", {
+        get: function () {
+            var parent = undefined;
+            if (this.nativeContainer.parent && this.nativeContainer.parent.parent && this.nativeContainer.parent.parent.parent) {
+                parent = this.nativeContainer.parent.parent.parent;
+            }
+            if (parent !== undefined && parent.XTView instanceof View) {
+                return parent.XTView;
+            }
+            return undefined;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "subviews", {
+        get: function () {
+            return this.nativeContainer.children.map(function (item) { return item.XTView; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "window", {
+        get: function () {
+            var current = this.superview;
+            while (current !== undefined && current.XTClassName !== "Window") {
+                current = current.superview;
+            }
+            return current;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.prototype.removeFromSuperview = function () {
+        if (this.superview !== undefined) {
+            this.nativeContainer.parent.XTView.willRemoveSubview(this);
+            this.willMoveToSuperview(undefined);
+            this.willMoveToWindow(undefined);
+            this.nativeObject.parent.removeChild(this.nativeObject);
+            this.didMoveToSuperview();
+            this.didMoveToWindow();
+            Application_1.setNeedsDisplay(this);
+        }
+    };
+    View.prototype.insertSubviewAtIndex = function (subview, atIndex) {
+        subview.willMoveToSuperview(this);
+        subview.willMoveToWindow(this.window);
+        this.nativeContainer.addChildAt(subview.nativeObject, atIndex);
+        subview.didMoveToSuperview();
+        subview.didMoveToWindow();
+        Application_1.setNeedsDisplay(this);
+    };
+    View.prototype.exchangeSubviewAtIndex = function (index1, index2) {
+        var child1 = this.nativeContainer.getChildAt(index1);
+        var child2 = this.nativeContainer.getChildAt(index2);
+        this.nativeContainer.swapChildren(child1, child2);
+        Application_1.setNeedsDisplay(this);
+    };
+    View.prototype.addSubview = function (subview) {
+        subview.willMoveToSuperview(this);
+        subview.willMoveToWindow(this.window);
+        this.nativeContainer.addChild(subview.nativeObject);
+        this.didAddSubview(subview);
+        subview.didMoveToSuperview();
+        subview.didMoveToWindow();
+        Application_1.setNeedsDisplay(this);
+    };
+    View.prototype.insertSubviewBelow = function (subview, siblingSubview) {
+        var siblingIndex = this.subviews.indexOf(siblingSubview);
+        if (siblingIndex >= 0) {
+            this.insertSubviewAtIndex(subview, siblingIndex);
+        }
+    };
+    View.prototype.insertSubviewAbove = function (subview, siblingSubview) {
+        var siblingIndex = this.subviews.indexOf(siblingSubview);
+        if (siblingIndex >= 0 && siblingIndex == this.subviews.length - 1) {
+            this.addSubview(subview);
+        }
+        else if (siblingIndex >= 0) {
+            this.insertSubviewAtIndex(subview, siblingIndex + 1);
+        }
+    };
+    View.prototype.bringSubviewToFront = function (subview) {
+        var currentIndex = this.subviews.indexOf(subview);
+        if (currentIndex < this.subviews.length - 1 && this.subviews.length > 1) {
+            this.exchangeSubviewAtIndex(this.subviews.length - 1, currentIndex);
+        }
+    };
+    View.prototype.sendSubviewToBack = function (subview) {
+        var currentIndex = this.subviews.indexOf(subview);
+        if (currentIndex > 0 && this.subviews.length > 1) {
+            this.exchangeSubviewAtIndex(0, currentIndex);
+        }
+    };
+    View.prototype.didAddSubview = function (subview) { };
+    View.prototype.willRemoveSubview = function (subview) { };
+    View.prototype.willMoveToSuperview = function (newSuperview) { };
+    View.prototype.didMoveToSuperview = function () { };
+    View.prototype.willMoveToWindow = function (newWindow) { };
+    View.prototype.didMoveToWindow = function () { };
+    View.prototype.isDescendantOfView = function (view) {
+        var current = this;
+        while (current !== undefined) {
+            if (current === view) {
+                return true;
+            }
+            current = current.superview;
+        }
+        return false;
+    };
+    View.prototype.viewWithTag = function (tag) {
+        if (this.tag !== undefined && this.tag === tag) {
+            return this;
+        }
+        else {
+            var target = this.subviews.filter(function (item) { return item.viewWithTag(tag); });
+            if (target.length > 0) {
+                return target[0];
+            }
+        }
+        return undefined;
+    };
+    View.prototype.setNeedsLayout = function () {
+        var _this = this;
+        if (this.layoutTimer !== undefined) {
+            clearImmediate(this.layoutTimer);
+        }
+        this.layoutTimer = setImmediate(function () {
+            _this.layoutSubviews();
+        });
+    };
+    View.prototype.layoutIfNeeded = function () {
+        this.layoutSubviews();
+    };
+    View.prototype.layoutSubviews = function () {
+        if (this._constraints.length > 0) {
+            var viewMapping_1 = {};
+            this._constraints.forEach(function (item) {
+                if (item.firstItem !== undefined) {
+                    viewMapping_1[item.firstItem._layoutID] = item.firstItem;
+                }
+                if (item.secondItem !== undefined) {
+                    viewMapping_1[item.secondItem._layoutID] = item.secondItem;
+                }
+            });
+            var view = new AutoLayout.View({
+                constraints: this._constraints.map(function (item) { return item.toALObject(); }),
+                width: this.bounds.width,
+                height: this.bounds.height,
+            });
+            for (var layoutID in view.subViews) {
+                var value = view.subViews[layoutID];
+                if (viewMapping_1[layoutID] !== undefined) {
+                    viewMapping_1[layoutID].frame = {
+                        x: value.left,
+                        y: value.top,
+                        width: value.width,
+                        height: value.height,
+                    };
+                }
+            }
+        }
+    };
+    View.generateLayoutUD = function () {
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+        var uuid = s.join("");
+        return uuid;
+    };
+    Object.defineProperty(View.prototype, "constraints", {
+        get: function () {
+            return [];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.prototype.addConstraint = function (constraint) {
+        this._constraints.push(constraint);
+        this.setNeedsLayout();
+    };
+    View.prototype.addConstraints = function (constraints) {
+        var _this = this;
+        constraints.forEach(function (constraint) { return _this._constraints.push(constraint); });
+        this.setNeedsLayout();
+    };
+    View.prototype.removeConstraint = function (constraint) {
+        var idx = this._constraints.indexOf(constraint);
+        if (idx >= 0) {
+            this._constraints.splice(idx, 1);
+        }
+        this.setNeedsLayout();
+    };
+    View.prototype.removeAllConstraints = function () {
+        this._constraints = [];
+        this.setNeedsLayout();
+    };
+    Object.defineProperty(View.prototype, "userInteractionEnabled", {
+        get: function () {
+            return this._userInteractionEnabled;
+        },
+        set: function (value) {
+            this._userInteractionEnabled = value;
+            this.nativeObject.interactive = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.prototype.activeTap = function () {
+        var _this = this;
+        if (this._isTapActived === true) {
+            return;
+        }
+        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
+            this.activeTouch();
+            var onTap = function () {
+                if (_this._onDoubleTap !== undefined) {
+                    if (_this._firstTapped !== true && _this._maybeTap === true) {
+                        _this._firstTapped = true;
+                        setTimeout(function () {
+                            if (_this._onTap !== undefined && _this._secondTapped === false && _this._maybeTap === true) {
+                                if (_this._isLongPress === false) {
+                                    _this._onTap && _this._onTap();
+                                }
+                            }
+                            _this._firstTapped = false;
+                        }, 250);
+                    }
+                    else if (_this._firstTapped === true && _this._maybeTap === true) {
+                        _this._secondTapped = true;
+                        if (_this._isLongPress === false) {
+                            _this._onDoubleTap && _this._onDoubleTap();
+                        }
+                    }
+                }
+                else if (_this._maybeTap === true) {
+                    if (_this._isLongPress === false) {
+                        _this._onTap && _this._onTap();
+                    }
+                }
+            };
+            this.nativeObject.on('click', onTap);
+            this.nativeObject.on('tap', onTap);
+            this._isTapActived = true;
+        }
+    };
+    View.prototype.activeTouch = function () {
+        if (this._isTouchActived === true) {
+            return;
+        }
+        this.nativeObject.on('pointerdown', this.handleTouchStart.bind(this));
+        this.nativeObject.on('pointermove', this.handleTouchMove.bind(this));
+        this.nativeObject.on('pointerup', this.handleTouchEnd.bind(this));
+        this.nativeObject.on('pointerupoutside', this.handleTouchEnd.bind(this));
+        this._isTouchActived = true;
+    };
+    View.prototype.requestTouchPointInView = function (event) {
+        var absPoint = {
+            x: I.Screen.outScale(event.data.global.x),
+            y: I.Screen.outScale(event.data.global.y),
+        };
+        var viewPoint = {
+            x: absPoint.x,
+            y: absPoint.y,
+        };
+        var currentView = this;
+        while (currentView.superview !== undefined) {
+            viewPoint.x -= currentView.frame.x;
+            viewPoint.y -= currentView.frame.y;
+            currentView = currentView.superview;
+        }
+        return viewPoint;
+    };
+    View.prototype.requestTouchPointInWindow = function (event) {
+        var absPoint = {
+            x: I.Screen.outScale(event.data.global.x),
+            y: I.Screen.outScale(event.data.global.y),
+        };
+        return absPoint;
+    };
+    View.prototype.handleTouchStart = function (event) {
+        var _this = this;
+        if (this._onPan !== undefined) {
+            this._maybePan = true;
+            this._isPan = false;
+        }
+        if (this._onLongPress !== undefined) {
+            this._maybeLongPress = true;
+            this._isLongPress = false;
+            setTimeout(function () {
+                if (_this._maybeLongPress === true) {
+                    _this._isLongPress = true;
+                    _this._onLongPress && _this._onLongPress(I.View.InteractionState.Began);
+                }
+            }, 300);
+        }
+        if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
+            this._maybeTap = true;
+            this._firstTapPoint = __assign({}, event.data.global);
+            this._secondTapped = false;
+        }
+    };
+    View.prototype.handleTouchMove = function (event) {
+        if (this._isLongPress === true) {
+            this._maybePan = false;
+            this._onLongPress && this._onLongPress(I.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._isPan === true) {
+            this._onPan && this._onPan(I.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+        }
+        else if (this._maybePan === true) {
+            if (event.data.global.x - this._firstTapPoint.x > I.Screen.withScale(8) || event.data.global.y - this._firstTapPoint.y > I.Screen.withScale(8)) {
+                this._isPan = true;
+                this._maybeTap = false;
+                this._maybeLongPress = false;
+                this._onPan && this._onPan(I.View.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            }
+        }
+        else if (this._maybeTap === true || this._maybeLongPress === true) {
+            if (event.data.global.x - this._firstTapPoint.x > I.Screen.withScale(12) || event.data.global.y - this._firstTapPoint.y > I.Screen.withScale(12)) {
+                this._maybeTap = false;
+                this._maybeLongPress = false;
+            }
+        }
+    };
+    View.prototype.handleTouchEnd = function (event) {
+        if (this._isLongPress !== true) {
+            this._maybeLongPress = false;
+        }
+        if (this._isPan === true) {
+            this._onPan && this._onPan(I.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._maybePan = false;
+            this._isPan = false;
+        }
+        else if (this._isLongPress === true) {
+            this._onLongPress && this._onLongPress(I.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._maybeTap = false;
+            this._isLongPress = false;
+        }
+    };
+    Object.defineProperty(View.prototype, "onTap", {
+        set: function (value) {
+            this._onTap = value;
+            this.activeTap();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "onDoubleTap", {
+        set: function (value) {
+            this._onDoubleTap = value;
+            this.activeTap();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "onLongPress", {
+        set: function (value) {
+            this._onLongPress = value;
+            this.activeTouch();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "onPan", {
+        set: function (value) {
+            this._onPan = value;
+            this.activeTouch();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    View.commonAnimation = function (animations, runAnimation) {
+        View._animationEnabled = true;
+        animations();
+        var animationViewProps = [];
+        View._animationViews.forEach(function (view) {
+            for (var propName in view._animationProps) {
+                var element = view._animationProps[propName];
+                animationViewProps.push({ view: view, propName: propName, from: element.from, to: element.to });
+            }
+            view._animationProps = {};
+        });
+        var startTime = performance.now();
+        var runnable = function () {
+            Application_1.displayPause();
+            if (!runAnimation(startTime, animationViewProps)) {
+                requestAnimationFrame(runnable);
+            }
+            Application_1.displayNow();
+        };
+        runnable();
+        View._animationViews = [];
+        View._animationEnabled = false;
+    };
+    View.animationWithDuration = function (duration, animations, completion) {
+        this.commonAnimation(animations, function (startTime, animationViewProps) {
+            var currentTime = performance.now();
+            var delta = currentTime - startTime;
+            animationViewProps.forEach(function (item) {
+                var currentValue = (item.to - item.from) * Math.min(1.0, delta / (duration * 1000));
+                item.view[item.propName] = item.from + currentValue;
+            });
+            if (delta < (duration * 1000)) {
+                return false;
+            }
+            else {
+                completion && completion();
+                return true;
+            }
+        });
+    };
+    View.animationWithBouncinessAndSpeed = function (bounciness, speed, animations, completion) {
+        var springSystem = new Rebound.SpringSystem();
+        var rested = false;
+        this.commonAnimation(animations, function (startTime, animationViewProps) {
+            animationViewProps.forEach(function (item) {
+                var spring = springSystem.createSpringWithBouncinessAndSpeed(bounciness, speed);
+                spring.addListener({
+                    onSpringUpdate: function (spring) {
+                        item.view[item.propName] = spring.getCurrentValue();
+                    },
+                    onSpringAtRest: function () {
+                        if (!rested) {
+                            rested = true;
+                            completion && completion();
+                        }
+                    }
+                });
+                spring.setCurrentValue(item.from);
+                spring.setEndValue(item.to);
+            });
+            return true;
+        });
+    };
+    View.addAnimation = function (view, propName, from, to) {
+        if (View._animationViews.indexOf(view) < 0) {
+            View._animationViews.push(view);
+        }
+        view._animationProps[propName] = { from: from, to: to };
+    };
+    // Mark: View Animation
+    View._animationEnabled = false;
+    View._animationViews = [];
+    return View;
+}(I.View));
+exports.View = View;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
+
+/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1736,27 +1736,27 @@ var I = __webpack_require__(0);
 var Factory = (function () {
     function Factory() {
     }
-    Factory.CGPointMake = I.CGPointMake;
-    Factory.CGPointEqual = I.CGPointEqual;
-    Factory.CGPointZero = I.CGPointZero;
-    Factory.CGRectMake = I.CGRectMake;
-    Factory.CGRectZero = I.CGRectZero;
-    Factory.CGRectEqual = I.CGRectEqual;
-    Factory.CGRectInside = I.CGRectInside;
-    Factory.CGSizeMake = I.CGSizeMake;
-    Factory.CGSizeZero = I.CGSizeZero;
-    Factory.CGSizeEqual = I.CGSizeEqual;
-    Factory.UILabel = I.UILabel;
-    Factory.UITextAlignment = I.UITextAlignment;
-    Factory.UIFont = I.UIFont;
-    Factory.UIView = I.UIView;
-    Factory.UIApplication = I.UIApplication;
-    Factory.UIApplicationDelegate = I.UIApplicationDelegate;
-    Factory.UIWindow = I.UIWindow;
-    Factory.UIColor = I.UIColor;
-    Factory.UIScreen = I.UIScreen;
-    Factory.CGTransformMatrix = I.CGTransformMatrix;
-    Factory.NSLayoutConstraint = I.NSLayoutConstraint;
+    Factory.PointMake = I.PointMake;
+    Factory.PointEqual = I.PointEqual;
+    Factory.PointZero = I.PointZero;
+    Factory.RectMake = I.RectMake;
+    Factory.RectZero = I.RectZero;
+    Factory.RectEqual = I.RectEqual;
+    Factory.RectInside = I.RectInside;
+    Factory.SizeMake = I.SizeMake;
+    Factory.SizeZero = I.SizeZero;
+    Factory.SizeEqual = I.SizeEqual;
+    Factory.Label = I.Label;
+    Factory.TextAlignment = I.TextAlignment;
+    Factory.Font = I.Font;
+    Factory.View = I.View;
+    Factory.Application = I.Application;
+    Factory.ApplicationDelegate = I.ApplicationDelegate;
+    Factory.Window = I.Window;
+    Factory.Color = I.Color;
+    Factory.Screen = I.Screen;
+    Factory.TransformMatrix = I.TransformMatrix;
+    Factory.LayoutConstraint = I.LayoutConstraint;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -7378,19 +7378,19 @@ if (window !== undefined) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Factory_pixi_1 = __webpack_require__(14);
-var UIView_1 = __webpack_require__(12);
-var UIApplication_1 = __webpack_require__(3);
-var UIWindow_1 = __webpack_require__(25);
-var NSLayoutConstraint_1 = __webpack_require__(26);
-var UILabel_1 = __webpack_require__(27);
+var View_1 = __webpack_require__(13);
+var Application_1 = __webpack_require__(4);
+var Window_1 = __webpack_require__(25);
+var LayoutConstraint_1 = __webpack_require__(26);
+var Label_1 = __webpack_require__(27);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
-        Factory_pixi_1.Factory.UIView = UIView_1.UIView;
-        Factory_pixi_1.Factory.UIApplication = UIApplication_1.UIApplication;
-        Factory_pixi_1.Factory.UIWindow = UIWindow_1.UIWindow;
-        Factory_pixi_1.Factory.NSLayoutConstraint = NSLayoutConstraint_1.NSLayoutConstraint;
-        Factory_pixi_1.Factory.UILabel = UILabel_1.UILabel;
+        Factory_pixi_1.Factory.View = View_1.View;
+        Factory_pixi_1.Factory.Application = Application_1.Application;
+        Factory_pixi_1.Factory.Window = Window_1.Window;
+        Factory_pixi_1.Factory.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
+        Factory_pixi_1.Factory.Label = Label_1.Label;
     };
     if (force) {
         use();
@@ -8774,7 +8774,7 @@ module.exports = win;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(13).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(3).setImmediate))
 
 /***/ }),
 /* 25 */
@@ -8793,31 +8793,31 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var UIApplication_1 = __webpack_require__(3);
-var UIView_1 = __webpack_require__(12);
+var Application_1 = __webpack_require__(4);
+var View_1 = __webpack_require__(13);
 var PIXI = window.PIXI;
-var UIWindow = (function (_super) {
-    __extends(UIWindow, _super);
-    function UIWindow(rect) {
+var Window = (function (_super) {
+    __extends(Window, _super);
+    function Window(rect) {
         var _this = _super.call(this, rect) || this;
-        _this.XTClassName = "UIWindow";
-        var application = UIApplication_1.UIApplication.sharedApplication();
-        if (application instanceof UIApplication_1.UIApplication) {
+        _this.XTClassName = "Window";
+        var application = Application_1.Application.sharedApplication();
+        if (application instanceof Application_1.Application) {
             application.nativeObject.stage.addChild(_this.nativeObject);
         }
         _this.hidden = true;
         return _this;
     }
-    UIWindow.prototype.makeKeyAndVisible = function () {
-        var application = UIApplication_1.UIApplication.sharedApplication();
-        if (application instanceof UIApplication_1.UIApplication) {
+    Window.prototype.makeKeyAndVisible = function () {
+        var application = Application_1.Application.sharedApplication();
+        if (application instanceof Application_1.Application) {
             application.keyWindow = this;
         }
         this.hidden = false;
     };
-    return UIWindow;
-}(UIView_1.UIView));
-exports.UIWindow = UIWindow;
+    return Window;
+}(View_1.View));
+exports.Window = Window;
 
 
 /***/ }),
@@ -8839,60 +8839,60 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
 var AutoLayout = __webpack_require__(17);
-var NSLayoutConstraint = (function (_super) {
-    __extends(NSLayoutConstraint, _super);
-    function NSLayoutConstraint() {
+var LayoutConstraint = (function (_super) {
+    __extends(LayoutConstraint, _super);
+    function LayoutConstraint() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NSLayoutConstraint.fromALObject = function (obj, views) {
+    LayoutConstraint.fromALObject = function (obj, views) {
         var toAttr = function (attr) {
             if (attr == "const") {
-                return I.NSLayoutConstraint.Attribute.Const;
+                return I.LayoutConstraint.Attribute.Const;
             }
             if (attr == "left") {
-                return I.NSLayoutConstraint.Attribute.Left;
+                return I.LayoutConstraint.Attribute.Left;
             }
             if (attr == "right") {
-                return I.NSLayoutConstraint.Attribute.Right;
+                return I.LayoutConstraint.Attribute.Right;
             }
             if (attr == "top") {
-                return I.NSLayoutConstraint.Attribute.Top;
+                return I.LayoutConstraint.Attribute.Top;
             }
             if (attr == "bottom") {
-                return I.NSLayoutConstraint.Attribute.Bottom;
+                return I.LayoutConstraint.Attribute.Bottom;
             }
             if (attr == "width") {
-                return I.NSLayoutConstraint.Attribute.Width;
+                return I.LayoutConstraint.Attribute.Width;
             }
             if (attr == "height") {
-                return I.NSLayoutConstraint.Attribute.Height;
+                return I.LayoutConstraint.Attribute.Height;
             }
             if (attr == "centerX") {
-                return I.NSLayoutConstraint.Attribute.CenterX;
+                return I.LayoutConstraint.Attribute.CenterX;
             }
             if (attr == "centerY") {
-                return I.NSLayoutConstraint.Attribute.CenterY;
+                return I.LayoutConstraint.Attribute.CenterY;
             }
         };
         var toRelation = function (rel) {
             if (rel == "leq") {
-                return I.NSLayoutConstraint.Relation.Less;
+                return I.LayoutConstraint.Relation.Less;
             }
             if (rel == "geq") {
-                return I.NSLayoutConstraint.Relation.Greater;
+                return I.LayoutConstraint.Relation.Greater;
             }
-            return I.NSLayoutConstraint.Relation.Equal;
+            return I.LayoutConstraint.Relation.Equal;
         };
         var constant = obj.constant == "default" ? 8 : parseInt(obj.constant);
-        var layoutConstraint = new NSLayoutConstraint(views[obj.view1], toAttr(obj.attr1), toRelation(obj.relation), views[obj.view2], toAttr(obj.attr2), constant, obj.multiplier);
+        var layoutConstraint = new LayoutConstraint(views[obj.view1], toAttr(obj.attr1), toRelation(obj.relation), views[obj.view2], toAttr(obj.attr2), constant, obj.multiplier);
         layoutConstraint.priority = obj.priority || 750;
         return layoutConstraint;
     };
-    NSLayoutConstraint.constraintsWithVisualFormat = function (format, views) {
+    LayoutConstraint.constraintsWithVisualFormat = function (format, views) {
         try {
             var result = AutoLayout.VisualFormat.parse(format);
             return result.map(function (item) {
-                return NSLayoutConstraint.fromALObject(item, views);
+                return LayoutConstraint.fromALObject(item, views);
             });
         }
         catch (error) {
@@ -8900,45 +8900,45 @@ var NSLayoutConstraint = (function (_super) {
             return [];
         }
     };
-    NSLayoutConstraint.prototype.toALObject = function () {
+    LayoutConstraint.prototype.toALObject = function () {
         var toAttr = function (attr) {
-            if (attr == I.NSLayoutConstraint.Attribute.Const) {
+            if (attr == I.LayoutConstraint.Attribute.Const) {
                 return "const";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.Left) {
+            if (attr == I.LayoutConstraint.Attribute.Left) {
                 return "left";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.Right) {
+            if (attr == I.LayoutConstraint.Attribute.Right) {
                 return "right";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.Top) {
+            if (attr == I.LayoutConstraint.Attribute.Top) {
                 return "top";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.Bottom) {
+            if (attr == I.LayoutConstraint.Attribute.Bottom) {
                 return "bottom";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.Width) {
+            if (attr == I.LayoutConstraint.Attribute.Width) {
                 return "width";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.Height) {
+            if (attr == I.LayoutConstraint.Attribute.Height) {
                 return "height";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.CenterX) {
+            if (attr == I.LayoutConstraint.Attribute.CenterX) {
                 return "centerX";
             }
-            if (attr == I.NSLayoutConstraint.Attribute.CenterY) {
+            if (attr == I.LayoutConstraint.Attribute.CenterY) {
                 return "centerY";
             }
             return undefined;
         };
         var toRelation = function (rel) {
-            if (rel == I.NSLayoutConstraint.Relation.Equal) {
+            if (rel == I.LayoutConstraint.Relation.Equal) {
                 return "equ";
             }
-            else if (rel == I.NSLayoutConstraint.Relation.Less) {
+            else if (rel == I.LayoutConstraint.Relation.Less) {
                 return "leq";
             }
-            else if (rel == I.NSLayoutConstraint.Relation.Greater) {
+            else if (rel == I.LayoutConstraint.Relation.Greater) {
                 return "geq";
             }
             return "equ";
@@ -8954,9 +8954,9 @@ var NSLayoutConstraint = (function (_super) {
             priority: this.priority,
         };
     };
-    return NSLayoutConstraint;
-}(I.NSLayoutConstraint));
-exports.NSLayoutConstraint = NSLayoutConstraint;
+    return LayoutConstraint;
+}(I.LayoutConstraint));
+exports.LayoutConstraint = LayoutConstraint;
 
 
 /***/ }),
@@ -8977,22 +8977,22 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
-var UIView_1 = __webpack_require__(12);
-var UIApplication_1 = __webpack_require__(3);
-var UITextLayout_1 = __webpack_require__(31);
+var View_1 = __webpack_require__(13);
+var Application_1 = __webpack_require__(4);
+var TextLayout_1 = __webpack_require__(28);
 var PIXI = window.PIXI;
-var UILabel = (function (_super) {
-    __extends(UILabel, _super);
-    function UILabel(rect) {
+var Label = (function (_super) {
+    __extends(Label, _super);
+    function Label(rect) {
         var _this = _super.call(this, rect) || this;
         _this.textContainer = new PIXI.Container();
-        _this._font = new I.UIFont(14);
-        _this._textColor = new I.UIColor(0, 0, 0);
-        _this._textAlignment = I.UITextAlignment.Left;
+        _this._font = new I.Font(14);
+        _this._textColor = new I.Color(0, 0, 0);
+        _this._textAlignment = I.TextAlignment.Left;
         _this.nativeObject.addChild(_this.textContainer);
         return _this;
     }
-    Object.defineProperty(UILabel.prototype, "text", {
+    Object.defineProperty(Label.prototype, "text", {
         get: function () {
             return this._text;
         },
@@ -9003,7 +9003,7 @@ var UILabel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UILabel.prototype, "font", {
+    Object.defineProperty(Label.prototype, "font", {
         get: function () {
             return this._font;
         },
@@ -9014,7 +9014,7 @@ var UILabel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UILabel.prototype, "textColor", {
+    Object.defineProperty(Label.prototype, "textColor", {
         get: function () {
             return this._textColor;
         },
@@ -9025,7 +9025,7 @@ var UILabel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(UILabel.prototype, "textAlignment", {
+    Object.defineProperty(Label.prototype, "textAlignment", {
         get: function () {
             return this._textAlignment;
         },
@@ -9035,31 +9035,31 @@ var UILabel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    UILabel.prototype.drawText = function () {
+    Label.prototype.drawText = function () {
         var _this = this;
         clearImmediate(this._drawTextImmediate);
         this._drawTextImmediate = setImmediate(function () {
             _this.textContainer.removeChildren();
             if (_this.text) {
                 var textStyle_1 = new PIXI.TextStyle({
-                    fontSize: I.UIScreen.withScale(_this.font.pointSize),
+                    fontSize: I.Screen.withScale(_this.font.pointSize),
                     fill: "#ffffff",
                 });
-                var textLayout = new UITextLayout_1.UIStaticTextLayout(_this.text, _this.font, _this.bounds);
-                textLayout.textLines(_this.bounds, I.UITextAlignment.Center, I.UITextVerticalAlignment.Center).forEach(function (line) {
+                var textLayout = new TextLayout_1.StaticTextLayout(_this.text, _this.font, _this.bounds);
+                textLayout.textLines(_this.bounds, I.TextAlignment.Center, I.TextVerticalAlignment.Center).forEach(function (line) {
                     var text = new PIXI.Text(line.text, textStyle_1);
-                    text.x = I.UIScreen.withScale(line.x);
-                    text.y = I.UIScreen.withScale(line.y);
+                    text.x = I.Screen.withScale(line.x);
+                    text.y = I.Screen.withScale(line.y);
                     _this.textContainer.addChild(text);
                 });
                 // const textSequence = this.text.split('').map(character => {
                 //     return {
-                //         fontSize: I.UIScreen.withScale(this.font.pointSize),
+                //         fontSize: I.Screen.withScale(this.font.pointSize),
                 //         character,
                 //     }
                 // });
                 // const layoutSequence = huozi(textSequence, {
-                //     gridSize: I.UIScreen.withScale(this.font.pointSize),
+                //     gridSize: I.Screen.withScale(this.font.pointSize),
                 //     column: Math.floor(this.bounds.width / this.font.pointSize),
                 //     row: Infinity,
                 // });
@@ -9084,17 +9084,92 @@ var UILabel = (function (_super) {
                 //     this.textContainer.addChild(text);
                 // }
             }
-            UIApplication_1.setNeedsDisplay(_this);
+            Application_1.setNeedsDisplay(_this);
         });
     };
-    return UILabel;
-}(UIView_1.UIView));
-exports.UILabel = UILabel;
+    return Label;
+}(View_1.View));
+exports.Label = Label;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).clearImmediate, __webpack_require__(13).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
 
 /***/ }),
 /* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(0);
+var huozi_1 = __webpack_require__(29);
+var StaticTextLayout = (function () {
+    function StaticTextLayout(text, font, bounds, padding) {
+        if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
+        var _this = this;
+        this.bounds = I.RectZero;
+        this.padding = { top: 0, left: 0, bottom: 0, right: 0 };
+        this.text = text;
+        this.font = font;
+        this.bounds = bounds;
+        this.padding = padding;
+        // measure function
+        var textSequence = this.text.split('').map(function (character) {
+            return {
+                fontSize: _this.font.pointSize,
+                character: character,
+            };
+        });
+        var layoutSequence = huozi_1.default(textSequence, {
+            gridSize: this.font.pointSize,
+            column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
+            row: Infinity,
+        });
+        var minX = Math.min.apply(null, layoutSequence.map(function (element) { return element.x; }));
+        var minY = Math.min.apply(null, layoutSequence.map(function (element) { return element.y; }));
+        var maxX = Math.max.apply(null, layoutSequence.map(function (element) { return element.x + element.width; }));
+        var maxY = Math.max.apply(null, layoutSequence.map(function (element) { return element.y + element.height; }));
+        this.layoutSequence = layoutSequence;
+        this.textRect = I.RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
+    }
+    StaticTextLayout.prototype.textLines = function (onRect, horizonAlignment, verticalAlignment) {
+        var offset = { x: this.textRect.x, y: this.textRect.y };
+        if (horizonAlignment === I.TextAlignment.Center) {
+            offset.x = ((onRect.x + onRect.width) - this.textRect.width) / 2.0;
+        }
+        if (verticalAlignment === I.TextVerticalAlignment.Center) {
+            offset.y = ((onRect.y + onRect.height) - this.textRect.height) / 2.0;
+        }
+        var lines = [];
+        var line = { text: "", x: 0, y: 0, };
+        this.layoutSequence.forEach(function (element) {
+            if (line.y != element.y) {
+                if (line.text.length > 0) {
+                    lines.push({
+                        text: line.text,
+                        x: line.x + offset.x,
+                        y: line.y + offset.y,
+                    });
+                }
+                line = { text: "", x: element.x, y: element.y, };
+            }
+            line.text += element.character;
+        });
+        if (line.text.length > 0) {
+            lines.push({
+                text: line.text,
+                x: line.x + offset.x,
+                y: line.y + offset.y,
+            });
+        }
+        return lines;
+    };
+    return StaticTextLayout;
+}());
+exports.StaticTextLayout = StaticTextLayout;
+
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9108,9 +9183,9 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = huozi;
 
-var _code = __webpack_require__(29);
+var _code = __webpack_require__(30);
 
-var _isCJK = __webpack_require__(30);
+var _isCJK = __webpack_require__(31);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /*!
                                                                                                                                                                                                      * @author      Icemic Jia <bingfeng.web@gmail.com>
@@ -9508,7 +9583,7 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
 }
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9549,7 +9624,7 @@ var INCOMPRESSIBLE = exports.INCOMPRESSIBLE = '‼⁇⸺—';
 var COMPRESSLEFT = exports.COMPRESSLEFT = '「『“‘（【〖〔［｛《〈';
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9633,81 +9708,6 @@ function isCJK(text) {
 
 // old version:
 // /[\u3000-\u3003\u3005-\u303F；？，．：！]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\ud840-\ud868][\udc00-\udfff]|\ud869[\udc00-\uded6\udf00-\udfff]|[\ud86a-\ud86c][\udc00-\udfff]|\ud86d[\udc00-\udf34\udf40-\udfff]|\ud86e[\udc00-\udc1d]/.test(text)
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var huozi_1 = __webpack_require__(28);
-var UIStaticTextLayout = (function () {
-    function UIStaticTextLayout(text, font, bounds, padding) {
-        if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
-        var _this = this;
-        this.bounds = I.CGRectZero;
-        this.padding = { top: 0, left: 0, bottom: 0, right: 0 };
-        this.text = text;
-        this.font = font;
-        this.bounds = bounds;
-        this.padding = padding;
-        // measure function
-        var textSequence = this.text.split('').map(function (character) {
-            return {
-                fontSize: _this.font.pointSize,
-                character: character,
-            };
-        });
-        var layoutSequence = huozi_1.default(textSequence, {
-            gridSize: this.font.pointSize,
-            column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
-            row: Infinity,
-        });
-        var minX = Math.min.apply(null, layoutSequence.map(function (element) { return element.x; }));
-        var minY = Math.min.apply(null, layoutSequence.map(function (element) { return element.y; }));
-        var maxX = Math.max.apply(null, layoutSequence.map(function (element) { return element.x + element.width; }));
-        var maxY = Math.max.apply(null, layoutSequence.map(function (element) { return element.y + element.height; }));
-        this.layoutSequence = layoutSequence;
-        this.textRect = I.CGRectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
-    }
-    UIStaticTextLayout.prototype.textLines = function (onRect, horizonAlignment, verticalAlignment) {
-        var offset = { x: this.textRect.x, y: this.textRect.y };
-        if (horizonAlignment === I.UITextAlignment.Center) {
-            offset.x = ((onRect.x + onRect.width) - this.textRect.width) / 2.0;
-        }
-        if (verticalAlignment === I.UITextVerticalAlignment.Center) {
-            offset.y = ((onRect.y + onRect.height) - this.textRect.height) / 2.0;
-        }
-        var lines = [];
-        var line = { text: "", x: 0, y: 0, };
-        this.layoutSequence.forEach(function (element) {
-            if (line.y != element.y) {
-                if (line.text.length > 0) {
-                    lines.push({
-                        text: line.text,
-                        x: line.x + offset.x,
-                        y: line.y + offset.y,
-                    });
-                }
-                line = { text: "", x: element.x, y: element.y, };
-            }
-            line.text += element.character;
-        });
-        if (line.text.length > 0) {
-            lines.push({
-                text: line.text,
-                x: line.x + offset.x,
-                y: line.y + offset.y,
-            });
-        }
-        return lines;
-    };
-    return UIStaticTextLayout;
-}());
-exports.UIStaticTextLayout = UIStaticTextLayout;
-
 
 /***/ })
 /******/ ]);

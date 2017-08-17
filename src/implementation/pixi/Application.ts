@@ -1,8 +1,8 @@
 import * as I from '../../interface/Abstract'
-import { UIWindow } from './UIWindow'
-import { UIView } from './UIView'
+import { Window } from './Window'
+import { View } from './View'
 const PIXI = (window as any).PIXI
-let sharedApplication: UIApplication | undefined = undefined;
+let sharedApplication: Application | undefined = undefined;
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {
     requestAnimationFrame = (trigger: () => void) => {
@@ -12,22 +12,22 @@ if (requestAnimationFrame === undefined) {
 
 let displayStartTime: number = 0;
 
-export class UIApplication extends I.UIApplication {
+export class Application extends I.Application {
 
     nativeObject: any;
-    keyWindow?: UIWindow = undefined;
+    keyWindow?: Window = undefined;
 
-    constructor(canvas: HTMLCanvasElement, delegate: I.UIApplicationDelegate) {
+    constructor(canvas: HTMLCanvasElement, delegate: I.ApplicationDelegate) {
         super()
         if (sharedApplication === undefined) {
             sharedApplication = this;
             const scale = Math.floor(window.devicePixelRatio);
-            I.UIScreen.mainScreen = () => {
-                return new I.UIScreen(canvas.offsetWidth, canvas.offsetHeight, scale);
+            I.Screen.mainScreen = () => {
+                return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale);
             }
         }
-        UIApplication.resetCanvas(canvas, () => {
-            this.nativeObject = new PIXI.Application({ width: I.UIScreen.withScale(canvas.offsetWidth), height: I.UIScreen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
+        Application.resetCanvas(canvas, () => {
+            this.nativeObject = new PIXI.Application({ width: I.Screen.withScale(canvas.offsetWidth), height: I.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
             this.nativeObject.stop();
             if ((window as any).DEBUG === true) {
                 (window as any).nativeObject = this.nativeObject;
@@ -41,7 +41,7 @@ export class UIApplication extends I.UIApplication {
                 });
             }
             this.delegate = delegate;
-            if (this.delegate as I.UIApplicationDelegate) {
+            if (this.delegate as I.ApplicationDelegate) {
                 this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
             }
         })
@@ -53,17 +53,17 @@ export class UIApplication extends I.UIApplication {
         setTimeout(callback);
     }
 
-    static sharedApplication(): UIApplication | undefined {
+    static sharedApplication(): Application | undefined {
         return sharedApplication;
     }
 
     private isDirty = false
-    private dirtyTargets: UIView[] = [];
+    private dirtyTargets: View[] = [];
 
     public remarkRenderable() {
         if (this.keyWindow !== undefined) {
             const allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
-            const opaqueRects: I.CGRect[] = [];
+            const opaqueRects: I.Rect[] = [];
             for (let index = allViews.length - 1; index >= 0; index--) {
                 const view = allViews[index];
                 if ((view as any)._childRenderable === true) {
@@ -73,7 +73,7 @@ export class UIApplication extends I.UIApplication {
                 if (view.transform !== undefined) {
                     view.nativeObject.renderable = true;
                 }
-                else if (opaqueRects.filter(item => I.CGRectInside(item, (view as any)._absRect)).length == 0) {
+                else if (opaqueRects.filter(item => I.RectInside(item, (view as any)._absRect)).length == 0) {
                     if (view.opaque === true) {
                         opaqueRects.push((view as any)._absRect);
                     }
@@ -93,7 +93,7 @@ export class UIApplication extends I.UIApplication {
         }
     }
 
-    private combineViews(view: UIView, absPoint: { x: number, y: number }): UIView[] {
+    private combineViews(view: View, absPoint: { x: number, y: number }): View[] {
         const views = view.subviews;
         view.subviews.forEach(subview => {
             (subview as any)._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
@@ -109,7 +109,7 @@ export class UIApplication extends I.UIApplication {
         return views;
     }
 
-    public setNeedsDisplay(target: UIView) {
+    public setNeedsDisplay(target: View) {
         if (this.dirtyTargets.indexOf(target) < 0) {
             this.dirtyTargets.push(target);
         }
@@ -157,7 +157,7 @@ export class UIApplication extends I.UIApplication {
 
 let displayPaused = false;
 
-export function setNeedsDisplay(target: UIView) {
+export function setNeedsDisplay(target: View) {
     if (sharedApplication !== undefined && displayPaused === false) {
         sharedApplication.setNeedsDisplay(target);
     }

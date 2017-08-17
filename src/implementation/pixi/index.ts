@@ -1,17 +1,17 @@
 import { Factory } from '../Factory.pixi'
-import { UIView } from './UIView'
-import { UIApplication } from './UIApplication'
-import { UIWindow } from './UIWindow'
-import { NSLayoutConstraint } from "./NSLayoutConstraint";
-import { UILabel } from "./UILabel";
+import { View } from './View'
+import { Application } from './Application'
+import { Window } from './Window'
+import { LayoutConstraint } from "./LayoutConstraint";
+import { Label } from "./Label";
 
 export function usePixi(force = false) {
     const use = () => {
-        Factory.UIView = UIView
-        Factory.UIApplication = UIApplication as any
-        Factory.UIWindow = UIWindow
-        Factory.NSLayoutConstraint = NSLayoutConstraint
-        Factory.UILabel = UILabel
+        Factory.View = View
+        Factory.Application = Application as any
+        Factory.Window = Window
+        Factory.LayoutConstraint = LayoutConstraint
+        Factory.Label = Label
     }
     if (force) {
         use()

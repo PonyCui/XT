@@ -1,38 +1,38 @@
-import { CGRect, CGRectMake, CGRectZero, CGRectEqual, CGPoint, CGPointMake, CGPointZero, CGSize, CGSizeMake, CGSizeZero, CGRectInside, CGPointEqual, CGSizeEqual } from './CGRect'
-import { UIView } from './UIView'
-import { UIWindow } from './UIWindow'
-import { UIApplication, UIApplicationDelegate } from './UIApplication'
-import { UIColor } from './UIColor'
-import { UIScreen } from './UIScreen'
-import { CGTransformMatrix } from './CGTransformMatrix'
-import { NSLayoutConstraint } from "./NSLayoutConstraint";
-import { UILabel, UITextAlignment, UITextVerticalAlignment } from "./UILabel";
-import { UIFont } from "./UIFont";
+import { Rect, RectMake, RectZero, RectEqual, Point, PointMake, PointZero, Size, SizeMake, SizeZero, RectInside, PointEqual, SizeEqual } from './Rect'
+import { View } from './View'
+import { Window } from './Window'
+import { Application, ApplicationDelegate } from './Application'
+import { Color } from './Color'
+import { Screen } from './Screen'
+import { TransformMatrix } from './TransformMatrix'
+import { LayoutConstraint } from "./LayoutConstraint";
+import { Label, TextAlignment, TextVerticalAlignment } from "./Label";
+import { Font } from "./Font";
 
 export {
-    UIView,
-    CGRect,
-    CGRectMake,
-    CGRectZero,
-    CGRectEqual,
-    CGRectInside,
-    UIWindow,
-    UIApplication,
-    UIApplicationDelegate,
-    UIColor,
-    UIScreen,
-    CGPoint,
-    CGPointMake,
-    CGPointZero,
-    CGPointEqual,
-    CGSize,
-    CGSizeMake,
-    CGSizeZero,
-    CGSizeEqual,
-    CGTransformMatrix,
-    NSLayoutConstraint,
-    UILabel,
-    UITextAlignment,
-    UITextVerticalAlignment,
-    UIFont,
+    View,
+    Rect,
+    RectMake,
+    RectZero,
+    RectEqual,
+    RectInside,
+    Window,
+    Application,
+    ApplicationDelegate,
+    Color,
+    Screen,
+    Point,
+    PointMake,
+    PointZero,
+    PointEqual,
+    Size,
+    SizeMake,
+    SizeZero,
+    SizeEqual,
+    TransformMatrix,
+    LayoutConstraint,
+    Label,
+    TextAlignment,
+    TextVerticalAlignment,
+    Font,
 }

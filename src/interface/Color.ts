@@ -1,5 +1,5 @@
 
-export class UIColor {
+export class Color {
 
     readonly r: number;
     readonly g: number;
@@ -20,8 +20,8 @@ export class UIColor {
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     }
 
-    equals(toColor: UIColor | undefined) {
-        if (toColor instanceof UIColor) {
+    equals(toColor: Color | undefined) {
+        if (toColor instanceof Color) {
             return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
         }
         return false;

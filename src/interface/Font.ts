@@ -1,4 +1,4 @@
-export class UIFont {
+export class Font {
 
     readonly familyName?: string;
     readonly pointSize: number;
@@ -12,16 +12,16 @@ export class UIFont {
         this.familyName = familyName;
     }
 
-    static systemFontOfSize(pointSize: number, weight: string = '400'): UIFont {
-        return new UIFont(pointSize, weight);
+    static systemFontOfSize(pointSize: number, weight: string = '400'): Font {
+        return new Font(pointSize, weight);
     }
 
-    static boldSystemFontOfSize(pointSize: number): UIFont {
-        return new UIFont(pointSize, '700')
+    static boldSystemFontOfSize(pointSize: number): Font {
+        return new Font(pointSize, '700')
     }
 
-    static italicSystemFontOfSize(pointSize: number): UIFont {
-        return new UIFont(pointSize, '400', 'italic')
+    static italicSystemFontOfSize(pointSize: number): Font {
+        return new Font(pointSize, '400', 'italic')
     }
 
 }

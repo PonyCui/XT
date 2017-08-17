@@ -1,15 +1,15 @@
 import * as I from '../../interface/Abstract'
-import { UIView } from "./UIView";
-import { setNeedsDisplay } from "./UIApplication";
+import { View } from "./View";
+import { setNeedsDisplay } from "./Application";
 import huozi from 'huozi'
-import { UIStaticTextLayout } from "./UITextLayout";
+import { StaticTextLayout } from "./TextLayout";
 const PIXI = (window as any).PIXI
 
-export class UILabel extends UIView {
+export class Label extends View {
 
     private textContainer: any = new PIXI.Container();
 
-    constructor(rect?: I.CGRect) {
+    constructor(rect?: I.Rect) {
         super(rect);
         this.nativeObject.addChild(this.textContainer);
     }
@@ -25,35 +25,35 @@ export class UILabel extends UIView {
         this.drawText();
     }
 
-    private _font: I.UIFont = new I.UIFont(14)
+    private _font: I.Font = new I.Font(14)
 
-    public get font(): I.UIFont {
+    public get font(): I.Font {
         return this._font;
     }
 
-    public set font(value: I.UIFont) {
+    public set font(value: I.Font) {
         this._font = value;
         this.drawText();
     }
 
-    private _textColor: I.UIColor = new I.UIColor(0, 0, 0)
+    private _textColor: I.Color = new I.Color(0, 0, 0)
 
-    public get textColor(): I.UIColor {
+    public get textColor(): I.Color {
         return this._textColor;
     }
 
-    public set textColor(value: I.UIColor) {
+    public set textColor(value: I.Color) {
         this._textColor = value;
         this.drawText();
     }
 
-    private _textAlignment: I.UITextAlignment = I.UITextAlignment.Left;
+    private _textAlignment: I.TextAlignment = I.TextAlignment.Left;
 
     public get textAlignment() {
         return this._textAlignment;
     }
 
-    public set textAlignment(value: I.UITextAlignment) {
+    public set textAlignment(value: I.TextAlignment) {
         this._textAlignment = value;
     }
 
@@ -65,26 +65,26 @@ export class UILabel extends UIView {
             this.textContainer.removeChildren();
             if (this.text) {
                 const textStyle = new PIXI.TextStyle({
-                    fontSize: I.UIScreen.withScale(this.font.pointSize),
+                    fontSize: I.Screen.withScale(this.font.pointSize),
                     fill: "#ffffff",
                 })
-                const textLayout = new UIStaticTextLayout(this.text, this.font, this.bounds);
-                textLayout.textLines(this.bounds, I.UITextAlignment.Center, I.UITextVerticalAlignment.Center).forEach(line => {
+                const textLayout = new StaticTextLayout(this.text, this.font, this.bounds);
+                textLayout.textLines(this.bounds, I.TextAlignment.Center, I.TextVerticalAlignment.Center).forEach(line => {
                     const text = new PIXI.Text(line.text, textStyle);
-                    text.x = I.UIScreen.withScale(line.x);
-                    text.y = I.UIScreen.withScale(line.y);
+                    text.x = I.Screen.withScale(line.x);
+                    text.y = I.Screen.withScale(line.y);
                     this.textContainer.addChild(text);
                 })
 
 
                 // const textSequence = this.text.split('').map(character => {
                 //     return {
-                //         fontSize: I.UIScreen.withScale(this.font.pointSize),
+                //         fontSize: I.Screen.withScale(this.font.pointSize),
                 //         character,
                 //     }
                 // });
                 // const layoutSequence = huozi(textSequence, {
-                //     gridSize: I.UIScreen.withScale(this.font.pointSize),
+                //     gridSize: I.Screen.withScale(this.font.pointSize),
                 //     column: Math.floor(this.bounds.width / this.font.pointSize),
                 //     row: Infinity,
                 // });

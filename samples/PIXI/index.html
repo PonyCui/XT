@@ -13,24 +13,24 @@
     <script>
         var DEBUG = true;
         for (var aKey in XT) {
-            window[aKey] = XT[aKey];
+            window["XT" + aKey] = XT[aKey];
         }
-        var application = new UIApplication(document.getElementById("myCanvas"), {
+        var application = new XTApplication(document.getElementById("myCanvas"), {
             applicationDidFinishLaunchingWithOptions: function () {
-                var window = new UIWindow(UIScreen.mainScreen().bounds());
+                var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
-                var label = new UILabel(CGRectMake(0, 0, 300, 200));
-                label.backgroundColor = new UIColor(0.2, 0.2, 0.2)
+                var label = new XTLabel(XTRectMake(0, 0, 300, 200));
+                label.backgroundColor = new XTColor(0.2, 0.2, 0.2)
                 // label.text = "娱乐圈HAha的风尚总是瞬息万变。在目不暇接、花样层出的娱乐圈中，明星都爱用配饰凸显个人气质。作为点睛配饰，飞行员腕表以其百搭而独特的复古气质却能一直大行其道，收获了一代又一代时尚弄潮儿的青睐。身处娱乐圈潮流至上的明星艺人也对它极为推崇。男女通杀的它，在无数次的明星机场抓拍、活动出席，甚至私服出街中夺人眼球，其中特别是有一款飞行员腕表的出镜率极高。现在，就让我们来看一看它的明星粉丝有哪些。"
                 label.text = "Hello, World!"
-                label.font = UIFont.systemFontOfSize(17)
-                label.textColor = new UIColor(1, 1, 1)
-                // label.textAlignment = UITextAlignment.Left;
+                label.font = XTFont.systemFontOfSize(17)
+                label.textColor = new XTColor(1, 1, 1)
+                // label.textAlignment = TextAlignment.Left;
                 window.addSubview(label);
                 label.userInteractionEnabled = true;
                 label.onTap = function () {
-                    UIView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
-                        label.frame = CGRectMake(0, 100, 300, 200)
+                    XTView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
+                        label.frame = XTRectMake(0, 100, 300, 200)
                     })
                 }
             }
