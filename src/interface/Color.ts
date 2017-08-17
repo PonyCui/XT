@@ -20,6 +20,13 @@ export class Color {
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     }
 
+    rgbHexString(): string {
+        const r = Math.ceil(this.r * 255).toString(16);
+        const g = Math.ceil(this.g * 255).toString(16);
+        const b = Math.ceil(this.b * 255).toString(16);
+        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
+    }
+
     equals(toColor: Color | undefined) {
         if (toColor instanceof Color) {
             return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;

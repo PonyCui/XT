@@ -187,6 +187,12 @@ var Color = (function () {
         var b = Math.ceil(this.b * 255).toString(16);
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     };
+    Color.prototype.rgbHexString = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
+    };
     Color.prototype.equals = function (toColor) {
         if (toColor instanceof Color) {
             return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
@@ -434,6 +440,7 @@ var Label = (function (_super) {
         _this.textAlignment = TextAlignment.Left;
         _this.numberOfLines = 1;
         _this.lineBreakMode = LineBreakMode.WordWrapping;
+        _this.lineSpace = 12;
         return _this;
     }
     return Label;

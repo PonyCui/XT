@@ -84,6 +84,18 @@ export class Label extends View {
         this.drawText();
     }
 
+    private _lineSpace: number = 12;
+
+    public get lineSpace(): number {
+        return this._lineSpace
+    }
+
+    public set lineSpace(value: number) {
+        if (this._lineSpace === value) { return; }
+        this._lineSpace = value;
+        this.drawText();
+    }
+
     private _drawTextImmediate: any;
 
     drawText() {
@@ -93,13 +105,22 @@ export class Label extends View {
             if (this.text) {
                 const textStyle = new PIXI.TextStyle({
                     fontSize: I.Screen.withScale(this.font.pointSize),
-                    fill: "#ffffff",
+                    fill: this.textColor.rgbHexString(),
                 })
-                const textLayout = new StaticTextLayout(this.numberOfLines, this.text, this.font, this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
+                const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
                 textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center, this.lineBreakMode).forEach(line => {
                     const text = new PIXI.Text(line.text, textStyle);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);
+                    if (text.getBounds().width > I.Screen.withScale(this.bounds.width)) {
+                        line.elements.forEach((element: any) => {
+                            const text = new PIXI.Text(element.character, textStyle);
+                            text.x = I.Screen.withScale(line.x + element.x);
+                            text.y = I.Screen.withScale(line.y);
+                            this.textContainer.addChild(text);
+                        })
+                        return;
+                    }
                     this.textContainer.addChild(text);
                 })
             }

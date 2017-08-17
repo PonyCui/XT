@@ -27,5 +27,6 @@ export class Label extends View {
     textAlignment: TextAlignment = TextAlignment.Left;
     numberOfLines: number = 1;
     lineBreakMode: LineBreakMode = LineBreakMode.WordWrapping;
+    lineSpace: number = 12;
 
 }

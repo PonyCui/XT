@@ -187,6 +187,12 @@ var Color = (function () {
         var b = Math.ceil(this.b * 255).toString(16);
         return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
     };
+    Color.prototype.rgbHexString = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
+    };
     Color.prototype.equals = function (toColor) {
         if (toColor instanceof Color) {
             return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
@@ -679,6 +685,7 @@ var Label = (function (_super) {
         _this.textAlignment = TextAlignment.Left;
         _this.numberOfLines = 1;
         _this.lineBreakMode = LineBreakMode.WordWrapping;
+        _this.lineSpace = 12;
         return _this;
     }
     return Label;
@@ -9002,6 +9009,7 @@ var Label = (function (_super) {
         _this._textAlignment = I.TextAlignment.Left;
         _this._numberOfLines = 1;
         _this._lineBreakMode = I.LineBreakMode.WordWrapping;
+        _this._lineSpace = 12;
         _this.nativeObject.addChild(_this.textContainer);
         return _this;
     }
@@ -9085,6 +9093,20 @@ var Label = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Label.prototype, "lineSpace", {
+        get: function () {
+            return this._lineSpace;
+        },
+        set: function (value) {
+            if (this._lineSpace === value) {
+                return;
+            }
+            this._lineSpace = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
     Label.prototype.drawText = function () {
         var _this = this;
         clearImmediate(this._drawTextImmediate);
@@ -9093,13 +9115,22 @@ var Label = (function (_super) {
             if (_this.text) {
                 var textStyle_1 = new PIXI.TextStyle({
                     fontSize: I.Screen.withScale(_this.font.pointSize),
-                    fill: "#ffffff",
+                    fill: _this.textColor.rgbHexString(),
                 });
-                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.text, _this.font, _this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
+                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
                 textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center, _this.lineBreakMode).forEach(function (line) {
                     var text = new PIXI.Text(line.text, textStyle_1);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);
+                    if (text.getBounds().width > I.Screen.withScale(_this.bounds.width)) {
+                        line.elements.forEach(function (element) {
+                            var text = new PIXI.Text(element.character, textStyle_1);
+                            text.x = I.Screen.withScale(line.x + element.x);
+                            text.y = I.Screen.withScale(line.y);
+                            _this.textContainer.addChild(text);
+                        });
+                        return;
+                    }
                     _this.textContainer.addChild(text);
                 });
             }
@@ -9122,7 +9153,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
 var huozi_1 = __webpack_require__(29);
 var StaticTextLayout = (function () {
-    function StaticTextLayout(numberOfLines, text, font, bounds, padding) {
+    function StaticTextLayout(numberOfLines, lineSpace, text, font, bounds, padding) {
         if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
         var _this = this;
         this.bounds = I.RectZero;
@@ -9142,6 +9173,7 @@ var StaticTextLayout = (function () {
             gridSize: this.font.pointSize,
             column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
             row: numberOfLines <= 0 ? Infinity : numberOfLines,
+            yInterval: lineSpace,
         });
         var minX = Math.min.apply(null, layoutSequence.map(function (element) { return element.x; }));
         var minY = Math.min.apply(null, layoutSequence.map(function (element) { return element.y; }));
@@ -9162,12 +9194,13 @@ var StaticTextLayout = (function () {
             offset.y = Math.max(this.padding.top, ((onRect.y + onRect.height) - this.textRect.height) / 2.0);
         }
         var lines = [];
-        var line = { text: "", x: 0, y: 0, width: 0, height: 0 };
+        var line = { elements: [], text: "", x: 0, y: 0, width: 0, height: 0 };
         var addLine = function (line) {
             if (horizonAlignment === I.TextAlignment.Center) {
                 offset.x = Math.max(_this.padding.left, ((onRect.x + onRect.width) - line.width) / 2.0);
             }
             lines.push({
+                elements: line.elements,
                 text: line.text,
                 x: line.x + offset.x,
                 y: line.y + offset.y,
@@ -9180,8 +9213,9 @@ var StaticTextLayout = (function () {
                 if (line.text.length > 0) {
                     addLine(line);
                 }
-                line = { text: "", x: element.x, y: element.y, width: element.x + element.width, height: element.height };
+                line = { elements: [], text: "", x: element.x, y: element.y, width: element.x + element.width, height: element.height };
             }
+            line.elements.push(element);
             line.text += element.character;
             line.width = element.x + element.width;
             line.height = Math.max(line.height, element.height);

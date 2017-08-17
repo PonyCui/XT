@@ -9,6 +9,7 @@ export interface Padding {
 }
 
 export interface TextLine {
+    elements: any;
     text: string;
     x: number;
     y: number;
@@ -23,7 +24,7 @@ export class StaticTextLayout {
     readonly bounds: I.Rect = I.RectZero
     readonly padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }
 
-    constructor(numberOfLines: number, text: string, font: I.Font, bounds: I.Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
+    constructor(numberOfLines: number, lineSpace: number, text: string, font: I.Font, bounds: I.Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
         this.text = text;
         this.font = font;
         this.bounds = bounds;
@@ -39,6 +40,7 @@ export class StaticTextLayout {
             gridSize: this.font.pointSize,
             column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
             row: numberOfLines <= 0 ? Infinity : numberOfLines,
+            yInterval: lineSpace,
         });
         const minX = Math.min.apply(null, layoutSequence.map((element: any) => element.x));
         const minY = Math.min.apply(null, layoutSequence.map((element: any) => element.y));
@@ -62,12 +64,13 @@ export class StaticTextLayout {
             offset.y = Math.max(this.padding.top, ((onRect.y + onRect.height) - this.textRect.height) / 2.0)
         }
         let lines: TextLine[] = [];
-        let line: TextLine = { text: "", x: 0, y: 0, width: 0, height: 0 }
+        let line: TextLine = { elements: [], text: "", x: 0, y: 0, width: 0, height: 0 }
         const addLine = (line: TextLine) => {
             if (horizonAlignment === I.TextAlignment.Center) {
                 offset.x = Math.max(this.padding.left, ((onRect.x + onRect.width) - line.width) / 2.0)
             }
             lines.push({
+                elements: line.elements,
                 text: line.text,
                 x: line.x + offset.x,
                 y: line.y + offset.y,
@@ -80,8 +83,9 @@ export class StaticTextLayout {
                 if (line.text.length > 0) {
                     addLine(line);
                 }
-                line = { text: "", x: element.x, y: element.y, width: element.x + element.width, height: element.height };
+                line = { elements: [], text: "", x: element.x, y: element.y, width: element.x + element.width, height: element.height };
             }
+            line.elements.push(element)
             line.text += element.character;
             line.width = element.x + element.width;
             line.height = Math.max(line.height, element.height);

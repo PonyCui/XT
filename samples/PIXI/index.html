@@ -21,12 +21,13 @@
                 window.makeKeyAndVisible();
                 var label = new XTLabel(XTRectMake(0, 0, 300, 200));
                 label.backgroundColor = new XTColor(0.2, 0.2, 0.2)
-                label.text = "你捉我唔到你捉我唔到你捉我唔到你捉我唔到你捉我唔到"
+                label.text = "而在吕布找到另一半的同时，作为貂蝉的憧憬，赵云也有了自己的另一半——宫本，两者都是未来纪元的产物，虽然画风不在一个次元上，但相信只要名字和颜值上线，其它的都不是什么难题，当然，也许是后来觉得画风不对，宫本又给改了名字，不过这两个之前确实是一对的~~"
                 // label.text = "Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!"
                 label.font = XTFont.systemFontOfSize(17)
-                label.textColor = new XTColor(1, 1, 1)
+                label.textColor = new XTColor(1, 1, 0)
                 label.textAlignment = XTTextAlignment.Center;
-                label.numberOfLines = 1;
+                label.numberOfLines = 0;
+                label.lineSpace = 17 * 0.5;
                 label.lineBreakMode = XTLineBreakMode.TruncatingTail;
                 window.addSubview(label);
                 label.userInteractionEnabled = true;
