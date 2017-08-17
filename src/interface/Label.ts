@@ -19,6 +19,7 @@ export class Label extends View {
     text?: string;
     font?: Font;
     textColor: Color = new Color(0, 0, 0);
-    textAlignment: TextAlignment;
+    textAlignment: TextAlignment = TextAlignment.Left;
+    numberOfLines: number = 1;
 
 }

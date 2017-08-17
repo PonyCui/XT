@@ -21,6 +21,7 @@ export class Label extends View {
     }
 
     public set text(value: string | undefined) {
+        if (this._text === value) { return; }
         this._text = value;
         this.drawText();
     }
@@ -43,6 +44,7 @@ export class Label extends View {
     }
 
     public set textColor(value: I.Color) {
+        if (this._textColor.equals(value)) { return; }
         this._textColor = value;
         this.drawText();
     }
@@ -54,7 +56,20 @@ export class Label extends View {
     }
 
     public set textAlignment(value: I.TextAlignment) {
+        if (this._textAlignment === value) { return; }
         this._textAlignment = value;
+    }
+
+    private _numberOfLines: number = 1;
+
+    public get numberOfLines(): number {
+        return this._numberOfLines
+    }
+
+    public set numberOfLines(value: number) {
+        if (this._numberOfLines === value) { return; }
+        this._numberOfLines = value;
+        this.drawText();
     }
 
     private _drawTextImmediate: any;
@@ -68,8 +83,9 @@ export class Label extends View {
                     fontSize: I.Screen.withScale(this.font.pointSize),
                     fill: "#ffffff",
                 })
-                const textLayout = new StaticTextLayout(this.text, this.font, this.bounds);
-                textLayout.textLines(this.bounds, I.TextAlignment.Center, I.TextVerticalAlignment.Center).forEach(line => {
+                const textLayout = new StaticTextLayout(this.numberOfLines, this.text, this.font, this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
+                textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center).forEach(line => {
+                    console.log(line);
                     const text = new PIXI.Text(line.text, textStyle);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);

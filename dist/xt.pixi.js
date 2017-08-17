@@ -670,6 +670,8 @@ var Label = (function (_super) {
     function Label() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.textColor = new Color_1.Color(0, 0, 0);
+        _this.textAlignment = TextAlignment.Left;
+        _this.numberOfLines = 1;
         return _this;
     }
     return Label;
@@ -8989,6 +8991,7 @@ var Label = (function (_super) {
         _this._font = new I.Font(14);
         _this._textColor = new I.Color(0, 0, 0);
         _this._textAlignment = I.TextAlignment.Left;
+        _this._numberOfLines = 1;
         _this.nativeObject.addChild(_this.textContainer);
         return _this;
     }
@@ -8997,6 +9000,9 @@ var Label = (function (_super) {
             return this._text;
         },
         set: function (value) {
+            if (this._text === value) {
+                return;
+            }
             this._text = value;
             this.drawText();
         },
@@ -9019,6 +9025,9 @@ var Label = (function (_super) {
             return this._textColor;
         },
         set: function (value) {
+            if (this._textColor.equals(value)) {
+                return;
+            }
             this._textColor = value;
             this.drawText();
         },
@@ -9030,7 +9039,24 @@ var Label = (function (_super) {
             return this._textAlignment;
         },
         set: function (value) {
+            if (this._textAlignment === value) {
+                return;
+            }
             this._textAlignment = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "numberOfLines", {
+        get: function () {
+            return this._numberOfLines;
+        },
+        set: function (value) {
+            if (this._numberOfLines === value) {
+                return;
+            }
+            this._numberOfLines = value;
+            this.drawText();
         },
         enumerable: true,
         configurable: true
@@ -9045,8 +9071,9 @@ var Label = (function (_super) {
                     fontSize: I.Screen.withScale(_this.font.pointSize),
                     fill: "#ffffff",
                 });
-                var textLayout = new TextLayout_1.StaticTextLayout(_this.text, _this.font, _this.bounds);
-                textLayout.textLines(_this.bounds, I.TextAlignment.Center, I.TextVerticalAlignment.Center).forEach(function (line) {
+                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.text, _this.font, _this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
+                textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center).forEach(function (line) {
+                    console.log(line);
                     var text = new PIXI.Text(line.text, textStyle_1);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);
@@ -9072,7 +9099,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(0);
 var huozi_1 = __webpack_require__(29);
 var StaticTextLayout = (function () {
-    function StaticTextLayout(text, font, bounds, padding) {
+    function StaticTextLayout(numberOfLines, text, font, bounds, padding) {
         if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
         var _this = this;
         this.bounds = I.RectZero;
@@ -9091,46 +9118,55 @@ var StaticTextLayout = (function () {
         var layoutSequence = huozi_1.default(textSequence, {
             gridSize: this.font.pointSize,
             column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
-            row: Infinity,
+            row: numberOfLines <= 0 ? Infinity : numberOfLines,
         });
         var minX = Math.min.apply(null, layoutSequence.map(function (element) { return element.x; }));
         var minY = Math.min.apply(null, layoutSequence.map(function (element) { return element.y; }));
         var maxX = Math.max.apply(null, layoutSequence.map(function (element) { return element.x + element.width; }));
-        var maxY = Math.max.apply(null, layoutSequence.map(function (element) { return element.y + element.height; }));
+        var maxY = Math.max.apply(null, layoutSequence.map(function (element) {
+            if (element.y + element.height + padding.top + padding.bottom >= bounds.height) {
+                return 0;
+            }
+            return element.y + element.height;
+        }));
         this.layoutSequence = layoutSequence;
         this.textRect = I.RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
     }
     StaticTextLayout.prototype.textLines = function (onRect, horizonAlignment, verticalAlignment) {
+        var _this = this;
         var offset = { x: this.textRect.x, y: this.textRect.y };
-        if (horizonAlignment === I.TextAlignment.Center) {
-            offset.x = ((onRect.x + onRect.width) - this.textRect.width) / 2.0;
-        }
         if (verticalAlignment === I.TextVerticalAlignment.Center) {
-            offset.y = ((onRect.y + onRect.height) - this.textRect.height) / 2.0;
+            offset.y = Math.max(this.padding.top, ((onRect.y + onRect.height) - this.textRect.height) / 2.0);
         }
         var lines = [];
-        var line = { text: "", x: 0, y: 0, };
-        this.layoutSequence.forEach(function (element) {
-            if (line.y != element.y) {
-                if (line.text.length > 0) {
-                    lines.push({
-                        text: line.text,
-                        x: line.x + offset.x,
-                        y: line.y + offset.y,
-                    });
-                }
-                line = { text: "", x: element.x, y: element.y, };
+        var line = { text: "", x: 0, y: 0, width: 0, height: 0 };
+        var addLine = function (line) {
+            if (horizonAlignment === I.TextAlignment.Center) {
+                offset.x = Math.max(_this.padding.left, ((onRect.x + onRect.width) - line.width) / 2.0);
             }
-            line.text += element.character;
-        });
-        if (line.text.length > 0) {
             lines.push({
                 text: line.text,
                 x: line.x + offset.x,
                 y: line.y + offset.y,
+                width: line.width,
+                height: line.height
             });
+        };
+        this.layoutSequence.forEach(function (element) {
+            if (line.y != element.y) {
+                if (line.text.length > 0) {
+                    addLine(line);
+                }
+                line = { text: "", x: element.x, y: element.y, width: element.x + element.width, height: element.height };
+            }
+            line.text += element.character;
+            line.width = element.x + element.width;
+            line.height = Math.max(line.height, element.height);
+        });
+        if (line.text.length > 0) {
+            addLine(line);
         }
-        return lines;
+        return lines.filter(function (line) { return line.y + line.height < onRect.height; });
     };
     return StaticTextLayout;
 }());

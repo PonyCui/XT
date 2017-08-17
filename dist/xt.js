@@ -425,6 +425,8 @@ var Label = (function (_super) {
     function Label() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.textColor = new Color_1.Color(0, 0, 0);
+        _this.textAlignment = TextAlignment.Left;
+        _this.numberOfLines = 1;
         return _this;
     }
     return Label;
