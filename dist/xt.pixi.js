@@ -293,7 +293,7 @@ var Application = (function (_super) {
         _this.dirtyTargets = [];
         if (sharedApplication === undefined) {
             sharedApplication = _this;
-            var scale_1 = Math.floor(window.devicePixelRatio);
+            var scale_1 = Math.ceil(window.devicePixelRatio);
             I.Screen.mainScreen = function () {
                 return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
             };
@@ -9052,37 +9052,6 @@ var Label = (function (_super) {
                     text.y = I.Screen.withScale(line.y);
                     _this.textContainer.addChild(text);
                 });
-                // const textSequence = this.text.split('').map(character => {
-                //     return {
-                //         fontSize: I.Screen.withScale(this.font.pointSize),
-                //         character,
-                //     }
-                // });
-                // const layoutSequence = huozi(textSequence, {
-                //     gridSize: I.Screen.withScale(this.font.pointSize),
-                //     column: Math.floor(this.bounds.width / this.font.pointSize),
-                //     row: Infinity,
-                // });
-                // const offsetY = Math.min(0.0, Math.min.apply(null, layoutSequence.map((element: any) => element.y)));
-                // let line = { text: "", x: 0, y: 0, }
-                // layoutSequence.forEach((element: any) => {
-                //     if (line.y != (element.y - offsetY)) {
-                //         if (line.text.length > 0) {
-                //             const text = new PIXI.Text(line.text, textStyle);
-                //             text.x = line.x;
-                //             text.y = line.y;
-                //             this.textContainer.addChild(text);
-                //         }
-                //         line = { text: "", x: element.x, y: (element.y - offsetY), };
-                //     }
-                //     line.text += element.character;
-                // });
-                // if (line.text.length > 0) {
-                //     const text = new PIXI.Text(line.text, textStyle);
-                //     text.x = line.x;
-                //     text.y = line.y;
-                //     this.textContainer.addChild(text);
-                // }
             }
             Application_1.setNeedsDisplay(_this);
         });
@@ -9212,6 +9181,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
+if (String.prototype.includes === undefined) {
+  String.prototype.includes = function (val) {
+    return this.indexOf(val) >= 0;
+  };
+}
 
 // 检测中文字符宽度是否等于字号
 context.font = '18px sans-serif';
@@ -9485,97 +9459,59 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
     });
   }
 
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
+  for (var index = 0; index < textSequence.length; index++) {
+    var char = textSequence[index];
+    var charFontSize = char.fontSize,
+        character = char.character;
 
-  try {
-    for (var _iterator = textSequence[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var char = _step.value;
-      var charFontSize = char.fontSize,
-          character = char.character;
+    // 更新行高
 
-      // 更新行高
+    maxFontSize = Math.max(maxFontSize, charFontSize);
 
-      maxFontSize = Math.max(maxFontSize, charFontSize);
+    if (character === ' ') {
+      var restSpace = maxWidth - currentX;
+      var totalWidth = context.measureText(word).width;
 
-      if (character === ' ') {
-        var restSpace = maxWidth - currentX;
-        var totalWidth = context.measureText(word).width;
+      if (restSpace < totalWidth) {
+        currentX = 0;
+        currentY += maxFontSize + yInterval;
+        currentRow += 1;
+        isMultiLine = true;
 
-        if (restSpace < totalWidth) {
-          currentX = 0;
-          currentY += maxFontSize + yInterval;
-          currentRow += 1;
-          isMultiLine = true;
-
-          // 超出高度，直接略去后面的字符，返回的数据中也不包含后面的字符。
-          if (currentRow >= row) {
-            break;
-          }
+        // 超出高度，直接略去后面的字符，返回的数据中也不包含后面的字符。
+        if (currentRow >= row) {
+          break;
         }
-
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = wordChar[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var _char = _step2.value;
-            var _charFontSize = _char.fontSize,
-                _character = _char.character;
-
-            // 确定文字位置并添加到返回数组中
-
-            var offsetY = (_charFontSize - gridSize) / 2;
-            layoutSequence.push(Object.assign({}, _char, {
-              x: currentX,
-              y: currentY - offsetY
-            }));
-
-            currentX += _char.width + letterSpacing;
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
-        }
-
-        currentX += 0.35 * gridSize;
-
-        word = '';
-        wordChar = [];
-      } else {
-        context.font = charFontSize + 'px ' + fontFamily;
-        var width = context.measureText(character).width;
-
-        word += character;
-
-        // 在这里先装入 width 和 height 信息
-        wordChar.push(Object.assign({}, char, { width: width, height: charFontSize }));
       }
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
+
+      for (var index2 = 0; index2 < wordChar.length; index2++) {
+        var _char = wordChar[index2];
+        var _charFontSize = _char.fontSize,
+            _character = _char.character;
+
+        // 确定文字位置并添加到返回数组中
+
+        var offsetY = (_charFontSize - gridSize) / 2;
+        layoutSequence.push(Object.assign({}, _char, {
+          x: currentX,
+          y: currentY - offsetY
+        }));
+
+        currentX += _char.width + letterSpacing;
       }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
+
+      currentX += 0.35 * gridSize;
+
+      word = '';
+      wordChar = [];
+    } else {
+      context.font = charFontSize + 'px ' + fontFamily;
+      var width = context.measureText(character).width;
+
+      word += character;
+
+      // 在这里先装入 width 和 height 信息
+      wordChar.push(Object.assign({}, char, { width: width, height: charFontSize }));
     }
   }
 

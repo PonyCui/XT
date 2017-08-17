@@ -75,40 +75,6 @@ export class Label extends View {
                     text.y = I.Screen.withScale(line.y);
                     this.textContainer.addChild(text);
                 })
-
-
-                // const textSequence = this.text.split('').map(character => {
-                //     return {
-                //         fontSize: I.Screen.withScale(this.font.pointSize),
-                //         character,
-                //     }
-                // });
-                // const layoutSequence = huozi(textSequence, {
-                //     gridSize: I.Screen.withScale(this.font.pointSize),
-                //     column: Math.floor(this.bounds.width / this.font.pointSize),
-                //     row: Infinity,
-                // });
-
-                // const offsetY = Math.min(0.0, Math.min.apply(null, layoutSequence.map((element: any) => element.y)));
-                // let line = { text: "", x: 0, y: 0, }
-                // layoutSequence.forEach((element: any) => {
-                //     if (line.y != (element.y - offsetY)) {
-                //         if (line.text.length > 0) {
-                //             const text = new PIXI.Text(line.text, textStyle);
-                //             text.x = line.x;
-                //             text.y = line.y;
-                //             this.textContainer.addChild(text);
-                //         }
-                //         line = { text: "", x: element.x, y: (element.y - offsetY), };
-                //     }
-                //     line.text += element.character;
-                // });
-                // if (line.text.length > 0) {
-                //     const text = new PIXI.Text(line.text, textStyle);
-                //     text.x = line.x;
-                //     text.y = line.y;
-                //     this.textContainer.addChild(text);
-                // }
             }
             setNeedsDisplay(this)
         })

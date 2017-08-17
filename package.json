@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "autolayout": "^0.7.0",
-    "huozi": "git+https://github.com/Icemic/huozi.js.git",
+    "huozi": "git+https://github.com/yyued/huozi.js.git",
     "install": "^0.10.1",
     "npm": "^5.3.0",
     "rebound": "0.0.15",

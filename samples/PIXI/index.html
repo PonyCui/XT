@@ -30,7 +30,7 @@
                 label.userInteractionEnabled = true;
                 label.onTap = function () {
                     XTView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
-                        label.frame = XTRectMake(0, 100, 300, 200)
+                        label.frame = XTRectMake(Math.ceil(Math.random() * 200), Math.ceil(Math.random() * 200), 300, 200)
                     })
                 }
             }

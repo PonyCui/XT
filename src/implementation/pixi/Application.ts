@@ -21,7 +21,7 @@ export class Application extends I.Application {
         super()
         if (sharedApplication === undefined) {
             sharedApplication = this;
-            const scale = Math.floor(window.devicePixelRatio);
+            const scale = Math.ceil(window.devicePixelRatio);
             I.Screen.mainScreen = () => {
                 return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale);
             }
