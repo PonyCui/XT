@@ -5,6 +5,7 @@ import { Window } from './Window'
 import { LayoutConstraint } from "./LayoutConstraint";
 import { Label } from "./Label";
 import { Button } from "./Button";
+import { ImageView, Image } from "./ImageView";
 
 export function usePixi(force = false) {
     const use = () => {
@@ -14,6 +15,8 @@ export function usePixi(force = false) {
         Factory.LayoutConstraint = LayoutConstraint
         Factory.Label = Label
         Factory.Button = Button
+        Factory.ImageView = ImageView
+        Factory.Image = Image as any
     }
     if (force) {
         use()

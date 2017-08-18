@@ -60,55 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Rect_1 = __webpack_require__(5);
-exports.RectMake = Rect_1.RectMake;
-exports.RectZero = Rect_1.RectZero;
-exports.RectEqual = Rect_1.RectEqual;
-exports.PointMake = Rect_1.PointMake;
-exports.PointZero = Rect_1.PointZero;
-exports.SizeMake = Rect_1.SizeMake;
-exports.SizeZero = Rect_1.SizeZero;
-exports.RectInside = Rect_1.RectInside;
-exports.PointEqual = Rect_1.PointEqual;
-exports.SizeEqual = Rect_1.SizeEqual;
-var View_1 = __webpack_require__(1);
-exports.View = View_1.View;
-var Window_1 = __webpack_require__(6);
-exports.Window = Window_1.Window;
-var Application_1 = __webpack_require__(7);
-exports.Application = Application_1.Application;
-exports.ApplicationDelegate = Application_1.ApplicationDelegate;
-var Color_1 = __webpack_require__(2);
-exports.Color = Color_1.Color;
-var Screen_1 = __webpack_require__(8);
-exports.Screen = Screen_1.Screen;
-var TransformMatrix_1 = __webpack_require__(9);
-exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
-var LayoutConstraint_1 = __webpack_require__(10);
-exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
-var Label_1 = __webpack_require__(11);
-exports.Label = Label_1.Label;
-exports.TextAlignment = Label_1.TextAlignment;
-exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
-exports.LineBreakMode = Label_1.LineBreakMode;
-var Font_1 = __webpack_require__(12);
-exports.Font = Font_1.Font;
-var Button_1 = __webpack_require__(32);
-exports.Button = Button_1.Button;
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -167,7 +123,94 @@ exports.View = View;
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Rect_1 = __webpack_require__(2);
+exports.RectMake = Rect_1.RectMake;
+exports.RectZero = Rect_1.RectZero;
+exports.RectEqual = Rect_1.RectEqual;
+exports.PointMake = Rect_1.PointMake;
+exports.PointZero = Rect_1.PointZero;
+exports.SizeMake = Rect_1.SizeMake;
+exports.SizeZero = Rect_1.SizeZero;
+exports.RectInside = Rect_1.RectInside;
+exports.PointEqual = Rect_1.PointEqual;
+exports.SizeEqual = Rect_1.SizeEqual;
+var View_1 = __webpack_require__(0);
+exports.View = View_1.View;
+var Window_1 = __webpack_require__(8);
+exports.Window = Window_1.Window;
+var Application_1 = __webpack_require__(9);
+exports.Application = Application_1.Application;
+exports.ApplicationDelegate = Application_1.ApplicationDelegate;
+var Color_1 = __webpack_require__(3);
+exports.Color = Color_1.Color;
+var Screen_1 = __webpack_require__(10);
+exports.Screen = Screen_1.Screen;
+var TransformMatrix_1 = __webpack_require__(11);
+exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
+var LayoutConstraint_1 = __webpack_require__(12);
+exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
+var Label_1 = __webpack_require__(13);
+exports.Label = Label_1.Label;
+exports.TextAlignment = Label_1.TextAlignment;
+exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
+exports.LineBreakMode = Label_1.LineBreakMode;
+var Font_1 = __webpack_require__(14);
+exports.Font = Font_1.Font;
+var Button_1 = __webpack_require__(15);
+exports.Button = Button_1.Button;
+var ImageView_1 = __webpack_require__(16);
+exports.ImageView = ImageView_1.ImageView;
+exports.Image = ImageView_1.Image;
+
+
+/***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function PointMake(x, y) {
+    return { x: x, y: y };
+}
+exports.PointMake = PointMake;
+function PointEqual(point1, point2) {
+    return point1.x === point2.x && point1.y === point2.y;
+}
+exports.PointEqual = PointEqual;
+exports.PointZero = PointMake(0, 0);
+function SizeMake(width, height) {
+    return { width: width, height: height };
+}
+exports.SizeMake = SizeMake;
+function SizeEqual(size1, size2) {
+    return size1.width === size2.width && size1.height === size2.height;
+}
+exports.SizeEqual = SizeEqual;
+exports.SizeZero = SizeMake(0, 0);
+function RectMake(x, y, width, height) {
+    return { x: x, y: y, width: width, height: height };
+}
+exports.RectMake = RectMake;
+exports.RectZero = RectMake(0, 0, 0, 0);
+function RectEqual(rect1, rect2) {
+    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+}
+exports.RectEqual = RectEqual;
+function RectInside(rect1, rect2) {
+    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
+}
+exports.RectInside = RectInside;
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -207,7 +250,7 @@ exports.Color = Color;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -260,478 +303,14 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(22);
-var global = __webpack_require__(23);
+__webpack_require__(25);
+var global = __webpack_require__(26);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var PIXI = window.PIXI;
-var sharedApplication = undefined;
-var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-if (requestAnimationFrame === undefined) {
-    requestAnimationFrame = function (trigger) {
-        setTimeout(trigger, 16);
-    };
-}
-var displayStartTime = 0;
-var Application = (function (_super) {
-    __extends(Application, _super);
-    function Application(canvas, delegate) {
-        var _this = _super.call(this) || this;
-        _this.keyWindow = undefined;
-        _this.isDirty = false;
-        _this.dirtyTargets = [];
-        if (sharedApplication === undefined) {
-            sharedApplication = _this;
-            var scale_1 = Math.ceil(window.devicePixelRatio);
-            I.Screen.mainScreen = function () {
-                return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
-            };
-        }
-        Application.resetCanvas(canvas, function () {
-            _this.nativeObject = new PIXI.Application({ width: I.Screen.withScale(canvas.offsetWidth), height: I.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
-            _this.nativeObject.stop();
-            if (window.DEBUG === true) {
-                window.nativeObject = _this.nativeObject;
-                var renderStartTime_1 = 0;
-                _this.nativeObject.renderer.on("prerender", function () {
-                    renderStartTime_1 = performance.now();
-                });
-                _this.nativeObject.renderer.on("postrender", function () {
-                    console.log("[PIXI]: Render Time > " + (performance.now() - renderStartTime_1));
-                    console.log("[PIXI]: Display Time > " + (performance.now() - displayStartTime));
-                });
-            }
-            _this.delegate = delegate;
-            if (_this.delegate) {
-                _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
-            }
-        });
-        return _this;
-    }
-    Application.resetCanvas = function (canvas, callback) {
-        canvas.style.width = "375";
-        canvas.style.height = document.body.offsetHeight.toString();
-        setTimeout(callback);
-    };
-    Application.sharedApplication = function () {
-        return sharedApplication;
-    };
-    Application.prototype.remarkRenderable = function () {
-        if (this.keyWindow !== undefined) {
-            var allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
-            var opaqueRects = [];
-            var _loop_1 = function (index) {
-                var view = allViews[index];
-                if (view._childRenderable === true) {
-                    view.nativeObject.renderable = true;
-                    return "continue";
-                }
-                if (view.transform !== undefined) {
-                    view.nativeObject.renderable = true;
-                }
-                else if (opaqueRects.filter(function (item) { return I.RectInside(item, view._absRect); }).length == 0) {
-                    if (view.opaque === true) {
-                        opaqueRects.push(view._absRect);
-                    }
-                    view.nativeObject.renderable = true;
-                }
-                else {
-                    view.nativeObject.renderable = false;
-                }
-                if (view.nativeObject.renderable === true) {
-                    var current = view.superview;
-                    while (current !== undefined) {
-                        current._childRenderable = true;
-                        current = current.superview;
-                    }
-                }
-            };
-            for (var index = allViews.length - 1; index >= 0; index--) {
-                _loop_1(index);
-            }
-        }
-    };
-    Application.prototype.combineViews = function (view, absPoint) {
-        var _this = this;
-        var views = view.subviews;
-        view.subviews.forEach(function (subview) {
-            subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
-            view._childRenderable = false;
-            view._frameChanged = false;
-        });
-        view.subviews.forEach(function (subview) {
-            var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
-            subviewss.forEach(function (subview) {
-                views.push(subview);
-            });
-        });
-        return views;
-    };
-    Application.prototype.setNeedsDisplay = function (target) {
-        var _this = this;
-        if (this.dirtyTargets.indexOf(target) < 0) {
-            this.dirtyTargets.push(target);
-        }
-        if (this.isDirty === true) {
-            return;
-        }
-        this.isDirty = true;
-        requestAnimationFrame(function () {
-            if (window.DEBUG) {
-                displayStartTime = performance.now();
-            }
-            if (_this.dirtyTargets.filter(function (item) { return item._frameChanged || item.nativeObject.renderable; }).length == 0) {
-                _this.dirtyTargets.forEach(function (item) { item._frameChanged = false; });
-                _this.dirtyTargets = [];
-                _this.isDirty = false;
-                return;
-            }
-            _this.remarkRenderable();
-            var stillDirty = false;
-            for (var index = 0; index < _this.dirtyTargets.length; index++) {
-                var element = _this.dirtyTargets[index];
-                if (element.nativeObject.renderable === true) {
-                    stillDirty = true;
-                    break;
-                }
-            }
-            if (stillDirty) {
-                _this.nativeObject.render();
-            }
-            _this.dirtyTargets = [];
-            _this.isDirty = false;
-        });
-    };
-    Application.prototype.displayNow = function () {
-        if (window.DEBUG) {
-            displayStartTime = performance.now();
-        }
-        this.remarkRenderable();
-        this.nativeObject.render();
-        this.dirtyTargets = [];
-    };
-    return Application;
-}(I.Application));
-exports.Application = Application;
-var displayPaused = false;
-function setNeedsDisplay(target) {
-    if (sharedApplication !== undefined && displayPaused === false) {
-        sharedApplication.setNeedsDisplay(target);
-    }
-}
-exports.setNeedsDisplay = setNeedsDisplay;
-function displayPause() {
-    displayPaused = true;
-}
-exports.displayPause = displayPause;
-function displayNow() {
-    displayPaused = false;
-    if (sharedApplication !== undefined) {
-        sharedApplication.displayNow();
-    }
-}
-exports.displayNow = displayNow;
-
-
-/***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function PointMake(x, y) {
-    return { x: x, y: y };
-}
-exports.PointMake = PointMake;
-function PointEqual(point1, point2) {
-    return point1.x === point2.x && point1.y === point2.y;
-}
-exports.PointEqual = PointEqual;
-exports.PointZero = PointMake(0, 0);
-function SizeMake(width, height) {
-    return { width: width, height: height };
-}
-exports.SizeMake = SizeMake;
-function SizeEqual(size1, size2) {
-    return size1.width === size2.width && size1.height === size2.height;
-}
-exports.SizeEqual = SizeEqual;
-exports.SizeZero = SizeMake(0, 0);
-function RectMake(x, y, width, height) {
-    return { x: x, y: y, width: width, height: height };
-}
-exports.RectMake = RectMake;
-exports.RectZero = RectMake(0, 0, 0, 0);
-function RectEqual(rect1, rect2) {
-    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-}
-exports.RectEqual = RectEqual;
-function RectInside(rect1, rect2) {
-    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
-}
-exports.RectInside = RectInside;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
-var Window = (function (_super) {
-    __extends(Window, _super);
-    function Window() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Window.prototype.makeKeyAndVisible = function () { };
-    return Window;
-}(View_1.View));
-exports.Window = Window;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ApplicationDelegate = (function () {
-    function ApplicationDelegate() {
-    }
-    ApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
-    return ApplicationDelegate;
-}());
-exports.ApplicationDelegate = ApplicationDelegate;
-var Application = (function () {
-    function Application() {
-    }
-    Application.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
-    return Application;
-}());
-exports.Application = Application;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Screen = (function () {
-    function Screen(width, height, scale) {
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-    }
-    Screen.prototype.bounds = function () {
-        return { x: 0, y: 0, width: this.width, height: this.height };
-    };
-    Screen.withScale = function (value) {
-        return value * Screen.mainScreen().scale;
-    };
-    Screen.outScale = function (value) {
-        return value / Screen.mainScreen().scale;
-    };
-    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
-    return Screen;
-}());
-exports.Screen = Screen;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var TransformMatrix = (function () {
-    function TransformMatrix(a, b, c, d, tx, ty) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.tx = tx;
-        this.ty = ty;
-    }
-    return TransformMatrix;
-}());
-exports.TransformMatrix = TransformMatrix;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Attribute;
-(function (Attribute) {
-    Attribute[Attribute["Const"] = 0] = "Const";
-    Attribute[Attribute["Left"] = 1] = "Left";
-    Attribute[Attribute["Right"] = 2] = "Right";
-    Attribute[Attribute["Top"] = 3] = "Top";
-    Attribute[Attribute["Bottom"] = 4] = "Bottom";
-    Attribute[Attribute["Width"] = 7] = "Width";
-    Attribute[Attribute["Height"] = 8] = "Height";
-    Attribute[Attribute["CenterX"] = 9] = "CenterX";
-    Attribute[Attribute["CenterY"] = 10] = "CenterY";
-})(Attribute = exports.Attribute || (exports.Attribute = {}));
-var Relation;
-(function (Relation) {
-    Relation[Relation["Less"] = -1] = "Less";
-    Relation[Relation["Equal"] = 0] = "Equal";
-    Relation[Relation["Greater"] = 1] = "Greater";
-})(Relation = exports.Relation || (exports.Relation = {}));
-var LayoutConstraint = (function () {
-    function LayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
-        if (constant === void 0) { constant = 0; }
-        if (multiplier === void 0) { multiplier = 1; }
-        this.relation = Relation.Equal;
-        this.constant = 0;
-        this.multiplier = 1;
-        this.priority = 750;
-        this.firstItem = firstItem;
-        this.firstAttr = firstAttr;
-        this.relation = relation || Relation.Equal;
-        this.secondItem = secondItem;
-        this.secondAttr = secondAttr;
-        this.constant = constant;
-        this.multiplier = multiplier;
-    }
-    LayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
-    LayoutConstraint.Attribute = Attribute;
-    LayoutConstraint.Relation = Relation;
-    return LayoutConstraint;
-}());
-exports.LayoutConstraint = LayoutConstraint;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
-var Color_1 = __webpack_require__(2);
-var Rect_1 = __webpack_require__(5);
-var TextAlignment;
-(function (TextAlignment) {
-    TextAlignment[TextAlignment["Left"] = 0] = "Left";
-    TextAlignment[TextAlignment["Center"] = 1] = "Center";
-    TextAlignment[TextAlignment["Right"] = 2] = "Right";
-})(TextAlignment = exports.TextAlignment || (exports.TextAlignment = {}));
-var TextVerticalAlignment;
-(function (TextVerticalAlignment) {
-    TextVerticalAlignment[TextVerticalAlignment["Top"] = 0] = "Top";
-    TextVerticalAlignment[TextVerticalAlignment["Center"] = 1] = "Center";
-    TextVerticalAlignment[TextVerticalAlignment["Bottom"] = 2] = "Bottom";
-})(TextVerticalAlignment = exports.TextVerticalAlignment || (exports.TextVerticalAlignment = {}));
-var LineBreakMode;
-(function (LineBreakMode) {
-    LineBreakMode[LineBreakMode["WordWrapping"] = 0] = "WordWrapping";
-    LineBreakMode[LineBreakMode["TruncatingTail"] = 4] = "TruncatingTail";
-})(LineBreakMode = exports.LineBreakMode || (exports.LineBreakMode = {}));
-var Label = (function (_super) {
-    __extends(Label, _super);
-    function Label() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.textColor = new Color_1.Color(0, 0, 0);
-        _this.textAlignment = TextAlignment.Left;
-        _this.numberOfLines = 1;
-        _this.lineBreakMode = LineBreakMode.WordWrapping;
-        _this.lineSpace = 12;
-        return _this;
-    }
-    Label.prototype.textRectForBounds = function (bounds) { return Rect_1.RectZero; };
-    return Label;
-}(View_1.View));
-exports.Label = Label;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Font = (function () {
-    function Font(pointSize, fontWeight, fontStyle, familyName) {
-        if (fontWeight === void 0) { fontWeight = '400'; }
-        if (fontStyle === void 0) { fontStyle = 'normal'; }
-        this.fontWeight = '400';
-        this.fontStyle = 'normal';
-        this.pointSize = pointSize;
-        this.fontWeight = fontWeight;
-        this.fontStyle = fontStyle;
-        this.familyName = familyName;
-    }
-    Font.systemFontOfSize = function (pointSize, weight) {
-        if (weight === void 0) { weight = '400'; }
-        return new Font(pointSize, weight);
-    };
-    Font.boldSystemFontOfSize = function (pointSize) {
-        return new Font(pointSize, '700');
-    };
-    Font.italicSystemFontOfSize = function (pointSize) {
-        return new Font(pointSize, '400', 'italic');
-    };
-    return Font;
-}());
-exports.Font = Font;
-
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -755,11 +334,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var Application_1 = __webpack_require__(4);
-var Rebound = __webpack_require__(24);
+var I = __webpack_require__(1);
+var Application_1 = __webpack_require__(6);
+var Rebound = __webpack_require__(27);
 var PIXI = window.PIXI;
-var AutoLayout = __webpack_require__(17);
+var AutoLayout = __webpack_require__(20);
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {
     requestAnimationFrame = function (trigger) {
@@ -773,6 +352,7 @@ var View = (function (_super) {
         // Mark: View Geometry
         _this._frame = I.RectZero;
         _this._frameChanged = false;
+        _this._forceRender = false;
         _this._bounds = I.RectZero;
         // Mark: View Rendering
         _this._clipsToBounds = false;
@@ -1759,17 +1339,223 @@ var View = (function (_super) {
 }(I.View));
 exports.View = View;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).clearImmediate, __webpack_require__(4).setImmediate))
 
 /***/ }),
-/* 14 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(1);
+var PIXI = window.PIXI;
+var sharedApplication = undefined;
+var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+if (requestAnimationFrame === undefined) {
+    requestAnimationFrame = function (trigger) {
+        setTimeout(trigger, 16);
+    };
+}
+var displayStartTime = 0;
+var Application = (function (_super) {
+    __extends(Application, _super);
+    function Application(canvas, delegate) {
+        var _this = _super.call(this) || this;
+        _this.keyWindow = undefined;
+        _this.isDirty = false;
+        _this.dirtyTargets = [];
+        if (sharedApplication === undefined) {
+            sharedApplication = _this;
+            var scale_1 = Math.ceil(window.devicePixelRatio);
+            I.Screen.mainScreen = function () {
+                return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
+            };
+        }
+        Application.resetCanvas(canvas, function () {
+            _this.nativeObject = new PIXI.Application({ width: I.Screen.withScale(canvas.offsetWidth), height: I.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
+            _this.nativeObject.stop();
+            if (window.DEBUG === true) {
+                window.nativeObject = _this.nativeObject;
+                var renderStartTime_1 = 0;
+                _this.nativeObject.renderer.on("prerender", function () {
+                    renderStartTime_1 = performance.now();
+                });
+                _this.nativeObject.renderer.on("postrender", function () {
+                    console.log("[PIXI]: Render Time > " + (performance.now() - renderStartTime_1));
+                    console.log("[PIXI]: Display Time > " + (performance.now() - displayStartTime));
+                });
+            }
+            _this.delegate = delegate;
+            if (_this.delegate) {
+                _this.delegate.applicationDidFinishLaunchingWithOptions(_this, {});
+            }
+        });
+        return _this;
+    }
+    Application.resetCanvas = function (canvas, callback) {
+        canvas.style.width = "375";
+        canvas.style.height = document.body.offsetHeight.toString();
+        setTimeout(callback);
+    };
+    Application.sharedApplication = function () {
+        return sharedApplication;
+    };
+    Application.prototype.remarkRenderable = function () {
+        if (this.keyWindow !== undefined) {
+            var allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
+            var opaqueRects = [];
+            var _loop_1 = function (index) {
+                var view = allViews[index];
+                if (view._childRenderable === true) {
+                    view.nativeObject.renderable = true;
+                    return "continue";
+                }
+                if (view.transform !== undefined) {
+                    view.nativeObject.renderable = true;
+                }
+                else if (opaqueRects.filter(function (item) { return I.RectInside(item, view._absRect); }).length == 0) {
+                    if (view.opaque === true) {
+                        opaqueRects.push(view._absRect);
+                    }
+                    view.nativeObject.renderable = true;
+                }
+                else {
+                    view.nativeObject.renderable = false;
+                }
+                if (view.nativeObject.renderable === true) {
+                    var current = view.superview;
+                    while (current !== undefined) {
+                        current._childRenderable = true;
+                        current = current.superview;
+                    }
+                }
+            };
+            for (var index = allViews.length - 1; index >= 0; index--) {
+                _loop_1(index);
+            }
+        }
+    };
+    Application.prototype.combineViews = function (view, absPoint) {
+        var _this = this;
+        var views = view.subviews;
+        view.subviews.forEach(function (subview) {
+            subview._absRect = { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y, width: absPoint.x + subview.frame.width, height: absPoint.y + subview.frame.height };
+            view._childRenderable = false;
+            view._frameChanged = false;
+        });
+        view.subviews.forEach(function (subview) {
+            var subviewss = _this.combineViews(subview, { x: absPoint.x + subview.frame.x, y: absPoint.y + subview.frame.y });
+            subviewss.forEach(function (subview) {
+                views.push(subview);
+            });
+        });
+        return views;
+    };
+    Application.prototype.setNeedsDisplay = function (target) {
+        var _this = this;
+        if (this.dirtyTargets.indexOf(target) < 0) {
+            this.dirtyTargets.push(target);
+        }
+        if (this.isDirty === true) {
+            return;
+        }
+        this.isDirty = true;
+        requestAnimationFrame(function () {
+            if (window.DEBUG) {
+                displayStartTime = performance.now();
+            }
+            if (_this.dirtyTargets.filter(function (item) { return item._forceRender || item._frameChanged || item.nativeObject.renderable; }).length == 0) {
+                _this.dirtyTargets.forEach(function (item) { item._frameChanged = false; item._forceRender = false; });
+                _this.dirtyTargets = [];
+                _this.isDirty = false;
+                return;
+            }
+            _this.remarkRenderable();
+            var stillDirty = false;
+            for (var index = 0; index < _this.dirtyTargets.length; index++) {
+                var element = _this.dirtyTargets[index];
+                if (element.nativeObject.renderable === true) {
+                    stillDirty = true;
+                    break;
+                }
+            }
+            if (stillDirty) {
+                _this.nativeObject.render();
+            }
+            _this.dirtyTargets = [];
+            _this.isDirty = false;
+        });
+    };
+    Application.prototype.displayNow = function () {
+        if (window.DEBUG) {
+            displayStartTime = performance.now();
+        }
+        this.remarkRenderable();
+        this.nativeObject.render();
+        this.dirtyTargets = [];
+    };
+    return Application;
+}(I.Application));
+exports.Application = Application;
+var displayPaused = false;
+function setNeedsDisplay(target, force) {
+    if (force === void 0) { force = false; }
+    if (sharedApplication !== undefined && displayPaused === false) {
+        target._forceRender = force;
+        sharedApplication.setNeedsDisplay(target);
+    }
+}
+exports.setNeedsDisplay = setNeedsDisplay;
+var displayIntervalTimer = undefined;
+var displayIntervalEndtime = 0;
+function displayInterval(millseconds) {
+    if (displayIntervalEndtime > millseconds + performance.now()) {
+        return;
+    }
+    displayIntervalEndtime = millseconds + performance.now();
+    clearTimeout(this.displayIntervalTimer);
+    if (sharedApplication !== undefined) {
+        sharedApplication.nativeObject.start();
+        this.displayIntervalTimer = setTimeout(function () {
+            if (sharedApplication !== undefined) {
+                sharedApplication.nativeObject.stop();
+            }
+        }, millseconds);
+    }
+}
+exports.displayInterval = displayInterval;
+function displayPause() {
+    displayPaused = true;
+}
+exports.displayPause = displayPause;
+function displayNow() {
+    displayPaused = false;
+    if (sharedApplication !== undefined) {
+        sharedApplication.displayNow();
+    }
+}
+exports.displayNow = displayNow;
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(21);
-var I = __webpack_require__(0);
+var I = __webpack_require__(1);
 var Factory = (function () {
     function Factory() {
     }
@@ -1797,8 +1583,344 @@ var Factory = (function () {
     Factory.TransformMatrix = I.TransformMatrix;
     Factory.LayoutConstraint = I.LayoutConstraint;
     Factory.Button = I.Button;
+    Factory.ImageView = I.ImageView;
+    Factory.Image = I.Image;
     return Factory;
 }());
+exports.Factory = Factory;
+function SwitchFactory() {
+}
+exports.SwitchFactory = SwitchFactory;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var Window = (function (_super) {
+    __extends(Window, _super);
+    function Window() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Window.prototype.makeKeyAndVisible = function () { };
+    return Window;
+}(View_1.View));
+exports.Window = Window;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ApplicationDelegate = (function () {
+    function ApplicationDelegate() {
+    }
+    ApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
+    return ApplicationDelegate;
+}());
+exports.ApplicationDelegate = ApplicationDelegate;
+var Application = (function () {
+    function Application() {
+    }
+    Application.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
+    return Application;
+}());
+exports.Application = Application;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Screen = (function () {
+    function Screen(width, height, scale) {
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
+    }
+    Screen.prototype.bounds = function () {
+        return { x: 0, y: 0, width: this.width, height: this.height };
+    };
+    Screen.withScale = function (value) {
+        return value * Screen.mainScreen().scale;
+    };
+    Screen.outScale = function (value) {
+        return value / Screen.mainScreen().scale;
+    };
+    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
+    return Screen;
+}());
+exports.Screen = Screen;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var TransformMatrix = (function () {
+    function TransformMatrix(a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
+    }
+    return TransformMatrix;
+}());
+exports.TransformMatrix = TransformMatrix;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Attribute;
+(function (Attribute) {
+    Attribute[Attribute["Const"] = 0] = "Const";
+    Attribute[Attribute["Left"] = 1] = "Left";
+    Attribute[Attribute["Right"] = 2] = "Right";
+    Attribute[Attribute["Top"] = 3] = "Top";
+    Attribute[Attribute["Bottom"] = 4] = "Bottom";
+    Attribute[Attribute["Width"] = 7] = "Width";
+    Attribute[Attribute["Height"] = 8] = "Height";
+    Attribute[Attribute["CenterX"] = 9] = "CenterX";
+    Attribute[Attribute["CenterY"] = 10] = "CenterY";
+})(Attribute = exports.Attribute || (exports.Attribute = {}));
+var Relation;
+(function (Relation) {
+    Relation[Relation["Less"] = -1] = "Less";
+    Relation[Relation["Equal"] = 0] = "Equal";
+    Relation[Relation["Greater"] = 1] = "Greater";
+})(Relation = exports.Relation || (exports.Relation = {}));
+var LayoutConstraint = (function () {
+    function LayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
+        if (constant === void 0) { constant = 0; }
+        if (multiplier === void 0) { multiplier = 1; }
+        this.relation = Relation.Equal;
+        this.constant = 0;
+        this.multiplier = 1;
+        this.priority = 750;
+        this.firstItem = firstItem;
+        this.firstAttr = firstAttr;
+        this.relation = relation || Relation.Equal;
+        this.secondItem = secondItem;
+        this.secondAttr = secondAttr;
+        this.constant = constant;
+        this.multiplier = multiplier;
+    }
+    LayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
+    LayoutConstraint.Attribute = Attribute;
+    LayoutConstraint.Relation = Relation;
+    return LayoutConstraint;
+}());
+exports.LayoutConstraint = LayoutConstraint;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var Color_1 = __webpack_require__(3);
+var Rect_1 = __webpack_require__(2);
+var TextAlignment;
+(function (TextAlignment) {
+    TextAlignment[TextAlignment["Left"] = 0] = "Left";
+    TextAlignment[TextAlignment["Center"] = 1] = "Center";
+    TextAlignment[TextAlignment["Right"] = 2] = "Right";
+})(TextAlignment = exports.TextAlignment || (exports.TextAlignment = {}));
+var TextVerticalAlignment;
+(function (TextVerticalAlignment) {
+    TextVerticalAlignment[TextVerticalAlignment["Top"] = 0] = "Top";
+    TextVerticalAlignment[TextVerticalAlignment["Center"] = 1] = "Center";
+    TextVerticalAlignment[TextVerticalAlignment["Bottom"] = 2] = "Bottom";
+})(TextVerticalAlignment = exports.TextVerticalAlignment || (exports.TextVerticalAlignment = {}));
+var LineBreakMode;
+(function (LineBreakMode) {
+    LineBreakMode[LineBreakMode["WordWrapping"] = 0] = "WordWrapping";
+    LineBreakMode[LineBreakMode["TruncatingTail"] = 4] = "TruncatingTail";
+})(LineBreakMode = exports.LineBreakMode || (exports.LineBreakMode = {}));
+var Label = (function (_super) {
+    __extends(Label, _super);
+    function Label() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.textColor = new Color_1.Color(0, 0, 0);
+        _this.textAlignment = TextAlignment.Left;
+        _this.numberOfLines = 1;
+        _this.lineBreakMode = LineBreakMode.WordWrapping;
+        _this.lineSpace = 12;
+        return _this;
+    }
+    Label.prototype.textRectForBounds = function (bounds) { return Rect_1.RectZero; };
+    return Label;
+}(View_1.View));
+exports.Label = Label;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Font = (function () {
+    function Font(pointSize, fontWeight, fontStyle, familyName) {
+        if (fontWeight === void 0) { fontWeight = '400'; }
+        if (fontStyle === void 0) { fontStyle = 'normal'; }
+        this.fontWeight = '400';
+        this.fontStyle = 'normal';
+        this.pointSize = pointSize;
+        this.fontWeight = fontWeight;
+        this.fontStyle = fontStyle;
+        this.familyName = familyName;
+    }
+    Font.systemFontOfSize = function (pointSize, weight) {
+        if (weight === void 0) { weight = '400'; }
+        return new Font(pointSize, weight);
+    };
+    Font.boldSystemFontOfSize = function (pointSize) {
+        return new Font(pointSize, '700');
+    };
+    Font.italicSystemFontOfSize = function (pointSize) {
+        return new Font(pointSize, '400', 'italic');
+    };
+    return Font;
+}());
+exports.Font = Font;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Button;
+}(View_1.View));
+exports.Button = Button;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var Image = (function () {
+    function Image() {
+    }
+    Image.fromURL = function (url, success, failure) { };
+    Image.fromAssets = function (named, success, failure) { };
+    Image.assetsPath = "./assets/";
+    return Image;
+}());
+exports.Image = Image;
+var ImageView = (function (_super) {
+    __extends(ImageView, _super);
+    function ImageView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return ImageView;
+}(View_1.View));
+exports.ImageView = ImageView;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(24);
+var Factory_1 = __webpack_require__(7);
+var Factory = (function (_super) {
+    __extends(Factory, _super);
+    function Factory() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Factory;
+}(Factory_1.Factory));
 exports.Factory = Factory;
 function SwitchFactory() {
     index_1.usePixi();
@@ -1807,7 +1929,7 @@ exports.SwitchFactory = SwitchFactory;
 
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1834,7 +1956,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -2024,7 +2146,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var require;var require;/**
@@ -7394,15 +7516,226 @@ var l=this.rows.get(this._objective);l.setVariable(i,b.strength.symbolicWeight.v
 });
 
 /***/ }),
-/* 18 */,
-/* 19 */,
-/* 20 */
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(1);
+var View_1 = __webpack_require__(5);
+var Application_1 = __webpack_require__(6);
+var TextLayout_1 = __webpack_require__(30);
+var PIXI = window.PIXI;
+var Label = (function (_super) {
+    __extends(Label, _super);
+    function Label(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.textContainer = new PIXI.Container();
+        _this._font = new I.Font(14);
+        _this._textColor = new I.Color(0, 0, 0);
+        _this._textAlignment = I.TextAlignment.Left;
+        _this._numberOfLines = 1;
+        _this._lineBreakMode = I.LineBreakMode.WordWrapping;
+        _this._lineSpace = 12;
+        _this._preferredMaxLayoutWidth = Infinity;
+        _this.nativeObject.addChildAt(_this.textContainer, 1);
+        return _this;
+    }
+    Label.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        this.drawText();
+    };
+    Object.defineProperty(Label.prototype, "text", {
+        get: function () {
+            return this._text;
+        },
+        set: function (value) {
+            if (this._text === value) {
+                return;
+            }
+            this._text = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "font", {
+        get: function () {
+            return this._font;
+        },
+        set: function (value) {
+            this._font = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "textColor", {
+        get: function () {
+            return this._textColor;
+        },
+        set: function (value) {
+            if (this._textColor.equals(value)) {
+                return;
+            }
+            this._textColor = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "textAlignment", {
+        get: function () {
+            return this._textAlignment;
+        },
+        set: function (value) {
+            if (this._textAlignment === value) {
+                return;
+            }
+            this._textAlignment = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "numberOfLines", {
+        get: function () {
+            return this._numberOfLines;
+        },
+        set: function (value) {
+            if (this._numberOfLines === value) {
+                return;
+            }
+            this._numberOfLines = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "lineBreakMode", {
+        get: function () {
+            return this._lineBreakMode;
+        },
+        set: function (value) {
+            if (this._lineBreakMode === value) {
+                return;
+            }
+            this._lineBreakMode = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "lineSpace", {
+        get: function () {
+            return this._lineSpace;
+        },
+        set: function (value) {
+            if (this._lineSpace === value) {
+                return;
+            }
+            this._lineSpace = value;
+            this.drawText();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Label.prototype, "preferredMaxLayoutWidth", {
+        get: function () {
+            return this._preferredMaxLayoutWidth;
+        },
+        set: function (value) {
+            if (this._preferredMaxLayoutWidth === value) {
+                return;
+            }
+            this._preferredMaxLayoutWidth = value;
+            this.setNeedsLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Label.prototype.intrinsicContentSize = function (width) {
+        if (this.text) {
+            var textLayout = new TextLayout_1.StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
+            return { width: textLayout.textRect.width, height: textLayout.textRect.height + 2 };
+        }
+        return undefined;
+    };
+    Label.prototype.drawText = function () {
+        var _this = this;
+        clearImmediate(this._drawTextImmediate);
+        this._drawTextImmediate = setImmediate(function () {
+            _this.textContainer.removeChildren();
+            if (_this.text) {
+                var textStyle_1 = new PIXI.TextStyle({
+                    fontSize: I.Screen.withScale(_this.font.pointSize),
+                    fontWeight: _this.font.fontWeight,
+                    fill: _this.textColor.rgbHexString(),
+                });
+                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
+                textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center, _this.lineBreakMode).forEach(function (line) {
+                    var text = new PIXI.Text(line.text, textStyle_1);
+                    text.x = 0;
+                    text.y = I.Screen.withScale(line.y);
+                    var textBounds = text.getBounds();
+                    textBounds.x *= 375 / window.screen.width;
+                    textBounds.y *= 375 / window.screen.width;
+                    textBounds.width *= 375 / window.screen.width;
+                    textBounds.height *= 375 / window.screen.width;
+                    if (textBounds.width > I.Screen.withScale(_this.bounds.width)) {
+                        line.elements.forEach(function (element) {
+                            var text = new PIXI.Text(element.character, textStyle_1);
+                            text.x = I.Screen.withScale(line.x + element.x);
+                            text.y = I.Screen.withScale(line.y);
+                            _this.textContainer.addChild(text);
+                        });
+                        return;
+                    }
+                    else if (_this.textAlignment == I.TextAlignment.Center) {
+                        text.x = Math.ceil((I.Screen.withScale(_this.bounds.width) - textBounds.width) / 2.0);
+                    }
+                    _this.textContainer.addChild(text);
+                });
+            }
+            Application_1.setNeedsDisplay(_this);
+        });
+    };
+    Label.prototype.textRectForBounds = function (bounds) {
+        if (this.text) {
+            var textStyle = new PIXI.TextStyle({
+                fontSize: I.Screen.withScale(this.font.pointSize),
+                fill: this.textColor.rgbHexString(),
+            });
+            var textLayout = new TextLayout_1.StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
+            return textLayout.bounds;
+        }
+        return I.RectZero;
+    };
+    return Label;
+}(View_1.View));
+exports.Label = Label;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).clearImmediate, __webpack_require__(4).setImmediate))
+
+/***/ }),
+/* 22 */,
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(14);
+var Factory_pixi_1 = __webpack_require__(17);
 Factory_pixi_1.SwitchFactory();
 exports.default = Factory_pixi_1.Factory;
 if (window !== undefined) {
@@ -7411,19 +7744,20 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(14);
-var View_1 = __webpack_require__(13);
-var Application_1 = __webpack_require__(4);
-var Window_1 = __webpack_require__(25);
-var LayoutConstraint_1 = __webpack_require__(26);
-var Label_1 = __webpack_require__(27);
-var Button_1 = __webpack_require__(33);
+var Factory_pixi_1 = __webpack_require__(17);
+var View_1 = __webpack_require__(5);
+var Application_1 = __webpack_require__(6);
+var Window_1 = __webpack_require__(28);
+var LayoutConstraint_1 = __webpack_require__(29);
+var Label_1 = __webpack_require__(21);
+var Button_1 = __webpack_require__(34);
+var ImageView_1 = __webpack_require__(35);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
@@ -7433,6 +7767,8 @@ function usePixi(force) {
         Factory_pixi_1.Factory.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
         Factory_pixi_1.Factory.Label = Label_1.Label;
         Factory_pixi_1.Factory.Button = Button_1.Button;
+        Factory_pixi_1.Factory.ImageView = ImageView_1.ImageView;
+        Factory_pixi_1.Factory.Image = ImageView_1.Image;
     };
     if (force) {
         use();
@@ -7448,7 +7784,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -7638,10 +7974,10 @@ exports.usePixi = usePixi;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(19)))
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -7658,10 +7994,10 @@ if (typeof window !== "undefined") {
 
 module.exports = win;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, setImmediate) {// Rebound
@@ -8816,10 +9152,10 @@ module.exports = win;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(3).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(4).setImmediate))
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8835,8 +9171,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Application_1 = __webpack_require__(4);
-var View_1 = __webpack_require__(13);
+var Application_1 = __webpack_require__(6);
+var View_1 = __webpack_require__(5);
 var PIXI = window.PIXI;
 var Window = (function (_super) {
     __extends(Window, _super);
@@ -8863,7 +9199,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8879,8 +9215,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var AutoLayout = __webpack_require__(17);
+var I = __webpack_require__(1);
+var AutoLayout = __webpack_require__(20);
 var LayoutConstraint = (function (_super) {
     __extends(LayoutConstraint, _super);
     function LayoutConstraint() {
@@ -9002,226 +9338,14 @@ exports.LayoutConstraint = LayoutConstraint;
 
 
 /***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var View_1 = __webpack_require__(13);
-var Application_1 = __webpack_require__(4);
-var TextLayout_1 = __webpack_require__(28);
-var PIXI = window.PIXI;
-var Label = (function (_super) {
-    __extends(Label, _super);
-    function Label(rect) {
-        var _this = _super.call(this, rect) || this;
-        _this.textContainer = new PIXI.Container();
-        _this._font = new I.Font(14);
-        _this._textColor = new I.Color(0, 0, 0);
-        _this._textAlignment = I.TextAlignment.Left;
-        _this._numberOfLines = 1;
-        _this._lineBreakMode = I.LineBreakMode.WordWrapping;
-        _this._lineSpace = 12;
-        _this._preferredMaxLayoutWidth = Infinity;
-        _this.nativeObject.addChild(_this.textContainer);
-        return _this;
-    }
-    Label.prototype.layoutSubviews = function () {
-        _super.prototype.layoutSubviews.call(this);
-        this.drawText();
-    };
-    Object.defineProperty(Label.prototype, "text", {
-        get: function () {
-            return this._text;
-        },
-        set: function (value) {
-            if (this._text === value) {
-                return;
-            }
-            this._text = value;
-            this.drawText();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "font", {
-        get: function () {
-            return this._font;
-        },
-        set: function (value) {
-            this._font = value;
-            this.drawText();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "textColor", {
-        get: function () {
-            return this._textColor;
-        },
-        set: function (value) {
-            if (this._textColor.equals(value)) {
-                return;
-            }
-            this._textColor = value;
-            this.drawText();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "textAlignment", {
-        get: function () {
-            return this._textAlignment;
-        },
-        set: function (value) {
-            if (this._textAlignment === value) {
-                return;
-            }
-            this._textAlignment = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "numberOfLines", {
-        get: function () {
-            return this._numberOfLines;
-        },
-        set: function (value) {
-            if (this._numberOfLines === value) {
-                return;
-            }
-            this._numberOfLines = value;
-            this.drawText();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "lineBreakMode", {
-        get: function () {
-            return this._lineBreakMode;
-        },
-        set: function (value) {
-            if (this._lineBreakMode === value) {
-                return;
-            }
-            this._lineBreakMode = value;
-            this.drawText();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "lineSpace", {
-        get: function () {
-            return this._lineSpace;
-        },
-        set: function (value) {
-            if (this._lineSpace === value) {
-                return;
-            }
-            this._lineSpace = value;
-            this.drawText();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Label.prototype, "preferredMaxLayoutWidth", {
-        get: function () {
-            return this._preferredMaxLayoutWidth;
-        },
-        set: function (value) {
-            if (this._preferredMaxLayoutWidth === value) {
-                return;
-            }
-            this._preferredMaxLayoutWidth = value;
-            this.setNeedsLayout();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Label.prototype.intrinsicContentSize = function (width) {
-        if (this.text) {
-            var textLayout = new TextLayout_1.StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
-            return { width: textLayout.textRect.width, height: textLayout.textRect.height + 2 };
-        }
-        return undefined;
-    };
-    Label.prototype.drawText = function () {
-        var _this = this;
-        clearImmediate(this._drawTextImmediate);
-        this._drawTextImmediate = setImmediate(function () {
-            _this.textContainer.removeChildren();
-            if (_this.text) {
-                var textStyle_1 = new PIXI.TextStyle({
-                    fontSize: I.Screen.withScale(_this.font.pointSize),
-                    fontWeight: _this.font.fontWeight,
-                    fill: _this.textColor.rgbHexString(),
-                });
-                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
-                textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center, _this.lineBreakMode).forEach(function (line) {
-                    var text = new PIXI.Text(line.text, textStyle_1);
-                    text.x = 0;
-                    text.y = I.Screen.withScale(line.y);
-                    var textBounds = text.getBounds();
-                    textBounds.x *= 375 / window.screen.width;
-                    textBounds.y *= 375 / window.screen.width;
-                    textBounds.width *= 375 / window.screen.width;
-                    textBounds.height *= 375 / window.screen.width;
-                    if (textBounds.width > I.Screen.withScale(_this.bounds.width)) {
-                        line.elements.forEach(function (element) {
-                            var text = new PIXI.Text(element.character, textStyle_1);
-                            text.x = I.Screen.withScale(line.x + element.x);
-                            text.y = I.Screen.withScale(line.y);
-                            _this.textContainer.addChild(text);
-                        });
-                        return;
-                    }
-                    else if (_this.textAlignment == I.TextAlignment.Center) {
-                        text.x = Math.ceil((I.Screen.withScale(_this.bounds.width) - textBounds.width) / 2.0);
-                    }
-                    _this.textContainer.addChild(text);
-                });
-            }
-            Application_1.setNeedsDisplay(_this);
-        });
-    };
-    Label.prototype.textRectForBounds = function (bounds) {
-        if (this.text) {
-            var textStyle = new PIXI.TextStyle({
-                fontSize: I.Screen.withScale(this.font.pointSize),
-                fill: this.textColor.rgbHexString(),
-            });
-            var textLayout = new TextLayout_1.StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
-            return textLayout.bounds;
-        }
-        return I.RectZero;
-    };
-    return Label;
-}(View_1.View));
-exports.Label = Label;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
-
-/***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var huozi_1 = __webpack_require__(29);
+var I = __webpack_require__(1);
+var huozi_1 = __webpack_require__(31);
 var StaticTextLayout = (function () {
     function StaticTextLayout(numberOfLines, lineSpace, text, font, bounds, padding) {
         if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
@@ -9314,7 +9438,7 @@ exports.StaticTextLayout = StaticTextLayout;
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9328,9 +9452,9 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = huozi;
 
-var _code = __webpack_require__(30);
+var _code = __webpack_require__(32);
 
-var _isCJK = __webpack_require__(31);
+var _isCJK = __webpack_require__(33);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /*!
                                                                                                                                                                                                      * @author      Icemic Jia <bingfeng.web@gmail.com>
@@ -9701,7 +9825,7 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
 }
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9742,7 +9866,7 @@ var INCOMPRESSIBLE = exports.INCOMPRESSIBLE = '‼⁇⸺—';
 var COMPRESSLEFT = exports.COMPRESSLEFT = '「『“‘（【〖〔［｛《〈';
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9828,7 +9952,7 @@ function isCJK(text) {
 // /[\u3000-\u3003\u3005-\u303F；？，．：！]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\ud840-\ud868][\udc00-\udfff]|\ud869[\udc00-\uded6\udf00-\udfff]|[\ud86a-\ud86c][\udc00-\udfff]|\ud86d[\udc00-\udf34\udf40-\udfff]|\ud86e[\udc00-\udc1d]/.test(text)
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9844,38 +9968,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
-var Button = (function (_super) {
-    __extends(Button, _super);
-    function Button() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return Button;
-}(View_1.View));
-exports.Button = Button;
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
-var View_2 = __webpack_require__(13);
-var Label_1 = __webpack_require__(27);
-var Abstract_1 = __webpack_require__(0);
+var View_1 = __webpack_require__(0);
+var View_2 = __webpack_require__(5);
+var Label_1 = __webpack_require__(21);
+var Abstract_1 = __webpack_require__(1);
 var Button = (function (_super) {
     __extends(Button, _super);
     function Button(rect) {
@@ -9959,6 +10055,125 @@ var Button = (function (_super) {
 }(View_2.View));
 exports.Button = Button;
 
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Screen_1 = __webpack_require__(10);
+var View_1 = __webpack_require__(5);
+var Application_1 = __webpack_require__(6);
+var PIXI = window.PIXI;
+var imageLoader = new PIXI.loaders.Loader();
+var runningQueue = [];
+var imageQueue = [];
+var imageLoaderTimerHandler = 0;
+var Image = (function () {
+    function Image(baseTexture, size, scale) {
+        this.baseTexture = baseTexture;
+        this.size = size;
+        this.scale = scale;
+    }
+    Image.fromURL = function (url, success, failure) {
+        imageQueue.push({ url: url, success: success, failure: failure });
+        this.loadImage();
+    };
+    Image.fromAssets = function (named, success, failure) {
+        this.fromURL(this.assetsPath + named, success, failure);
+    };
+    Image.loadImage = function () {
+        clearImmediate(imageLoaderTimerHandler);
+        imageLoaderTimerHandler = setImmediate(function () {
+            if (imageQueue.length == 0) {
+                return;
+            }
+            runningQueue = imageQueue;
+            imageQueue = [];
+            runningQueue.forEach(function (item) {
+                try {
+                    imageLoader.add(item.url, item.url);
+                }
+                catch (error) {
+                }
+            });
+            imageLoader.load(function (_, res) {
+                var _loop_1 = function (url) {
+                    var value = res[url];
+                    var image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution);
+                    runningQueue.forEach(function (item) {
+                        if (item.url == url) {
+                            item.success(image);
+                        }
+                    });
+                };
+                for (var url in res) {
+                    _loop_1(url);
+                }
+            });
+        });
+    };
+    Image.assetsPath = "./assets/";
+    return Image;
+}());
+exports.Image = Image;
+var ImageView = (function (_super) {
+    __extends(ImageView, _super);
+    function ImageView() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this._image = undefined;
+        _this.imageObject = undefined;
+        return _this;
+    }
+    Object.defineProperty(ImageView.prototype, "image", {
+        get: function () {
+            return this._image;
+        },
+        set: function (value) {
+            this._image = value;
+            this.drawImage();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ImageView.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        if (this.imageObject) {
+            this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
+            this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+        }
+    };
+    ImageView.prototype.drawImage = function () {
+        if (this.imageObject !== undefined && this.imageObject.parent !== undefined) {
+            this.imageObject.parent.removeChild(this.imageObject);
+        }
+        if (this.image) {
+            var image = this.image;
+            this.imageObject = PIXI.Sprite.from(image.baseTexture);
+            this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
+            this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+            this.nativeObject.addChildAt(this.imageObject, 1);
+            Application_1.setNeedsDisplay(this);
+            Application_1.displayInterval(1000);
+        }
+    };
+    return ImageView;
+}(View_1.View));
+exports.ImageView = ImageView;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).clearImmediate, __webpack_require__(4).setImmediate))
 
 /***/ })
 /******/ ]);

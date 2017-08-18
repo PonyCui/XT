@@ -20,17 +20,23 @@
                 var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
                 window.backgroundColor = new XTColor(1, 1, 1)
-                var button = new XTButton(XTRectZero);
-                button.cornerRadius = 12;
-                button.title = "Hello, World!"
-                button.onTouchUpInisde = function () {
-                    // button.backgroundColor = new XTColor(0, 0, 0)
+                for (var index = 0; index < 30; index++) {
+                    (function (index) {
+                        var imageView = new XTImageView(XTRectMake(Math.floor((index / 5)) * 88, (index % 5) * 88, 88, 88));
+                        // imageView.backgroundColor = new XTColor(1,1,0);
+                        XTImage.fromAssets('success@2x.png', function (image) {
+                            imageView.image = image;
+                        }, function (error) {
+
+                        });
+                        window.addSubview(imageView);
+                    })(index)
+
                 }
-                window.addSubview(button);
-                window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, button, XTLayoutConstraint.Attribute.CenterX));
-                window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, button, XTLayoutConstraint.Attribute.CenterY));
-                window.addConstraint(new XTLayoutConstraint(button, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 200));
-                window.addConstraint(new XTLayoutConstraint(button, XTLayoutConstraint.Attribute.Height, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 44));
+                // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterX));
+                // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterY));
+                // window.addConstraint(new XTLayoutConstraint(imageView, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 88));
+                // window.addConstraint(new XTLayoutConstraint(imageView, XTLayoutConstraint.Attribute.Height, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 88));
             }
         })
     </script>

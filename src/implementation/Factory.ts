@@ -12,20 +12,22 @@ export class Factory {
     static SizeMake = I.SizeMake;
     static SizeZero = I.SizeZero;
     static SizeEqual = I.SizeEqual;
-    static Label = I.Label;
+    static Label: typeof I.Label = I.Label;
     static TextAlignment = I.TextAlignment;
     static TextVerticalAlignment = I.TextVerticalAlignment;
     static LineBreakMode = I.LineBreakMode;
-    static Font = I.Font;
+    static Font: typeof I.Font = I.Font;
     static View: typeof I.View = I.View;
     static Application: typeof I.Application = I.Application;
     static ApplicationDelegate: typeof I.ApplicationDelegate = I.ApplicationDelegate;
     static Window: typeof I.Window = I.Window;
-    static Color = I.Color;
-    static Screen = I.Screen;
-    static TransformMatrix = I.TransformMatrix;
-    static LayoutConstraint = I.LayoutConstraint;
-    static Button = I.Button;
+    static Color: typeof I.Color = I.Color;
+    static Screen: typeof I.Screen = I.Screen;
+    static TransformMatrix: typeof I.TransformMatrix = I.TransformMatrix;
+    static LayoutConstraint: typeof I.LayoutConstraint = I.LayoutConstraint;
+    static Button: typeof I.Button = I.Button;
+    static ImageView: typeof I.ImageView = I.ImageView;
+    static Image: typeof I.Image = I.Image;
 
 }
 

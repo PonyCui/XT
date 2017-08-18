@@ -33,6 +33,7 @@ export class View extends I.View {
 
     private _frame: I.Rect = I.RectZero;
     public _frameChanged = false
+    public _forceRender = false
 
     public get frame() {
         return this._frame;

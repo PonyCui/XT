@@ -60,55 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Rect_1 = __webpack_require__(5);
-exports.RectMake = Rect_1.RectMake;
-exports.RectZero = Rect_1.RectZero;
-exports.RectEqual = Rect_1.RectEqual;
-exports.PointMake = Rect_1.PointMake;
-exports.PointZero = Rect_1.PointZero;
-exports.SizeMake = Rect_1.SizeMake;
-exports.SizeZero = Rect_1.SizeZero;
-exports.RectInside = Rect_1.RectInside;
-exports.PointEqual = Rect_1.PointEqual;
-exports.SizeEqual = Rect_1.SizeEqual;
-var View_1 = __webpack_require__(1);
-exports.View = View_1.View;
-var Window_1 = __webpack_require__(6);
-exports.Window = Window_1.Window;
-var Application_1 = __webpack_require__(7);
-exports.Application = Application_1.Application;
-exports.ApplicationDelegate = Application_1.ApplicationDelegate;
-var Color_1 = __webpack_require__(2);
-exports.Color = Color_1.Color;
-var Screen_1 = __webpack_require__(8);
-exports.Screen = Screen_1.Screen;
-var TransformMatrix_1 = __webpack_require__(9);
-exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
-var LayoutConstraint_1 = __webpack_require__(10);
-exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
-var Label_1 = __webpack_require__(11);
-exports.Label = Label_1.Label;
-exports.TextAlignment = Label_1.TextAlignment;
-exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
-exports.LineBreakMode = Label_1.LineBreakMode;
-var Font_1 = __webpack_require__(12);
-exports.Font = Font_1.Font;
-var Button_1 = __webpack_require__(32);
-exports.Button = Button_1.Button;
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -167,49 +123,54 @@ exports.View = View;
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Color = (function () {
-    function Color(r, g, b, a) {
-        this.r = Math.min(1.0, Math.max(0.0, r));
-        this.g = Math.min(1.0, Math.max(0.0, g));
-        ;
-        this.b = Math.min(1.0, Math.max(0.0, b));
-        ;
-        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
-        ;
-    }
-    Color.prototype.rgbHexNumber = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
-    };
-    Color.prototype.rgbHexString = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
-    };
-    Color.prototype.equals = function (toColor) {
-        if (toColor instanceof Color) {
-            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
-        }
-        return false;
-    };
-    return Color;
-}());
-exports.Color = Color;
+var Rect_1 = __webpack_require__(2);
+exports.RectMake = Rect_1.RectMake;
+exports.RectZero = Rect_1.RectZero;
+exports.RectEqual = Rect_1.RectEqual;
+exports.PointMake = Rect_1.PointMake;
+exports.PointZero = Rect_1.PointZero;
+exports.SizeMake = Rect_1.SizeMake;
+exports.SizeZero = Rect_1.SizeZero;
+exports.RectInside = Rect_1.RectInside;
+exports.PointEqual = Rect_1.PointEqual;
+exports.SizeEqual = Rect_1.SizeEqual;
+var View_1 = __webpack_require__(0);
+exports.View = View_1.View;
+var Window_1 = __webpack_require__(8);
+exports.Window = Window_1.Window;
+var Application_1 = __webpack_require__(9);
+exports.Application = Application_1.Application;
+exports.ApplicationDelegate = Application_1.ApplicationDelegate;
+var Color_1 = __webpack_require__(3);
+exports.Color = Color_1.Color;
+var Screen_1 = __webpack_require__(10);
+exports.Screen = Screen_1.Screen;
+var TransformMatrix_1 = __webpack_require__(11);
+exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
+var LayoutConstraint_1 = __webpack_require__(12);
+exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
+var Label_1 = __webpack_require__(13);
+exports.Label = Label_1.Label;
+exports.TextAlignment = Label_1.TextAlignment;
+exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
+exports.LineBreakMode = Label_1.LineBreakMode;
+var Font_1 = __webpack_require__(14);
+exports.Font = Font_1.Font;
+var Button_1 = __webpack_require__(15);
+exports.Button = Button_1.Button;
+var ImageView_1 = __webpack_require__(16);
+exports.ImageView = ImageView_1.ImageView;
+exports.Image = ImageView_1.Image;
 
 
 /***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -249,7 +210,95 @@ exports.RectInside = RectInside;
 
 
 /***/ }),
-/* 6 */
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Color = (function () {
+    function Color(r, g, b, a) {
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));
+        ;
+        this.b = Math.min(1.0, Math.max(0.0, b));
+        ;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
+        ;
+    }
+    Color.prototype.rgbHexNumber = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
+    };
+    Color.prototype.rgbHexString = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
+    };
+    Color.prototype.equals = function (toColor) {
+        if (toColor instanceof Color) {
+            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
+        }
+        return false;
+    };
+    return Color;
+}());
+exports.Color = Color;
+
+
+/***/ }),
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var I = __webpack_require__(1);
+var Factory = (function () {
+    function Factory() {
+    }
+    Factory.PointMake = I.PointMake;
+    Factory.PointEqual = I.PointEqual;
+    Factory.PointZero = I.PointZero;
+    Factory.RectMake = I.RectMake;
+    Factory.RectZero = I.RectZero;
+    Factory.RectEqual = I.RectEqual;
+    Factory.RectInside = I.RectInside;
+    Factory.SizeMake = I.SizeMake;
+    Factory.SizeZero = I.SizeZero;
+    Factory.SizeEqual = I.SizeEqual;
+    Factory.Label = I.Label;
+    Factory.TextAlignment = I.TextAlignment;
+    Factory.TextVerticalAlignment = I.TextVerticalAlignment;
+    Factory.LineBreakMode = I.LineBreakMode;
+    Factory.Font = I.Font;
+    Factory.View = I.View;
+    Factory.Application = I.Application;
+    Factory.ApplicationDelegate = I.ApplicationDelegate;
+    Factory.Window = I.Window;
+    Factory.Color = I.Color;
+    Factory.Screen = I.Screen;
+    Factory.TransformMatrix = I.TransformMatrix;
+    Factory.LayoutConstraint = I.LayoutConstraint;
+    Factory.Button = I.Button;
+    Factory.ImageView = I.ImageView;
+    Factory.Image = I.Image;
+    return Factory;
+}());
+exports.Factory = Factory;
+function SwitchFactory() {
+}
+exports.SwitchFactory = SwitchFactory;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -265,7 +314,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
+var View_1 = __webpack_require__(0);
 var Window = (function (_super) {
     __extends(Window, _super);
     function Window() {
@@ -278,7 +327,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -301,7 +350,7 @@ exports.Application = Application;
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -329,7 +378,7 @@ exports.Screen = Screen;
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -350,7 +399,7 @@ exports.TransformMatrix = TransformMatrix;
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -399,7 +448,7 @@ exports.LayoutConstraint = LayoutConstraint;
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -415,9 +464,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
-var Color_1 = __webpack_require__(2);
-var Rect_1 = __webpack_require__(5);
+var View_1 = __webpack_require__(0);
+var Color_1 = __webpack_require__(3);
+var Rect_1 = __webpack_require__(2);
 var TextAlignment;
 (function (TextAlignment) {
     TextAlignment[TextAlignment["Left"] = 0] = "Left";
@@ -453,7 +502,7 @@ exports.Label = Label;
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -486,82 +535,7 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_1 = __webpack_require__(19);
-Factory_1.SwitchFactory();
-exports.default = Factory_1.Factory;
-if (window !== undefined) {
-    window.XT = Factory_1.Factory;
-}
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(0);
-var Factory = (function () {
-    function Factory() {
-    }
-    Factory.PointMake = I.PointMake;
-    Factory.PointEqual = I.PointEqual;
-    Factory.PointZero = I.PointZero;
-    Factory.RectMake = I.RectMake;
-    Factory.RectZero = I.RectZero;
-    Factory.RectEqual = I.RectEqual;
-    Factory.RectInside = I.RectInside;
-    Factory.SizeMake = I.SizeMake;
-    Factory.SizeZero = I.SizeZero;
-    Factory.SizeEqual = I.SizeEqual;
-    Factory.Label = I.Label;
-    Factory.TextAlignment = I.TextAlignment;
-    Factory.TextVerticalAlignment = I.TextVerticalAlignment;
-    Factory.LineBreakMode = I.LineBreakMode;
-    Factory.Font = I.Font;
-    Factory.View = I.View;
-    Factory.Application = I.Application;
-    Factory.ApplicationDelegate = I.ApplicationDelegate;
-    Factory.Window = I.Window;
-    Factory.Color = I.Color;
-    Factory.Screen = I.Screen;
-    Factory.TransformMatrix = I.TransformMatrix;
-    Factory.LayoutConstraint = I.LayoutConstraint;
-    Factory.Button = I.Button;
-    return Factory;
-}());
-exports.Factory = Factory;
-function SwitchFactory() {
-}
-exports.SwitchFactory = SwitchFactory;
-
-
-/***/ }),
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -577,7 +551,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(1);
+var View_1 = __webpack_require__(0);
 var Button = (function (_super) {
     __extends(Button, _super);
     function Button() {
@@ -586,6 +560,63 @@ var Button = (function (_super) {
     return Button;
 }(View_1.View));
 exports.Button = Button;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var Image = (function () {
+    function Image() {
+    }
+    Image.fromURL = function (url, success, failure) { };
+    Image.fromAssets = function (named, success, failure) { };
+    Image.assetsPath = "./assets/";
+    return Image;
+}());
+exports.Image = Image;
+var ImageView = (function (_super) {
+    __extends(ImageView, _super);
+    function ImageView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return ImageView;
+}(View_1.View));
+exports.ImageView = ImageView;
+
+
+/***/ }),
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Factory_1 = __webpack_require__(7);
+Factory_1.SwitchFactory();
+exports.default = Factory_1.Factory;
+if (window !== undefined) {
+    window.XT = Factory_1.Factory;
+}
 
 
 /***/ })

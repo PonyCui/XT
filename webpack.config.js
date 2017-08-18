@@ -1,9 +1,12 @@
 var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
     entry: {
         "xt": "./src/main.ts",
+        "xt.min": "./src/main.ts",
         "xt.pixi": "./src/main.pixi.ts",
+        "xt.pixi.min": "./src/main.pixi.ts",
     },
     output: {
         filename: "[name].js",
@@ -21,4 +24,11 @@ module.exports = {
     },
     externals: {
     },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            include: /\.min\.js$/,
+            minimize: true,
+            output: { comments: false },
+        })
+    ],
 };

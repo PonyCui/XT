@@ -121,8 +121,8 @@ export class Application extends I.Application {
             if ((window as any).DEBUG) {
                 displayStartTime = performance.now();
             }
-            if (this.dirtyTargets.filter(item => { return item._frameChanged || item.nativeObject.renderable; }).length == 0) {
-                this.dirtyTargets.forEach(item => { item._frameChanged = false });
+            if (this.dirtyTargets.filter(item => { return item._forceRender || item._frameChanged || item.nativeObject.renderable; }).length == 0) {
+                this.dirtyTargets.forEach(item => { item._frameChanged = false; item._forceRender = false; });
                 this.dirtyTargets = [];
                 this.isDirty = false;
                 return;
@@ -157,9 +157,29 @@ export class Application extends I.Application {
 
 let displayPaused = false;
 
-export function setNeedsDisplay(target: View) {
+export function setNeedsDisplay(target: View, force = false) {
     if (sharedApplication !== undefined && displayPaused === false) {
+        target._forceRender = force;
         sharedApplication.setNeedsDisplay(target);
+    }
+}
+
+let displayIntervalTimer: any = undefined;
+let displayIntervalEndtime: number = 0;
+
+export function displayInterval(millseconds: number) {
+    if (displayIntervalEndtime > millseconds + performance.now()) {
+        return;
+    }
+    displayIntervalEndtime = millseconds + performance.now();
+    clearTimeout(this.displayIntervalTimer);
+    if (sharedApplication !== undefined) {
+        sharedApplication.nativeObject.start();
+        this.displayIntervalTimer = setTimeout(() => {
+            if (sharedApplication !== undefined) {
+                sharedApplication.nativeObject.stop();
+            }
+        }, millseconds);
     }
 }
 

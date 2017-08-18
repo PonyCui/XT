@@ -11,7 +11,7 @@ export class Label extends View {
 
     constructor(rect?: I.Rect) {
         super(rect);
-        this.nativeObject.addChild(this.textContainer);
+        this.nativeObject.addChildAt(this.textContainer, 1);
     }
 
     public layoutSubviews() {
