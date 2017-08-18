@@ -19,23 +19,27 @@
             applicationDidFinishLaunchingWithOptions: function () {
                 var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
-                var label = new XTLabel(XTRectMake(0, 0, 300, 200));
-                label.backgroundColor = new XTColor(0.2, 0.2, 0.2)
-                label.text = "而在吕布找到另一半的同时，作为貂蝉的憧憬，赵云也有了自己的另一半——宫本，两者都是未来纪元的产物，虽然画风不在一个次元上，但相信只要名字和颜值上线，其它的都不是什么难题，当然，也许是后来觉得画风不对，宫本又给改了名字，不过这两个之前确实是一对的~~"
-                // label.text = "Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!"
+                var label = new XTLabel(XTRectZero);
+                label.backgroundColor = new XTColor(0.4, 0.4, 0.4)
+                label.text = "据外媒Android Police的消息，Android O系统正式版本将在本月发布，发布时间将定于8月21日日全食当天。根据多家媒体报道，有别于以往谷歌发布新版Android系统，谷歌还将揭露该系统版本的甜点名称和大型标志性雕像，此外谷歌还将采用特别的方式来进行宣传。"
+                // label.preferredMaxLayoutWidth = 300;
                 label.font = XTFont.systemFontOfSize(17)
                 label.textColor = new XTColor(1, 1, 0)
-                label.textAlignment = XTTextAlignment.Center;
+                label.textAlignment = XTTextAlignment.Left;
                 label.numberOfLines = 0;
                 label.lineSpace = 17 * 0.5;
                 label.lineBreakMode = XTLineBreakMode.TruncatingTail;
                 window.addSubview(label);
-                label.userInteractionEnabled = true;
-                label.onTap = function () {
-                    XTView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
-                        label.frame = XTRectMake(Math.ceil(Math.random() * 200), Math.ceil(Math.random() * 200), 300, 200)
-                    })
-                }
+                // label.userInteractionEnabled = true;
+                // label.onTap = function () {
+                //     XTView.animationWithBouncinessAndSpeed(8.0, 8.0, function () {
+                //         label.frame = XTRectMake(Math.ceil(Math.random() * 200), Math.ceil(Math.random() * 200), 300, 200)
+                //     })
+                // }
+                window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, label, XTLayoutConstraint.Attribute.CenterX));
+                window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, label, XTLayoutConstraint.Attribute.CenterY));
+                window.addConstraint(new XTLayoutConstraint(label, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 300));
+                // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.Height, XTLayoutConstraint.Relation.Equal, label, XTLayoutConstraint.Attribute.Height));
             }
         })
     </script>

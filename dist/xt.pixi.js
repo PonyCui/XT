@@ -660,6 +660,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(1);
 var Color_1 = __webpack_require__(2);
+var Rect_1 = __webpack_require__(5);
 var TextAlignment;
 (function (TextAlignment) {
     TextAlignment[TextAlignment["Left"] = 0] = "Left";
@@ -688,6 +689,7 @@ var Label = (function (_super) {
         _this.lineSpace = 12;
         return _this;
     }
+    Label.prototype.textRectForBounds = function (bounds) { return Rect_1.RectZero; };
     return Label;
 }(View_1.View));
 exports.Label = Label;
@@ -1437,7 +1439,20 @@ var View = (function (_super) {
             });
             for (var layoutID in view.subViews) {
                 var value = view.subViews[layoutID];
+                if ((value.width == 0 || value.height == 0) && viewMapping_1[layoutID] !== undefined) {
+                    var intrinsticSize = viewMapping_1[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
+                    if (intrinsticSize !== undefined) {
+                        value.intrinsicWidth = intrinsticSize.width;
+                        value.intrinsicHeight = intrinsticSize.height;
+                    }
+                }
+            }
+            for (var layoutID in view.subViews) {
+                var value = view.subViews[layoutID];
                 if (viewMapping_1[layoutID] !== undefined) {
+                    if (viewMapping_1[layoutID] == this) {
+                        continue;
+                    }
                     viewMapping_1[layoutID].frame = {
                         x: value.left,
                         y: value.top,
@@ -1467,6 +1482,9 @@ var View = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    View.prototype.intrinsicContentSize = function (width) {
+        return undefined;
+    };
     View.prototype.addConstraint = function (constraint) {
         this._constraints.push(constraint);
         this.setNeedsLayout();
@@ -9010,9 +9028,14 @@ var Label = (function (_super) {
         _this._numberOfLines = 1;
         _this._lineBreakMode = I.LineBreakMode.WordWrapping;
         _this._lineSpace = 12;
+        _this._preferredMaxLayoutWidth = Infinity;
         _this.nativeObject.addChild(_this.textContainer);
         return _this;
     }
+    Label.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        this.drawText();
+    };
     Object.defineProperty(Label.prototype, "text", {
         get: function () {
             return this._text;
@@ -9107,6 +9130,27 @@ var Label = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Label.prototype, "preferredMaxLayoutWidth", {
+        get: function () {
+            return this._preferredMaxLayoutWidth;
+        },
+        set: function (value) {
+            if (this._preferredMaxLayoutWidth === value) {
+                return;
+            }
+            this._preferredMaxLayoutWidth = value;
+            this.setNeedsLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Label.prototype.intrinsicContentSize = function (width) {
+        if (this.text) {
+            var textLayout = new TextLayout_1.StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
+            return { width: textLayout.textRect.width, height: textLayout.textRect.height + 2 };
+        }
+        return undefined;
+    };
     Label.prototype.drawText = function () {
         var _this = this;
         clearImmediate(this._drawTextImmediate);
@@ -9117,12 +9161,13 @@ var Label = (function (_super) {
                     fontSize: I.Screen.withScale(_this.font.pointSize),
                     fill: _this.textColor.rgbHexString(),
                 });
-                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
+                var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
                 textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center, _this.lineBreakMode).forEach(function (line) {
                     var text = new PIXI.Text(line.text, textStyle_1);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);
-                    if (text.getBounds().width > I.Screen.withScale(_this.bounds.width)) {
+                    var textBounds = text.getBounds();
+                    if (textBounds.width > I.Screen.withScale(_this.bounds.width)) {
                         line.elements.forEach(function (element) {
                             var text = new PIXI.Text(element.character, textStyle_1);
                             text.x = I.Screen.withScale(line.x + element.x);
@@ -9131,11 +9176,25 @@ var Label = (function (_super) {
                         });
                         return;
                     }
+                    else if (_this.textAlignment == I.TextAlignment.Center) {
+                        text.x = Math.ceil((I.Screen.withScale(_this.bounds.width) - textBounds.width) / 2.0);
+                    }
                     _this.textContainer.addChild(text);
                 });
             }
             Application_1.setNeedsDisplay(_this);
         });
+    };
+    Label.prototype.textRectForBounds = function (bounds) {
+        if (this.text) {
+            var textStyle = new PIXI.TextStyle({
+                fontSize: I.Screen.withScale(this.font.pointSize),
+                fill: this.textColor.rgbHexString(),
+            });
+            var textLayout = new TextLayout_1.StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
+            return textLayout.bounds;
+        }
+        return I.RectZero;
     };
     return Label;
 }(View_1.View));
@@ -9179,7 +9238,7 @@ var StaticTextLayout = (function () {
         var minY = Math.min.apply(null, layoutSequence.map(function (element) { return element.y; }));
         var maxX = Math.max.apply(null, layoutSequence.map(function (element) { return element.x + element.width; }));
         var maxY = Math.max.apply(null, layoutSequence.map(function (element) {
-            if (element.y + element.height + padding.top + padding.bottom >= bounds.height) {
+            if (element.y + element.height + padding.top + padding.bottom > bounds.height) {
                 return 0;
             }
             return element.y + element.height;
@@ -9223,8 +9282,8 @@ var StaticTextLayout = (function () {
         if (line.text.length > 0) {
             addLine(line);
         }
-        var breakedLines = lines.filter(function (line) { return line.y + line.height < onRect.height; });
-        if (breakedLines.length != lines.length || breakedLines.map(function (item) { return item.text; }).join("").length < this.text.length) {
+        var breakedLines = lines.filter(function (line) { return line.y + line.height <= onRect.height; });
+        if (breakedLines.length > 0 && (breakedLines.length != lines.length || breakedLines.map(function (item) { return item.text; }).join("").length < this.text.length)) {
             switch (lineBreakMode) {
                 case I.LineBreakMode.TruncatingTail:
                     if (breakedLines[breakedLines.length - 1].text.length > 0) {

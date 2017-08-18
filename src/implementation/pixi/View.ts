@@ -571,7 +571,18 @@ export class View extends I.View {
             });
             for (const layoutID in view.subViews) {
                 const value = view.subViews[layoutID];
+                if ((value.width == 0 || value.height == 0) && viewMapping[layoutID] !== undefined) {
+                    const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
+                    if (intrinsticSize !== undefined) {
+                        value.intrinsicWidth = intrinsticSize.width;
+                        value.intrinsicHeight = intrinsticSize.height;
+                    }
+                }
+            }
+            for (const layoutID in view.subViews) {
+                const value = view.subViews[layoutID];
                 if (viewMapping[layoutID] !== undefined) {
+                    if (viewMapping[layoutID] == this) { continue; }
                     viewMapping[layoutID].frame = {
                         x: value.left,
                         y: value.top,
@@ -606,17 +617,21 @@ export class View extends I.View {
         return []
     }
 
-    addConstraint(constraint: I.LayoutConstraint) {
+    public intrinsicContentSize(width?: number): I.Size | undefined {
+        return undefined;
+    }
+
+    public addConstraint(constraint: I.LayoutConstraint) {
         this._constraints.push(constraint);
         this.setNeedsLayout();
     }
 
-    addConstraints(constraints: I.LayoutConstraint[]) {
+    public addConstraints(constraints: I.LayoutConstraint[]) {
         constraints.forEach(constraint => this._constraints.push(constraint));
         this.setNeedsLayout();
     }
 
-    removeConstraint(constraint: I.LayoutConstraint) {
+    public removeConstraint(constraint: I.LayoutConstraint) {
         const idx = this._constraints.indexOf(constraint);
         if (idx >= 0) {
             this._constraints.splice(idx, 1);
@@ -624,7 +639,7 @@ export class View extends I.View {
         this.setNeedsLayout();
     }
 
-    removeAllConstraints() {
+    public removeAllConstraints() {
         this._constraints = [];
         this.setNeedsLayout();
     }

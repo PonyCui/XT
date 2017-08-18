@@ -14,6 +14,11 @@ export class Label extends View {
         this.nativeObject.addChild(this.textContainer);
     }
 
+    public layoutSubviews() {
+        super.layoutSubviews();
+        this.drawText();
+    }
+
     private _text?: string
 
     public get text(): string | undefined {
@@ -96,6 +101,26 @@ export class Label extends View {
         this.drawText();
     }
 
+    private _preferredMaxLayoutWidth: number = Infinity;
+
+    public get preferredMaxLayoutWidth(): number {
+        return this._preferredMaxLayoutWidth;
+    }
+
+    public set preferredMaxLayoutWidth(value: number) {
+        if (this._preferredMaxLayoutWidth === value) { return; }
+        this._preferredMaxLayoutWidth = value;
+        this.setNeedsLayout();
+    }
+
+    public intrinsicContentSize(width?: number): I.Size | undefined {
+        if (this.text) {
+            const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
+            return { width: textLayout.textRect.width, height: textLayout.textRect.height + 2 }
+        }
+        return undefined;
+    }
+
     private _drawTextImmediate: any;
 
     drawText() {
@@ -107,12 +132,13 @@ export class Label extends View {
                     fontSize: I.Screen.withScale(this.font.pointSize),
                     fill: this.textColor.rgbHexString(),
                 })
-                const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 8, bottom: 8, right: 0 });
+                const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
                 textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center, this.lineBreakMode).forEach(line => {
                     const text = new PIXI.Text(line.text, textStyle);
                     text.x = I.Screen.withScale(line.x);
                     text.y = I.Screen.withScale(line.y);
-                    if (text.getBounds().width > I.Screen.withScale(this.bounds.width)) {
+                    const textBounds = text.getBounds();
+                    if (textBounds.width > I.Screen.withScale(this.bounds.width)) {
                         line.elements.forEach((element: any) => {
                             const text = new PIXI.Text(element.character, textStyle);
                             text.x = I.Screen.withScale(line.x + element.x);
@@ -121,11 +147,26 @@ export class Label extends View {
                         })
                         return;
                     }
+                    else if (this.textAlignment == I.TextAlignment.Center) {
+                        text.x = Math.ceil((I.Screen.withScale(this.bounds.width) - textBounds.width) / 2.0)
+                    }
                     this.textContainer.addChild(text);
                 })
             }
             setNeedsDisplay(this)
         })
+    }
+
+    textRectForBounds(bounds: I.Rect): I.Rect {
+        if (this.text) {
+            const textStyle = new PIXI.TextStyle({
+                fontSize: I.Screen.withScale(this.font.pointSize),
+                fill: this.textColor.rgbHexString(),
+            })
+            const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
+            return textLayout.bounds
+        }
+        return I.RectZero
     }
 
 }

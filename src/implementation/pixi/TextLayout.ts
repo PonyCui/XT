@@ -46,7 +46,7 @@ export class StaticTextLayout {
         const minY = Math.min.apply(null, layoutSequence.map((element: any) => element.y));
         const maxX = Math.max.apply(null, layoutSequence.map((element: any) => element.x + element.width));
         const maxY = Math.max.apply(null, layoutSequence.map((element: any) => {
-            if (element.y + element.height + padding.top + padding.bottom >= bounds.height) {
+            if (element.y + element.height + padding.top + padding.bottom > bounds.height) {
                 return 0;
             }
             return element.y + element.height;
@@ -62,7 +62,7 @@ export class StaticTextLayout {
         const offset: { x: number, y: number } = { x: this.textRect.x, y: this.textRect.y }
         if (verticalAlignment === I.TextVerticalAlignment.Center) {
             offset.y = Math.max(this.padding.top, ((onRect.y + onRect.height) - this.textRect.height) / 2.0)
-        }
+        }        
         let lines: TextLine[] = [];
         let line: TextLine = { elements: [], text: "", x: 0, y: 0, width: 0, height: 0 }
         const addLine = (line: TextLine) => {
@@ -93,8 +93,8 @@ export class StaticTextLayout {
         if (line.text.length > 0) {
             addLine(line);
         }
-        const breakedLines = lines.filter(line => line.y + line.height < onRect.height);
-        if (breakedLines.length != lines.length || breakedLines.map(item => item.text).join("").length < this.text.length) {
+        const breakedLines = lines.filter(line => line.y + line.height <= onRect.height);
+        if (breakedLines.length > 0 && (breakedLines.length != lines.length || breakedLines.map(item => item.text).join("").length < this.text.length)) {
             switch (lineBreakMode) {
                 case I.LineBreakMode.TruncatingTail:
                     if (breakedLines[breakedLines.length - 1].text.length > 0) {

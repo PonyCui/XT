@@ -1,6 +1,7 @@
 import { View } from "./View";
 import { Color } from "./Color";
 import { Font } from "./Font";
+import { Rect, RectZero } from "./Rect";
 
 export enum TextAlignment {
     Left,
@@ -28,5 +29,7 @@ export class Label extends View {
     numberOfLines: number = 1;
     lineBreakMode: LineBreakMode = LineBreakMode.WordWrapping;
     lineSpace: number = 12;
+
+    textRectForBounds(bounds: Rect): Rect { return RectZero }
 
 }

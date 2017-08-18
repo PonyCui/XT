@@ -415,6 +415,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(1);
 var Color_1 = __webpack_require__(2);
+var Rect_1 = __webpack_require__(5);
 var TextAlignment;
 (function (TextAlignment) {
     TextAlignment[TextAlignment["Left"] = 0] = "Left";
@@ -443,6 +444,7 @@ var Label = (function (_super) {
         _this.lineSpace = 12;
         return _this;
     }
+    Label.prototype.textRectForBounds = function (bounds) { return Rect_1.RectZero; };
     return Label;
 }(View_1.View));
 exports.Label = Label;
