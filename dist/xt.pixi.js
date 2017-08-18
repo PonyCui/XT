@@ -103,6 +103,8 @@ exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
 exports.LineBreakMode = Label_1.LineBreakMode;
 var Font_1 = __webpack_require__(12);
 exports.Font = Font_1.Font;
+var Button_1 = __webpack_require__(32);
+exports.Button = Button_1.Button;
 
 
 /***/ }),
@@ -1793,6 +1795,7 @@ var Factory = (function () {
     Factory.Screen = I.Screen;
     Factory.TransformMatrix = I.TransformMatrix;
     Factory.LayoutConstraint = I.LayoutConstraint;
+    Factory.Button = I.Button;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -7419,6 +7422,7 @@ var Application_1 = __webpack_require__(4);
 var Window_1 = __webpack_require__(25);
 var LayoutConstraint_1 = __webpack_require__(26);
 var Label_1 = __webpack_require__(27);
+var Button_1 = __webpack_require__(33);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
@@ -7427,6 +7431,7 @@ function usePixi(force) {
         Factory_pixi_1.Factory.Window = Window_1.Window;
         Factory_pixi_1.Factory.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
         Factory_pixi_1.Factory.Label = Label_1.Label;
+        Factory_pixi_1.Factory.Button = Button_1.Button;
     };
     if (force) {
         use();
@@ -9159,6 +9164,7 @@ var Label = (function (_super) {
             if (_this.text) {
                 var textStyle_1 = new PIXI.TextStyle({
                     fontSize: I.Screen.withScale(_this.font.pointSize),
+                    fontWeight: _this.font.fontWeight,
                     fill: _this.textColor.rgbHexString(),
                 });
                 var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
@@ -9812,6 +9818,107 @@ function isCJK(text) {
 
 // old version:
 // /[\u3000-\u3003\u3005-\u303F；？，．：！]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\ud840-\ud868][\udc00-\udfff]|\ud869[\udc00-\uded6\udf00-\udfff]|[\ud86a-\ud86c][\udc00-\udfff]|\ud86d[\udc00-\udf34\udf40-\udfff]|\ud86e[\udc00-\udc1d]/.test(text)
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(1);
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Button;
+}(View_1.View));
+exports.Button = Button;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(1);
+var View_2 = __webpack_require__(13);
+var Label_1 = __webpack_require__(27);
+var Abstract_1 = __webpack_require__(0);
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.onTouchUpInisde = undefined;
+        _this.titleLabel = new Label_1.Label(rect);
+        _this.titleLabel.textAlignment = Abstract_1.TextAlignment.Center;
+        _this.titleLabel.textColor = _this.tintColor;
+        _this.titleLabel.font = new Abstract_1.Font(17);
+        _this.addSubview(_this.titleLabel);
+        _this.addTouches();
+        return _this;
+    }
+    Button.prototype.addTouches = function () {
+        var _this = this;
+        this.userInteractionEnabled = true;
+        this.onTap = function () { _this.onTouchUpInisde && _this.onTouchUpInisde(); };
+        this.onLongPress = function (state, viewLocation) {
+            if (state == View_1.InteractionState.Began) {
+                _this.alpha = 0.25;
+                _this.onHighlighted && _this.onHighlighted(true);
+            }
+            else if (state == View_1.InteractionState.Changed) {
+                if (viewLocation) {
+                    if (viewLocation.x < -44.0 || viewLocation.y < -44.0 || viewLocation.x > _this.bounds.width + 44.0 || viewLocation.y > _this.bounds.height + 44.0) {
+                        _this.alpha = 1.0;
+                        _this.onHighlighted && _this.onHighlighted(false);
+                    }
+                    else {
+                        _this.alpha = 0.25;
+                        _this.onHighlighted && _this.onHighlighted(true);
+                    }
+                }
+            }
+            else if (state == View_1.InteractionState.Ended) {
+                _this.alpha = 1.0;
+                _this.onHighlighted && _this.onHighlighted(false);
+                if (viewLocation && viewLocation.x > -44.0 && viewLocation.y > -44.0 && viewLocation.x < _this.bounds.width + 44.0 && viewLocation.y < _this.bounds.height + 44.0) {
+                    _this.onTouchUpInisde && _this.onTouchUpInisde();
+                }
+            }
+        };
+    };
+    Button.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        this.titleLabel.frame = this.bounds;
+    };
+    return Button;
+}(View_2.View));
+exports.Button = Button;
+
 
 /***/ })
 /******/ ]);

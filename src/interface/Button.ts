@@ -1,7 +1,11 @@
 import { View } from "./View";
+import { Label } from "./Label";
 
 export class Button extends View {
 
-    onTouchUpInisde() { }
+    readonly titleLabel: Label
+
+    onHighlighted?: (highligted: boolean) => void
+    onTouchUpInisde?: () => void
 
 }

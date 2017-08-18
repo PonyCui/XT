@@ -130,6 +130,7 @@ export class Label extends View {
             if (this.text) {
                 const textStyle = new PIXI.TextStyle({
                     fontSize: I.Screen.withScale(this.font.pointSize),
+                    fontWeight: this.font.fontWeight,
                     fill: this.textColor.rgbHexString(),
                 })
                 const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });

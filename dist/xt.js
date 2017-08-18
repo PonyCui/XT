@@ -103,6 +103,8 @@ exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
 exports.LineBreakMode = Label_1.LineBreakMode;
 var Font_1 = __webpack_require__(12);
 exports.Font = Font_1.Font;
+var Button_1 = __webpack_require__(32);
+exports.Button = Button_1.Button;
 
 
 /***/ }),
@@ -537,12 +539,53 @@ var Factory = (function () {
     Factory.Screen = I.Screen;
     Factory.TransformMatrix = I.TransformMatrix;
     Factory.LayoutConstraint = I.LayoutConstraint;
+    Factory.Button = I.Button;
     return Factory;
 }());
 exports.Factory = Factory;
 function SwitchFactory() {
 }
 exports.SwitchFactory = SwitchFactory;
+
+
+/***/ }),
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(1);
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Button;
+}(View_1.View));
+exports.Button = Button;
 
 
 /***/ })

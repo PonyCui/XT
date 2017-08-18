@@ -8,6 +8,7 @@ import { TransformMatrix } from './TransformMatrix'
 import { LayoutConstraint } from "./LayoutConstraint";
 import { Label, TextAlignment, TextVerticalAlignment, LineBreakMode } from "./Label";
 import { Font } from "./Font";
+import { Button } from "./Button";
 
 export {
     View,
@@ -36,4 +37,5 @@ export {
     TextVerticalAlignment,
     LineBreakMode,
     Font,
+    Button,
 }

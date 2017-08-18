@@ -26,6 +26,7 @@ export class Factory {
     static Screen = I.Screen;
     static TransformMatrix = I.TransformMatrix;
     static LayoutConstraint = I.LayoutConstraint;
+    static Button = I.Button;
 
 }
 

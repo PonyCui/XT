@@ -4,6 +4,7 @@ import { Application } from './Application'
 import { Window } from './Window'
 import { LayoutConstraint } from "./LayoutConstraint";
 import { Label } from "./Label";
+import { Button } from "./Button";
 
 export function usePixi(force = false) {
     const use = () => {
@@ -12,6 +13,7 @@ export function usePixi(force = false) {
         Factory.Window = Window
         Factory.LayoutConstraint = LayoutConstraint
         Factory.Label = Label
+        Factory.Button = Button
     }
     if (force) {
         use()
