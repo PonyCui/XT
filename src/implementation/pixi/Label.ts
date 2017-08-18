@@ -136,9 +136,13 @@ export class Label extends View {
                 const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
                 textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center, this.lineBreakMode).forEach(line => {
                     const text = new PIXI.Text(line.text, textStyle);
-                    text.x = I.Screen.withScale(line.x);
+                    text.x = 0;
                     text.y = I.Screen.withScale(line.y);
                     const textBounds = text.getBounds();
+                    textBounds.x *= 375 / window.screen.width;
+                    textBounds.y *= 375 / window.screen.width;
+                    textBounds.width *= 375 / window.screen.width;
+                    textBounds.height *= 375 / window.screen.width;
                     if (textBounds.width > I.Screen.withScale(this.bounds.width)) {
                         line.elements.forEach((element: any) => {
                             const text = new PIXI.Text(element.character, textStyle);

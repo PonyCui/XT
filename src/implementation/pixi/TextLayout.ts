@@ -38,7 +38,7 @@ export class StaticTextLayout {
         });
         const layoutSequence = huozi(textSequence, {
             gridSize: this.font.pointSize,
-            column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
+            column: numberOfLines == 1 ? Infinity : Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
             row: numberOfLines <= 0 ? Infinity : numberOfLines,
             yInterval: lineSpace,
         });
@@ -79,6 +79,9 @@ export class StaticTextLayout {
             })
         }
         this.layoutSequence.forEach((element: any) => {
+            if (element.x + element.width > onRect.width && lineBreakMode == I.LineBreakMode.TruncatingTail) {
+                return;
+            }
             if (line.y != element.y) {
                 if (line.text.length > 0) {
                     addLine(line);
@@ -98,7 +101,7 @@ export class StaticTextLayout {
             switch (lineBreakMode) {
                 case I.LineBreakMode.TruncatingTail:
                     if (breakedLines[breakedLines.length - 1].text.length > 0) {
-                        breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -1) + "...";
+                        breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -2) + "...";
                     }
                     break;
             }

@@ -92,6 +92,7 @@ export class View {
     static InteractionState = InteractionState
     static SwipeDirection = SwipeDirection
     userInteractionEnabled: boolean;
+    longPressDuration: number;
     onTap?: () => void
     onDoubleTap?: () => void
     onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void

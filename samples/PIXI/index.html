@@ -19,16 +19,17 @@
             applicationDidFinishLaunchingWithOptions: function () {
                 var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
-                window.backgroundColor = new XTColor(1,1,1)
+                window.backgroundColor = new XTColor(1, 1, 1)
                 var button = new XTButton(XTRectZero);
-                button.titleLabel.text = "测试"
+                button.cornerRadius = 12;
+                button.title = "Hello, World!"
                 button.onTouchUpInisde = function () {
-                    button.backgroundColor = new XTColor(1, 1, 0)
+                    // button.backgroundColor = new XTColor(0, 0, 0)
                 }
                 window.addSubview(button);
                 window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, button, XTLayoutConstraint.Attribute.CenterX));
                 window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, button, XTLayoutConstraint.Attribute.CenterY));
-                window.addConstraint(new XTLayoutConstraint(button, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 88));
+                window.addConstraint(new XTLayoutConstraint(button, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 200));
                 window.addConstraint(new XTLayoutConstraint(button, XTLayoutConstraint.Attribute.Height, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 44));
             }
         })

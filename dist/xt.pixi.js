@@ -788,6 +788,7 @@ var View = (function (_super) {
         _this._layoutID = View.generateLayoutUD();
         _this._constraints = [];
         // Mark: View Interactive
+        _this.longPressDuration = 250;
         _this._userInteractionEnabled = false;
         _this._isTapActived = false;
         _this._isTouchActived = false;
@@ -1604,7 +1605,7 @@ var View = (function (_super) {
                     _this._isLongPress = true;
                     _this._onLongPress && _this._onLongPress(I.View.InteractionState.Began);
                 }
-            }, 300);
+            }, this.longPressDuration);
         }
         if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this._maybeTap = true;
@@ -9170,9 +9171,13 @@ var Label = (function (_super) {
                 var textLayout = new TextLayout_1.StaticTextLayout(_this.numberOfLines, _this.lineSpace, _this.text, _this.font, _this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
                 textLayout.textLines(_this.bounds, _this.textAlignment, I.TextVerticalAlignment.Center, _this.lineBreakMode).forEach(function (line) {
                     var text = new PIXI.Text(line.text, textStyle_1);
-                    text.x = I.Screen.withScale(line.x);
+                    text.x = 0;
                     text.y = I.Screen.withScale(line.y);
                     var textBounds = text.getBounds();
+                    textBounds.x *= 375 / window.screen.width;
+                    textBounds.y *= 375 / window.screen.width;
+                    textBounds.width *= 375 / window.screen.width;
+                    textBounds.height *= 375 / window.screen.width;
                     if (textBounds.width > I.Screen.withScale(_this.bounds.width)) {
                         line.elements.forEach(function (element) {
                             var text = new PIXI.Text(element.character, textStyle_1);
@@ -9236,7 +9241,7 @@ var StaticTextLayout = (function () {
         });
         var layoutSequence = huozi_1.default(textSequence, {
             gridSize: this.font.pointSize,
-            column: Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
+            column: numberOfLines == 1 ? Infinity : Math.floor((this.bounds.width - this.padding.left - this.padding.right) / this.font.pointSize),
             row: numberOfLines <= 0 ? Infinity : numberOfLines,
             yInterval: lineSpace,
         });
@@ -9274,6 +9279,9 @@ var StaticTextLayout = (function () {
             });
         };
         this.layoutSequence.forEach(function (element) {
+            if (element.x + element.width > onRect.width && lineBreakMode == I.LineBreakMode.TruncatingTail) {
+                return;
+            }
             if (line.y != element.y) {
                 if (line.text.length > 0) {
                     addLine(line);
@@ -9293,7 +9301,7 @@ var StaticTextLayout = (function () {
             switch (lineBreakMode) {
                 case I.LineBreakMode.TruncatingTail:
                     if (breakedLines[breakedLines.length - 1].text.length > 0) {
-                        breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -1) + "...";
+                        breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -2) + "...";
                     }
                     break;
             }
@@ -9873,37 +9881,48 @@ var Button = (function (_super) {
     function Button(rect) {
         var _this = _super.call(this, rect) || this;
         _this.onTouchUpInisde = undefined;
+        _this._color = undefined;
         _this.titleLabel = new Label_1.Label(rect);
+        _this.titleLabel.numberOfLines = 1;
         _this.titleLabel.textAlignment = Abstract_1.TextAlignment.Center;
+        _this.titleLabel.lineBreakMode = Abstract_1.LineBreakMode.TruncatingTail;
         _this.titleLabel.textColor = _this.tintColor;
         _this.titleLabel.font = new Abstract_1.Font(17);
+        _this.longPressDuration = 150;
         _this.addSubview(_this.titleLabel);
         _this.addTouches();
         return _this;
     }
+    Button.prototype.tintColorDidChange = function () {
+        this.titleLabel.textColor = this.color || this.tintColor;
+    };
     Button.prototype.addTouches = function () {
         var _this = this;
         this.userInteractionEnabled = true;
         this.onTap = function () { _this.onTouchUpInisde && _this.onTouchUpInisde(); };
         this.onLongPress = function (state, viewLocation) {
             if (state == View_1.InteractionState.Began) {
-                _this.alpha = 0.25;
+                _this.titleLabel.alpha = 0.25;
                 _this.onHighlighted && _this.onHighlighted(true);
             }
             else if (state == View_1.InteractionState.Changed) {
                 if (viewLocation) {
                     if (viewLocation.x < -44.0 || viewLocation.y < -44.0 || viewLocation.x > _this.bounds.width + 44.0 || viewLocation.y > _this.bounds.height + 44.0) {
-                        _this.alpha = 1.0;
+                        View_2.View.animationWithDuration(0.15, function () {
+                            _this.titleLabel.alpha = 1.0;
+                        });
                         _this.onHighlighted && _this.onHighlighted(false);
                     }
                     else {
-                        _this.alpha = 0.25;
+                        _this.titleLabel.alpha = 0.25;
                         _this.onHighlighted && _this.onHighlighted(true);
                     }
                 }
             }
             else if (state == View_1.InteractionState.Ended) {
-                _this.alpha = 1.0;
+                View_2.View.animationWithDuration(0.15, function () {
+                    _this.titleLabel.alpha = 1.0;
+                });
                 _this.onHighlighted && _this.onHighlighted(false);
                 if (viewLocation && viewLocation.x > -44.0 && viewLocation.y > -44.0 && viewLocation.x < _this.bounds.width + 44.0 && viewLocation.y < _this.bounds.height + 44.0) {
                     _this.onTouchUpInisde && _this.onTouchUpInisde();
@@ -9915,6 +9934,27 @@ var Button = (function (_super) {
         _super.prototype.layoutSubviews.call(this);
         this.titleLabel.frame = this.bounds;
     };
+    Object.defineProperty(Button.prototype, "color", {
+        get: function () {
+            return this._color;
+        },
+        set: function (value) {
+            this._color = value;
+            this.titleLabel.textColor = value || this.tintColor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Button.prototype, "title", {
+        get: function () {
+            return this.titleLabel.text;
+        },
+        set: function (value) {
+            this.titleLabel.text = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Button;
 }(View_2.View));
 exports.Button = Button;
