@@ -12,10 +12,19 @@ export class Image {
 
     static fromAssets(named: string, success: (image: Image) => void, failure: (error: Error) => void) { }
 
+    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure: (error: Error) => void) { }
+
+}
+
+export enum ContentMode {
+    ScaleToFill,
+    ScaleAspectFit,
+    ScaleAspectFill,
 }
 
 export class ImageView extends View {
 
     image?: Image;
+    contentMode: ContentMode = ContentMode.ScaleToFill;
 
 }

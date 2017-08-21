@@ -129,7 +129,7 @@ exports.View = View;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Rect_1 = __webpack_require__(2);
+var Rect_1 = __webpack_require__(3);
 exports.RectMake = Rect_1.RectMake;
 exports.RectZero = Rect_1.RectZero;
 exports.RectEqual = Rect_1.RectEqual;
@@ -142,14 +142,14 @@ exports.PointEqual = Rect_1.PointEqual;
 exports.SizeEqual = Rect_1.SizeEqual;
 var View_1 = __webpack_require__(0);
 exports.View = View_1.View;
-var Window_1 = __webpack_require__(8);
+var Window_1 = __webpack_require__(9);
 exports.Window = Window_1.Window;
-var Application_1 = __webpack_require__(9);
+var Application_1 = __webpack_require__(10);
 exports.Application = Application_1.Application;
 exports.ApplicationDelegate = Application_1.ApplicationDelegate;
-var Color_1 = __webpack_require__(3);
+var Color_1 = __webpack_require__(4);
 exports.Color = Color_1.Color;
-var Screen_1 = __webpack_require__(10);
+var Screen_1 = __webpack_require__(7);
 exports.Screen = Screen_1.Screen;
 var TransformMatrix_1 = __webpack_require__(11);
 exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
@@ -167,90 +167,11 @@ exports.Button = Button_1.Button;
 var ImageView_1 = __webpack_require__(16);
 exports.ImageView = ImageView_1.ImageView;
 exports.Image = ImageView_1.Image;
+exports.ContentMode = ImageView_1.ContentMode;
 
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function PointMake(x, y) {
-    return { x: x, y: y };
-}
-exports.PointMake = PointMake;
-function PointEqual(point1, point2) {
-    return point1.x === point2.x && point1.y === point2.y;
-}
-exports.PointEqual = PointEqual;
-exports.PointZero = PointMake(0, 0);
-function SizeMake(width, height) {
-    return { width: width, height: height };
-}
-exports.SizeMake = SizeMake;
-function SizeEqual(size1, size2) {
-    return size1.width === size2.width && size1.height === size2.height;
-}
-exports.SizeEqual = SizeEqual;
-exports.SizeZero = SizeMake(0, 0);
-function RectMake(x, y, width, height) {
-    return { x: x, y: y, width: width, height: height };
-}
-exports.RectMake = RectMake;
-exports.RectZero = RectMake(0, 0, 0, 0);
-function RectEqual(rect1, rect2) {
-    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
-}
-exports.RectEqual = RectEqual;
-function RectInside(rect1, rect2) {
-    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
-}
-exports.RectInside = RectInside;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Color = (function () {
-    function Color(r, g, b, a) {
-        this.r = Math.min(1.0, Math.max(0.0, r));
-        this.g = Math.min(1.0, Math.max(0.0, g));
-        ;
-        this.b = Math.min(1.0, Math.max(0.0, b));
-        ;
-        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
-        ;
-    }
-    Color.prototype.rgbHexNumber = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
-    };
-    Color.prototype.rgbHexString = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
-    };
-    Color.prototype.equals = function (toColor) {
-        if (toColor instanceof Color) {
-            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
-        }
-        return false;
-    };
-    return Color;
-}());
-exports.Color = Color;
-
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -307,6 +228,86 @@ __webpack_require__(25);
 var global = __webpack_require__(26);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function PointMake(x, y) {
+    return { x: x, y: y };
+}
+exports.PointMake = PointMake;
+function PointEqual(point1, point2) {
+    return point1.x === point2.x && point1.y === point2.y;
+}
+exports.PointEqual = PointEqual;
+exports.PointZero = PointMake(0, 0);
+function SizeMake(width, height) {
+    return { width: width, height: height };
+}
+exports.SizeMake = SizeMake;
+function SizeEqual(size1, size2) {
+    return size1.width === size2.width && size1.height === size2.height;
+}
+exports.SizeEqual = SizeEqual;
+exports.SizeZero = SizeMake(0, 0);
+function RectMake(x, y, width, height) {
+    return { x: x, y: y, width: width, height: height };
+}
+exports.RectMake = RectMake;
+exports.RectZero = RectMake(0, 0, 0, 0);
+function RectEqual(rect1, rect2) {
+    return rect1.x === rect2.x && rect1.y === rect2.y && rect1.width === rect2.width && rect1.height === rect2.height;
+}
+exports.RectEqual = RectEqual;
+function RectInside(rect1, rect2) {
+    return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
+}
+exports.RectInside = RectInside;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Color = (function () {
+    function Color(r, g, b, a) {
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));
+        ;
+        this.b = Math.min(1.0, Math.max(0.0, b));
+        ;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
+        ;
+    }
+    Color.prototype.rgbHexNumber = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
+    };
+    Color.prototype.rgbHexString = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
+    };
+    Color.prototype.equals = function (toColor) {
+        if (toColor instanceof Color) {
+            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
+        }
+        return false;
+    };
+    return Color;
+}());
+exports.Color = Color;
 
 
 /***/ }),
@@ -479,6 +480,7 @@ var View = (function (_super) {
                 return;
             }
             this._bounds = value;
+            this.applyMask();
             this.draw();
             Application_1.setNeedsDisplay(this);
             this.setNeedsLayout();
@@ -564,6 +566,10 @@ var View = (function (_super) {
             if (this.maskView === undefined) {
                 this.maskView = new View(this.bounds);
                 this.maskView.backgroundColor = new I.Color(1, 1, 1);
+            }
+            else {
+                this.maskView.frame = this.bounds;
+                this.maskView.removeFromSuperview();
             }
             this.addSubview(this.maskView);
             this.nativeObject.mask = this.maskView.nativeGraphics;
@@ -1339,7 +1345,7 @@ var View = (function (_super) {
 }(I.View));
 exports.View = View;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).clearImmediate, __webpack_require__(4).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
 
 /***/ }),
 /* 6 */
@@ -1555,6 +1561,34 @@ exports.displayNow = displayNow;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var Screen = (function () {
+    function Screen(width, height, scale) {
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
+    }
+    Screen.prototype.bounds = function () {
+        return { x: 0, y: 0, width: this.width, height: this.height };
+    };
+    Screen.withScale = function (value) {
+        return value * Screen.mainScreen().scale;
+    };
+    Screen.outScale = function (value) {
+        return value / Screen.mainScreen().scale;
+    };
+    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
+    return Screen;
+}());
+exports.Screen = Screen;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
 var Factory = (function () {
     function Factory() {
@@ -1585,6 +1619,7 @@ var Factory = (function () {
     Factory.Button = I.Button;
     Factory.ImageView = I.ImageView;
     Factory.Image = I.Image;
+    Factory.ContentMode = I.ContentMode;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -1594,7 +1629,7 @@ exports.SwitchFactory = SwitchFactory;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1623,7 +1658,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1643,34 +1678,6 @@ var Application = (function () {
     return Application;
 }());
 exports.Application = Application;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Screen = (function () {
-    function Screen(width, height, scale) {
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-    }
-    Screen.prototype.bounds = function () {
-        return { x: 0, y: 0, width: this.width, height: this.height };
-    };
-    Screen.withScale = function (value) {
-        return value * Screen.mainScreen().scale;
-    };
-    Screen.outScale = function (value) {
-        return value / Screen.mainScreen().scale;
-    };
-    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
-    return Screen;
-}());
-exports.Screen = Screen;
 
 
 /***/ }),
@@ -1761,8 +1768,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(0);
-var Color_1 = __webpack_require__(3);
-var Rect_1 = __webpack_require__(2);
+var Color_1 = __webpack_require__(4);
+var Rect_1 = __webpack_require__(3);
 var TextAlignment;
 (function (TextAlignment) {
     TextAlignment[TextAlignment["Left"] = 0] = "Left";
@@ -1881,14 +1888,23 @@ var Image = (function () {
     }
     Image.fromURL = function (url, success, failure) { };
     Image.fromAssets = function (named, success, failure) { };
+    Image.fromAssetsWithScales = function (named, scales, success, failure) { };
     Image.assetsPath = "./assets/";
     return Image;
 }());
 exports.Image = Image;
+var ContentMode;
+(function (ContentMode) {
+    ContentMode[ContentMode["ScaleToFill"] = 0] = "ScaleToFill";
+    ContentMode[ContentMode["ScaleAspectFit"] = 1] = "ScaleAspectFit";
+    ContentMode[ContentMode["ScaleAspectFill"] = 2] = "ScaleAspectFill";
+})(ContentMode = exports.ContentMode || (exports.ContentMode = {}));
 var ImageView = (function (_super) {
     __extends(ImageView, _super);
     function ImageView() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.contentMode = ContentMode.ScaleToFill;
+        return _this;
     }
     return ImageView;
 }(View_1.View));
@@ -1913,7 +1929,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = __webpack_require__(24);
-var Factory_1 = __webpack_require__(7);
+var Factory_1 = __webpack_require__(8);
 var Factory = (function (_super) {
     __extends(Factory, _super);
     function Factory() {
@@ -7725,7 +7741,7 @@ var Label = (function (_super) {
 }(View_1.View));
 exports.Label = Label;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).clearImmediate, __webpack_require__(4).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
 
 /***/ }),
 /* 22 */,
@@ -9152,7 +9168,7 @@ module.exports = win;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(4).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(2).setImmediate))
 
 /***/ }),
 /* 28 */
@@ -10073,9 +10089,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Screen_1 = __webpack_require__(10);
+var Screen_1 = __webpack_require__(7);
 var View_1 = __webpack_require__(5);
 var Application_1 = __webpack_require__(6);
+var Abstract_1 = __webpack_require__(1);
 var PIXI = window.PIXI;
 var imageLoader = new PIXI.loaders.Loader();
 var runningQueue = [];
@@ -10092,7 +10109,32 @@ var Image = (function () {
         this.loadImage();
     };
     Image.fromAssets = function (named, success, failure) {
+        if (named.indexOf(".") < 0) {
+            named = named + ".png";
+        }
         this.fromURL(this.assetsPath + named, success, failure);
+    };
+    Image.fromAssetsWithScales = function (named, scales, success, failure) {
+        var target = 1;
+        if (scales instanceof Array) {
+            for (var index = 0; index < scales.length; index++) {
+                var scale = scales[index];
+                if (scale === Screen_1.Screen.mainScreen().scale) {
+                    target = scale;
+                    break;
+                }
+                else {
+                    target = scale;
+                }
+            }
+        }
+        else {
+            target = scales;
+        }
+        if (target == 1) {
+            return this.fromAssets(named + ".png", success, failure);
+        }
+        return this.fromAssets(named + "@" + target + "x.png", success, failure);
     };
     Image.loadImage = function () {
         clearImmediate(imageLoaderTimerHandler);
@@ -10135,6 +10177,7 @@ var ImageView = (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this._image = undefined;
         _this.imageObject = undefined;
+        _this._contentMode = Abstract_1.ContentMode.ScaleToFill;
         return _this;
     }
     Object.defineProperty(ImageView.prototype, "image", {
@@ -10148,11 +10191,24 @@ var ImageView = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(ImageView.prototype, "contentMode", {
+        get: function () {
+            return this._contentMode;
+        },
+        set: function (value) {
+            if (this._contentMode === value) {
+                return;
+            }
+            this._contentMode = value;
+            this.resetImageBounds();
+        },
+        enumerable: true,
+        configurable: true
+    });
     ImageView.prototype.layoutSubviews = function () {
         _super.prototype.layoutSubviews.call(this);
         if (this.imageObject) {
-            this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
-            this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+            this.resetImageBounds();
         }
     };
     ImageView.prototype.drawImage = function () {
@@ -10162,18 +10218,45 @@ var ImageView = (function (_super) {
         if (this.image) {
             var image = this.image;
             this.imageObject = PIXI.Sprite.from(image.baseTexture);
-            this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
-            this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+            this.resetImageBounds();
             this.nativeObject.addChildAt(this.imageObject, 1);
             Application_1.setNeedsDisplay(this);
             Application_1.displayInterval(1000);
         }
     };
+    ImageView.prototype.resetImageBounds = function () {
+        if (this.imageObject && this.image && this.image.size.width > 0 && this.image.size.height > 0 && this.bounds.width > 0 && this.bounds.height > 0) {
+            switch (this.contentMode) {
+                case Abstract_1.ContentMode.ScaleToFill:
+                    this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
+                    this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+                    break;
+                case Abstract_1.ContentMode.ScaleAspectFit:
+                case Abstract_1.ContentMode.ScaleAspectFill:
+                    var imageRatio = this.image.size.width / this.image.size.height;
+                    var viewRatio = this.bounds.width / this.bounds.height;
+                    if ((imageRatio > viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFit) || (imageRatio < viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFill)) {
+                        this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
+                        this.imageObject.height = Screen_1.Screen.withScale(this.bounds.width) / this.image.size.width * this.image.size.height;
+                        this.imageObject.x = 0.0;
+                        this.imageObject.y = (Screen_1.Screen.withScale(this.bounds.height) - this.imageObject.height) / 2.0;
+                    }
+                    else if ((imageRatio < viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFit) || (imageRatio > viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFill)) {
+                        this.imageObject.width = Screen_1.Screen.withScale(this.bounds.height) / this.image.size.height * this.image.size.width;
+                        this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+                        this.imageObject.x = (Screen_1.Screen.withScale(this.bounds.width) - this.imageObject.width) / 2.0;
+                        this.imageObject.y = 0.0;
+                    }
+                    break;
+            }
+        }
+        Application_1.setNeedsDisplay(this);
+    };
     return ImageView;
 }(View_1.View));
 exports.ImageView = ImageView;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).clearImmediate, __webpack_require__(4).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
 
 /***/ })
 /******/ ]);

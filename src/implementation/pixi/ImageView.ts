@@ -2,6 +2,7 @@ import { Screen } from '../../interface/Screen';
 import { View } from "./View";
 import { Size } from "../../interface/Rect";
 import { setNeedsDisplay, displayInterval } from "./Application";
+import { ContentMode } from "../../interface/Abstract";
 const PIXI = (window as any).PIXI
 
 const imageLoader = new PIXI.loaders.Loader();
@@ -23,7 +24,33 @@ export class Image {
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure: (error: Error) => void) {
+        if (named.indexOf(".") < 0) {
+            named = named + ".png"
+        }
         this.fromURL(this.assetsPath + named, success, failure);
+    }
+
+    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure: (error: Error) => void) {
+        let target = 1;
+        if (scales instanceof Array) {
+            for (let index = 0; index < scales.length; index++) {
+                let scale = scales[index];
+                if (scale === Screen.mainScreen().scale) {
+                    target = scale;
+                    break;
+                }
+                else {
+                    target = scale;
+                }
+            }
+        }
+        else {
+            target = scales
+        }
+        if (target == 1) {
+            return this.fromAssets(named + ".png", success, failure)
+        }
+        return this.fromAssets(named + "@" + target + "x.png", success, failure);
     }
 
     static loadImage() {
@@ -36,7 +63,7 @@ export class Image {
                 try {
                     imageLoader.add(item.url, item.url);
                 } catch (error) {
-                    
+
                 }
             })
             imageLoader.load((_: any, res: { [key: string]: any }) => {
@@ -75,11 +102,22 @@ export class ImageView extends View {
         this.drawImage();
     }
 
+    private _contentMode: ContentMode = ContentMode.ScaleToFill;
+
+    public get contentMode(): ContentMode {
+        return this._contentMode
+    }
+
+    public set contentMode(value: ContentMode) {
+        if (this._contentMode === value) { return; }
+        this._contentMode = value;
+        this.resetImageBounds();
+    }
+
     layoutSubviews() {
         super.layoutSubviews();
         if (this.imageObject) {
-            this.imageObject.width = Screen.withScale(this.bounds.width);
-            this.imageObject.height = Screen.withScale(this.bounds.height);
+            this.resetImageBounds();
         }
     }
 
@@ -90,12 +128,41 @@ export class ImageView extends View {
         if (this.image) {
             const image = this.image;
             this.imageObject = PIXI.Sprite.from(image.baseTexture);
-            this.imageObject.width = Screen.withScale(this.bounds.width);
-            this.imageObject.height = Screen.withScale(this.bounds.height);
+            this.resetImageBounds();
             this.nativeObject.addChildAt(this.imageObject, 1);
             setNeedsDisplay(this);
             displayInterval(1000);
         }
+    }
+
+    private resetImageBounds() {
+        if (this.imageObject && this.image && this.image.size.width > 0 && this.image.size.height > 0 && this.bounds.width > 0 && this.bounds.height > 0) {
+            switch (this.contentMode) {
+                case ContentMode.ScaleToFill:
+                    this.imageObject.width = Screen.withScale(this.bounds.width);
+                    this.imageObject.height = Screen.withScale(this.bounds.height);
+                    break;
+                case ContentMode.ScaleAspectFit:
+                case ContentMode.ScaleAspectFill:
+                    const imageRatio = this.image.size.width / this.image.size.height;
+                    const viewRatio = this.bounds.width / this.bounds.height;
+                    if ((imageRatio > viewRatio && this.contentMode === ContentMode.ScaleAspectFit) || (imageRatio < viewRatio && this.contentMode === ContentMode.ScaleAspectFill)) {
+                        this.imageObject.width = Screen.withScale(this.bounds.width);
+                        this.imageObject.height = Screen.withScale(this.bounds.width) / this.image.size.width * this.image.size.height;
+                        this.imageObject.x = 0.0;
+                        this.imageObject.y = (Screen.withScale(this.bounds.height) - this.imageObject.height) / 2.0;
+                    }
+                    else if ((imageRatio < viewRatio && this.contentMode === ContentMode.ScaleAspectFit) || (imageRatio > viewRatio && this.contentMode === ContentMode.ScaleAspectFill)) {
+                        this.imageObject.width = Screen.withScale(this.bounds.height) / this.image.size.height * this.image.size.width;
+                        this.imageObject.height = Screen.withScale(this.bounds.height);
+                        this.imageObject.x = (Screen.withScale(this.bounds.width) - this.imageObject.width) / 2.0;
+                        this.imageObject.y = 0.0;
+                    }
+                    break;
+            }
+
+        }
+        setNeedsDisplay(this);
     }
 
 }

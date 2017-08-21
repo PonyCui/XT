@@ -129,7 +129,7 @@ exports.View = View;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Rect_1 = __webpack_require__(2);
+var Rect_1 = __webpack_require__(3);
 exports.RectMake = Rect_1.RectMake;
 exports.RectZero = Rect_1.RectZero;
 exports.RectEqual = Rect_1.RectEqual;
@@ -142,14 +142,14 @@ exports.PointEqual = Rect_1.PointEqual;
 exports.SizeEqual = Rect_1.SizeEqual;
 var View_1 = __webpack_require__(0);
 exports.View = View_1.View;
-var Window_1 = __webpack_require__(8);
+var Window_1 = __webpack_require__(9);
 exports.Window = Window_1.Window;
-var Application_1 = __webpack_require__(9);
+var Application_1 = __webpack_require__(10);
 exports.Application = Application_1.Application;
 exports.ApplicationDelegate = Application_1.ApplicationDelegate;
-var Color_1 = __webpack_require__(3);
+var Color_1 = __webpack_require__(4);
 exports.Color = Color_1.Color;
-var Screen_1 = __webpack_require__(10);
+var Screen_1 = __webpack_require__(7);
 exports.Screen = Screen_1.Screen;
 var TransformMatrix_1 = __webpack_require__(11);
 exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
@@ -167,10 +167,12 @@ exports.Button = Button_1.Button;
 var ImageView_1 = __webpack_require__(16);
 exports.ImageView = ImageView_1.ImageView;
 exports.Image = ImageView_1.Image;
+exports.ContentMode = ImageView_1.ContentMode;
 
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -210,7 +212,7 @@ exports.RectInside = RectInside;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -250,10 +252,37 @@ exports.Color = Color;
 
 
 /***/ }),
-/* 4 */,
 /* 5 */,
 /* 6 */,
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Screen = (function () {
+    function Screen(width, height, scale) {
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
+    }
+    Screen.prototype.bounds = function () {
+        return { x: 0, y: 0, width: this.width, height: this.height };
+    };
+    Screen.withScale = function (value) {
+        return value * Screen.mainScreen().scale;
+    };
+    Screen.outScale = function (value) {
+        return value / Screen.mainScreen().scale;
+    };
+    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
+    return Screen;
+}());
+exports.Screen = Screen;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -289,6 +318,7 @@ var Factory = (function () {
     Factory.Button = I.Button;
     Factory.ImageView = I.ImageView;
     Factory.Image = I.Image;
+    Factory.ContentMode = I.ContentMode;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -298,7 +328,7 @@ exports.SwitchFactory = SwitchFactory;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -327,7 +357,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -347,34 +377,6 @@ var Application = (function () {
     return Application;
 }());
 exports.Application = Application;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Screen = (function () {
-    function Screen(width, height, scale) {
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-    }
-    Screen.prototype.bounds = function () {
-        return { x: 0, y: 0, width: this.width, height: this.height };
-    };
-    Screen.withScale = function (value) {
-        return value * Screen.mainScreen().scale;
-    };
-    Screen.outScale = function (value) {
-        return value / Screen.mainScreen().scale;
-    };
-    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
-    return Screen;
-}());
-exports.Screen = Screen;
 
 
 /***/ }),
@@ -465,8 +467,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(0);
-var Color_1 = __webpack_require__(3);
-var Rect_1 = __webpack_require__(2);
+var Color_1 = __webpack_require__(4);
+var Rect_1 = __webpack_require__(3);
 var TextAlignment;
 (function (TextAlignment) {
     TextAlignment[TextAlignment["Left"] = 0] = "Left";
@@ -585,14 +587,23 @@ var Image = (function () {
     }
     Image.fromURL = function (url, success, failure) { };
     Image.fromAssets = function (named, success, failure) { };
+    Image.fromAssetsWithScales = function (named, scales, success, failure) { };
     Image.assetsPath = "./assets/";
     return Image;
 }());
 exports.Image = Image;
+var ContentMode;
+(function (ContentMode) {
+    ContentMode[ContentMode["ScaleToFill"] = 0] = "ScaleToFill";
+    ContentMode[ContentMode["ScaleAspectFit"] = 1] = "ScaleAspectFit";
+    ContentMode[ContentMode["ScaleAspectFill"] = 2] = "ScaleAspectFill";
+})(ContentMode = exports.ContentMode || (exports.ContentMode = {}));
 var ImageView = (function (_super) {
     __extends(ImageView, _super);
     function ImageView() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.contentMode = ContentMode.ScaleToFill;
+        return _this;
     }
     return ImageView;
 }(View_1.View));
@@ -611,7 +622,7 @@ exports.ImageView = ImageView;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_1 = __webpack_require__(7);
+var Factory_1 = __webpack_require__(8);
 Factory_1.SwitchFactory();
 exports.default = Factory_1.Factory;
 if (window !== undefined) {

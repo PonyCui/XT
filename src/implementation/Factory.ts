@@ -28,6 +28,7 @@ export class Factory {
     static Button: typeof I.Button = I.Button;
     static ImageView: typeof I.ImageView = I.ImageView;
     static Image: typeof I.Image = I.Image;
+    static ContentMode = I.ContentMode;
 
 }
 

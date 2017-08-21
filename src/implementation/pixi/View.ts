@@ -90,6 +90,7 @@ export class View extends I.View {
             return;
         }
         this._bounds = value;
+        this.applyMask();
         this.draw();
         setNeedsDisplay(this);
         this.setNeedsLayout();
@@ -161,6 +162,10 @@ export class View extends I.View {
             if (this.maskView === undefined) {
                 this.maskView = new View(this.bounds)
                 this.maskView.backgroundColor = new I.Color(1, 1, 1)
+            }
+            else {
+                this.maskView.frame = this.bounds;
+                this.maskView.removeFromSuperview();
             }
             this.addSubview(this.maskView);
             this.nativeObject.mask = this.maskView.nativeGraphics;
