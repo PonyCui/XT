@@ -1958,6 +1958,8 @@ var ScrollView = (function (_super) {
         _this.isScrollEnabled = true;
         _this.showsHorizontalScrollIndicator = true;
         _this.showsVerticalScrollIndicator = true;
+        _this.alwaysBounceVertical = false;
+        _this.alwaysBounceHorizontal = false;
         return _this;
     }
     return ScrollView;
@@ -10453,16 +10455,32 @@ var ScrollView = (function (_super) {
     __extends(ScrollView, _super);
     function ScrollView(rect) {
         var _this = _super.call(this, rect) || this;
-        _this.showsHorizontalScrollIndicator = true;
-        _this.showsVerticalScrollIndicator = true;
         _this._contentSize = Abstract_1.SizeZero;
         _this._contentOffset = Abstract_1.PointZero;
         _this._isScrollEnabled = true;
         _this._bounces = true;
         _this._isDirectionalLockEnabled = true;
+        _this._showsHorizontalScrollIndicator = true;
+        _this._showsVerticalScrollIndicator = true;
+        _this._alwaysBounceVertical = false;
+        _this._alwaysBounceHorizontal = false;
+        // Touches
+        _this._tracking = false;
+        _this._indicatorHidingTimer = 0;
         _this.innerView = new View_1.View();
         _super.prototype.addSubview.call(_this, _this.innerView);
+        _this.horizonalScrollIndicator = new View_1.View();
+        _this.horizonalScrollIndicator.backgroundColor = new Abstract_1.Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff);
+        _this.horizonalScrollIndicator.cornerRadius = 1.0;
+        _this.horizonalScrollIndicator.alpha = 0.0;
+        _super.prototype.addSubview.call(_this, _this.horizonalScrollIndicator);
+        _this.verticalScrollIndicator = new View_1.View();
+        _this.verticalScrollIndicator.backgroundColor = new Abstract_1.Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff);
+        _this.verticalScrollIndicator.cornerRadius = 1.0;
+        _this.verticalScrollIndicator.alpha = 0.0;
+        _super.prototype.addSubview.call(_this, _this.verticalScrollIndicator);
         _this.resetScroller();
+        _this.resetIndicator();
         _this.activePanTouch();
         return _this;
     }
@@ -10484,6 +10502,7 @@ var ScrollView = (function (_super) {
         set: function (value) {
             this._contentOffset = value;
             this.innerView.frame = { x: -value.x, y: -value.y, width: this.innerView.frame.width, height: this.innerView.frame.height };
+            this.resetIndicator();
         },
         enumerable: true,
         configurable: true
@@ -10521,43 +10540,133 @@ var ScrollView = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(ScrollView.prototype, "showsHorizontalScrollIndicator", {
+        get: function () {
+            return this._showsHorizontalScrollIndicator;
+        },
+        set: function (value) {
+            this._showsHorizontalScrollIndicator = value;
+            this.horizonalScrollIndicator.hidden = !value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "showsVerticalScrollIndicator", {
+        get: function () {
+            return this._showsVerticalScrollIndicator;
+        },
+        set: function (value) {
+            this._showsVerticalScrollIndicator = value;
+            this.verticalScrollIndicator.hidden = !value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "alwaysBounceVertical", {
+        get: function () {
+            return this._alwaysBounceVertical;
+        },
+        set: function (value) {
+            this._alwaysBounceVertical = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "alwaysBounceHorizontal", {
+        get: function () {
+            return this._alwaysBounceHorizontal;
+        },
+        set: function (value) {
+            this._alwaysBounceHorizontal = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
     ScrollView.prototype.layoutSubviews = function () {
         _super.prototype.layoutSubviews.call(this);
         this.resetScroller();
     };
-    // Touches
     ScrollView.prototype.activePanTouch = function () {
         var _this = this;
         this.userInteractionEnabled = true;
         this.nativeObject.on("touchstart", function (event) {
+            _this._tracking = true;
             _this.scroller.doTouchStart(event.data.originalEvent.touches, event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            View_1.View.animationWithDuration(0.15, function () {
+                _this.verticalScrollIndicator.alpha = 1.0;
+                _this.horizonalScrollIndicator.alpha = 1.0;
+            });
         });
         this.nativeObject.on("touchmove", function (event) {
             event.data.originalEvent.preventDefault();
             _this.scroller.doTouchMove(event.data.originalEvent.touches, event.data.originalEvent.timeStamp, event.data.originalEvent.scale);
         });
         this.nativeObject.on("touchend", function (event) {
+            _this._tracking = false;
             _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
         });
         this.nativeObject.on("touchendoutside", function (event) {
+            _this._tracking = false;
             _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
         });
         this.nativeObject.on("touchcancel", function (event) {
+            _this._tracking = false;
             _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
         });
     };
     ScrollView.prototype.resetScroller = function () {
         if (this.scroller === undefined) {
             this.scroller = new Scroller(this.handleScroll.bind(this));
         }
-        this.scroller.options.scrollingX = this.isScrollEnabled && this.contentSize.width > this.bounds.width;
-        this.scroller.options.scrollingY = this.isScrollEnabled && this.contentSize.height > this.bounds.height;
+        this.scroller.options.scrollingX = this.isScrollEnabled && (this.contentSize.width > this.bounds.width || this.alwaysBounceHorizontal);
+        this.scroller.options.scrollingY = this.isScrollEnabled && (this.contentSize.height > this.bounds.height || this.alwaysBounceVertical);
         this.scroller.options.bouncing = this.bounces;
         this.scroller.options.locking = this.isDirectionalLockEnabled;
         this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
     };
     ScrollView.prototype.handleScroll = function (x, y) {
         this.contentOffset = { x: x, y: y };
+        this.onScroll && this.onScroll(this);
+        clearTimeout(this._indicatorHidingTimer);
+        this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250);
+    };
+    // Indicators
+    ScrollView.prototype.resetIndicator = function () {
+        if (this.contentSize.height > this.bounds.height) {
+            var yProgress = this.contentOffset.y / (this.contentSize.height - this.bounds.height);
+            var yHeight = this.bounds.height / (this.contentSize.height / this.bounds.height);
+            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: yProgress * (this.bounds.height - yHeight), width: 2, height: yHeight };
+        }
+        else {
+            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: 0, width: 2, height: 0 };
+        }
+        if (this.contentSize.width > this.bounds.width) {
+            var xProgress = this.contentOffset.x / (this.contentSize.width - this.bounds.width);
+            var xWidth = this.bounds.width / (this.contentSize.width / this.bounds.width);
+            this.horizonalScrollIndicator.frame = { x: xProgress * (this.bounds.width - xWidth), y: this.bounds.height - 4, width: xWidth, height: 2 };
+        }
+        else {
+            this.horizonalScrollIndicator.frame = { x: 0, y: this.bounds.height - 4, width: 0, height: 2 };
+        }
+    };
+    ScrollView.prototype.hideIndicator = function () {
+        var _this = this;
+        if (this._tracking) {
+            return;
+        }
+        View_1.View.animationWithDuration(0.15, function () {
+            _this.verticalScrollIndicator.alpha = 0.0;
+            _this.horizonalScrollIndicator.alpha = 0.0;
+        });
     };
     // Proxy method call to innerView
     ScrollView.prototype.insertSubviewAtIndex = function (subview, atIndex) {

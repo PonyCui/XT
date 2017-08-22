@@ -22,14 +22,14 @@
                 window.backgroundColor = new XTColor(1, 1, 1)
                 var scrollView = new XTScrollView();
                 // scrollView.backgroundColor = new XTColor(1, 0, 0)
-                for (var index = 0; index < 50; index++) {
+                for (var index = 0; index < 1; index++) {
                     (function (idx) {
                         var tView = new XTView(XTRectMake(0, 60 * index , 20, 20));
-                        tView.backgroundColor = new XTColor(1, 0, 0, index / 50);
+                        tView.backgroundColor = new XTColor(1, 0, 0, 1);
                         scrollView.addSubview(tView);
                     })(index)
                 }
-                scrollView.contentSize = { width: 0, height: 50 * 60 }
+                scrollView.contentSize = { width: 0, height: 1 * 60 }
                 window.addSubview(scrollView);
                 window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("|-0-[scrollView]-0-|", { scrollView: scrollView }));
                 window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("V:|-0-[scrollView]-0-|", { scrollView: scrollView }));

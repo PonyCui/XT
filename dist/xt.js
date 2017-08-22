@@ -657,6 +657,8 @@ var ScrollView = (function (_super) {
         _this.isScrollEnabled = true;
         _this.showsHorizontalScrollIndicator = true;
         _this.showsVerticalScrollIndicator = true;
+        _this.alwaysBounceVertical = false;
+        _this.alwaysBounceHorizontal = false;
         return _this;
     }
     return ScrollView;

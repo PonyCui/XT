@@ -10,5 +10,8 @@ export class ScrollView extends View {
     isScrollEnabled: boolean = true
     showsHorizontalScrollIndicator: boolean = true
     showsVerticalScrollIndicator: boolean = true
+    alwaysBounceVertical: boolean = false
+    alwaysBounceHorizontal: boolean = false
+    onScroll?: (scrollView: ScrollView) => void
 
 }
