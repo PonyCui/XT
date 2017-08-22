@@ -48,3 +48,14 @@ export function RectEqual(rect1: Rect, rect2: Rect): boolean {
 export function RectInside(rect1: Rect, rect2: Rect): boolean {
     return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
 }
+
+export interface Insets {
+    readonly top: number;
+    readonly left: number;
+    readonly bottom: number;
+    readonly right: number;
+}
+
+export function InsetsMake(top: number, left: number, bottom: number, right: number): Insets {
+    return { top, left, bottom, right };
+}

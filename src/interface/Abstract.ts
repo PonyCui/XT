@@ -1,4 +1,4 @@
-import { Rect, RectMake, RectZero, RectEqual, Point, PointMake, PointZero, Size, SizeMake, SizeZero, RectInside, PointEqual, SizeEqual } from './Rect'
+import { Rect, RectMake, RectZero, RectEqual, Point, PointMake, PointZero, Size, SizeMake, SizeZero, RectInside, PointEqual, SizeEqual, Insets, InsetsMake } from './Rect'
 import { View } from './View'
 import { Window } from './Window'
 import { Application, ApplicationDelegate } from './Application'
@@ -10,6 +10,7 @@ import { Label, TextAlignment, TextVerticalAlignment, LineBreakMode } from "./La
 import { Font } from "./Font";
 import { Button } from "./Button";
 import { ImageView, Image, ContentMode, RenderingMode } from "./ImageView";
+import { ScrollView } from "./ScrollView";
 
 export {
     View,
@@ -43,4 +44,7 @@ export {
     Image,
     ContentMode,
     RenderingMode,
+    Insets,
+    InsetsMake,
+    ScrollView,
 }

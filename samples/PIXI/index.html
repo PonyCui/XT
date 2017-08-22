@@ -20,25 +20,19 @@
                 var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
                 window.backgroundColor = new XTColor(1, 1, 1)
-                var button = new XTButton(XTRectMake(0, 0, 88, 44));
-                button.backgroundColor = new XTColor(1,1,0)
-                // button.title = "测试";
-                button.vertical = true;
-                XTImage.fromAssetsWithScales('location', 2, function (image) {
-                    button.image = image//.imageWithRenderingMode(XTRenderingMode.Template);
-                }, function (error) {
-                    console.error(error);
-                })
-                button.onTouchUpInside = function() {                    
-                    XTView.animationWithBouncinessAndSpeed(8.0, 8.0, function() {
-                        button.frame = XTRectMake(100, 100, 88, 44)
-                    }) 
+                var scrollView = new XTScrollView();
+                // scrollView.backgroundColor = new XTColor(1, 0, 0)
+                for (var index = 0; index < 50; index++) {
+                    (function (idx) {
+                        var tView = new XTView(XTRectMake(0, 60 * index , 20, 20));
+                        tView.backgroundColor = new XTColor(1, 0, 0, index / 50);
+                        scrollView.addSubview(tView);
+                    })(index)
                 }
-                window.addSubview(button);
-                // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterX));
-                // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterY));
-                // window.addConstraint(new XTLayoutConstraint(imageView, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 88));
-                // window.addConstraint(new XTLayoutConstraint(imageView, XTLayoutConstraint.Attribute.Height, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 88));
+                scrollView.contentSize = { width: 0, height: 50 * 60 }
+                window.addSubview(scrollView);
+                window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("|-0-[scrollView]-0-|", { scrollView: scrollView }));
+                window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("V:|-0-[scrollView]-0-|", { scrollView: scrollView }));
             }
         })
     </script>

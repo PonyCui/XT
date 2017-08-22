@@ -30,6 +30,8 @@ export class Factory {
     static Image: typeof I.Image = I.Image;
     static ContentMode = I.ContentMode;
     static RenderingMode = I.RenderingMode;
+    static InsetsMake = I.InsetsMake;
+    static ScrollView = I.ScrollView;
 
 }
 

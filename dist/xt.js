@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -129,7 +129,7 @@ exports.View = View;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Rect_1 = __webpack_require__(3);
+var Rect_1 = __webpack_require__(4);
 exports.RectMake = Rect_1.RectMake;
 exports.RectZero = Rect_1.RectZero;
 exports.RectEqual = Rect_1.RectEqual;
@@ -140,6 +140,7 @@ exports.SizeZero = Rect_1.SizeZero;
 exports.RectInside = Rect_1.RectInside;
 exports.PointEqual = Rect_1.PointEqual;
 exports.SizeEqual = Rect_1.SizeEqual;
+exports.InsetsMake = Rect_1.InsetsMake;
 var View_1 = __webpack_require__(0);
 exports.View = View_1.View;
 var Window_1 = __webpack_require__(9);
@@ -147,7 +148,7 @@ exports.Window = Window_1.Window;
 var Application_1 = __webpack_require__(10);
 exports.Application = Application_1.Application;
 exports.ApplicationDelegate = Application_1.ApplicationDelegate;
-var Color_1 = __webpack_require__(4);
+var Color_1 = __webpack_require__(5);
 exports.Color = Color_1.Color;
 var Screen_1 = __webpack_require__(7);
 exports.Screen = Screen_1.Screen;
@@ -169,11 +170,14 @@ exports.ImageView = ImageView_1.ImageView;
 exports.Image = ImageView_1.Image;
 exports.ContentMode = ImageView_1.ContentMode;
 exports.RenderingMode = ImageView_1.RenderingMode;
+var ScrollView_1 = __webpack_require__(17);
+exports.ScrollView = ScrollView_1.ScrollView;
 
 
 /***/ }),
 /* 2 */,
-/* 3 */
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -210,10 +214,14 @@ function RectInside(rect1, rect2) {
     return rect2.x > rect1.x && rect2.x + rect2.width < rect1.x + rect1.width && rect2.y > rect1.y && rect2.y + rect2.height < rect1.y + rect1.height;
 }
 exports.RectInside = RectInside;
+function InsetsMake(top, left, bottom, right) {
+    return { top: top, left: left, bottom: bottom, right: right };
+}
+exports.InsetsMake = InsetsMake;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -253,7 +261,6 @@ exports.Color = Color;
 
 
 /***/ }),
-/* 5 */,
 /* 6 */,
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -321,6 +328,8 @@ var Factory = (function () {
     Factory.Image = I.Image;
     Factory.ContentMode = I.ContentMode;
     Factory.RenderingMode = I.RenderingMode;
+    Factory.InsetsMake = I.InsetsMake;
+    Factory.ScrollView = I.ScrollView;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -469,8 +478,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(0);
-var Color_1 = __webpack_require__(4);
-var Rect_1 = __webpack_require__(3);
+var Color_1 = __webpack_require__(5);
+var Rect_1 = __webpack_require__(4);
 var TextAlignment;
 (function (TextAlignment) {
     TextAlignment[TextAlignment["Left"] = 0] = "Left";
@@ -622,13 +631,47 @@ exports.ImageView = ImageView;
 
 
 /***/ }),
-/* 17 */,
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var ScrollView = (function (_super) {
+    __extends(ScrollView, _super);
+    function ScrollView() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.isDirectionalLockEnabled = true;
+        _this.bounces = true;
+        _this.isScrollEnabled = true;
+        _this.showsHorizontalScrollIndicator = true;
+        _this.showsVerticalScrollIndicator = true;
+        return _this;
+    }
+    return ScrollView;
+}(View_1.View));
+exports.ScrollView = ScrollView;
+
+
+/***/ }),
 /* 18 */,
 /* 19 */,
 /* 20 */,
 /* 21 */,
 /* 22 */,
-/* 23 */
+/* 23 */,
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
