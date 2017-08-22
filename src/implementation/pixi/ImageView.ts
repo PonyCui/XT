@@ -140,7 +140,7 @@ export class ImageView extends View {
             this.resetImageBounds();
             this.nativeObject.addChildAt(this.imageObject, 1);
             setNeedsDisplay(this);
-            displayInterval(1000);
+            displayInterval(300);
         }
     }
 

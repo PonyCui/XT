@@ -30,7 +30,7 @@ export class Button extends View {
 
     private addTouches() {
         this.userInteractionEnabled = true;
-        this.onTap = () => { this.onTouchUpInisde && this.onTouchUpInisde() }
+        this.onTap = () => { this.onTouchUpInside && this.onTouchUpInside() }
         this.onLongPress = (state, viewLocation) => {
             if (state == InteractionState.Began) {
                 this.titleLabel.alpha = 0.25
@@ -60,7 +60,7 @@ export class Button extends View {
                 });
                 this.onHighlighted && this.onHighlighted(false)
                 if (viewLocation && viewLocation.x > -44.0 && viewLocation.y > -44.0 && viewLocation.x < this.bounds.width + 44.0 && viewLocation.y < this.bounds.height + 44.0) {
-                    this.onTouchUpInisde && this.onTouchUpInisde()
+                    this.onTouchUpInside && this.onTouchUpInside()
                 }
             }
         }
@@ -73,7 +73,7 @@ export class Button extends View {
 
     public onHighlighted?: (highligted: boolean) => void
 
-    public onTouchUpInisde?: () => void = undefined;
+    public onTouchUpInside?: () => void = undefined;
 
     private _color: Color | undefined = undefined
 

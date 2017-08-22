@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -113,7 +113,7 @@ var View = (function () {
     View.prototype.removeAllConstraints = function () { };
     // Mark: View Animation
     View.prototype.animationWithDuration = function (duration, animations, completion) { };
-    View.prototype.animationWithSpring = function (duration, damping, velocity, animations, completion) { };
+    View.prototype.animationWithBouncinessAndSpeed = function (damping, velocity, animations, completion) { };
     // Mark: View Interactive
     View.InteractionState = InteractionState;
     View.SwipeDirection = SwipeDirection;
@@ -627,7 +627,8 @@ exports.ImageView = ImageView;
 /* 19 */,
 /* 20 */,
 /* 21 */,
-/* 22 */
+/* 22 */,
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

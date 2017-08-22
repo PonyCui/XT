@@ -13,6 +13,6 @@ export class Button extends View {
     color?: Color
 
     onHighlighted?: (highligted: boolean) => void
-    onTouchUpInisde?: () => void
+    onTouchUpInside?: () => void
 
 }

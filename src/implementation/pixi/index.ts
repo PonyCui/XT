@@ -14,7 +14,7 @@ export function usePixi(force = false) {
         Factory.Window = Window
         Factory.LayoutConstraint = LayoutConstraint
         Factory.Label = Label
-        Factory.Button = Button
+        Factory.Button = Button as any
         Factory.ImageView = ImageView
         Factory.Image = Image as any
     }

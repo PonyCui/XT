@@ -100,6 +100,6 @@ export class View {
 
     // Mark: View Animation
     animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
-    animationWithSpring(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+    animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
 
 }

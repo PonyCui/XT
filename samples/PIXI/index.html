@@ -29,11 +29,11 @@
                 }, function (error) {
                     console.error(error);
                 })
-                // XTImage.fromAssetsWithScales('success', 2, function (image) {
-                //     imageView.image = image;
-                // }, function (error) {
-
-                // });
+                button.onTouchUpInside = function() {                    
+                    XTView.animationWithBouncinessAndSpeed(8.0, 8.0, function() {
+                        button.frame = XTRectMake(100, 100, 88, 44)
+                    }) 
+                }
                 window.addSubview(button);
                 // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterX));
                 // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterY));

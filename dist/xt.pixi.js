@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -113,7 +113,7 @@ var View = (function () {
     View.prototype.removeAllConstraints = function () { };
     // Mark: View Animation
     View.prototype.animationWithDuration = function (duration, animations, completion) { };
-    View.prototype.animationWithSpring = function (duration, damping, velocity, animations, completion) { };
+    View.prototype.animationWithBouncinessAndSpeed = function (damping, velocity, animations, completion) { };
     // Mark: View Interactive
     View.InteractionState = InteractionState;
     View.SwipeDirection = SwipeDirection;
@@ -225,8 +225,8 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(25);
-var global = __webpack_require__(26);
+__webpack_require__(26);
+var global = __webpack_require__(27);
 exports.setImmediate = global.setImmediate;
 exports.clearImmediate = global.clearImmediate;
 
@@ -338,7 +338,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
 var Application_1 = __webpack_require__(6);
-var Rebound = __webpack_require__(27);
+var Rebound = __webpack_require__(28);
 var PIXI = window.PIXI;
 var AutoLayout = __webpack_require__(20);
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -1939,7 +1939,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(24);
+var index_1 = __webpack_require__(25);
 var Factory_1 = __webpack_require__(8);
 var Factory = (function (_super) {
     __extends(Factory, _super);
@@ -7562,7 +7562,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
 var View_1 = __webpack_require__(5);
 var Application_1 = __webpack_require__(6);
-var TextLayout_1 = __webpack_require__(30);
+var TextLayout_1 = __webpack_require__(31);
 var PIXI = window.PIXI;
 var Label = (function (_super) {
     __extends(Label, _super);
@@ -7755,8 +7755,202 @@ exports.Label = Label;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
 
 /***/ }),
-/* 22 */,
-/* 23 */
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Screen_1 = __webpack_require__(7);
+var View_1 = __webpack_require__(5);
+var Application_1 = __webpack_require__(6);
+var Abstract_1 = __webpack_require__(1);
+var PIXI = window.PIXI;
+var imageLoader = new PIXI.loaders.Loader();
+var runningQueue = [];
+var imageQueue = [];
+var imageLoaderTimerHandler = 0;
+var Image = (function () {
+    function Image(baseTexture, size, scale, renderingMode) {
+        this.renderingMode = Abstract_1.RenderingMode.Original;
+        this.baseTexture = baseTexture;
+        this.size = size;
+        this.scale = scale;
+        this.renderingMode = renderingMode;
+    }
+    Image.fromURL = function (url, success, failure) {
+        imageQueue.push({ url: url, success: success, failure: failure });
+        this.loadImage();
+    };
+    Image.fromAssets = function (named, success, failure) {
+        if (named.indexOf(".") < 0) {
+            named = named + ".png";
+        }
+        this.fromURL(this.assetsPath + named, success, failure);
+    };
+    Image.fromAssetsWithScales = function (named, scales, success, failure) {
+        var target = 1;
+        if (scales instanceof Array) {
+            for (var index = 0; index < scales.length; index++) {
+                var scale = scales[index];
+                if (scale === Screen_1.Screen.mainScreen().scale) {
+                    target = scale;
+                    break;
+                }
+                else {
+                    target = scale;
+                }
+            }
+        }
+        else {
+            target = scales;
+        }
+        if (target == 1) {
+            return this.fromAssets(named + ".png", success, failure);
+        }
+        return this.fromAssets(named + "@" + target + "x.png", success, failure);
+    };
+    Image.loadImage = function () {
+        clearImmediate(imageLoaderTimerHandler);
+        imageLoaderTimerHandler = setImmediate(function () {
+            if (imageQueue.length == 0) {
+                return;
+            }
+            runningQueue = imageQueue;
+            imageQueue = [];
+            runningQueue.forEach(function (item) {
+                try {
+                    imageLoader.add(item.url, item.url);
+                }
+                catch (error) {
+                }
+            });
+            imageLoader.load(function (_, res) {
+                var _loop_1 = function (url) {
+                    var value = res[url];
+                    var image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution, Abstract_1.RenderingMode.Original);
+                    runningQueue.forEach(function (item) {
+                        if (item.url == url) {
+                            item.success(image);
+                        }
+                    });
+                };
+                for (var url in res) {
+                    _loop_1(url);
+                }
+            });
+        });
+    };
+    Image.prototype.imageWithRenderingMode = function (renderingMode) {
+        return new Image(this.baseTexture, this.size, this.scale, renderingMode);
+    };
+    Image.assetsPath = "./assets/";
+    return Image;
+}());
+exports.Image = Image;
+var ImageView = (function (_super) {
+    __extends(ImageView, _super);
+    function ImageView() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this._image = undefined;
+        _this.imageObject = undefined;
+        _this._contentMode = Abstract_1.ContentMode.ScaleToFill;
+        return _this;
+    }
+    Object.defineProperty(ImageView.prototype, "image", {
+        get: function () {
+            return this._image;
+        },
+        set: function (value) {
+            this._image = value;
+            this.drawImage();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImageView.prototype, "contentMode", {
+        get: function () {
+            return this._contentMode;
+        },
+        set: function (value) {
+            if (this._contentMode === value) {
+                return;
+            }
+            this._contentMode = value;
+            this.resetImageBounds();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ImageView.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        if (this.imageObject) {
+            this.resetImageBounds();
+        }
+    };
+    ImageView.prototype.drawImage = function () {
+        if (this.imageObject !== undefined && this.imageObject.parent !== undefined) {
+            this.imageObject.parent.removeChild(this.imageObject);
+        }
+        if (this.image) {
+            var image = this.image;
+            this.imageObject = PIXI.Sprite.from(image.baseTexture);
+            if (this.image.renderingMode === Abstract_1.RenderingMode.Template) {
+                this.imageObject.tint = this.tintColor.rgbHexNumber(); // todo
+            }
+            this.resetImageBounds();
+            this.nativeObject.addChildAt(this.imageObject, 1);
+            Application_1.setNeedsDisplay(this);
+            Application_1.displayInterval(300);
+        }
+    };
+    ImageView.prototype.resetImageBounds = function () {
+        if (this.imageObject && this.image && this.image.size.width > 0 && this.image.size.height > 0 && this.bounds.width > 0 && this.bounds.height > 0) {
+            switch (this.contentMode) {
+                case Abstract_1.ContentMode.ScaleToFill:
+                    this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
+                    this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+                    break;
+                case Abstract_1.ContentMode.ScaleAspectFit:
+                case Abstract_1.ContentMode.ScaleAspectFill:
+                    var imageRatio = this.image.size.width / this.image.size.height;
+                    var viewRatio = this.bounds.width / this.bounds.height;
+                    if ((imageRatio > viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFit) || (imageRatio < viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFill)) {
+                        this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
+                        this.imageObject.height = Screen_1.Screen.withScale(this.bounds.width) / this.image.size.width * this.image.size.height;
+                        this.imageObject.x = 0.0;
+                        this.imageObject.y = (Screen_1.Screen.withScale(this.bounds.height) - this.imageObject.height) / 2.0;
+                    }
+                    else if ((imageRatio < viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFit) || (imageRatio > viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFill)) {
+                        this.imageObject.width = Screen_1.Screen.withScale(this.bounds.height) / this.image.size.height * this.image.size.width;
+                        this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
+                        this.imageObject.x = (Screen_1.Screen.withScale(this.bounds.width) - this.imageObject.width) / 2.0;
+                        this.imageObject.y = 0.0;
+                    }
+                    break;
+            }
+        }
+        Application_1.setNeedsDisplay(this);
+    };
+    return ImageView;
+}(View_1.View));
+exports.ImageView = ImageView;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
+
+/***/ }),
+/* 23 */,
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7771,7 +7965,7 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7780,11 +7974,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Factory_pixi_1 = __webpack_require__(17);
 var View_1 = __webpack_require__(5);
 var Application_1 = __webpack_require__(6);
-var Window_1 = __webpack_require__(28);
-var LayoutConstraint_1 = __webpack_require__(29);
+var Window_1 = __webpack_require__(29);
+var LayoutConstraint_1 = __webpack_require__(30);
 var Label_1 = __webpack_require__(21);
-var Button_1 = __webpack_require__(34);
-var ImageView_1 = __webpack_require__(35);
+var Button_1 = __webpack_require__(35);
+var ImageView_1 = __webpack_require__(22);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
@@ -7811,7 +8005,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -8004,7 +8198,7 @@ exports.usePixi = usePixi;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(19)))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -8024,7 +8218,7 @@ module.exports = win;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, setImmediate) {// Rebound
@@ -9182,7 +9376,7 @@ module.exports = win;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(2).setImmediate))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9226,7 +9420,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9365,14 +9559,14 @@ exports.LayoutConstraint = LayoutConstraint;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
-var huozi_1 = __webpack_require__(31);
+var huozi_1 = __webpack_require__(32);
 var StaticTextLayout = (function () {
     function StaticTextLayout(numberOfLines, lineSpace, text, font, bounds, padding) {
         if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
@@ -9465,7 +9659,7 @@ exports.StaticTextLayout = StaticTextLayout;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9479,9 +9673,9 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = huozi;
 
-var _code = __webpack_require__(32);
+var _code = __webpack_require__(33);
 
-var _isCJK = __webpack_require__(33);
+var _isCJK = __webpack_require__(34);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /*!
                                                                                                                                                                                                      * @author      Icemic Jia <bingfeng.web@gmail.com>
@@ -9852,7 +10046,7 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
 }
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9893,7 +10087,7 @@ var INCOMPRESSIBLE = exports.INCOMPRESSIBLE = '‼⁇⸺—';
 var COMPRESSLEFT = exports.COMPRESSLEFT = '「『“‘（【〖〔［｛《〈';
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9979,7 +10173,7 @@ function isCJK(text) {
 // /[\u3000-\u3003\u3005-\u303F；？，．：！]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\ud840-\ud868][\udc00-\udfff]|\ud869[\udc00-\uded6\udf00-\udfff]|[\ud86a-\ud86c][\udc00-\udfff]|\ud86d[\udc00-\udf34\udf40-\udfff]|\ud86e[\udc00-\udc1d]/.test(text)
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9999,12 +10193,12 @@ var View_1 = __webpack_require__(0);
 var View_2 = __webpack_require__(5);
 var Label_1 = __webpack_require__(21);
 var Abstract_1 = __webpack_require__(1);
-var ImageView_1 = __webpack_require__(35);
+var ImageView_1 = __webpack_require__(22);
 var Button = (function (_super) {
     __extends(Button, _super);
     function Button(rect) {
         var _this = _super.call(this, rect) || this;
-        _this.onTouchUpInisde = undefined;
+        _this.onTouchUpInside = undefined;
         _this._color = undefined;
         _this._vertical = false;
         _this._inset = 4.0;
@@ -10027,7 +10221,7 @@ var Button = (function (_super) {
     Button.prototype.addTouches = function () {
         var _this = this;
         this.userInteractionEnabled = true;
-        this.onTap = function () { _this.onTouchUpInisde && _this.onTouchUpInisde(); };
+        this.onTap = function () { _this.onTouchUpInside && _this.onTouchUpInside(); };
         this.onLongPress = function (state, viewLocation) {
             if (state == View_1.InteractionState.Began) {
                 _this.titleLabel.alpha = 0.25;
@@ -10057,7 +10251,7 @@ var Button = (function (_super) {
                 });
                 _this.onHighlighted && _this.onHighlighted(false);
                 if (viewLocation && viewLocation.x > -44.0 && viewLocation.y > -44.0 && viewLocation.x < _this.bounds.width + 44.0 && viewLocation.y < _this.bounds.height + 44.0) {
-                    _this.onTouchUpInisde && _this.onTouchUpInisde();
+                    _this.onTouchUpInside && _this.onTouchUpInside();
                 }
             }
         };
@@ -10189,200 +10383,6 @@ var Button = (function (_super) {
 }(View_2.View));
 exports.Button = Button;
 
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(clearImmediate, setImmediate) {
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Screen_1 = __webpack_require__(7);
-var View_1 = __webpack_require__(5);
-var Application_1 = __webpack_require__(6);
-var Abstract_1 = __webpack_require__(1);
-var PIXI = window.PIXI;
-var imageLoader = new PIXI.loaders.Loader();
-var runningQueue = [];
-var imageQueue = [];
-var imageLoaderTimerHandler = 0;
-var Image = (function () {
-    function Image(baseTexture, size, scale, renderingMode) {
-        this.renderingMode = Abstract_1.RenderingMode.Original;
-        this.baseTexture = baseTexture;
-        this.size = size;
-        this.scale = scale;
-        this.renderingMode = renderingMode;
-    }
-    Image.fromURL = function (url, success, failure) {
-        imageQueue.push({ url: url, success: success, failure: failure });
-        this.loadImage();
-    };
-    Image.fromAssets = function (named, success, failure) {
-        if (named.indexOf(".") < 0) {
-            named = named + ".png";
-        }
-        this.fromURL(this.assetsPath + named, success, failure);
-    };
-    Image.fromAssetsWithScales = function (named, scales, success, failure) {
-        var target = 1;
-        if (scales instanceof Array) {
-            for (var index = 0; index < scales.length; index++) {
-                var scale = scales[index];
-                if (scale === Screen_1.Screen.mainScreen().scale) {
-                    target = scale;
-                    break;
-                }
-                else {
-                    target = scale;
-                }
-            }
-        }
-        else {
-            target = scales;
-        }
-        if (target == 1) {
-            return this.fromAssets(named + ".png", success, failure);
-        }
-        return this.fromAssets(named + "@" + target + "x.png", success, failure);
-    };
-    Image.loadImage = function () {
-        clearImmediate(imageLoaderTimerHandler);
-        imageLoaderTimerHandler = setImmediate(function () {
-            if (imageQueue.length == 0) {
-                return;
-            }
-            runningQueue = imageQueue;
-            imageQueue = [];
-            runningQueue.forEach(function (item) {
-                try {
-                    imageLoader.add(item.url, item.url);
-                }
-                catch (error) {
-                }
-            });
-            imageLoader.load(function (_, res) {
-                var _loop_1 = function (url) {
-                    var value = res[url];
-                    var image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution, Abstract_1.RenderingMode.Original);
-                    runningQueue.forEach(function (item) {
-                        if (item.url == url) {
-                            item.success(image);
-                        }
-                    });
-                };
-                for (var url in res) {
-                    _loop_1(url);
-                }
-            });
-        });
-    };
-    Image.prototype.imageWithRenderingMode = function (renderingMode) {
-        return new Image(this.baseTexture, this.size, this.scale, renderingMode);
-    };
-    Image.assetsPath = "./assets/";
-    return Image;
-}());
-exports.Image = Image;
-var ImageView = (function (_super) {
-    __extends(ImageView, _super);
-    function ImageView() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._image = undefined;
-        _this.imageObject = undefined;
-        _this._contentMode = Abstract_1.ContentMode.ScaleToFill;
-        return _this;
-    }
-    Object.defineProperty(ImageView.prototype, "image", {
-        get: function () {
-            return this._image;
-        },
-        set: function (value) {
-            this._image = value;
-            this.drawImage();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ImageView.prototype, "contentMode", {
-        get: function () {
-            return this._contentMode;
-        },
-        set: function (value) {
-            if (this._contentMode === value) {
-                return;
-            }
-            this._contentMode = value;
-            this.resetImageBounds();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ImageView.prototype.layoutSubviews = function () {
-        _super.prototype.layoutSubviews.call(this);
-        if (this.imageObject) {
-            this.resetImageBounds();
-        }
-    };
-    ImageView.prototype.drawImage = function () {
-        if (this.imageObject !== undefined && this.imageObject.parent !== undefined) {
-            this.imageObject.parent.removeChild(this.imageObject);
-        }
-        if (this.image) {
-            var image = this.image;
-            this.imageObject = PIXI.Sprite.from(image.baseTexture);
-            if (this.image.renderingMode === Abstract_1.RenderingMode.Template) {
-                this.imageObject.tint = this.tintColor.rgbHexNumber(); // todo
-            }
-            this.resetImageBounds();
-            this.nativeObject.addChildAt(this.imageObject, 1);
-            Application_1.setNeedsDisplay(this);
-            Application_1.displayInterval(1000);
-        }
-    };
-    ImageView.prototype.resetImageBounds = function () {
-        if (this.imageObject && this.image && this.image.size.width > 0 && this.image.size.height > 0 && this.bounds.width > 0 && this.bounds.height > 0) {
-            switch (this.contentMode) {
-                case Abstract_1.ContentMode.ScaleToFill:
-                    this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
-                    this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
-                    break;
-                case Abstract_1.ContentMode.ScaleAspectFit:
-                case Abstract_1.ContentMode.ScaleAspectFill:
-                    var imageRatio = this.image.size.width / this.image.size.height;
-                    var viewRatio = this.bounds.width / this.bounds.height;
-                    if ((imageRatio > viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFit) || (imageRatio < viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFill)) {
-                        this.imageObject.width = Screen_1.Screen.withScale(this.bounds.width);
-                        this.imageObject.height = Screen_1.Screen.withScale(this.bounds.width) / this.image.size.width * this.image.size.height;
-                        this.imageObject.x = 0.0;
-                        this.imageObject.y = (Screen_1.Screen.withScale(this.bounds.height) - this.imageObject.height) / 2.0;
-                    }
-                    else if ((imageRatio < viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFit) || (imageRatio > viewRatio && this.contentMode === Abstract_1.ContentMode.ScaleAspectFill)) {
-                        this.imageObject.width = Screen_1.Screen.withScale(this.bounds.height) / this.image.size.height * this.image.size.width;
-                        this.imageObject.height = Screen_1.Screen.withScale(this.bounds.height);
-                        this.imageObject.x = (Screen_1.Screen.withScale(this.bounds.width) - this.imageObject.width) / 2.0;
-                        this.imageObject.y = 0.0;
-                    }
-                    break;
-            }
-        }
-        Application_1.setNeedsDisplay(this);
-    };
-    return ImageView;
-}(View_1.View));
-exports.ImageView = ImageView;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
 
 /***/ })
 /******/ ]);
