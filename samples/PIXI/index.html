@@ -8,7 +8,7 @@
 <body style="margin: 0">
 
     <canvas id="myCanvas"></canvas>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.4/pixi.min.js"></script>
     <script src="/dist/xt.pixi.js"></script>
     <script>
         var DEBUG = true;
@@ -20,13 +20,12 @@
                 var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
                 window.backgroundColor = new XTColor(1, 1, 1)
-                var imageView = new XTImageView(XTRectMake(0, 0, 300, 100));
-                imageView.contentMode = XTContentMode.ScaleAspectFill;
-                imageView.clipsToBounds = true;
-                imageView.backgroundColor = new XTColor(1, 1, 0);
-                XTImage.fromAssets('1503284352802', function (image) {
-                    console.log(image);
-                    imageView.image = image;
+                var button = new XTButton(XTRectMake(0, 0, 88, 44));
+                button.backgroundColor = new XTColor(1,1,0)
+                // button.title = "测试";
+                button.vertical = true;
+                XTImage.fromAssetsWithScales('location', 2, function (image) {
+                    button.image = image//.imageWithRenderingMode(XTRenderingMode.Template);
                 }, function (error) {
                     console.error(error);
                 })
@@ -35,10 +34,7 @@
                 // }, function (error) {
 
                 // });
-                window.addSubview(imageView);
-                setTimeout(function () {
-                    imageView.frame = XTRectMake(20, 20, 200, 400)
-                }, 2000)
+                window.addSubview(button);
                 // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterX, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterX));
                 // window.addConstraint(new XTLayoutConstraint(undefined, XTLayoutConstraint.Attribute.CenterY, XTLayoutConstraint.Relation.Equal, imageView, XTLayoutConstraint.Attribute.CenterY));
                 // window.addConstraint(new XTLayoutConstraint(imageView, XTLayoutConstraint.Attribute.Width, XTLayoutConstraint.Relation.Equal, undefined, XTLayoutConstraint.Attribute.Const, 88));

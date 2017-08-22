@@ -258,7 +258,7 @@ export class View extends I.View {
     }
 
     public set hidden(value: boolean) {
-        if (this.nativeObject.visible === value) { return; }
+        if (this.nativeObject.visible === !value) { return; }
         this.nativeObject.visible = !value;
         setNeedsDisplay(this);
     }

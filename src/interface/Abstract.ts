@@ -9,7 +9,7 @@ import { LayoutConstraint } from "./LayoutConstraint";
 import { Label, TextAlignment, TextVerticalAlignment, LineBreakMode } from "./Label";
 import { Font } from "./Font";
 import { Button } from "./Button";
-import { ImageView, Image, ContentMode } from "./ImageView";
+import { ImageView, Image, ContentMode, RenderingMode } from "./ImageView";
 
 export {
     View,
@@ -42,4 +42,5 @@ export {
     ImageView,
     Image,
     ContentMode,
+    RenderingMode,
 }

@@ -29,6 +29,7 @@ export class Factory {
     static ImageView: typeof I.ImageView = I.ImageView;
     static Image: typeof I.Image = I.Image;
     static ContentMode = I.ContentMode;
+    static RenderingMode = I.RenderingMode;
 
 }
 

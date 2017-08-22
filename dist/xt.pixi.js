@@ -168,6 +168,7 @@ var ImageView_1 = __webpack_require__(16);
 exports.ImageView = ImageView_1.ImageView;
 exports.Image = ImageView_1.Image;
 exports.ContentMode = ImageView_1.ContentMode;
+exports.RenderingMode = ImageView_1.RenderingMode;
 
 
 /***/ }),
@@ -687,7 +688,7 @@ var View = (function (_super) {
             return !this.nativeObject.visible;
         },
         set: function (value) {
-            if (this.nativeObject.visible === value) {
+            if (this.nativeObject.visible === !value) {
                 return;
             }
             this.nativeObject.visible = !value;
@@ -1620,6 +1621,7 @@ var Factory = (function () {
     Factory.ImageView = I.ImageView;
     Factory.Image = I.Image;
     Factory.ContentMode = I.ContentMode;
+    Factory.RenderingMode = I.RenderingMode;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -1883,12 +1885,21 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(0);
+var RenderingMode;
+(function (RenderingMode) {
+    RenderingMode[RenderingMode["Original"] = 0] = "Original";
+    RenderingMode[RenderingMode["Template"] = 1] = "Template";
+})(RenderingMode = exports.RenderingMode || (exports.RenderingMode = {}));
 var Image = (function () {
     function Image() {
+        this.renderingMode = RenderingMode.Original;
     }
     Image.fromURL = function (url, success, failure) { };
     Image.fromAssets = function (named, success, failure) { };
     Image.fromAssetsWithScales = function (named, scales, success, failure) { };
+    Image.prototype.imageWithRenderingMode = function (renderingMode) {
+        throw "TODO";
+    };
     Image.assetsPath = "./assets/";
     return Image;
 }());
@@ -7704,10 +7715,10 @@ var Label = (function (_super) {
                     text.x = 0;
                     text.y = I.Screen.withScale(line.y);
                     var textBounds = text.getBounds();
-                    textBounds.x *= 375 / window.screen.width;
-                    textBounds.y *= 375 / window.screen.width;
-                    textBounds.width *= 375 / window.screen.width;
-                    textBounds.height *= 375 / window.screen.width;
+                    // textBounds.x *= 375 / window.screen.width;
+                    // textBounds.y *= 375 / window.screen.width;
+                    // textBounds.width *= 375 / window.screen.width;
+                    // textBounds.height *= 375 / window.screen.width;
                     if (textBounds.width > I.Screen.withScale(_this.bounds.width)) {
                         line.elements.forEach(function (element) {
                             var text = new PIXI.Text(element.character, textStyle_1);
@@ -9988,19 +9999,24 @@ var View_1 = __webpack_require__(0);
 var View_2 = __webpack_require__(5);
 var Label_1 = __webpack_require__(21);
 var Abstract_1 = __webpack_require__(1);
+var ImageView_1 = __webpack_require__(35);
 var Button = (function (_super) {
     __extends(Button, _super);
     function Button(rect) {
         var _this = _super.call(this, rect) || this;
         _this.onTouchUpInisde = undefined;
         _this._color = undefined;
-        _this.titleLabel = new Label_1.Label(rect);
+        _this._vertical = false;
+        _this._inset = 4.0;
+        _this.imageView = new ImageView_1.ImageView();
+        _this.titleLabel = new Label_1.Label();
         _this.titleLabel.numberOfLines = 1;
         _this.titleLabel.textAlignment = Abstract_1.TextAlignment.Center;
         _this.titleLabel.lineBreakMode = Abstract_1.LineBreakMode.TruncatingTail;
         _this.titleLabel.textColor = _this.tintColor;
         _this.titleLabel.font = new Abstract_1.Font(17);
         _this.longPressDuration = 150;
+        _this.addSubview(_this.imageView);
         _this.addSubview(_this.titleLabel);
         _this.addTouches();
         return _this;
@@ -10015,6 +10031,7 @@ var Button = (function (_super) {
         this.onLongPress = function (state, viewLocation) {
             if (state == View_1.InteractionState.Began) {
                 _this.titleLabel.alpha = 0.25;
+                _this.imageView.alpha = 0.25;
                 _this.onHighlighted && _this.onHighlighted(true);
             }
             else if (state == View_1.InteractionState.Changed) {
@@ -10022,11 +10039,13 @@ var Button = (function (_super) {
                     if (viewLocation.x < -44.0 || viewLocation.y < -44.0 || viewLocation.x > _this.bounds.width + 44.0 || viewLocation.y > _this.bounds.height + 44.0) {
                         View_2.View.animationWithDuration(0.15, function () {
                             _this.titleLabel.alpha = 1.0;
+                            _this.imageView.alpha = 1.0;
                         });
                         _this.onHighlighted && _this.onHighlighted(false);
                     }
                     else {
                         _this.titleLabel.alpha = 0.25;
+                        _this.imageView.alpha = 0.25;
                         _this.onHighlighted && _this.onHighlighted(true);
                     }
                 }
@@ -10034,6 +10053,7 @@ var Button = (function (_super) {
             else if (state == View_1.InteractionState.Ended) {
                 View_2.View.animationWithDuration(0.15, function () {
                     _this.titleLabel.alpha = 1.0;
+                    _this.imageView.alpha = 1.0;
                 });
                 _this.onHighlighted && _this.onHighlighted(false);
                 if (viewLocation && viewLocation.x > -44.0 && viewLocation.y > -44.0 && viewLocation.x < _this.bounds.width + 44.0 && viewLocation.y < _this.bounds.height + 44.0) {
@@ -10044,7 +10064,7 @@ var Button = (function (_super) {
     };
     Button.prototype.layoutSubviews = function () {
         _super.prototype.layoutSubviews.call(this);
-        this.titleLabel.frame = this.bounds;
+        this.resetContentLayout();
     };
     Object.defineProperty(Button.prototype, "color", {
         get: function () {
@@ -10063,10 +10083,108 @@ var Button = (function (_super) {
         },
         set: function (value) {
             this.titleLabel.text = value;
+            this.resetContentLayout();
         },
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Button.prototype, "image", {
+        set: function (value) {
+            this.imageView.image = value;
+            this.resetContentLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Button.prototype, "vertical", {
+        get: function () {
+            return this._vertical;
+        },
+        set: function (value) {
+            if (this._vertical === value) {
+                return;
+            }
+            this._vertical = value;
+            this.resetContentLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Button.prototype, "inset", {
+        get: function () {
+            return this._inset;
+        },
+        set: function (value) {
+            if (this._inset === value) {
+                return;
+            }
+            this._inset = value;
+            this.resetContentLayout();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Button.prototype.resetContentLayout = function () {
+        if (this.imageView.image === undefined) {
+            var textSize = this.titleLabel.intrinsicContentSize(this.bounds.width);
+            if (textSize) {
+                this.titleLabel.frame = {
+                    x: (this.bounds.width - textSize.width) / 2,
+                    y: (this.bounds.height - textSize.height) / 2,
+                    width: textSize.width,
+                    height: textSize.height
+                };
+            }
+            else {
+                this.titleLabel.frame = Abstract_1.RectZero;
+            }
+            this.imageView.frame = Abstract_1.RectZero;
+        }
+        else {
+            if (this.vertical) {
+                var textSize = this.titleLabel.intrinsicContentSize(this.bounds.width);
+                if (textSize && textSize.height > 0) {
+                    var contentHeight = this.imageView.image.size.height + textSize.height + this.inset;
+                    this.imageView.frame = {
+                        x: (this.bounds.width - this.imageView.image.size.width) / 2,
+                        y: (this.bounds.height - contentHeight) / 2,
+                        width: this.imageView.image.size.width,
+                        height: this.imageView.image.size.height
+                    };
+                    this.titleLabel.frame = {
+                        x: (this.bounds.width - textSize.width) / 2,
+                        y: (this.bounds.height - contentHeight) / 2 + this.imageView.image.size.height + this.inset,
+                        width: textSize.width,
+                        height: textSize.height
+                    };
+                }
+                else {
+                    this.imageView.frame = { x: (this.bounds.width - this.imageView.image.size.width) / 2, y: (this.bounds.height - this.imageView.image.size.height) / 2, width: this.imageView.image.size.width, height: this.imageView.image.size.height };
+                }
+            }
+            else {
+                var textSize = this.titleLabel.intrinsicContentSize(this.bounds.width);
+                if (textSize && textSize.width > 0) {
+                    var contentWidth = this.imageView.image.size.width + textSize.width + this.inset;
+                    this.imageView.frame = {
+                        x: (this.bounds.width - contentWidth) / 2,
+                        y: (this.bounds.height - this.imageView.image.size.height) / 2,
+                        width: this.imageView.image.size.width,
+                        height: this.imageView.image.size.height
+                    };
+                    this.titleLabel.frame = {
+                        x: (this.bounds.width - contentWidth) / 2 + this.imageView.image.size.width + this.inset,
+                        y: (this.bounds.height - textSize.height) / 2,
+                        width: textSize.width,
+                        height: textSize.height
+                    };
+                }
+                else {
+                    this.imageView.frame = { x: (this.bounds.width - this.imageView.image.size.width) / 2, y: (this.bounds.height - this.imageView.image.size.height) / 2, width: this.imageView.image.size.width, height: this.imageView.image.size.height };
+                }
+            }
+        }
+    };
     return Button;
 }(View_2.View));
 exports.Button = Button;
@@ -10099,10 +10217,12 @@ var runningQueue = [];
 var imageQueue = [];
 var imageLoaderTimerHandler = 0;
 var Image = (function () {
-    function Image(baseTexture, size, scale) {
+    function Image(baseTexture, size, scale, renderingMode) {
+        this.renderingMode = Abstract_1.RenderingMode.Original;
         this.baseTexture = baseTexture;
         this.size = size;
         this.scale = scale;
+        this.renderingMode = renderingMode;
     }
     Image.fromURL = function (url, success, failure) {
         imageQueue.push({ url: url, success: success, failure: failure });
@@ -10154,7 +10274,7 @@ var Image = (function () {
             imageLoader.load(function (_, res) {
                 var _loop_1 = function (url) {
                     var value = res[url];
-                    var image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution);
+                    var image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution, Abstract_1.RenderingMode.Original);
                     runningQueue.forEach(function (item) {
                         if (item.url == url) {
                             item.success(image);
@@ -10166,6 +10286,9 @@ var Image = (function () {
                 }
             });
         });
+    };
+    Image.prototype.imageWithRenderingMode = function (renderingMode) {
+        return new Image(this.baseTexture, this.size, this.scale, renderingMode);
     };
     Image.assetsPath = "./assets/";
     return Image;
@@ -10218,6 +10341,9 @@ var ImageView = (function (_super) {
         if (this.image) {
             var image = this.image;
             this.imageObject = PIXI.Sprite.from(image.baseTexture);
+            if (this.image.renderingMode === Abstract_1.RenderingMode.Template) {
+                this.imageObject.tint = this.tintColor.rgbHexNumber(); // todo
+            }
             this.resetImageBounds();
             this.nativeObject.addChildAt(this.imageObject, 1);
             Application_1.setNeedsDisplay(this);

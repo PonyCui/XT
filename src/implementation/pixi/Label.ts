@@ -139,10 +139,10 @@ export class Label extends View {
                     text.x = 0;
                     text.y = I.Screen.withScale(line.y);
                     const textBounds = text.getBounds();
-                    textBounds.x *= 375 / window.screen.width;
-                    textBounds.y *= 375 / window.screen.width;
-                    textBounds.width *= 375 / window.screen.width;
-                    textBounds.height *= 375 / window.screen.width;
+                    // textBounds.x *= 375 / window.screen.width;
+                    // textBounds.y *= 375 / window.screen.width;
+                    // textBounds.width *= 375 / window.screen.width;
+                    // textBounds.height *= 375 / window.screen.width;
                     if (textBounds.width > I.Screen.withScale(this.bounds.width)) {
                         line.elements.forEach((element: any) => {
                             const text = new PIXI.Text(element.character, textStyle);

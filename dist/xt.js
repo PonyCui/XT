@@ -168,6 +168,7 @@ var ImageView_1 = __webpack_require__(16);
 exports.ImageView = ImageView_1.ImageView;
 exports.Image = ImageView_1.Image;
 exports.ContentMode = ImageView_1.ContentMode;
+exports.RenderingMode = ImageView_1.RenderingMode;
 
 
 /***/ }),
@@ -319,6 +320,7 @@ var Factory = (function () {
     Factory.ImageView = I.ImageView;
     Factory.Image = I.Image;
     Factory.ContentMode = I.ContentMode;
+    Factory.RenderingMode = I.RenderingMode;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -582,12 +584,21 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(0);
+var RenderingMode;
+(function (RenderingMode) {
+    RenderingMode[RenderingMode["Original"] = 0] = "Original";
+    RenderingMode[RenderingMode["Template"] = 1] = "Template";
+})(RenderingMode = exports.RenderingMode || (exports.RenderingMode = {}));
 var Image = (function () {
     function Image() {
+        this.renderingMode = RenderingMode.Original;
     }
     Image.fromURL = function (url, success, failure) { };
     Image.fromAssets = function (named, success, failure) { };
     Image.fromAssetsWithScales = function (named, scales, success, failure) { };
+    Image.prototype.imageWithRenderingMode = function (renderingMode) {
+        throw "TODO";
+    };
     Image.assetsPath = "./assets/";
     return Image;
 }());
