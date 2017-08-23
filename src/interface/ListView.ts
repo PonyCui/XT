@@ -8,9 +8,15 @@ export interface ListItem {
 
 }
 
+export enum ListSelectionStyle {
+    None,
+    Gray,
+}
+
 export class ListCell extends View {
 
     readonly reuseIdentifier: string
+    selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
 
 }
 

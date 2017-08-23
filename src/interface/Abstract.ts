@@ -11,7 +11,7 @@ import { Font } from "./Font";
 import { Button } from "./Button";
 import { ImageView, Image, ContentMode, RenderingMode } from "./ImageView";
 import { ScrollView } from "./ScrollView";
-import { ListView, ListCell, ListItem } from "./ListView";
+import { ListView, ListCell, ListItem, ListSelectionStyle } from "./ListView";
 
 export {
     View,
@@ -51,4 +51,5 @@ export {
     ListView,
     ListCell,
     ListItem,
+    ListSelectionStyle,
 }

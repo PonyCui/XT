@@ -175,6 +175,7 @@ exports.ScrollView = ScrollView_1.ScrollView;
 var ListView_1 = __webpack_require__(41);
 exports.ListView = ListView_1.ListView;
 exports.ListCell = ListView_1.ListCell;
+exports.ListSelectionStyle = ListView_1.ListSelectionStyle;
 
 
 /***/ }),
@@ -727,10 +728,17 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ScrollView_1 = __webpack_require__(17);
 var View_1 = __webpack_require__(0);
+var ListSelectionStyle;
+(function (ListSelectionStyle) {
+    ListSelectionStyle[ListSelectionStyle["None"] = 0] = "None";
+    ListSelectionStyle[ListSelectionStyle["Gray"] = 1] = "Gray";
+})(ListSelectionStyle = exports.ListSelectionStyle || (exports.ListSelectionStyle = {}));
 var ListCell = (function (_super) {
     __extends(ListCell, _super);
     function ListCell() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.selectionStyle = ListSelectionStyle.Gray;
+        return _this;
     }
     return ListCell;
 }(View_1.View));

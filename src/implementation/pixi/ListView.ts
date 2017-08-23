@@ -1,10 +1,11 @@
 import { ScrollView } from "./ScrollView";
 import { View } from "./View";
-import { ListItem, Rect } from "../../interface/Abstract";
+import { ListItem, Rect, ListSelectionStyle } from "../../interface/Abstract";
 
 export class ListCell extends View {
 
     reuseIdentifier: string = ""
+    selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     _displayItem: any = undefined
     _isBusy = false
 
@@ -112,7 +113,6 @@ export class ListView extends ScrollView {
                 this.addSubview(cell);
             }
         });
-        console.log(this._reusingCells.length);
     }
 
     private markInvisibleCellNoBusy() {

@@ -175,6 +175,7 @@ exports.ScrollView = ScrollView_1.ScrollView;
 var ListView_1 = __webpack_require__(41);
 exports.ListView = ListView_1.ListView;
 exports.ListCell = ListView_1.ListCell;
+exports.ListSelectionStyle = ListView_1.ListSelectionStyle;
 
 
 /***/ }),
@@ -10475,6 +10476,7 @@ var ScrollView = (function (_super) {
         // Touches
         _this._tracking = false;
         _this._indicatorHidingTimer = 0;
+        _this._restoreInteractiveChildrenTimer = 0;
         _this.innerView = new View_1.View();
         _super.prototype.addSubview.call(_this, _this.innerView);
         _this.horizonalScrollIndicator = new View_1.View();
@@ -10612,6 +10614,8 @@ var ScrollView = (function (_super) {
         this.nativeObject.on("touchmove", function (event) {
             event.data.originalEvent.preventDefault();
             _this.scroller.doTouchMove(event.data.originalEvent.touches, event.data.originalEvent.timeStamp, event.data.originalEvent.scale);
+            clearTimeout(_this._restoreInteractiveChildrenTimer);
+            _this.nativeObject.interactiveChildren = false;
         });
         this.nativeObject.on("touchend", function (event) {
             _this._tracking = false;
@@ -10643,10 +10647,13 @@ var ScrollView = (function (_super) {
         this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
     };
     ScrollView.prototype.handleScroll = function (x, y) {
+        var _this = this;
         this.contentOffset = { x: x, y: y };
         this.onScroll && this.onScroll(this);
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250);
+        clearTimeout(this._restoreInteractiveChildrenTimer);
+        this._restoreInteractiveChildrenTimer = setTimeout(function () { _this.nativeObject.interactiveChildren = true; }, 150);
     };
     // Indicators
     ScrollView.prototype.resetIndicator = function () {
@@ -12363,10 +12370,17 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ScrollView_1 = __webpack_require__(17);
 var View_1 = __webpack_require__(0);
+var ListSelectionStyle;
+(function (ListSelectionStyle) {
+    ListSelectionStyle[ListSelectionStyle["None"] = 0] = "None";
+    ListSelectionStyle[ListSelectionStyle["Gray"] = 1] = "Gray";
+})(ListSelectionStyle = exports.ListSelectionStyle || (exports.ListSelectionStyle = {}));
 var ListCell = (function (_super) {
     __extends(ListCell, _super);
     function ListCell() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.selectionStyle = ListSelectionStyle.Gray;
+        return _this;
     }
     return ListCell;
 }(View_1.View));
@@ -12402,11 +12416,13 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ScrollView_1 = __webpack_require__(37);
 var View_1 = __webpack_require__(3);
+var Abstract_1 = __webpack_require__(1);
 var ListCell = (function (_super) {
     __extends(ListCell, _super);
     function ListCell() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.reuseIdentifier = "";
+        _this.selectionStyle = Abstract_1.ListSelectionStyle.Gray;
         _this._displayItem = undefined;
         _this._isBusy = false;
         return _this;
@@ -12502,7 +12518,6 @@ var ListView = (function (_super) {
                 _this.addSubview(cell);
             }
         });
-        console.log(this._reusingCells.length);
     };
     ListView.prototype.markInvisibleCellNoBusy = function () {
         var _this = this;

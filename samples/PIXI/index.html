@@ -28,6 +28,10 @@
                     else {
                         cell.backgroundColor = new XTColor(0.4, 0.4, 0.4)
                     }
+                    cell.userInteractionEnabled = true
+                    cell.onTap = function () {
+                        cell.backgroundColor = new XTColor(1, 1, 0)
+                    }
                 }
                 setTimeout(function () {
                     listView.items = [

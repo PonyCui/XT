@@ -142,6 +142,7 @@ export class ScrollView extends View {
 
     private _tracking = false;
     private _indicatorHidingTimer: number = 0
+    private _restoreInteractiveChildrenTimer: number = 0
 
     private activePanTouch() {
         this.userInteractionEnabled = true;
@@ -157,6 +158,8 @@ export class ScrollView extends View {
         this.nativeObject.on("touchmove", (event: any) => {
             event.data.originalEvent.preventDefault();
             this.scroller.doTouchMove(event.data.originalEvent.touches, event.data.originalEvent.timeStamp, event.data.originalEvent.scale);
+            clearTimeout(this._restoreInteractiveChildrenTimer);
+            this.nativeObject.interactiveChildren = false;
         })
         this.nativeObject.on("touchend", (event: any) => {
             this._tracking = false;
@@ -194,6 +197,8 @@ export class ScrollView extends View {
         this.onScroll && this.onScroll(this);
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+        clearTimeout(this._restoreInteractiveChildrenTimer);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.interactiveChildren = true }, 150);
     }
 
     // Indicators
