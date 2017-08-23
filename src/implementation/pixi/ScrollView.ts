@@ -143,42 +143,68 @@ export class ScrollView extends View {
     private _tracking = false;
     private _indicatorHidingTimer: number = 0
     private _restoreInteractiveChildrenTimer: number = 0
+    private _indicatorShowed = false;
 
     private activePanTouch() {
         this.userInteractionEnabled = true;
         this.nativeObject.on("touchstart", (event: any) => {
+            this._indicatorShowed = false;
+            clearTimeout(this._indicatorHidingTimer);
             this._tracking = true;
             this.scroller.doTouchStart(event.data.originalEvent.touches, event.data.originalEvent.timeStamp);
-            clearTimeout(this._indicatorHidingTimer);
-            View.animationWithDuration(0.15, () => {
-                this.verticalScrollIndicator.alpha = 1.0;
-                this.horizonalScrollIndicator.alpha = 1.0;
-            })
+            if (event.data.originalEvent.touches.length > 0) {
+                this.onTouchStart(event.data.originalEvent.touches[0].pageX, event.data.originalEvent.touches[0].pageY)
+            }
         })
         this.nativeObject.on("touchmove", (event: any) => {
+            if (!this._indicatorShowed) {
+                this._indicatorShowed = true;
+                View.animationWithDuration(0.15, () => {
+                    this.verticalScrollIndicator.alpha = 1.0;
+                    this.horizonalScrollIndicator.alpha = 1.0;
+                })
+            }
             event.data.originalEvent.preventDefault();
             this.scroller.doTouchMove(event.data.originalEvent.touches, event.data.originalEvent.timeStamp, event.data.originalEvent.scale);
             clearTimeout(this._restoreInteractiveChildrenTimer);
             this.nativeObject.interactiveChildren = false;
+            if (event.data.originalEvent.touches.length > 0) {
+                this.onTouchMove(event.data.originalEvent.touches[0].pageX, event.data.originalEvent.touches[0].pageY)
+            }
         })
         this.nativeObject.on("touchend", (event: any) => {
             this._tracking = false;
             this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
             clearTimeout(this._indicatorHidingTimer);
             this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+            this.onTouchEnd();
         })
         this.nativeObject.on("touchendoutside", (event: any) => {
             this._tracking = false;
             this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
             clearTimeout(this._indicatorHidingTimer);
             this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+            this.onTouchEnd();
         })
         this.nativeObject.on("touchcancel", (event: any) => {
             this._tracking = false;
             this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
             clearTimeout(this._indicatorHidingTimer);
             this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+            this.onTouchEnd();
         })
+    }
+
+    protected onTouchStart(absX: number, absY: number) {
+
+    }
+
+    protected onTouchMove(absX: number, absY: number) {
+
+    }
+
+    protected onTouchEnd() {
+
     }
 
     private resetScroller() {

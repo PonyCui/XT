@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -143,36 +143,36 @@ exports.SizeEqual = Rect_1.SizeEqual;
 exports.InsetsMake = Rect_1.InsetsMake;
 var View_1 = __webpack_require__(0);
 exports.View = View_1.View;
-var Window_1 = __webpack_require__(9);
+var Window_1 = __webpack_require__(10);
 exports.Window = Window_1.Window;
-var Application_1 = __webpack_require__(10);
+var Application_1 = __webpack_require__(11);
 exports.Application = Application_1.Application;
 exports.ApplicationDelegate = Application_1.ApplicationDelegate;
 var Color_1 = __webpack_require__(5);
 exports.Color = Color_1.Color;
-var Screen_1 = __webpack_require__(7);
+var Screen_1 = __webpack_require__(8);
 exports.Screen = Screen_1.Screen;
-var TransformMatrix_1 = __webpack_require__(11);
+var TransformMatrix_1 = __webpack_require__(12);
 exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
-var LayoutConstraint_1 = __webpack_require__(12);
+var LayoutConstraint_1 = __webpack_require__(13);
 exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
-var Label_1 = __webpack_require__(13);
+var Label_1 = __webpack_require__(14);
 exports.Label = Label_1.Label;
 exports.TextAlignment = Label_1.TextAlignment;
 exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
 exports.LineBreakMode = Label_1.LineBreakMode;
-var Font_1 = __webpack_require__(14);
+var Font_1 = __webpack_require__(15);
 exports.Font = Font_1.Font;
-var Button_1 = __webpack_require__(15);
+var Button_1 = __webpack_require__(16);
 exports.Button = Button_1.Button;
-var ImageView_1 = __webpack_require__(16);
+var ImageView_1 = __webpack_require__(17);
 exports.ImageView = ImageView_1.ImageView;
 exports.Image = ImageView_1.Image;
 exports.ContentMode = ImageView_1.ContentMode;
 exports.RenderingMode = ImageView_1.RenderingMode;
-var ScrollView_1 = __webpack_require__(17);
+var ScrollView_1 = __webpack_require__(6);
 exports.ScrollView = ScrollView_1.ScrollView;
-var ListView_1 = __webpack_require__(41);
+var ListView_1 = __webpack_require__(18);
 exports.ListView = ListView_1.ListView;
 exports.ListCell = ListView_1.ListCell;
 exports.ListSelectionStyle = ListView_1.ListSelectionStyle;
@@ -180,66 +180,6 @@ exports.ListSelectionStyle = ListView_1.ListSelectionStyle;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var apply = Function.prototype.apply;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(27);
-var global = __webpack_require__(28);
-exports.setImmediate = global.setImmediate;
-exports.clearImmediate = global.clearImmediate;
-
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -264,10 +204,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
-var Application_1 = __webpack_require__(6);
-var Rebound = __webpack_require__(29);
+var Application_1 = __webpack_require__(7);
+var Rebound = __webpack_require__(31);
 var PIXI = window.PIXI;
-var AutoLayout = __webpack_require__(21);
+var AutoLayout = __webpack_require__(22);
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {
     requestAnimationFrame = function (trigger) {
@@ -1273,7 +1213,67 @@ var View = (function (_super) {
 }(I.View));
 exports.View = View;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(29);
+var global = __webpack_require__(30);
+exports.setImmediate = global.setImmediate;
+exports.clearImmediate = global.clearImmediate;
+
 
 /***/ }),
 /* 4 */
@@ -1361,6 +1361,42 @@ exports.Color = Color;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var View_1 = __webpack_require__(0);
+var ScrollView = (function (_super) {
+    __extends(ScrollView, _super);
+    function ScrollView() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.isDirectionalLockEnabled = true;
+        _this.bounces = true;
+        _this.isScrollEnabled = true;
+        _this.showsHorizontalScrollIndicator = true;
+        _this.showsVerticalScrollIndicator = true;
+        _this.alwaysBounceVertical = false;
+        _this.alwaysBounceHorizontal = false;
+        return _this;
+    }
+    return ScrollView;
+}(View_1.View));
+exports.ScrollView = ScrollView;
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1567,7 +1603,7 @@ exports.displayNow = displayNow;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1595,7 +1631,7 @@ exports.Screen = Screen;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1646,7 +1682,7 @@ exports.SwitchFactory = SwitchFactory;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1675,7 +1711,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1698,7 +1734,7 @@ exports.Application = Application;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1719,7 +1755,7 @@ exports.TransformMatrix = TransformMatrix;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1768,7 +1804,7 @@ exports.LayoutConstraint = LayoutConstraint;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1822,7 +1858,7 @@ exports.Label = Label;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1855,7 +1891,7 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1883,7 +1919,7 @@ exports.Button = Button;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1938,42 +1974,6 @@ exports.ImageView = ImageView;
 
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(0);
-var ScrollView = (function (_super) {
-    __extends(ScrollView, _super);
-    function ScrollView() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.isDirectionalLockEnabled = true;
-        _this.bounces = true;
-        _this.isScrollEnabled = true;
-        _this.showsHorizontalScrollIndicator = true;
-        _this.showsVerticalScrollIndicator = true;
-        _this.alwaysBounceVertical = false;
-        _this.alwaysBounceHorizontal = false;
-        return _this;
-    }
-    return ScrollView;
-}(View_1.View));
-exports.ScrollView = ScrollView;
-
-
-/***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1990,8 +1990,54 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(26);
-var Factory_1 = __webpack_require__(8);
+var ScrollView_1 = __webpack_require__(6);
+var View_1 = __webpack_require__(0);
+var ListSelectionStyle;
+(function (ListSelectionStyle) {
+    ListSelectionStyle[ListSelectionStyle["None"] = 0] = "None";
+    ListSelectionStyle[ListSelectionStyle["Gray"] = 1] = "Gray";
+})(ListSelectionStyle = exports.ListSelectionStyle || (exports.ListSelectionStyle = {}));
+var ListCell = (function (_super) {
+    __extends(ListCell, _super);
+    function ListCell() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.selectionStyle = ListSelectionStyle.Gray;
+        return _this;
+    }
+    return ListCell;
+}(View_1.View));
+exports.ListCell = ListCell;
+var ListView = (function (_super) {
+    __extends(ListView, _super);
+    function ListView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ListView.prototype.register = function (clazz, reuseIdentifier) { };
+    ListView.prototype.reloadData = function () { };
+    return ListView;
+}(ScrollView_1.ScrollView));
+exports.ListView = ListView;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(28);
+var Factory_1 = __webpack_require__(9);
 var Factory = (function (_super) {
     __extends(Factory, _super);
     function Factory() {
@@ -2007,7 +2053,7 @@ exports.SwitchFactory = SwitchFactory;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 var g;
@@ -2034,7 +2080,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -2224,7 +2270,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var require;var require;/**
@@ -7594,7 +7640,7 @@ var l=this.rows.get(this._objective);l.setVariable(i,b.strength.symbolicWeight.v
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7611,9 +7657,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
-var View_1 = __webpack_require__(3);
-var Application_1 = __webpack_require__(6);
-var TextLayout_1 = __webpack_require__(32);
+var View_1 = __webpack_require__(2);
+var Application_1 = __webpack_require__(7);
+var TextLayout_1 = __webpack_require__(34);
 var PIXI = window.PIXI;
 var Label = (function (_super) {
     __extends(Label, _super);
@@ -7803,10 +7849,10 @@ var Label = (function (_super) {
 }(View_1.View));
 exports.Label = Label;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7822,9 +7868,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Screen_1 = __webpack_require__(7);
-var View_1 = __webpack_require__(3);
-var Application_1 = __webpack_require__(6);
+var Screen_1 = __webpack_require__(8);
+var View_1 = __webpack_require__(2);
+var Application_1 = __webpack_require__(7);
 var Abstract_1 = __webpack_require__(1);
 var PIXI = window.PIXI;
 var imageLoader = new PIXI.loaders.Loader();
@@ -7997,17 +8043,327 @@ var ImageView = (function (_super) {
 }(View_1.View));
 exports.ImageView = ImageView;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).clearImmediate, __webpack_require__(2).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).clearImmediate, __webpack_require__(3).setImmediate))
 
 /***/ }),
-/* 24 */,
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(18);
+var View_1 = __webpack_require__(2);
+var Abstract_1 = __webpack_require__(1);
+var Scroller = __webpack_require__(39);
+var ScrollView = (function (_super) {
+    __extends(ScrollView, _super);
+    function ScrollView(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this._contentSize = Abstract_1.SizeZero;
+        _this._contentOffset = Abstract_1.PointZero;
+        _this._isScrollEnabled = true;
+        _this._bounces = true;
+        _this._isDirectionalLockEnabled = true;
+        _this._showsHorizontalScrollIndicator = true;
+        _this._showsVerticalScrollIndicator = true;
+        _this._alwaysBounceVertical = false;
+        _this._alwaysBounceHorizontal = false;
+        // Touches
+        _this._tracking = false;
+        _this._indicatorHidingTimer = 0;
+        _this._restoreInteractiveChildrenTimer = 0;
+        _this._indicatorShowed = false;
+        _this.innerView = new View_1.View();
+        _super.prototype.addSubview.call(_this, _this.innerView);
+        _this.horizonalScrollIndicator = new View_1.View();
+        _this.horizonalScrollIndicator.backgroundColor = new Abstract_1.Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff);
+        _this.horizonalScrollIndicator.cornerRadius = 1.0;
+        _this.horizonalScrollIndicator.alpha = 0.0;
+        _super.prototype.addSubview.call(_this, _this.horizonalScrollIndicator);
+        _this.verticalScrollIndicator = new View_1.View();
+        _this.verticalScrollIndicator.backgroundColor = new Abstract_1.Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff);
+        _this.verticalScrollIndicator.cornerRadius = 1.0;
+        _this.verticalScrollIndicator.alpha = 0.0;
+        _super.prototype.addSubview.call(_this, _this.verticalScrollIndicator);
+        _this.resetScroller();
+        _this.resetIndicator();
+        _this.activePanTouch();
+        return _this;
+    }
+    Object.defineProperty(ScrollView.prototype, "contentSize", {
+        get: function () {
+            return this._contentSize;
+        },
+        set: function (value) {
+            this._contentSize = value;
+            this.innerView.frame = Abstract_1.RectMake(this.contentOffset.x, this.contentOffset.y, value.width, value.height);
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "contentOffset", {
+        get: function () {
+            return this._contentOffset;
+        },
+        set: function (value) {
+            this._contentOffset = value;
+            this.innerView.frame = { x: -value.x, y: -value.y, width: this.innerView.frame.width, height: this.innerView.frame.height };
+            this.resetIndicator();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "isScrollEnabled", {
+        get: function () {
+            return this._isScrollEnabled;
+        },
+        set: function (value) {
+            this._isScrollEnabled = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "bounces", {
+        get: function () {
+            return this._bounces;
+        },
+        set: function (value) {
+            this._bounces = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "isDirectionalLockEnabled", {
+        get: function () {
+            return this._isDirectionalLockEnabled;
+        },
+        set: function (value) {
+            this._isDirectionalLockEnabled = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "showsHorizontalScrollIndicator", {
+        get: function () {
+            return this._showsHorizontalScrollIndicator;
+        },
+        set: function (value) {
+            this._showsHorizontalScrollIndicator = value;
+            this.horizonalScrollIndicator.hidden = !value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "showsVerticalScrollIndicator", {
+        get: function () {
+            return this._showsVerticalScrollIndicator;
+        },
+        set: function (value) {
+            this._showsVerticalScrollIndicator = value;
+            this.verticalScrollIndicator.hidden = !value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "alwaysBounceVertical", {
+        get: function () {
+            return this._alwaysBounceVertical;
+        },
+        set: function (value) {
+            this._alwaysBounceVertical = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ScrollView.prototype, "alwaysBounceHorizontal", {
+        get: function () {
+            return this._alwaysBounceHorizontal;
+        },
+        set: function (value) {
+            this._alwaysBounceHorizontal = value;
+            this.resetScroller();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ScrollView.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        this.resetScroller();
+    };
+    ScrollView.prototype.activePanTouch = function () {
+        var _this = this;
+        this.userInteractionEnabled = true;
+        this.nativeObject.on("touchstart", function (event) {
+            _this._indicatorShowed = false;
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._tracking = true;
+            _this.scroller.doTouchStart(event.data.originalEvent.touches, event.data.originalEvent.timeStamp);
+            if (event.data.originalEvent.touches.length > 0) {
+                _this.onTouchStart(event.data.originalEvent.touches[0].pageX, event.data.originalEvent.touches[0].pageY);
+            }
+        });
+        this.nativeObject.on("touchmove", function (event) {
+            if (!_this._indicatorShowed) {
+                _this._indicatorShowed = true;
+                View_1.View.animationWithDuration(0.15, function () {
+                    _this.verticalScrollIndicator.alpha = 1.0;
+                    _this.horizonalScrollIndicator.alpha = 1.0;
+                });
+            }
+            event.data.originalEvent.preventDefault();
+            _this.scroller.doTouchMove(event.data.originalEvent.touches, event.data.originalEvent.timeStamp, event.data.originalEvent.scale);
+            clearTimeout(_this._restoreInteractiveChildrenTimer);
+            _this.nativeObject.interactiveChildren = false;
+            if (event.data.originalEvent.touches.length > 0) {
+                _this.onTouchMove(event.data.originalEvent.touches[0].pageX, event.data.originalEvent.touches[0].pageY);
+            }
+        });
+        this.nativeObject.on("touchend", function (event) {
+            _this._tracking = false;
+            _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
+            _this.onTouchEnd();
+        });
+        this.nativeObject.on("touchendoutside", function (event) {
+            _this._tracking = false;
+            _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
+            _this.onTouchEnd();
+        });
+        this.nativeObject.on("touchcancel", function (event) {
+            _this._tracking = false;
+            _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
+            clearTimeout(_this._indicatorHidingTimer);
+            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
+            _this.onTouchEnd();
+        });
+    };
+    ScrollView.prototype.onTouchStart = function (absX, absY) {
+    };
+    ScrollView.prototype.onTouchMove = function (absX, absY) {
+    };
+    ScrollView.prototype.onTouchEnd = function () {
+    };
+    ScrollView.prototype.resetScroller = function () {
+        if (this.scroller === undefined) {
+            this.scroller = new Scroller(this.handleScroll.bind(this));
+        }
+        this.scroller.options.scrollingX = this.isScrollEnabled && (this.contentSize.width > this.bounds.width || this.alwaysBounceHorizontal);
+        this.scroller.options.scrollingY = this.isScrollEnabled && (this.contentSize.height > this.bounds.height || this.alwaysBounceVertical);
+        this.scroller.options.bouncing = this.bounces;
+        this.scroller.options.locking = this.isDirectionalLockEnabled;
+        this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
+    };
+    ScrollView.prototype.handleScroll = function (x, y) {
+        var _this = this;
+        this.contentOffset = { x: x, y: y };
+        this.onScroll && this.onScroll(this);
+        clearTimeout(this._indicatorHidingTimer);
+        this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250);
+        clearTimeout(this._restoreInteractiveChildrenTimer);
+        this._restoreInteractiveChildrenTimer = setTimeout(function () { _this.nativeObject.interactiveChildren = true; }, 150);
+    };
+    // Indicators
+    ScrollView.prototype.resetIndicator = function () {
+        if (this.contentSize.height > this.bounds.height) {
+            var yProgress = this.contentOffset.y / (this.contentSize.height - this.bounds.height);
+            var yHeight = this.bounds.height / (this.contentSize.height / this.bounds.height);
+            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: yProgress * (this.bounds.height - yHeight), width: 2, height: yHeight };
+        }
+        else {
+            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: 0, width: 2, height: 0 };
+        }
+        if (this.contentSize.width > this.bounds.width) {
+            var xProgress = this.contentOffset.x / (this.contentSize.width - this.bounds.width);
+            var xWidth = this.bounds.width / (this.contentSize.width / this.bounds.width);
+            this.horizonalScrollIndicator.frame = { x: xProgress * (this.bounds.width - xWidth), y: this.bounds.height - 4, width: xWidth, height: 2 };
+        }
+        else {
+            this.horizonalScrollIndicator.frame = { x: 0, y: this.bounds.height - 4, width: 0, height: 2 };
+        }
+    };
+    ScrollView.prototype.hideIndicator = function () {
+        var _this = this;
+        if (this._tracking) {
+            return;
+        }
+        View_1.View.animationWithDuration(0.15, function () {
+            _this.verticalScrollIndicator.alpha = 0.0;
+            _this.horizonalScrollIndicator.alpha = 0.0;
+        });
+    };
+    // Proxy method call to innerView
+    ScrollView.prototype.insertSubviewAtIndex = function (subview, atIndex) {
+        this.innerView.insertSubviewAtIndex(subview, atIndex);
+    };
+    ScrollView.prototype.exchangeSubviewAtIndex = function (index1, index2) {
+        this.innerView.exchangeSubviewAtIndex(index1, index2);
+    };
+    ScrollView.prototype.addSubview = function (subview) {
+        this.innerView.addSubview(subview);
+    };
+    ScrollView.prototype.insertSubviewBelow = function (subview, siblingSubview) {
+        this.innerView.insertSubviewBelow(subview, siblingSubview);
+    };
+    ScrollView.prototype.insertSubviewAbove = function (subview, siblingSubview) {
+        this.innerView.insertSubviewAbove(subview, siblingSubview);
+    };
+    ScrollView.prototype.bringSubviewToFront = function (subview) {
+        this.innerView.bringSubviewToFront(subview);
+    };
+    ScrollView.prototype.sendSubviewToBack = function (subview) {
+        this.innerView.sendSubviewToBack(subview);
+    };
+    Object.defineProperty(ScrollView.prototype, "constraints", {
+        get: function () {
+            return this.innerView.constraints;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ScrollView.prototype.addConstraint = function (constraint) {
+        this.innerView.addConstraint(constraint);
+    };
+    ScrollView.prototype.addConstraints = function (constraints) {
+        this.innerView.addConstraints(constraints);
+    };
+    ScrollView.prototype.removeConstraint = function (constraint) {
+        this.innerView.removeConstraint(constraint);
+    };
+    ScrollView.prototype.removeAllConstraints = function () {
+        this.innerView.removeAllConstraints();
+    };
+    return ScrollView;
+}(View_1.View));
+exports.ScrollView = ScrollView;
+
+
+/***/ }),
+/* 26 */,
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Factory_pixi_1 = __webpack_require__(19);
 Factory_pixi_1.SwitchFactory();
 exports.default = Factory_pixi_1.Factory;
 if (window !== undefined) {
@@ -8016,21 +8372,21 @@ if (window !== undefined) {
 
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Factory_pixi_1 = __webpack_require__(18);
-var View_1 = __webpack_require__(3);
-var Application_1 = __webpack_require__(6);
-var Window_1 = __webpack_require__(30);
-var LayoutConstraint_1 = __webpack_require__(31);
-var Label_1 = __webpack_require__(22);
-var Button_1 = __webpack_require__(36);
-var ImageView_1 = __webpack_require__(23);
-var ScrollView_1 = __webpack_require__(37);
+var Factory_pixi_1 = __webpack_require__(19);
+var View_1 = __webpack_require__(2);
+var Application_1 = __webpack_require__(7);
+var Window_1 = __webpack_require__(32);
+var LayoutConstraint_1 = __webpack_require__(33);
+var Label_1 = __webpack_require__(23);
+var Button_1 = __webpack_require__(38);
+var ImageView_1 = __webpack_require__(24);
+var ScrollView_1 = __webpack_require__(25);
 var ListView_1 = __webpack_require__(42);
 function usePixi(force) {
     if (force === void 0) { force = false; }
@@ -8061,7 +8417,7 @@ exports.usePixi = usePixi;
 
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -8251,10 +8607,10 @@ exports.usePixi = usePixi;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(21)))
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -8271,10 +8627,10 @@ if (typeof window !== "undefined") {
 
 module.exports = win;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, setImmediate) {// Rebound
@@ -9429,10 +9785,10 @@ module.exports = win;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(2).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21), __webpack_require__(3).setImmediate))
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9448,8 +9804,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Application_1 = __webpack_require__(6);
-var View_1 = __webpack_require__(3);
+var Application_1 = __webpack_require__(7);
+var View_1 = __webpack_require__(2);
 var PIXI = window.PIXI;
 var Window = (function (_super) {
     __extends(Window, _super);
@@ -9476,7 +9832,7 @@ exports.Window = Window;
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9493,7 +9849,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
-var AutoLayout = __webpack_require__(21);
+var AutoLayout = __webpack_require__(22);
 var LayoutConstraint = (function (_super) {
     __extends(LayoutConstraint, _super);
     function LayoutConstraint() {
@@ -9615,14 +9971,14 @@ exports.LayoutConstraint = LayoutConstraint;
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var I = __webpack_require__(1);
-var huozi_1 = __webpack_require__(33);
+var huozi_1 = __webpack_require__(35);
 var StaticTextLayout = (function () {
     function StaticTextLayout(numberOfLines, lineSpace, text, font, bounds, padding) {
         if (padding === void 0) { padding = { top: 0, left: 0, bottom: 0, right: 0 }; }
@@ -9715,7 +10071,7 @@ exports.StaticTextLayout = StaticTextLayout;
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9729,9 +10085,9 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = huozi;
 
-var _code = __webpack_require__(34);
+var _code = __webpack_require__(36);
 
-var _isCJK = __webpack_require__(35);
+var _isCJK = __webpack_require__(37);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /*!
                                                                                                                                                                                                      * @author      Icemic Jia <bingfeng.web@gmail.com>
@@ -10102,7 +10458,7 @@ function processWesternText(textSequence, _ref, currentX, currentY, currentRow, 
 }
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10143,7 +10499,7 @@ var INCOMPRESSIBLE = exports.INCOMPRESSIBLE = '‼⁇⸺—';
 var COMPRESSLEFT = exports.COMPRESSLEFT = '「『“‘（【〖〔［｛《〈';
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10229,7 +10585,7 @@ function isCJK(text) {
 // /[\u3000-\u3003\u3005-\u303F；？，．：！]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\ud840-\ud868][\udc00-\udfff]|\ud869[\udc00-\uded6\udf00-\udfff]|[\ud86a-\ud86c][\udc00-\udfff]|\ud86d[\udc00-\udf34\udf40-\udfff]|\ud86e[\udc00-\udc1d]/.test(text)
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10246,10 +10602,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var View_1 = __webpack_require__(0);
-var View_2 = __webpack_require__(3);
-var Label_1 = __webpack_require__(22);
+var View_2 = __webpack_require__(2);
+var Label_1 = __webpack_require__(23);
 var Abstract_1 = __webpack_require__(1);
-var ImageView_1 = __webpack_require__(23);
+var ImageView_1 = __webpack_require__(24);
 var Button = (function (_super) {
     __extends(Button, _super);
     function Button(rect) {
@@ -10441,303 +10797,13 @@ exports.Button = Button;
 
 
 /***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(3);
-var Abstract_1 = __webpack_require__(1);
-var Scroller = __webpack_require__(38);
-var ScrollView = (function (_super) {
-    __extends(ScrollView, _super);
-    function ScrollView(rect) {
-        var _this = _super.call(this, rect) || this;
-        _this._contentSize = Abstract_1.SizeZero;
-        _this._contentOffset = Abstract_1.PointZero;
-        _this._isScrollEnabled = true;
-        _this._bounces = true;
-        _this._isDirectionalLockEnabled = true;
-        _this._showsHorizontalScrollIndicator = true;
-        _this._showsVerticalScrollIndicator = true;
-        _this._alwaysBounceVertical = false;
-        _this._alwaysBounceHorizontal = false;
-        // Touches
-        _this._tracking = false;
-        _this._indicatorHidingTimer = 0;
-        _this._restoreInteractiveChildrenTimer = 0;
-        _this.innerView = new View_1.View();
-        _super.prototype.addSubview.call(_this, _this.innerView);
-        _this.horizonalScrollIndicator = new View_1.View();
-        _this.horizonalScrollIndicator.backgroundColor = new Abstract_1.Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff);
-        _this.horizonalScrollIndicator.cornerRadius = 1.0;
-        _this.horizonalScrollIndicator.alpha = 0.0;
-        _super.prototype.addSubview.call(_this, _this.horizonalScrollIndicator);
-        _this.verticalScrollIndicator = new View_1.View();
-        _this.verticalScrollIndicator.backgroundColor = new Abstract_1.Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff);
-        _this.verticalScrollIndicator.cornerRadius = 1.0;
-        _this.verticalScrollIndicator.alpha = 0.0;
-        _super.prototype.addSubview.call(_this, _this.verticalScrollIndicator);
-        _this.resetScroller();
-        _this.resetIndicator();
-        _this.activePanTouch();
-        return _this;
-    }
-    Object.defineProperty(ScrollView.prototype, "contentSize", {
-        get: function () {
-            return this._contentSize;
-        },
-        set: function (value) {
-            this._contentSize = value;
-            this.innerView.frame = Abstract_1.RectMake(this.contentOffset.x, this.contentOffset.y, value.width, value.height);
-            this.resetScroller();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "contentOffset", {
-        get: function () {
-            return this._contentOffset;
-        },
-        set: function (value) {
-            this._contentOffset = value;
-            this.innerView.frame = { x: -value.x, y: -value.y, width: this.innerView.frame.width, height: this.innerView.frame.height };
-            this.resetIndicator();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "isScrollEnabled", {
-        get: function () {
-            return this._isScrollEnabled;
-        },
-        set: function (value) {
-            this._isScrollEnabled = value;
-            this.resetScroller();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "bounces", {
-        get: function () {
-            return this._bounces;
-        },
-        set: function (value) {
-            this._bounces = value;
-            this.resetScroller();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "isDirectionalLockEnabled", {
-        get: function () {
-            return this._isDirectionalLockEnabled;
-        },
-        set: function (value) {
-            this._isDirectionalLockEnabled = value;
-            this.resetScroller();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "showsHorizontalScrollIndicator", {
-        get: function () {
-            return this._showsHorizontalScrollIndicator;
-        },
-        set: function (value) {
-            this._showsHorizontalScrollIndicator = value;
-            this.horizonalScrollIndicator.hidden = !value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "showsVerticalScrollIndicator", {
-        get: function () {
-            return this._showsVerticalScrollIndicator;
-        },
-        set: function (value) {
-            this._showsVerticalScrollIndicator = value;
-            this.verticalScrollIndicator.hidden = !value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "alwaysBounceVertical", {
-        get: function () {
-            return this._alwaysBounceVertical;
-        },
-        set: function (value) {
-            this._alwaysBounceVertical = value;
-            this.resetScroller();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ScrollView.prototype, "alwaysBounceHorizontal", {
-        get: function () {
-            return this._alwaysBounceHorizontal;
-        },
-        set: function (value) {
-            this._alwaysBounceHorizontal = value;
-            this.resetScroller();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ScrollView.prototype.layoutSubviews = function () {
-        _super.prototype.layoutSubviews.call(this);
-        this.resetScroller();
-    };
-    ScrollView.prototype.activePanTouch = function () {
-        var _this = this;
-        this.userInteractionEnabled = true;
-        this.nativeObject.on("touchstart", function (event) {
-            _this._tracking = true;
-            _this.scroller.doTouchStart(event.data.originalEvent.touches, event.data.originalEvent.timeStamp);
-            clearTimeout(_this._indicatorHidingTimer);
-            View_1.View.animationWithDuration(0.15, function () {
-                _this.verticalScrollIndicator.alpha = 1.0;
-                _this.horizonalScrollIndicator.alpha = 1.0;
-            });
-        });
-        this.nativeObject.on("touchmove", function (event) {
-            event.data.originalEvent.preventDefault();
-            _this.scroller.doTouchMove(event.data.originalEvent.touches, event.data.originalEvent.timeStamp, event.data.originalEvent.scale);
-            clearTimeout(_this._restoreInteractiveChildrenTimer);
-            _this.nativeObject.interactiveChildren = false;
-        });
-        this.nativeObject.on("touchend", function (event) {
-            _this._tracking = false;
-            _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
-            clearTimeout(_this._indicatorHidingTimer);
-            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
-        });
-        this.nativeObject.on("touchendoutside", function (event) {
-            _this._tracking = false;
-            _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
-            clearTimeout(_this._indicatorHidingTimer);
-            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
-        });
-        this.nativeObject.on("touchcancel", function (event) {
-            _this._tracking = false;
-            _this.scroller.doTouchEnd(event.data.originalEvent.timeStamp);
-            clearTimeout(_this._indicatorHidingTimer);
-            _this._indicatorHidingTimer = setTimeout(_this.hideIndicator.bind(_this), 250);
-        });
-    };
-    ScrollView.prototype.resetScroller = function () {
-        if (this.scroller === undefined) {
-            this.scroller = new Scroller(this.handleScroll.bind(this));
-        }
-        this.scroller.options.scrollingX = this.isScrollEnabled && (this.contentSize.width > this.bounds.width || this.alwaysBounceHorizontal);
-        this.scroller.options.scrollingY = this.isScrollEnabled && (this.contentSize.height > this.bounds.height || this.alwaysBounceVertical);
-        this.scroller.options.bouncing = this.bounces;
-        this.scroller.options.locking = this.isDirectionalLockEnabled;
-        this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
-    };
-    ScrollView.prototype.handleScroll = function (x, y) {
-        var _this = this;
-        this.contentOffset = { x: x, y: y };
-        this.onScroll && this.onScroll(this);
-        clearTimeout(this._indicatorHidingTimer);
-        this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250);
-        clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(function () { _this.nativeObject.interactiveChildren = true; }, 150);
-    };
-    // Indicators
-    ScrollView.prototype.resetIndicator = function () {
-        if (this.contentSize.height > this.bounds.height) {
-            var yProgress = this.contentOffset.y / (this.contentSize.height - this.bounds.height);
-            var yHeight = this.bounds.height / (this.contentSize.height / this.bounds.height);
-            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: yProgress * (this.bounds.height - yHeight), width: 2, height: yHeight };
-        }
-        else {
-            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: 0, width: 2, height: 0 };
-        }
-        if (this.contentSize.width > this.bounds.width) {
-            var xProgress = this.contentOffset.x / (this.contentSize.width - this.bounds.width);
-            var xWidth = this.bounds.width / (this.contentSize.width / this.bounds.width);
-            this.horizonalScrollIndicator.frame = { x: xProgress * (this.bounds.width - xWidth), y: this.bounds.height - 4, width: xWidth, height: 2 };
-        }
-        else {
-            this.horizonalScrollIndicator.frame = { x: 0, y: this.bounds.height - 4, width: 0, height: 2 };
-        }
-    };
-    ScrollView.prototype.hideIndicator = function () {
-        var _this = this;
-        if (this._tracking) {
-            return;
-        }
-        View_1.View.animationWithDuration(0.15, function () {
-            _this.verticalScrollIndicator.alpha = 0.0;
-            _this.horizonalScrollIndicator.alpha = 0.0;
-        });
-    };
-    // Proxy method call to innerView
-    ScrollView.prototype.insertSubviewAtIndex = function (subview, atIndex) {
-        this.innerView.insertSubviewAtIndex(subview, atIndex);
-    };
-    ScrollView.prototype.exchangeSubviewAtIndex = function (index1, index2) {
-        this.innerView.exchangeSubviewAtIndex(index1, index2);
-    };
-    ScrollView.prototype.addSubview = function (subview) {
-        this.innerView.addSubview(subview);
-    };
-    ScrollView.prototype.insertSubviewBelow = function (subview, siblingSubview) {
-        this.innerView.insertSubviewBelow(subview, siblingSubview);
-    };
-    ScrollView.prototype.insertSubviewAbove = function (subview, siblingSubview) {
-        this.innerView.insertSubviewAbove(subview, siblingSubview);
-    };
-    ScrollView.prototype.bringSubviewToFront = function (subview) {
-        this.innerView.bringSubviewToFront(subview);
-    };
-    ScrollView.prototype.sendSubviewToBack = function (subview) {
-        this.innerView.sendSubviewToBack(subview);
-    };
-    Object.defineProperty(ScrollView.prototype, "constraints", {
-        get: function () {
-            return this.innerView.constraints;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ScrollView.prototype.addConstraint = function (constraint) {
-        this.innerView.addConstraint(constraint);
-    };
-    ScrollView.prototype.addConstraints = function (constraints) {
-        this.innerView.addConstraints(constraints);
-    };
-    ScrollView.prototype.removeConstraint = function (constraint) {
-        this.innerView.removeConstraint(constraint);
-    };
-    ScrollView.prototype.removeAllConstraints = function () {
-        this.innerView.removeAllConstraints();
-    };
-    return ScrollView;
-}(View_1.View));
-exports.ScrollView = ScrollView;
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(39);
-
-/***/ }),
 /* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(40);
+
+/***/ }),
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -10754,7 +10820,7 @@ module.exports = __webpack_require__(39);
  * License: MIT + Apache (V2)
  */
 
-var core = __webpack_require__(40);
+var core = __webpack_require__(41);
 var Scroller;
 
 (function() {
@@ -12107,7 +12173,7 @@ var Scroller;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /*
@@ -12352,52 +12418,6 @@ var Scroller;
 
 
 /***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var ScrollView_1 = __webpack_require__(17);
-var View_1 = __webpack_require__(0);
-var ListSelectionStyle;
-(function (ListSelectionStyle) {
-    ListSelectionStyle[ListSelectionStyle["None"] = 0] = "None";
-    ListSelectionStyle[ListSelectionStyle["Gray"] = 1] = "Gray";
-})(ListSelectionStyle = exports.ListSelectionStyle || (exports.ListSelectionStyle = {}));
-var ListCell = (function (_super) {
-    __extends(ListCell, _super);
-    function ListCell() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.selectionStyle = ListSelectionStyle.Gray;
-        return _this;
-    }
-    return ListCell;
-}(View_1.View));
-exports.ListCell = ListCell;
-var ListView = (function (_super) {
-    __extends(ListView, _super);
-    function ListView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ListView.prototype.register = function (clazz, reuseIdentifier) { };
-    ListView.prototype.reloadData = function () { };
-    return ListView;
-}(ScrollView_1.ScrollView));
-exports.ListView = ListView;
-
-
-/***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12414,19 +12434,39 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ScrollView_1 = __webpack_require__(37);
-var View_1 = __webpack_require__(3);
+var ScrollView_1 = __webpack_require__(25);
+var View_1 = __webpack_require__(2);
 var Abstract_1 = __webpack_require__(1);
 var ListCell = (function (_super) {
     __extends(ListCell, _super);
-    function ListCell() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function ListCell(rect) {
+        var _this = _super.call(this, rect) || this;
         _this.reuseIdentifier = "";
         _this.selectionStyle = Abstract_1.ListSelectionStyle.Gray;
-        _this._displayItem = undefined;
         _this._isBusy = false;
+        _this.selectionView = new View_1.View();
+        _this.selectionView.backgroundColor = new Abstract_1.Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
+        _this.selectionView.alpha = 0.0;
+        _this.contentView = new View_1.View();
+        _this.addSubview(_this.selectionView);
+        _this.addSubview(_this.contentView);
         return _this;
     }
+    ListCell.prototype.layoutSubviews = function () {
+        _super.prototype.layoutSubviews.call(this);
+        this.selectionView.frame = this.bounds;
+        this.contentView.frame = this.bounds;
+    };
+    Object.defineProperty(ListCell.prototype, "highligted", {
+        set: function (value) {
+            if (this.selectionStyle == Abstract_1.ListSelectionStyle.None) {
+                return;
+            }
+            this.selectionView.alpha = value ? 1.0 : 0.0;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return ListCell;
 }(View_1.View));
 exports.ListCell = ListCell;
@@ -12441,6 +12481,10 @@ var ListView = (function (_super) {
         _this._nextSetted = false;
         _this._nextReloadMinY = undefined;
         _this._nextReloadMaxY = undefined;
+        _this._selectionTimer = 0;
+        _this._selectionCancelled = false;
+        _this._selectionInitialPoint = { x: 0, y: 0 };
+        _this._highlightedCell = undefined;
         _this.alwaysBounceVertical = true;
         return _this;
     }
@@ -12497,7 +12541,7 @@ var ListView = (function (_super) {
             }
             return item.maxY > _this.contentOffset.y && item.minY < _this.contentOffset.y + _this.bounds.height;
         });
-        var visibleCells = visibleRows.filter(function (row) { return _this._reusingCells.filter(function (cell) { return cell._displayItem === row.item; }).length == 0; }).map(function (row) {
+        var visibleCells = visibleRows.filter(function (row) { return _this._reusingCells.filter(function (cell) { return cell.currentItem === row.item; }).length == 0; }).map(function (row) {
             var cell = _this._reusingCells.filter(function (cell) {
                 return !cell._isBusy && cell.reuseIdentifier === row.item.reuseIdentifier;
             })[0] ||
@@ -12506,7 +12550,7 @@ var ListView = (function (_super) {
             cell.reuseIdentifier = row.item.reuseIdentifier;
             cell.frame = { x: 0, y: row.minY, width: _this.bounds.width, height: row.maxY - row.minY };
             cell._isBusy = true;
-            cell._displayItem = row.item;
+            cell.currentItem = row.item;
             _this.renderItem && _this.renderItem(cell, row.item);
             if (_this._reusingCells.indexOf(cell) < 0) {
                 _this._reusingCells.push(cell);
@@ -12526,6 +12570,53 @@ var ListView = (function (_super) {
         }).forEach(function (cell) {
             cell._isBusy = false;
         });
+    };
+    ListView.prototype.onTouchStart = function (absX, absY) {
+        var _this = this;
+        if (this.nativeObject.interactiveChildren) {
+            _super.prototype.onTouchStart.call(this, absX, absY);
+            this._selectionCancelled = false;
+            this._selectionInitialPoint = { x: absX, y: absY };
+            clearTimeout(this._selectionTimer);
+            this._selectionTimer = setTimeout(function () {
+                if (!_this._selectionCancelled) {
+                    var listY = 0;
+                    var cur = _this;
+                    while (cur !== undefined) {
+                        listY += cur.frame.y;
+                        cur = cur.superview;
+                    }
+                    var cellY_1 = absY - listY + _this.contentOffset.y;
+                    _this._reusingCells.forEach(function (cell) {
+                        if (cell.frame.y < cellY_1 && cell.frame.y + cell.frame.height > cellY_1) {
+                            _this._highlightedCell = cell;
+                            cell.highligted = true;
+                        }
+                    });
+                }
+            }, 100);
+        }
+        else {
+            _super.prototype.onTouchStart.call(this, absX, absY);
+        }
+    };
+    ListView.prototype.onTouchMove = function (absX, absY) {
+        _super.prototype.onTouchMove.call(this, absX, absY);
+        if (!this._selectionCancelled) {
+            if (Math.abs(absX - this._selectionInitialPoint.x) > 4.0 || Math.abs(absY - this._selectionInitialPoint.y) > 4.0) {
+                this._selectionCancelled = true;
+                if (this._highlightedCell) {
+                    this._highlightedCell.highligted = false;
+                }
+            }
+        }
+    };
+    ListView.prototype.onTouchEnd = function () {
+        _super.prototype.onTouchEnd.call(this);
+        if (this._highlightedCell) {
+            this._selectionCancelled = true;
+            this._highlightedCell.highligted = false;
+        }
     };
     return ListView;
 }(ScrollView_1.ScrollView));

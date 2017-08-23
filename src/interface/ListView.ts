@@ -16,6 +16,8 @@ export enum ListSelectionStyle {
 export class ListCell extends View {
 
     readonly reuseIdentifier: string
+    readonly currentItem?: ListItem
+    readonly contentView: View
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
 
 }

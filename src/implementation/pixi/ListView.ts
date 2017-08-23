@@ -1,13 +1,36 @@
 import { ScrollView } from "./ScrollView";
 import { View } from "./View";
-import { ListItem, Rect, ListSelectionStyle } from "../../interface/Abstract";
+import { ListItem, Rect, ListSelectionStyle, Color } from "../../interface/Abstract";
 
 export class ListCell extends View {
 
+    currentItem?: ListItem
     reuseIdentifier: string = ""
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
-    _displayItem: any = undefined
+    readonly selectionView: View
+    readonly contentView: View
     _isBusy = false
+
+    constructor(rect?: Rect) {
+        super(rect);
+        this.selectionView = new View();
+        this.selectionView.backgroundColor = new Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
+        this.selectionView.alpha = 0.0;
+        this.contentView = new View();
+        this.addSubview(this.selectionView);
+        this.addSubview(this.contentView);
+    }
+
+    layoutSubviews() {
+        super.layoutSubviews();
+        this.selectionView.frame = this.bounds;
+        this.contentView.frame = this.bounds;
+    }
+
+    public set highligted(value: boolean) {
+        if (this.selectionStyle == ListSelectionStyle.None) { return }
+        this.selectionView.alpha = value ? 1.0 : 0.0;
+    }
 
 }
 
@@ -92,7 +115,7 @@ export class ListView extends ScrollView {
             }
             return item.maxY > this.contentOffset.y && item.minY < this.contentOffset.y + this.bounds.height
         });
-        const visibleCells: ListCell[] = visibleRows.filter(row => this._reusingCells.filter(cell => cell._displayItem === row.item).length == 0).map(row => {
+        const visibleCells: ListCell[] = visibleRows.filter(row => this._reusingCells.filter(cell => cell.currentItem === row.item).length == 0).map(row => {
             const cell = this._reusingCells.filter(cell => {
                 return !cell._isBusy && cell.reuseIdentifier === row.item.reuseIdentifier
             })[0] ||
@@ -101,7 +124,7 @@ export class ListView extends ScrollView {
             cell.reuseIdentifier = row.item.reuseIdentifier
             cell.frame = { x: 0, y: row.minY, width: this.bounds.width, height: row.maxY - row.minY }
             cell._isBusy = true;
-            cell._displayItem = row.item;
+            cell.currentItem = row.item;
             this.renderItem && this.renderItem(cell, row.item);
             if (this._reusingCells.indexOf(cell) < 0) {
                 this._reusingCells.push(cell);
@@ -121,6 +144,55 @@ export class ListView extends ScrollView {
         }).forEach(cell => {
             cell._isBusy = false;
         });
+    }
+
+    private _selectionTimer: number = 0
+    private _selectionCancelled = false;
+    private _selectionInitialPoint = { x: 0, y: 0 };
+    private _highlightedCell?: ListCell = undefined;
+
+    protected onTouchStart(absX: number, absY: number) {
+        if (this.nativeObject.interactiveChildren) {
+            super.onTouchStart(absX, absY);
+            this._selectionCancelled = false;
+            this._selectionInitialPoint = { x: absX, y: absY };
+            clearTimeout(this._selectionTimer);
+            this._selectionTimer = setTimeout(() => {
+                if (!this._selectionCancelled) {
+                    let listY = 0;
+                    let cur: View | undefined = this;
+                    while (cur !== undefined) {
+                        listY += cur.frame.y;
+                        cur = cur.superview;
+                    }
+                    let cellY = absY - listY + this.contentOffset.y;
+                    this._reusingCells.forEach(cell => {
+                        if (cell.frame.y < cellY && cell.frame.y + cell.frame.height > cellY) {
+                            this._highlightedCell = cell;
+                            cell.highligted = true;
+                        }
+                    })
+                }
+            }, 100)
+        }
+        else {
+            super.onTouchStart(absX, absY);
+        }
+    }
+
+    protected onTouchMove(absX: number, absY: number) {
+        super.onTouchMove(absX, absY);
+        if (!this._selectionCancelled) {
+            if (Math.abs(absX - this._selectionInitialPoint.x) > 4.0 || Math.abs(absY - this._selectionInitialPoint.y) > 4.0) {
+                this._selectionCancelled = true;
+                if (this._highlightedCell) { this._highlightedCell.highligted = false }
+            }
+        }
+    }
+
+    protected onTouchEnd() {
+        super.onTouchEnd();
+        if (this._highlightedCell) { this._selectionCancelled = true; this._highlightedCell.highligted = false; }
     }
 
 }
