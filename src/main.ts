@@ -62,3 +62,6 @@ export const SwipeDirection = ISwipeDirection
 
 import { Window as IWindow } from './interface/Window'
 export const Window = IWindow
+
+import { ViewController as IViewController } from './interface/ViewController'
+export const ViewController = IViewController

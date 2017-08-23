@@ -71,3 +71,7 @@ export const SwipeDirection = ISwipeDirection
 import { Window as IWindow } from './interface/Window'
 import { Window as MWindow } from './implementation/pixi/Window'
 export const Window: typeof IWindow = MWindow
+
+import { ViewController as IViewController } from './interface/ViewController'
+import { ViewController as MViewController } from './implementation/pixi/ViewController'
+export const ViewController: typeof IViewController = MViewController
