@@ -1,7 +1,7 @@
 import { View } from "./View";
 import { Size } from "./Rect";
 
-export enum RenderingMode {
+export enum ImageRenderingMode {
     Original,
     Template,
 }
@@ -10,7 +10,7 @@ export class Image {
 
     readonly size: Size;
     readonly scale: number;
-    readonly renderingMode: RenderingMode = RenderingMode.Original;
+    readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
     static assetsPath = "./assets/"
 
@@ -20,7 +20,7 @@ export class Image {
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure: (error: Error) => void) { }
 
-    imageWithRenderingMode(renderingMode: RenderingMode): Image {
+    imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         throw "TODO"
     }
 

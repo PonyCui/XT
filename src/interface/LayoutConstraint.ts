@@ -1,7 +1,7 @@
 declare function require(name: string): any;
 import { View } from './View'
 
-export enum Attribute {
+export enum LayoutAttribute {
     Const = 0,
     Left = 1,
     Right = 2,
@@ -13,7 +13,7 @@ export enum Attribute {
     CenterY = 10,
 }
 
-export enum Relation {
+export enum LayoutRelation {
     Less = -1,
     Equal = 0,
     Greater = 1,
@@ -21,22 +21,22 @@ export enum Relation {
 
 export class LayoutConstraint {
 
-    static Attribute = Attribute;
-    static Relation = Relation;
+    static LayoutAttribute = LayoutAttribute;
+    static LayoutRelation = LayoutRelation;
 
     readonly firstItem?: View;
-    readonly firstAttr?: Attribute;
-    readonly relation: Relation = Relation.Equal;
+    readonly firstAttr?: LayoutAttribute;
+    readonly relation: LayoutRelation = LayoutRelation.Equal;
     readonly secondItem?: View;
-    readonly secondAttr?: Attribute;
+    readonly secondAttr?: LayoutAttribute;
     constant: number = 0;
     readonly multiplier: number = 1;
     priority: number = 750;
 
-    constructor(firstItem?: View, firstAttr?: Attribute, relation?: Relation, secondItem?: View, secondAttr?: Attribute, constant: number = 0, multiplier: number = 1) {
+    constructor(firstItem?: View, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant: number = 0, multiplier: number = 1) {
         this.firstItem = firstItem
         this.firstAttr = firstAttr
-        this.relation = relation || Relation.Equal
+        this.relation = relation || LayoutRelation.Equal
         this.secondItem = secondItem
         this.secondAttr = secondAttr
         this.constant = constant
