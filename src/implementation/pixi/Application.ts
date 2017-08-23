@@ -1,6 +1,8 @@
-import * as I from '../../interface/Abstract'
+import { Screen } from '../../interface/Screen';
+import { Application as IApplication, ApplicationDelegate as IApplicationDelegate } from '../../interface/Application';
 import { Window } from './Window'
 import { View } from './View'
+import { Rect, RectInside } from "../../interface/Rect";
 const PIXI = (window as any).PIXI
 let sharedApplication: Application | undefined = undefined;
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
@@ -12,22 +14,22 @@ if (requestAnimationFrame === undefined) {
 
 let displayStartTime: number = 0;
 
-export class Application extends I.Application {
+export class Application extends IApplication {
 
     nativeObject: any;
-    keyWindow?: Window = undefined;
+    keyWindow?: Window | any = undefined;
 
-    constructor(canvas: HTMLCanvasElement, delegate: I.ApplicationDelegate) {
+    constructor(canvas: HTMLCanvasElement, delegate: IApplicationDelegate) {
         super()
         if (sharedApplication === undefined) {
             sharedApplication = this;
             const scale = Math.ceil(window.devicePixelRatio);
-            I.Screen.mainScreen = () => {
-                return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale);
+            Screen.mainScreen = () => {
+                return new Screen(canvas.offsetWidth, canvas.offsetHeight, scale);
             }
         }
         Application.resetCanvas(canvas, () => {
-            this.nativeObject = new PIXI.Application({ width: I.Screen.withScale(canvas.offsetWidth), height: I.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
+            this.nativeObject = new PIXI.Application({ width: Screen.withScale(canvas.offsetWidth), height: Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
             this.nativeObject.stop();
             if ((window as any).DEBUG === true) {
                 (window as any).nativeObject = this.nativeObject;
@@ -41,7 +43,7 @@ export class Application extends I.Application {
                 });
             }
             this.delegate = delegate;
-            if (this.delegate as I.ApplicationDelegate) {
+            if (this.delegate as IApplicationDelegate) {
                 this.delegate.applicationDidFinishLaunchingWithOptions(this, {});
             }
         })
@@ -63,7 +65,7 @@ export class Application extends I.Application {
     public remarkRenderable() {
         if (this.keyWindow !== undefined) {
             const allViews = this.combineViews(this.keyWindow, { x: 0, y: 0 });
-            const opaqueRects: I.Rect[] = [];
+            const opaqueRects: Rect[] = [];
             for (let index = allViews.length - 1; index >= 0; index--) {
                 const view = allViews[index];
                 if ((view as any)._childRenderable === true) {
@@ -73,7 +75,7 @@ export class Application extends I.Application {
                 if (view.transform !== undefined) {
                     view.nativeObject.renderable = true;
                 }
-                else if (opaqueRects.filter(item => I.RectInside(item, (view as any)._absRect)).length == 0) {
+                else if (opaqueRects.filter(item => RectInside(item, (view as any)._absRect)).length == 0) {
                     if (view.opaque === true) {
                         opaqueRects.push((view as any)._absRect);
                     }

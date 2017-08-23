@@ -1,6 +1,8 @@
 import { ScrollView } from "./ScrollView";
 import { View } from "./View";
-import { ListItem, Rect, ListSelectionStyle, Color } from "../../interface/Abstract";
+import { ListItem, ListSelectionStyle } from "../../interface/ListView";
+import { Color } from "../../interface/Color";
+import { Rect } from "../../interface/Rect";
 
 export class ListCell extends View {
 

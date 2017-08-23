@@ -1,13 +1,13 @@
-import * as I from '../../interface/Abstract'
 import { Application } from './Application'
 import { View } from './View'
+import { Rect } from "../../interface/Rect";
 const PIXI = (window as any).PIXI
 
 export class Window extends View {
 
     XTClassName = "Window"
 
-    constructor(rect: I.Rect) {
+    constructor(rect: Rect) {
         super(rect);
         const application = Application.sharedApplication()
         if (application instanceof Application) {

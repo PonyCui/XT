@@ -1,15 +1,19 @@
-import * as I from '../../interface/Abstract'
 import { View } from "./View";
 import { setNeedsDisplay } from "./Application";
 import huozi from 'huozi'
 import { StaticTextLayout } from "./TextLayout";
+import { Rect, Size, RectZero } from "../../interface/Rect";
+import { Font } from "../../interface/Font";
+import { Color } from "../../interface/Color";
+import { TextAlignment, LineBreakMode, TextVerticalAlignment } from "../../interface/Label";
+import { Screen } from "../../interface/Screen";
 const PIXI = (window as any).PIXI
 
 export class Label extends View {
 
     private textContainer: any = new PIXI.Container();
 
-    constructor(rect?: I.Rect) {
+    constructor(rect?: Rect) {
         super(rect);
         this.nativeObject.addChildAt(this.textContainer, 1);
     }
@@ -31,36 +35,36 @@ export class Label extends View {
         this.drawText();
     }
 
-    private _font: I.Font = new I.Font(14)
+    private _font: Font = new Font(14)
 
-    public get font(): I.Font {
+    public get font(): Font {
         return this._font;
     }
 
-    public set font(value: I.Font) {
+    public set font(value: Font) {
         this._font = value;
         this.drawText();
     }
 
-    private _textColor: I.Color = new I.Color(0, 0, 0)
+    private _textColor: Color = new Color(0, 0, 0)
 
-    public get textColor(): I.Color {
+    public get textColor(): Color {
         return this._textColor;
     }
 
-    public set textColor(value: I.Color) {
+    public set textColor(value: Color) {
         if (this._textColor.equals(value)) { return; }
         this._textColor = value;
         this.drawText();
     }
 
-    private _textAlignment: I.TextAlignment = I.TextAlignment.Left;
+    private _textAlignment: TextAlignment = TextAlignment.Left;
 
     public get textAlignment() {
         return this._textAlignment;
     }
 
-    public set textAlignment(value: I.TextAlignment) {
+    public set textAlignment(value: TextAlignment) {
         if (this._textAlignment === value) { return; }
         this._textAlignment = value;
     }
@@ -77,13 +81,13 @@ export class Label extends View {
         this.drawText();
     }
 
-    private _lineBreakMode: I.LineBreakMode = I.LineBreakMode.WordWrapping;
+    private _lineBreakMode: LineBreakMode = LineBreakMode.WordWrapping;
 
-    public get lineBreakMode(): I.LineBreakMode {
+    public get lineBreakMode(): LineBreakMode {
         return this._lineBreakMode
     }
 
-    public set lineBreakMode(value: I.LineBreakMode) {
+    public set lineBreakMode(value: LineBreakMode) {
         if (this._lineBreakMode === value) { return; }
         this._lineBreakMode = value;
         this.drawText();
@@ -113,7 +117,7 @@ export class Label extends View {
         this.setNeedsLayout();
     }
 
-    public intrinsicContentSize(width?: number): I.Size | undefined {
+    public intrinsicContentSize(width?: number): Size | undefined {
         if (this.text) {
             const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
             return { width: textLayout.textRect.width, height: textLayout.textRect.height + 2 }
@@ -129,31 +133,31 @@ export class Label extends View {
             this.textContainer.removeChildren();
             if (this.text) {
                 const textStyle = new PIXI.TextStyle({
-                    fontSize: I.Screen.withScale(this.font.pointSize),
+                    fontSize: Screen.withScale(this.font.pointSize),
                     fontWeight: this.font.fontWeight,
                     fill: this.textColor.rgbHexString(),
                 })
                 const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
-                textLayout.textLines(this.bounds, this.textAlignment, I.TextVerticalAlignment.Center, this.lineBreakMode).forEach(line => {
+                textLayout.textLines(this.bounds, this.textAlignment, TextVerticalAlignment.Center, this.lineBreakMode).forEach(line => {
                     const text = new PIXI.Text(line.text, textStyle);
                     text.x = 0;
-                    text.y = I.Screen.withScale(line.y);
+                    text.y = Screen.withScale(line.y);
                     const textBounds = text.getBounds();
                     // textBounds.x *= 375 / window.screen.width;
                     // textBounds.y *= 375 / window.screen.width;
                     // textBounds.width *= 375 / window.screen.width;
                     // textBounds.height *= 375 / window.screen.width;
-                    if (textBounds.width > I.Screen.withScale(this.bounds.width)) {
+                    if (textBounds.width > Screen.withScale(this.bounds.width)) {
                         line.elements.forEach((element: any) => {
                             const text = new PIXI.Text(element.character, textStyle);
-                            text.x = I.Screen.withScale(line.x + element.x);
-                            text.y = I.Screen.withScale(line.y);
+                            text.x = Screen.withScale(line.x + element.x);
+                            text.y = Screen.withScale(line.y);
                             this.textContainer.addChild(text);
                         })
                         return;
                     }
-                    else if (this.textAlignment == I.TextAlignment.Center) {
-                        text.x = Math.ceil((I.Screen.withScale(this.bounds.width) - textBounds.width) / 2.0)
+                    else if (this.textAlignment == TextAlignment.Center) {
+                        text.x = Math.ceil((Screen.withScale(this.bounds.width) - textBounds.width) / 2.0)
                     }
                     this.textContainer.addChild(text);
                 })
@@ -162,16 +166,16 @@ export class Label extends View {
         })
     }
 
-    textRectForBounds(bounds: I.Rect): I.Rect {
+    textRectForBounds(bounds: Rect): Rect {
         if (this.text) {
             const textStyle = new PIXI.TextStyle({
-                fontSize: I.Screen.withScale(this.font.pointSize),
+                fontSize: Screen.withScale(this.font.pointSize),
                 fill: this.textColor.rgbHexString(),
             })
             const textLayout = new StaticTextLayout(this.numberOfLines, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
             return textLayout.bounds
         }
-        return I.RectZero
+        return RectZero
     }
 
 }

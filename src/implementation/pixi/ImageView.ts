@@ -2,7 +2,7 @@ import { Screen } from '../../interface/Screen';
 import { View } from "./View";
 import { Size } from "../../interface/Rect";
 import { setNeedsDisplay, displayInterval } from "./Application";
-import { ContentMode, RenderingMode } from "../../interface/Abstract";
+import { ImageRenderingMode, ContentMode } from "../../interface/ImageView";
 const PIXI = (window as any).PIXI
 
 const imageLoader = new PIXI.loaders.Loader();
@@ -15,7 +15,7 @@ export class Image {
     readonly size: Size;
     readonly scale: number;
     readonly baseTexture: any;
-    readonly renderingMode: RenderingMode = RenderingMode.Original;
+    readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
     static assetsPath = "./assets/"
 
@@ -70,7 +70,7 @@ export class Image {
             imageLoader.load((_: any, res: { [key: string]: any }) => {
                 for (const url in res) {
                     const value = res[url];
-                    const image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution, RenderingMode.Original);
+                    const image = new Image(value.texture.baseTexture, { width: value.texture.baseTexture.width, height: value.texture.baseTexture.height }, value.texture.baseTexture.resolution, ImageRenderingMode.Original);
                     runningQueue.forEach(item => {
                         if (item.url == url) {
                             item.success(image);
@@ -81,14 +81,14 @@ export class Image {
         })
     }
 
-    private constructor(baseTexture: any, size: Size, scale: number, renderingMode: RenderingMode) {
+    private constructor(baseTexture: any, size: Size, scale: number, renderingMode: ImageRenderingMode) {
         this.baseTexture = baseTexture;
         this.size = size;
         this.scale = scale;
         this.renderingMode = renderingMode;
     }
 
-    imageWithRenderingMode(renderingMode: RenderingMode): Image {
+    imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         return new Image(this.baseTexture, this.size, this.scale, renderingMode);
     }
 
@@ -134,7 +134,7 @@ export class ImageView extends View {
         if (this.image) {
             const image = this.image;
             this.imageObject = PIXI.Sprite.from(image.baseTexture);
-            if (this.image.renderingMode === RenderingMode.Template) {
+            if (this.image.renderingMode === ImageRenderingMode.Template) {
                 this.imageObject.tint = this.tintColor.rgbHexNumber(); // todo
             }
             this.resetImageBounds();

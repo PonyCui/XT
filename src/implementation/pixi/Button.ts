@@ -1,8 +1,11 @@
 import { InteractionState } from '../../interface/View';
 import { View } from "./View";
 import { Label } from "./Label";
-import { Rect, TextAlignment, Font, Color, LineBreakMode, RectZero } from "../../interface/Abstract";
 import { ImageView, Image } from "./ImageView";
+import { Rect, RectZero } from "../../interface/Rect";
+import { TextAlignment, LineBreakMode } from "../../interface/Label";
+import { Font } from "../../interface/Font";
+import { Color } from "../../interface/Color";
 
 export class Button extends View {
 

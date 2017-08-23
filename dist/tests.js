@@ -60,70 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var InteractionState;
-(function (InteractionState) {
-    InteractionState[InteractionState["Began"] = 0] = "Began";
-    InteractionState[InteractionState["Changed"] = 1] = "Changed";
-    InteractionState[InteractionState["Ended"] = 2] = "Ended";
-    InteractionState[InteractionState["Cancelled"] = 3] = "Cancelled";
-})(InteractionState = exports.InteractionState || (exports.InteractionState = {}));
-var SwipeDirection;
-(function (SwipeDirection) {
-    SwipeDirection[SwipeDirection["ToLeft"] = 0] = "ToLeft";
-    SwipeDirection[SwipeDirection["ToRight"] = 1] = "ToRight";
-    SwipeDirection[SwipeDirection["ToTop"] = 2] = "ToTop";
-    SwipeDirection[SwipeDirection["ToBottom"] = 3] = "ToBottom";
-})(SwipeDirection = exports.SwipeDirection || (exports.SwipeDirection = {}));
-var View = (function () {
-    function View(rect) {
-    }
-    View.prototype.tintColorDidChange = function () { };
-    View.prototype.removeFromSuperview = function () { };
-    View.prototype.insertSubviewAtIndex = function (subview, atIndex) { };
-    View.prototype.exchangeSubviewAtIndex = function (index1, index2) { };
-    View.prototype.addSubview = function (subview) { };
-    View.prototype.insertSubviewBelow = function (subview, siblingSubview) { };
-    View.prototype.insertSubviewAbove = function (subview, siblingSubview) { };
-    View.prototype.bringSubviewToFront = function (subview) { };
-    View.prototype.sendSubviewToBack = function (subview) { };
-    View.prototype.didAddSubview = function (subview) { };
-    View.prototype.willRemoveSubview = function (subview) { };
-    View.prototype.willMoveToSuperview = function (newSuperview) { };
-    View.prototype.didMoveToSuperview = function () { };
-    View.prototype.willMoveToWindow = function (newWindow) { };
-    View.prototype.didMoveToWindow = function () { };
-    View.prototype.isDescendantOfView = function (view) { return false; };
-    View.prototype.viewWithTag = function (tag) { return undefined; };
-    View.prototype.setNeedsLayout = function () { };
-    View.prototype.layoutIfNeeded = function () { };
-    View.prototype.layoutSubviews = function () { };
-    View.prototype.addConstraint = function (constraint) { };
-    View.prototype.addConstraints = function (constraints) { };
-    View.prototype.removeConstraint = function (constraint) { };
-    View.prototype.removeAllConstraints = function () { };
-    // Mark: View Animation
-    View.prototype.animationWithDuration = function (duration, animations, completion) { };
-    View.prototype.animationWithBouncinessAndSpeed = function (damping, velocity, animations, completion) { };
-    // Mark: View Interactive
-    View.InteractionState = InteractionState;
-    View.SwipeDirection = SwipeDirection;
-    return View;
-}());
-exports.View = View;
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -176,13 +117,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(10);
+__webpack_require__(7);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -372,63 +313,35 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Rect_1 = __webpack_require__(4);
-exports.RectMake = Rect_1.RectMake;
-exports.RectZero = Rect_1.RectZero;
-exports.RectEqual = Rect_1.RectEqual;
-exports.PointMake = Rect_1.PointMake;
-exports.PointZero = Rect_1.PointZero;
-exports.SizeMake = Rect_1.SizeMake;
-exports.SizeZero = Rect_1.SizeZero;
-exports.RectInside = Rect_1.RectInside;
-exports.PointEqual = Rect_1.PointEqual;
-exports.SizeEqual = Rect_1.SizeEqual;
-exports.InsetsMake = Rect_1.InsetsMake;
-var View_1 = __webpack_require__(0);
-exports.View = View_1.View;
-var Window_1 = __webpack_require__(12);
-exports.Window = Window_1.Window;
-var Application_1 = __webpack_require__(13);
-exports.Application = Application_1.Application;
-exports.ApplicationDelegate = Application_1.ApplicationDelegate;
-var Color_1 = __webpack_require__(5);
-exports.Color = Color_1.Color;
-var Screen_1 = __webpack_require__(14);
-exports.Screen = Screen_1.Screen;
-var TransformMatrix_1 = __webpack_require__(15);
-exports.TransformMatrix = TransformMatrix_1.TransformMatrix;
-var LayoutConstraint_1 = __webpack_require__(16);
-exports.LayoutConstraint = LayoutConstraint_1.LayoutConstraint;
-var Label_1 = __webpack_require__(17);
-exports.Label = Label_1.Label;
-exports.TextAlignment = Label_1.TextAlignment;
-exports.TextVerticalAlignment = Label_1.TextVerticalAlignment;
-exports.LineBreakMode = Label_1.LineBreakMode;
-var Font_1 = __webpack_require__(18);
-exports.Font = Font_1.Font;
-var Button_1 = __webpack_require__(19);
-exports.Button = Button_1.Button;
-var ImageView_1 = __webpack_require__(20);
-exports.ImageView = ImageView_1.ImageView;
-exports.Image = ImageView_1.Image;
-exports.ContentMode = ImageView_1.ContentMode;
-exports.RenderingMode = ImageView_1.RenderingMode;
-var ScrollView_1 = __webpack_require__(6);
-exports.ScrollView = ScrollView_1.ScrollView;
-var ListView_1 = __webpack_require__(21);
-exports.ListView = ListView_1.ListView;
-exports.ListCell = ListView_1.ListCell;
-exports.ListSelectionStyle = ListView_1.ListSelectionStyle;
+var Screen = (function () {
+    function Screen(width, height, scale) {
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
+    }
+    Screen.prototype.bounds = function () {
+        return { x: 0, y: 0, width: this.width, height: this.height };
+    };
+    Screen.withScale = function (value) {
+        return value * Screen.mainScreen().scale;
+    };
+    Screen.outScale = function (value) {
+        return value / Screen.mainScreen().scale;
+    };
+    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
+    return Screen;
+}());
+exports.Screen = Screen;
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -472,47 +385,7 @@ exports.InsetsMake = InsetsMake;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Color = (function () {
-    function Color(r, g, b, a) {
-        this.r = Math.min(1.0, Math.max(0.0, r));
-        this.g = Math.min(1.0, Math.max(0.0, g));
-        ;
-        this.b = Math.min(1.0, Math.max(0.0, b));
-        ;
-        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
-        ;
-    }
-    Color.prototype.rgbHexNumber = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
-    };
-    Color.prototype.rgbHexString = function () {
-        var r = Math.ceil(this.r * 255).toString(16);
-        var g = Math.ceil(this.g * 255).toString(16);
-        var b = Math.ceil(this.b * 255).toString(16);
-        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
-    };
-    Color.prototype.equals = function (toColor) {
-        if (toColor instanceof Color) {
-            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
-        }
-        return false;
-    };
-    return Color;
-}());
-exports.Color = Color;
-
-
-/***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -528,43 +401,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(0);
-var ScrollView = (function (_super) {
-    __extends(ScrollView, _super);
-    function ScrollView() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.isDirectionalLockEnabled = true;
-        _this.bounces = true;
-        _this.isScrollEnabled = true;
-        _this.showsHorizontalScrollIndicator = true;
-        _this.showsVerticalScrollIndicator = true;
-        _this.alwaysBounceVertical = false;
-        _this.alwaysBounceHorizontal = false;
-        return _this;
-    }
-    return ScrollView;
-}(View_1.View));
-exports.ScrollView = ScrollView;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var main_pixi_1 = __webpack_require__(8);
+var main_pixi_1 = __webpack_require__(5);
 var MyView = (function (_super) {
     __extends(MyView, _super);
     function MyView() {
@@ -580,18 +417,18 @@ v.alpha = 1.0;
 
 
 /***/ }),
-/* 8 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(9);
+var View_1 = __webpack_require__(6);
 exports.View = View_1.View;
 
 
 /***/ }),
-/* 9 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -615,11 +452,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(3);
-var Application_1 = __webpack_require__(22);
-var Rebound = __webpack_require__(23);
+var View_1 = __webpack_require__(9);
+var Screen_1 = __webpack_require__(2);
+var Application_1 = __webpack_require__(10);
+var Rebound = __webpack_require__(12);
+var Rect_1 = __webpack_require__(3);
+var Color_1 = __webpack_require__(13);
 var PIXI = window.PIXI;
-var AutoLayout = __webpack_require__(24);
+var AutoLayout = __webpack_require__(14);
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {
     requestAnimationFrame = function (trigger) {
@@ -629,17 +469,17 @@ if (requestAnimationFrame === undefined) {
 var View = (function (_super) {
     __extends(View, _super);
     function View(rect) {
-        var _this = _super.call(this, rect || I.RectZero) || this;
+        var _this = _super.call(this, rect || Rect_1.RectZero) || this;
         // Mark: View Geometry
-        _this._frame = I.RectZero;
+        _this._frame = Rect_1.RectZero;
         _this._frameChanged = false;
         _this._forceRender = false;
-        _this._bounds = I.RectZero;
+        _this._bounds = Rect_1.RectZero;
         // Mark: View Rendering
         _this._clipsToBounds = false;
         _this._backgroundColor = undefined;
         _this._opaque = false;
-        _this._tintColor = new I.Color(0.0, 122.0 / 255.0, 1.0);
+        _this._tintColor = new Color_1.Color(0.0, 122.0 / 255.0, 1.0);
         // Mark: View Layer-Back Rendering
         _this._cornerRadius = 0;
         _this._borderWidth = 0;
@@ -678,7 +518,7 @@ var View = (function (_super) {
             return this._frame;
         },
         set: function (value) {
-            if (I.RectEqual(this._frame, value)) {
+            if (Rect_1.RectEqual(this._frame, value)) {
                 return;
             }
             if (View._animationEnabled) {
@@ -699,10 +539,10 @@ var View = (function (_super) {
             this._frame = value;
             this._frameChanged = true;
             this.bounds = { x: 0, y: 0, width: value.width, height: value.height };
-            this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, I.Screen.withScale(value.width), I.Screen.withScale(value.height));
+            this.nativeObject.hitArea = new PIXI.Rectangle(0, 0, Screen_1.Screen.withScale(value.width), Screen_1.Screen.withScale(value.height));
             this.nativeContainer.hitArea = this.nativeObject.hitArea;
-            this.nativeObject.x = I.Screen.withScale(value.x);
-            this.nativeObject.y = I.Screen.withScale(value.y);
+            this.nativeObject.x = Screen_1.Screen.withScale(value.x);
+            this.nativeObject.y = Screen_1.Screen.withScale(value.y);
             Application_1.setNeedsDisplay(this);
         },
         enumerable: true,
@@ -741,7 +581,7 @@ var View = (function (_super) {
             return this._bounds;
         },
         set: function (value) {
-            if (I.RectEqual(this._bounds, value)) {
+            if (Rect_1.RectEqual(this._bounds, value)) {
                 return;
             }
             if (View._animationEnabled) {
@@ -845,7 +685,7 @@ var View = (function (_super) {
         if (this.clipsToBounds) {
             if (this.maskView === undefined) {
                 this.maskView = new View(this.bounds);
-                this.maskView.backgroundColor = new I.Color(1, 1, 1);
+                this.maskView.backgroundColor = new Color_1.Color(1, 1, 1);
             }
             else {
                 this.maskView.frame = this.bounds;
@@ -867,7 +707,7 @@ var View = (function (_super) {
             return this._backgroundColor;
         },
         set: function (value) {
-            if (this._backgroundColor instanceof I.Color && this._backgroundColor.equals(value)) {
+            if (this._backgroundColor instanceof Color_1.Color && this._backgroundColor.equals(value)) {
                 return;
             }
             if (View._animationEnabled && this._backgroundColor && value) {
@@ -895,7 +735,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "backgroundColorA", {
         set: function (value) {
             if (this.backgroundColor) {
-                this.backgroundColor = new I.Color(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
+                this.backgroundColor = new Color_1.Color(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
             }
         },
         enumerable: true,
@@ -904,7 +744,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "backgroundColorR", {
         set: function (value) {
             if (this.backgroundColor) {
-                this.backgroundColor = new I.Color(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
+                this.backgroundColor = new Color_1.Color(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
             }
         },
         enumerable: true,
@@ -913,7 +753,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "backgroundColorG", {
         set: function (value) {
             if (this.backgroundColor) {
-                this.backgroundColor = new I.Color(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
+                this.backgroundColor = new Color_1.Color(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
             }
         },
         enumerable: true,
@@ -922,7 +762,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "backgroundColorB", {
         set: function (value) {
             if (this.backgroundColor) {
-                this.backgroundColor = new I.Color(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
+                this.backgroundColor = new Color_1.Color(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
             }
         },
         enumerable: true,
@@ -996,7 +836,7 @@ var View = (function (_super) {
             return this._tintColor;
         },
         set: function (value) {
-            if (this._tintColor instanceof I.Color && this._tintColor.equals(value)) {
+            if (this._tintColor instanceof Color_1.Color && this._tintColor.equals(value)) {
                 return;
             }
             this._tintColor = value;
@@ -1080,7 +920,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "borderColorA", {
         set: function (value) {
             if (this.borderColor) {
-                this.borderColor = new I.Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
+                this.borderColor = new Color_1.Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
             }
         },
         enumerable: true,
@@ -1089,7 +929,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "borderColorR", {
         set: function (value) {
             if (this.borderColor) {
-                this.borderColor = new I.Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
+                this.borderColor = new Color_1.Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
             }
         },
         enumerable: true,
@@ -1098,7 +938,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "borderColorG", {
         set: function (value) {
             if (this.borderColor) {
-                this.borderColor = new I.Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
+                this.borderColor = new Color_1.Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
             }
         },
         enumerable: true,
@@ -1107,7 +947,7 @@ var View = (function (_super) {
     Object.defineProperty(View.prototype, "borderColorB", {
         set: function (value) {
             if (this.borderColor) {
-                this.borderColor = new I.Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
+                this.borderColor = new Color_1.Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
             }
         },
         enumerable: true,
@@ -1121,16 +961,16 @@ var View = (function (_super) {
         this.drawGraphics();
     };
     View.prototype.drawGraphics = function () {
-        if (this.backgroundColor instanceof I.Color) {
+        if (this.backgroundColor instanceof Color_1.Color) {
             this.nativeGraphics.beginFill(this.backgroundColor.rgbHexNumber(), this.backgroundColor.a);
-            if (this.borderWidth > 0 && this.borderColor instanceof I.Color) {
-                this.nativeGraphics.lineStyle(I.Screen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
+            if (this.borderWidth > 0 && this.borderColor instanceof Color_1.Color) {
+                this.nativeGraphics.lineStyle(Screen_1.Screen.withScale(this.borderWidth), this.borderColor.rgbHexNumber(), this.borderColor.a);
             }
             var scaledBounds = {
-                x: I.Screen.withScale(this.bounds.x),
-                y: I.Screen.withScale(this.bounds.y),
-                width: I.Screen.withScale(this.bounds.width),
-                height: I.Screen.withScale(this.bounds.height),
+                x: Screen_1.Screen.withScale(this.bounds.x),
+                y: Screen_1.Screen.withScale(this.bounds.y),
+                width: Screen_1.Screen.withScale(this.bounds.width),
+                height: Screen_1.Screen.withScale(this.bounds.height),
             };
             if (this.cornerRadius > 0) {
                 if (this.cornerRadius == Math.min(this.bounds.width, this.bounds.height) / 2.0) {
@@ -1149,7 +989,7 @@ var View = (function (_super) {
                     }
                 }
                 else {
-                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, I.Screen.withScale(this.cornerRadius));
+                    this.nativeGraphics.drawRoundedRect(scaledBounds.x, scaledBounds.y, scaledBounds.width, scaledBounds.height, Screen_1.Screen.withScale(this.cornerRadius));
                 }
             }
             else {
@@ -1435,8 +1275,8 @@ var View = (function (_super) {
     };
     View.prototype.requestTouchPointInView = function (event) {
         var absPoint = {
-            x: I.Screen.outScale(event.data.global.x),
-            y: I.Screen.outScale(event.data.global.y),
+            x: Screen_1.Screen.outScale(event.data.global.x),
+            y: Screen_1.Screen.outScale(event.data.global.y),
         };
         var viewPoint = {
             x: absPoint.x,
@@ -1452,8 +1292,8 @@ var View = (function (_super) {
     };
     View.prototype.requestTouchPointInWindow = function (event) {
         var absPoint = {
-            x: I.Screen.outScale(event.data.global.x),
-            y: I.Screen.outScale(event.data.global.y),
+            x: Screen_1.Screen.outScale(event.data.global.x),
+            y: Screen_1.Screen.outScale(event.data.global.y),
         };
         return absPoint;
     };
@@ -1469,7 +1309,7 @@ var View = (function (_super) {
             setTimeout(function () {
                 if (_this._maybeLongPress === true) {
                     _this._isLongPress = true;
-                    _this._onLongPress && _this._onLongPress(I.View.InteractionState.Began);
+                    _this._onLongPress && _this._onLongPress(View_1.View.InteractionState.Began);
                 }
             }, this.longPressDuration);
         }
@@ -1482,21 +1322,21 @@ var View = (function (_super) {
     View.prototype.handleTouchMove = function (event) {
         if (this._isLongPress === true) {
             this._maybePan = false;
-            this._onLongPress && this._onLongPress(I.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onLongPress && this._onLongPress(View_1.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
         }
         else if (this._isPan === true) {
-            this._onPan && this._onPan(I.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onPan && this._onPan(View_1.View.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
         }
         else if (this._maybePan === true) {
-            if (event.data.global.x - this._firstTapPoint.x > I.Screen.withScale(8) || event.data.global.y - this._firstTapPoint.y > I.Screen.withScale(8)) {
+            if (event.data.global.x - this._firstTapPoint.x > Screen_1.Screen.withScale(8) || event.data.global.y - this._firstTapPoint.y > Screen_1.Screen.withScale(8)) {
                 this._isPan = true;
                 this._maybeTap = false;
                 this._maybeLongPress = false;
-                this._onPan && this._onPan(I.View.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+                this._onPan && this._onPan(View_1.View.InteractionState.Began, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             }
         }
         else if (this._maybeTap === true || this._maybeLongPress === true) {
-            if (event.data.global.x - this._firstTapPoint.x > I.Screen.withScale(12) || event.data.global.y - this._firstTapPoint.y > I.Screen.withScale(12)) {
+            if (event.data.global.x - this._firstTapPoint.x > Screen_1.Screen.withScale(12) || event.data.global.y - this._firstTapPoint.y > Screen_1.Screen.withScale(12)) {
                 this._maybeTap = false;
                 this._maybeLongPress = false;
             }
@@ -1507,12 +1347,12 @@ var View = (function (_super) {
             this._maybeLongPress = false;
         }
         if (this._isPan === true) {
-            this._onPan && this._onPan(I.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onPan && this._onPan(View_1.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             this._maybePan = false;
             this._isPan = false;
         }
         else if (this._isLongPress === true) {
-            this._onLongPress && this._onLongPress(I.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            this._onLongPress && this._onLongPress(View_1.View.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
             this._maybeTap = false;
             this._isLongPress = false;
         }
@@ -1622,13 +1462,13 @@ var View = (function (_super) {
     View._animationEnabled = false;
     View._animationViews = [];
     return View;
-}(I.View));
+}(View_1.View));
 exports.View = View;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).clearImmediate, __webpack_require__(1).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).clearImmediate, __webpack_require__(0).setImmediate))
 
 /***/ }),
-/* 10 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1818,10 +1658,10 @@ exports.View = View;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ }),
-/* 11 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1848,7 +1688,66 @@ module.exports = g;
 
 
 /***/ }),
-/* 12 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var InteractionState;
+(function (InteractionState) {
+    InteractionState[InteractionState["Began"] = 0] = "Began";
+    InteractionState[InteractionState["Changed"] = 1] = "Changed";
+    InteractionState[InteractionState["Ended"] = 2] = "Ended";
+    InteractionState[InteractionState["Cancelled"] = 3] = "Cancelled";
+})(InteractionState = exports.InteractionState || (exports.InteractionState = {}));
+var SwipeDirection;
+(function (SwipeDirection) {
+    SwipeDirection[SwipeDirection["ToLeft"] = 0] = "ToLeft";
+    SwipeDirection[SwipeDirection["ToRight"] = 1] = "ToRight";
+    SwipeDirection[SwipeDirection["ToTop"] = 2] = "ToTop";
+    SwipeDirection[SwipeDirection["ToBottom"] = 3] = "ToBottom";
+})(SwipeDirection = exports.SwipeDirection || (exports.SwipeDirection = {}));
+var View = (function () {
+    function View(rect) {
+    }
+    View.prototype.tintColorDidChange = function () { };
+    View.prototype.removeFromSuperview = function () { };
+    View.prototype.insertSubviewAtIndex = function (subview, atIndex) { };
+    View.prototype.exchangeSubviewAtIndex = function (index1, index2) { };
+    View.prototype.addSubview = function (subview) { };
+    View.prototype.insertSubviewBelow = function (subview, siblingSubview) { };
+    View.prototype.insertSubviewAbove = function (subview, siblingSubview) { };
+    View.prototype.bringSubviewToFront = function (subview) { };
+    View.prototype.sendSubviewToBack = function (subview) { };
+    View.prototype.didAddSubview = function (subview) { };
+    View.prototype.willRemoveSubview = function (subview) { };
+    View.prototype.willMoveToSuperview = function (newSuperview) { };
+    View.prototype.didMoveToSuperview = function () { };
+    View.prototype.willMoveToWindow = function (newWindow) { };
+    View.prototype.didMoveToWindow = function () { };
+    View.prototype.isDescendantOfView = function (view) { return false; };
+    View.prototype.viewWithTag = function (tag) { return undefined; };
+    View.prototype.setNeedsLayout = function () { };
+    View.prototype.layoutIfNeeded = function () { };
+    View.prototype.layoutSubviews = function () { };
+    View.prototype.addConstraint = function (constraint) { };
+    View.prototype.addConstraints = function (constraints) { };
+    View.prototype.removeConstraint = function (constraint) { };
+    View.prototype.removeAllConstraints = function () { };
+    // Mark: View Animation
+    View.prototype.animationWithDuration = function (duration, animations, completion) { };
+    View.prototype.animationWithBouncinessAndSpeed = function (damping, velocity, animations, completion) { };
+    // Mark: View Interactive
+    View.InteractionState = InteractionState;
+    View.SwipeDirection = SwipeDirection;
+    return View;
+}());
+exports.View = View;
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1864,373 +1763,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(0);
-var Window = (function (_super) {
-    __extends(Window, _super);
-    function Window() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Window.prototype.makeKeyAndVisible = function () { };
-    return Window;
-}(View_1.View));
-exports.Window = Window;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ApplicationDelegate = (function () {
-    function ApplicationDelegate() {
-    }
-    ApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
-    return ApplicationDelegate;
-}());
-exports.ApplicationDelegate = ApplicationDelegate;
-var Application = (function () {
-    function Application() {
-    }
-    Application.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
-    return Application;
-}());
-exports.Application = Application;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Screen = (function () {
-    function Screen(width, height, scale) {
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-    }
-    Screen.prototype.bounds = function () {
-        return { x: 0, y: 0, width: this.width, height: this.height };
-    };
-    Screen.withScale = function (value) {
-        return value * Screen.mainScreen().scale;
-    };
-    Screen.outScale = function (value) {
-        return value / Screen.mainScreen().scale;
-    };
-    Screen.mainScreen = function () { return new Screen(0, 0, 1); };
-    return Screen;
-}());
-exports.Screen = Screen;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var TransformMatrix = (function () {
-    function TransformMatrix(a, b, c, d, tx, ty) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.tx = tx;
-        this.ty = ty;
-    }
-    return TransformMatrix;
-}());
-exports.TransformMatrix = TransformMatrix;
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Attribute;
-(function (Attribute) {
-    Attribute[Attribute["Const"] = 0] = "Const";
-    Attribute[Attribute["Left"] = 1] = "Left";
-    Attribute[Attribute["Right"] = 2] = "Right";
-    Attribute[Attribute["Top"] = 3] = "Top";
-    Attribute[Attribute["Bottom"] = 4] = "Bottom";
-    Attribute[Attribute["Width"] = 7] = "Width";
-    Attribute[Attribute["Height"] = 8] = "Height";
-    Attribute[Attribute["CenterX"] = 9] = "CenterX";
-    Attribute[Attribute["CenterY"] = 10] = "CenterY";
-})(Attribute = exports.Attribute || (exports.Attribute = {}));
-var Relation;
-(function (Relation) {
-    Relation[Relation["Less"] = -1] = "Less";
-    Relation[Relation["Equal"] = 0] = "Equal";
-    Relation[Relation["Greater"] = 1] = "Greater";
-})(Relation = exports.Relation || (exports.Relation = {}));
-var LayoutConstraint = (function () {
-    function LayoutConstraint(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier) {
-        if (constant === void 0) { constant = 0; }
-        if (multiplier === void 0) { multiplier = 1; }
-        this.relation = Relation.Equal;
-        this.constant = 0;
-        this.multiplier = 1;
-        this.priority = 750;
-        this.firstItem = firstItem;
-        this.firstAttr = firstAttr;
-        this.relation = relation || Relation.Equal;
-        this.secondItem = secondItem;
-        this.secondAttr = secondAttr;
-        this.constant = constant;
-        this.multiplier = multiplier;
-    }
-    LayoutConstraint.constraintsWithVisualFormat = function (format, views) { return []; };
-    LayoutConstraint.Attribute = Attribute;
-    LayoutConstraint.Relation = Relation;
-    return LayoutConstraint;
-}());
-exports.LayoutConstraint = LayoutConstraint;
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(0);
-var Color_1 = __webpack_require__(5);
-var Rect_1 = __webpack_require__(4);
-var TextAlignment;
-(function (TextAlignment) {
-    TextAlignment[TextAlignment["Left"] = 0] = "Left";
-    TextAlignment[TextAlignment["Center"] = 1] = "Center";
-    TextAlignment[TextAlignment["Right"] = 2] = "Right";
-})(TextAlignment = exports.TextAlignment || (exports.TextAlignment = {}));
-var TextVerticalAlignment;
-(function (TextVerticalAlignment) {
-    TextVerticalAlignment[TextVerticalAlignment["Top"] = 0] = "Top";
-    TextVerticalAlignment[TextVerticalAlignment["Center"] = 1] = "Center";
-    TextVerticalAlignment[TextVerticalAlignment["Bottom"] = 2] = "Bottom";
-})(TextVerticalAlignment = exports.TextVerticalAlignment || (exports.TextVerticalAlignment = {}));
-var LineBreakMode;
-(function (LineBreakMode) {
-    LineBreakMode[LineBreakMode["WordWrapping"] = 0] = "WordWrapping";
-    LineBreakMode[LineBreakMode["TruncatingTail"] = 4] = "TruncatingTail";
-})(LineBreakMode = exports.LineBreakMode || (exports.LineBreakMode = {}));
-var Label = (function (_super) {
-    __extends(Label, _super);
-    function Label() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.textColor = new Color_1.Color(0, 0, 0);
-        _this.textAlignment = TextAlignment.Left;
-        _this.numberOfLines = 1;
-        _this.lineBreakMode = LineBreakMode.WordWrapping;
-        _this.lineSpace = 12;
-        return _this;
-    }
-    Label.prototype.textRectForBounds = function (bounds) { return Rect_1.RectZero; };
-    return Label;
-}(View_1.View));
-exports.Label = Label;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Font = (function () {
-    function Font(pointSize, fontWeight, fontStyle, familyName) {
-        if (fontWeight === void 0) { fontWeight = '400'; }
-        if (fontStyle === void 0) { fontStyle = 'normal'; }
-        this.fontWeight = '400';
-        this.fontStyle = 'normal';
-        this.pointSize = pointSize;
-        this.fontWeight = fontWeight;
-        this.fontStyle = fontStyle;
-        this.familyName = familyName;
-    }
-    Font.systemFontOfSize = function (pointSize, weight) {
-        if (weight === void 0) { weight = '400'; }
-        return new Font(pointSize, weight);
-    };
-    Font.boldSystemFontOfSize = function (pointSize) {
-        return new Font(pointSize, '700');
-    };
-    Font.italicSystemFontOfSize = function (pointSize) {
-        return new Font(pointSize, '400', 'italic');
-    };
-    return Font;
-}());
-exports.Font = Font;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(0);
-var Button = (function (_super) {
-    __extends(Button, _super);
-    function Button() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return Button;
-}(View_1.View));
-exports.Button = Button;
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var View_1 = __webpack_require__(0);
-var RenderingMode;
-(function (RenderingMode) {
-    RenderingMode[RenderingMode["Original"] = 0] = "Original";
-    RenderingMode[RenderingMode["Template"] = 1] = "Template";
-})(RenderingMode = exports.RenderingMode || (exports.RenderingMode = {}));
-var Image = (function () {
-    function Image() {
-        this.renderingMode = RenderingMode.Original;
-    }
-    Image.fromURL = function (url, success, failure) { };
-    Image.fromAssets = function (named, success, failure) { };
-    Image.fromAssetsWithScales = function (named, scales, success, failure) { };
-    Image.prototype.imageWithRenderingMode = function (renderingMode) {
-        throw "TODO";
-    };
-    Image.assetsPath = "./assets/";
-    return Image;
-}());
-exports.Image = Image;
-var ContentMode;
-(function (ContentMode) {
-    ContentMode[ContentMode["ScaleToFill"] = 0] = "ScaleToFill";
-    ContentMode[ContentMode["ScaleAspectFit"] = 1] = "ScaleAspectFit";
-    ContentMode[ContentMode["ScaleAspectFill"] = 2] = "ScaleAspectFill";
-})(ContentMode = exports.ContentMode || (exports.ContentMode = {}));
-var ImageView = (function (_super) {
-    __extends(ImageView, _super);
-    function ImageView() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.contentMode = ContentMode.ScaleToFill;
-        return _this;
-    }
-    return ImageView;
-}(View_1.View));
-exports.ImageView = ImageView;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var ScrollView_1 = __webpack_require__(6);
-var View_1 = __webpack_require__(0);
-var ListSelectionStyle;
-(function (ListSelectionStyle) {
-    ListSelectionStyle[ListSelectionStyle["None"] = 0] = "None";
-    ListSelectionStyle[ListSelectionStyle["Gray"] = 1] = "Gray";
-})(ListSelectionStyle = exports.ListSelectionStyle || (exports.ListSelectionStyle = {}));
-var ListCell = (function (_super) {
-    __extends(ListCell, _super);
-    function ListCell() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.selectionStyle = ListSelectionStyle.Gray;
-        return _this;
-    }
-    return ListCell;
-}(View_1.View));
-exports.ListCell = ListCell;
-var ListView = (function (_super) {
-    __extends(ListView, _super);
-    function ListView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ListView.prototype.register = function (clazz, reuseIdentifier) { };
-    ListView.prototype.reloadData = function () { };
-    return ListView;
-}(ScrollView_1.ScrollView));
-exports.ListView = ListView;
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var I = __webpack_require__(3);
+var Screen_1 = __webpack_require__(2);
+var Application_1 = __webpack_require__(11);
+var Rect_1 = __webpack_require__(3);
 var PIXI = window.PIXI;
 var sharedApplication = undefined;
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -2250,12 +1785,12 @@ var Application = (function (_super) {
         if (sharedApplication === undefined) {
             sharedApplication = _this;
             var scale_1 = Math.ceil(window.devicePixelRatio);
-            I.Screen.mainScreen = function () {
-                return new I.Screen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
+            Screen_1.Screen.mainScreen = function () {
+                return new Screen_1.Screen(canvas.offsetWidth, canvas.offsetHeight, scale_1);
             };
         }
         Application.resetCanvas(canvas, function () {
-            _this.nativeObject = new PIXI.Application({ width: I.Screen.withScale(canvas.offsetWidth), height: I.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
+            _this.nativeObject = new PIXI.Application({ width: Screen_1.Screen.withScale(canvas.offsetWidth), height: Screen_1.Screen.withScale(canvas.offsetHeight), view: canvas, antialias: true, transparent: false });
             _this.nativeObject.stop();
             if (window.DEBUG === true) {
                 window.nativeObject = _this.nativeObject;
@@ -2296,7 +1831,7 @@ var Application = (function (_super) {
                 if (view.transform !== undefined) {
                     view.nativeObject.renderable = true;
                 }
-                else if (opaqueRects.filter(function (item) { return I.RectInside(item, view._absRect); }).length == 0) {
+                else if (opaqueRects.filter(function (item) { return Rect_1.RectInside(item, view._absRect); }).length == 0) {
                     if (view.opaque === true) {
                         opaqueRects.push(view._absRect);
                     }
@@ -2378,7 +1913,7 @@ var Application = (function (_super) {
         this.dirtyTargets = [];
     };
     return Application;
-}(I.Application));
+}(Application_1.Application));
 exports.Application = Application;
 var displayPaused = false;
 function setNeedsDisplay(target, force) {
@@ -2421,7 +1956,30 @@ exports.displayNow = displayNow;
 
 
 /***/ }),
-/* 23 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ApplicationDelegate = (function () {
+    function ApplicationDelegate() {
+    }
+    ApplicationDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) { };
+    return ApplicationDelegate;
+}());
+exports.ApplicationDelegate = ApplicationDelegate;
+var Application = (function () {
+    function Application() {
+    }
+    Application.prototype.sharedApplication = function () { throw "NOT IMPLEMENT!"; };
+    return Application;
+}());
+exports.Application = Application;
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, setImmediate) {// Rebound
@@ -3576,10 +3134,50 @@ exports.displayNow = displayNow;
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(1).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(0).setImmediate))
 
 /***/ }),
-/* 24 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Color = (function () {
+    function Color(r, g, b, a) {
+        this.r = Math.min(1.0, Math.max(0.0, r));
+        this.g = Math.min(1.0, Math.max(0.0, g));
+        ;
+        this.b = Math.min(1.0, Math.max(0.0, b));
+        ;
+        this.a = a == undefined ? 1.0 : Math.min(1.0, Math.max(0.0, a));
+        ;
+    }
+    Color.prototype.rgbHexNumber = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return parseInt("0x" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b));
+    };
+    Color.prototype.rgbHexString = function () {
+        var r = Math.ceil(this.r * 255).toString(16);
+        var g = Math.ceil(this.g * 255).toString(16);
+        var b = Math.ceil(this.b * 255).toString(16);
+        return "#" + (r.length < 2 ? "0" + r : r) + (g.length < 2 ? "0" + g : g) + (b.length < 2 ? "0" + b : b);
+    };
+    Color.prototype.equals = function (toColor) {
+        if (toColor instanceof Color) {
+            return this.r === toColor.r && this.g === toColor.g && this.b === toColor.b && this.a === toColor.a;
+        }
+        return false;
+    };
+    return Color;
+}());
+exports.Color = Color;
+
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var require;var require;/**

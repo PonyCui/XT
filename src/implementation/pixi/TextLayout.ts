@@ -1,5 +1,7 @@
-import * as I from "../../interface/Abstract";
 import huozi from 'huozi'
+import { Font } from "../../interface/Font";
+import { Rect, RectZero, RectMake } from "../../interface/Rect";
+import { TextAlignment, TextVerticalAlignment, LineBreakMode } from "../../interface/Label";
 
 export interface Padding {
     top: number;
@@ -20,11 +22,11 @@ export interface TextLine {
 export class StaticTextLayout {
 
     readonly text: string;
-    readonly font: I.Font;
-    readonly bounds: I.Rect = I.RectZero
+    readonly font: Font;
+    readonly bounds: Rect = RectZero
     readonly padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }
 
-    constructor(numberOfLines: number, lineSpace: number, text: string, font: I.Font, bounds: I.Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
+    constructor(numberOfLines: number, lineSpace: number, text: string, font: Font, bounds: Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
         this.text = text;
         this.font = font;
         this.bounds = bounds;
@@ -52,21 +54,21 @@ export class StaticTextLayout {
             return element.y + element.height;
         }));
         this.layoutSequence = layoutSequence;
-        this.textRect = I.RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
+        this.textRect = RectMake(minX + this.padding.left, minY + this.padding.top, maxX - minX, maxY - minY);
     }
 
     readonly layoutSequence: any[]
-    readonly textRect: I.Rect
+    readonly textRect: Rect
 
-    textLines(onRect: I.Rect, horizonAlignment: I.TextAlignment, verticalAlignment: I.TextVerticalAlignment, lineBreakMode: I.LineBreakMode): any[] {
+    textLines(onRect: Rect, horizonAlignment: TextAlignment, verticalAlignment: TextVerticalAlignment, lineBreakMode: LineBreakMode): any[] {
         const offset: { x: number, y: number } = { x: this.textRect.x, y: this.textRect.y }
-        if (verticalAlignment === I.TextVerticalAlignment.Center) {
+        if (verticalAlignment === TextVerticalAlignment.Center) {
             offset.y = Math.max(this.padding.top, ((onRect.y + onRect.height) - this.textRect.height) / 2.0)
         }        
         let lines: TextLine[] = [];
         let line: TextLine = { elements: [], text: "", x: 0, y: 0, width: 0, height: 0 }
         const addLine = (line: TextLine) => {
-            if (horizonAlignment === I.TextAlignment.Center) {
+            if (horizonAlignment === TextAlignment.Center) {
                 offset.x = Math.max(this.padding.left, ((onRect.x + onRect.width) - line.width) / 2.0)
             }
             lines.push({
@@ -79,7 +81,7 @@ export class StaticTextLayout {
             })
         }
         this.layoutSequence.forEach((element: any) => {
-            if (element.x + element.width > onRect.width && lineBreakMode == I.LineBreakMode.TruncatingTail) {
+            if (element.x + element.width > onRect.width && lineBreakMode == LineBreakMode.TruncatingTail) {
                 return;
             }
             if (line.y != element.y) {
@@ -99,7 +101,7 @@ export class StaticTextLayout {
         const breakedLines = lines.filter(line => line.y + line.height <= onRect.height);
         if (breakedLines.length > 0 && (breakedLines.length != lines.length || breakedLines.map(item => item.text).join("").length < this.text.length)) {
             switch (lineBreakMode) {
-                case I.LineBreakMode.TruncatingTail:
+                case LineBreakMode.TruncatingTail:
                     if (breakedLines[breakedLines.length - 1].text.length > 0) {
                         breakedLines[breakedLines.length - 1].text = breakedLines[breakedLines.length - 1].text.slice(0, -2) + "...";
                     }

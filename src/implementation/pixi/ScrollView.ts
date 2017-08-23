@@ -1,6 +1,7 @@
 import { View } from "./View";
-import { Point, Size, Insets, SizeZero, RectMake, PointZero, LayoutConstraint, Color } from "../../interface/Abstract";
-import { Rect } from "../../interface/Rect";
+import { Rect, Size, SizeZero, RectMake, Point, PointZero } from "../../interface/Rect";
+import { Color } from "../../interface/Color";
+import { LayoutConstraint } from "../../interface/LayoutConstraint";
 declare function require(name: string): any;
 const Scroller = require('scroller');
 
