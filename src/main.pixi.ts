@@ -1,6 +1,4 @@
-import { Factory, SwitchFactory } from './implementation/Factory.pixi'
-SwitchFactory()
-export default Factory;
-if (window !== undefined) {
-    (window as any).XT = Factory;
-}
+import { View as IView } from './interface/View'
+import { View as MView } from './implementation/pixi/View'
+
+export const View: typeof IView = MView

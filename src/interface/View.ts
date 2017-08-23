@@ -20,7 +20,7 @@ export enum SwipeDirection {
 
 export class View {
 
-    constructor(rect: Rect) { }
+    constructor(rect?: Rect) { }
 
     // Mark: View Geometry
     frame: Rect;
