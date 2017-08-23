@@ -3,7 +3,7 @@ var webpack = require('webpack')
 
 module.exports = {
     entry: {
-        "sample.pixi.min": "./src/sample.pixi.ts",
+        "sample.pixi.min": "./src/sample/sample.pixi.ts",
     },
     output: {
         filename: "[name].js",

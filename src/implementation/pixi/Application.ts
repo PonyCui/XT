@@ -21,7 +21,7 @@ export class Application extends IApplication {
     keyWindow?: Window | any = undefined;
 
     constructor(canvas: HTMLCanvasElement, delegate: IApplicationDelegate) {
-        super()
+        super(canvas, delegate)
         if (sharedApplication === undefined) {
             sharedApplication = this;
             const scale = Math.ceil(window.devicePixelRatio);

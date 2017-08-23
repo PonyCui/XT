@@ -6,6 +6,7 @@ export class ApplicationDelegate {
 }
 
 export class Application {
+    constructor(t: any, delegate: ApplicationDelegate) { }
     delegate: ApplicationDelegate
     keyWindow?: Window
     sharedApplication?(): Application { throw "NOT IMPLEMENT!" }

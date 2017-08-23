@@ -6,28 +6,8 @@
 </head>
 
 <body style="margin: 0">
-
-    <canvas id="myCanvas"></canvas>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.4/pixi.min.js"></script>
-    <script src="/dist/xt.pixi.js"></script>
-    <script>
-        // var DEBUG = true;
-        for (var aKey in XT) {
-            window["XT" + aKey] = XT[aKey];
-        }
-        var application = new XTApplication(document.getElementById("myCanvas"), {
-            applicationDidFinishLaunchingWithOptions: function () {
-                var window = new XTWindow(XTScreen.mainScreen().bounds());
-                window.makeKeyAndVisible();
-                window.backgroundColor = new XTColor(1, 1, 1)
-                // var listView = new XTListView();
-                
-                // window.addSubview(listView);
-                // window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("|-0-[listView]-0-|", { listView: listView }));
-                // window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("V:|-0-[listView]-0-|", { listView: listView }));
-            }
-        })
-    </script>
+    <canvas id="app"></canvas>
+    <script src="/dist/sample.pixi.min.js"></script>
 </body>
 
 </html>

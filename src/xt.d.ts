@@ -314,6 +314,7 @@ declare module 'xt' {
     }
 
     class Application {
+        constructor(t: any, delegate: ApplicationDelegate)
         delegate: ApplicationDelegate
         keyWindow?: Window
         sharedApplication?(): Application
