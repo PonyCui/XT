@@ -11,20 +11,21 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
-    "awesome-typescript-loader": "^3.2.2",
-    "babel-preset-es2015": "^6.24.1",
-    "typescript": "^2.4.2",
-    "uglifyjs": "^2.4.11",
-    "webpack": "^3.5.2",
     "autolayout": "^0.7.0",
+    "awesome-typescript-loader": "^3.2.2",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
     "huozi": "git+https://github.com/yyued/huozi.js.git",
     "install": "^0.10.1",
     "npm": "^5.3.0",
+    "pixi.js": "^4.5.4",
     "rebound": "0.0.15",
-    "scroller": "git+https://github.com/yyued/scroller.git"
+    "scroller": "git+https://github.com/yyued/scroller.git",
+    "typescript": "^2.4.2",
+    "uglifyjs": "^2.4.11",
+    "webpack": "^3.5.2"
   }
 }

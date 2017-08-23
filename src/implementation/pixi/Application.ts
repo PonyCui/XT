@@ -3,7 +3,8 @@ import { Application as IApplication, ApplicationDelegate as IApplicationDelegat
 import { Window } from './Window'
 import { View } from './View'
 import { Rect, RectInside } from "../../interface/Rect";
-const PIXI = (window as any).PIXI
+import * as PIXI from 'pixi.js'
+
 let sharedApplication: Application | undefined = undefined;
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {

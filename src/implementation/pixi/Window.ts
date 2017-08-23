@@ -1,7 +1,7 @@
 import { Application } from './Application'
 import { View } from './View'
 import { Rect } from "../../interface/Rect";
-const PIXI = (window as any).PIXI
+import * as PIXI from 'pixi.js'
 
 export class Window extends View {
 

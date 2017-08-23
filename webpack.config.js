@@ -3,7 +3,7 @@ var webpack = require('webpack')
 
 module.exports = {
     entry: {
-        "tests": "./src/tests.ts",
+        "sample.pixi.min": "./src/sample.pixi.ts",
     },
     output: {
         filename: "[name].js",
@@ -21,4 +21,11 @@ module.exports = {
     },
     externals: {
     },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            include: /\.min\.js$/,
+            minimize: true,
+            output: { comments: false },
+        })
+    ],
 };

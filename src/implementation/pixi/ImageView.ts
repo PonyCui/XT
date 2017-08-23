@@ -3,7 +3,7 @@ import { View } from "./View";
 import { Size } from "../../interface/Rect";
 import { setNeedsDisplay, displayInterval } from "./Application";
 import { ImageRenderingMode, ContentMode } from "../../interface/ImageView";
-const PIXI = (window as any).PIXI
+import * as PIXI from 'pixi.js'
 
 const imageLoader = new PIXI.loaders.Loader();
 let runningQueue: { url: string, success: (image: Image) => void, failure: (error: Error) => void }[] = [];

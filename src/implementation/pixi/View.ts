@@ -7,7 +7,7 @@ import { Rect, RectZero, RectEqual, Point, Size } from "../../interface/Rect";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { Color } from "../../interface/Color";
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
-const PIXI = (window as any).PIXI
+import * as PIXI from 'pixi.js'
 const AutoLayout = require("autolayout");
 let requestAnimationFrame = (window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame;
 if (requestAnimationFrame === undefined) {

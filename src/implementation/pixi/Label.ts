@@ -7,7 +7,7 @@ import { Font } from "../../interface/Font";
 import { Color } from "../../interface/Color";
 import { TextAlignment, LineBreakMode, TextVerticalAlignment } from "../../interface/Label";
 import { Screen } from "../../interface/Screen";
-const PIXI = (window as any).PIXI
+import * as PIXI from 'pixi.js'
 
 export class Label extends View {
 
