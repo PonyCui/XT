@@ -172,6 +172,9 @@ exports.ContentMode = ImageView_1.ContentMode;
 exports.RenderingMode = ImageView_1.RenderingMode;
 var ScrollView_1 = __webpack_require__(17);
 exports.ScrollView = ScrollView_1.ScrollView;
+var ListView_1 = __webpack_require__(41);
+exports.ListView = ListView_1.ListView;
+exports.ListCell = ListView_1.ListCell;
 
 
 /***/ }),
@@ -1631,6 +1634,8 @@ var Factory = (function () {
     Factory.RenderingMode = I.RenderingMode;
     Factory.InsetsMake = I.InsetsMake;
     Factory.ScrollView = I.ScrollView;
+    Factory.ListView = I.ListView;
+    Factory.ListCell = I.ListCell;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -8025,6 +8030,7 @@ var Label_1 = __webpack_require__(22);
 var Button_1 = __webpack_require__(36);
 var ImageView_1 = __webpack_require__(23);
 var ScrollView_1 = __webpack_require__(37);
+var ListView_1 = __webpack_require__(42);
 function usePixi(force) {
     if (force === void 0) { force = false; }
     var use = function () {
@@ -8037,6 +8043,8 @@ function usePixi(force) {
         Factory_pixi_1.Factory.ImageView = ImageView_1.ImageView;
         Factory_pixi_1.Factory.Image = ImageView_1.Image;
         Factory_pixi_1.Factory.ScrollView = ScrollView_1.ScrollView;
+        Factory_pixi_1.Factory.ListView = ListView_1.ListView;
+        Factory_pixi_1.Factory.ListCell = ListView_1.ListCell;
     };
     if (force) {
         use();
@@ -10491,6 +10499,7 @@ var ScrollView = (function (_super) {
         set: function (value) {
             this._contentSize = value;
             this.innerView.frame = Abstract_1.RectMake(this.contentOffset.x, this.contentOffset.y, value.width, value.height);
+            this.resetScroller();
         },
         enumerable: true,
         configurable: true
@@ -12333,6 +12342,179 @@ var Scroller;
 
 })(typeof window !== 'undefined' ? window : this);
 
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ScrollView_1 = __webpack_require__(17);
+var View_1 = __webpack_require__(0);
+var ListCell = (function (_super) {
+    __extends(ListCell, _super);
+    function ListCell() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return ListCell;
+}(View_1.View));
+exports.ListCell = ListCell;
+var ListView = (function (_super) {
+    __extends(ListView, _super);
+    function ListView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ListView.prototype.register = function (clazz, reuseIdentifier) { };
+    ListView.prototype.reloadData = function () { };
+    return ListView;
+}(ScrollView_1.ScrollView));
+exports.ListView = ListView;
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ScrollView_1 = __webpack_require__(37);
+var View_1 = __webpack_require__(3);
+var ListCell = (function (_super) {
+    __extends(ListCell, _super);
+    function ListCell() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.reuseIdentifier = "";
+        _this._displayItem = undefined;
+        _this._isBusy = false;
+        return _this;
+    }
+    return ListCell;
+}(View_1.View));
+exports.ListCell = ListCell;
+var ListView = (function (_super) {
+    __extends(ListView, _super);
+    function ListView(rect) {
+        var _this = _super.call(this, rect) || this;
+        _this.reuseMapping = {};
+        _this._items = [];
+        _this._cacheRows = [];
+        _this._reusingCells = [];
+        _this._nextSetted = false;
+        _this._nextReloadMinY = undefined;
+        _this._nextReloadMaxY = undefined;
+        _this.alwaysBounceVertical = true;
+        return _this;
+    }
+    ListView.prototype.register = function (clazz, reuseIdentifier) {
+        this.reuseMapping[reuseIdentifier] = clazz;
+    };
+    Object.defineProperty(ListView.prototype, "items", {
+        get: function () {
+            return this._items.slice();
+        },
+        set: function (value) {
+            this._items = value.slice();
+            this.reloadData();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ListView.prototype.reloadData = function () {
+        var _this = this;
+        var currentY = 0;
+        this._cacheRows = this.items.map(function (item) {
+            var minY = currentY;
+            var maxY = minY + item.rowHeight(_this.bounds.width);
+            currentY = maxY;
+            return { minY: minY, maxY: maxY, item: item };
+        });
+        this.contentSize = { width: 0, height: currentY };
+        this._nextSetted = false;
+        this._nextReloadMinY = undefined;
+        this._nextReloadMaxY = undefined;
+        this.reloadVisibleRows();
+    };
+    ListView.prototype.handleScroll = function (x, y) {
+        _super.prototype.handleScroll.call(this, x, y);
+        if (this._reusingCells !== undefined) {
+            this.reloadVisibleRows();
+        }
+    };
+    ListView.prototype.reloadVisibleRows = function () {
+        var _this = this;
+        if (this._nextSetted === true && this.contentOffset.y > (this._nextReloadMinY || -Infinity) && this.contentOffset.y < (this._nextReloadMaxY || Infinity)) {
+            return;
+        }
+        this.markInvisibleCellNoBusy();
+        this._nextSetted = true;
+        this._nextReloadMinY = undefined;
+        this._nextReloadMaxY = undefined;
+        var visibleRows = this._cacheRows.filter(function (item) {
+            if (item.maxY <= _this.contentOffset.y) {
+                _this._nextReloadMinY = item.maxY;
+            }
+            if (_this._nextReloadMaxY === undefined && item.minY >= _this.contentOffset.y + _this.bounds.height) {
+                _this._nextReloadMaxY = item.minY - _this.bounds.height;
+            }
+            return item.maxY > _this.contentOffset.y && item.minY < _this.contentOffset.y + _this.bounds.height;
+        });
+        var visibleCells = visibleRows.filter(function (row) { return _this._reusingCells.filter(function (cell) { return cell._displayItem === row.item; }).length == 0; }).map(function (row) {
+            var cell = _this._reusingCells.filter(function (cell) {
+                return !cell._isBusy && cell.reuseIdentifier === row.item.reuseIdentifier;
+            })[0] ||
+                (_this.reuseMapping[row.item.reuseIdentifier] !== undefined ? new _this.reuseMapping[row.item.reuseIdentifier]() : undefined) ||
+                new ListCell();
+            cell.reuseIdentifier = row.item.reuseIdentifier;
+            cell.frame = { x: 0, y: row.minY, width: _this.bounds.width, height: row.maxY - row.minY };
+            cell._isBusy = true;
+            cell._displayItem = row.item;
+            _this.renderItem && _this.renderItem(cell, row.item);
+            if (_this._reusingCells.indexOf(cell) < 0) {
+                _this._reusingCells.push(cell);
+            }
+            return cell;
+        });
+        visibleCells.forEach(function (cell) {
+            if (cell.superview === undefined) {
+                _this.addSubview(cell);
+            }
+        });
+        console.log(this._reusingCells.length);
+    };
+    ListView.prototype.markInvisibleCellNoBusy = function () {
+        var _this = this;
+        this._reusingCells.filter(function (cell) {
+            return cell._isBusy && (cell.frame.y + cell.frame.height < _this.contentOffset.y || cell.frame.y > _this.contentOffset.y + _this.bounds.height);
+        }).forEach(function (cell) {
+            cell._isBusy = false;
+        });
+    };
+    return ListView;
+}(ScrollView_1.ScrollView));
+exports.ListView = ListView;
 
 
 /***/ })

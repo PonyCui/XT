@@ -172,6 +172,9 @@ exports.ContentMode = ImageView_1.ContentMode;
 exports.RenderingMode = ImageView_1.RenderingMode;
 var ScrollView_1 = __webpack_require__(17);
 exports.ScrollView = ScrollView_1.ScrollView;
+var ListView_1 = __webpack_require__(41);
+exports.ListView = ListView_1.ListView;
+exports.ListCell = ListView_1.ListCell;
 
 
 /***/ }),
@@ -330,6 +333,8 @@ var Factory = (function () {
     Factory.RenderingMode = I.RenderingMode;
     Factory.InsetsMake = I.InsetsMake;
     Factory.ScrollView = I.ScrollView;
+    Factory.ListView = I.ListView;
+    Factory.ListCell = I.ListCell;
     return Factory;
 }());
 exports.Factory = Factory;
@@ -685,6 +690,61 @@ exports.default = Factory_1.Factory;
 if (window !== undefined) {
     window.XT = Factory_1.Factory;
 }
+
+
+/***/ }),
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ScrollView_1 = __webpack_require__(17);
+var View_1 = __webpack_require__(0);
+var ListCell = (function (_super) {
+    __extends(ListCell, _super);
+    function ListCell() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return ListCell;
+}(View_1.View));
+exports.ListCell = ListCell;
+var ListView = (function (_super) {
+    __extends(ListView, _super);
+    function ListView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ListView.prototype.register = function (clazz, reuseIdentifier) { };
+    ListView.prototype.reloadData = function () { };
+    return ListView;
+}(ScrollView_1.ScrollView));
+exports.ListView = ListView;
 
 
 /***/ })

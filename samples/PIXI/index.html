@@ -11,7 +11,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.4/pixi.min.js"></script>
     <script src="/dist/xt.pixi.js"></script>
     <script>
-        var DEBUG = true;
+        // var DEBUG = true;
         for (var aKey in XT) {
             window["XT" + aKey] = XT[aKey];
         }
@@ -20,19 +20,162 @@
                 var window = new XTWindow(XTScreen.mainScreen().bounds());
                 window.makeKeyAndVisible();
                 window.backgroundColor = new XTColor(1, 1, 1)
-                var scrollView = new XTScrollView();
-                // scrollView.backgroundColor = new XTColor(1, 0, 0)
-                for (var index = 0; index < 1; index++) {
-                    (function (idx) {
-                        var tView = new XTView(XTRectMake(0, 60 * index , 20, 20));
-                        tView.backgroundColor = new XTColor(1, 0, 0, 1);
-                        scrollView.addSubview(tView);
-                    })(index)
+                var listView = new XTListView();
+                listView.renderItem = function (cell, item) {
+                    if (item.text === "1") {
+                        cell.backgroundColor = new XTColor(0.2, 0.2, 0.2)
+                    }
+                    else {
+                        cell.backgroundColor = new XTColor(0.4, 0.4, 0.4)
+                    }
                 }
-                scrollView.contentSize = { width: 0, height: 1 * 60 }
-                window.addSubview(scrollView);
-                window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("|-0-[scrollView]-0-|", { scrollView: scrollView }));
-                window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("V:|-0-[scrollView]-0-|", { scrollView: scrollView }));
+                setTimeout(function () {
+                    listView.items = [
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "1",
+                        },
+                        {
+                            reuseIdentifier: "TestCell",
+                            rowHeight: function (width) {
+                                return 188;
+                            },
+                            text: "2",
+                        },
+                    ];
+                }, 1000)
+                window.addSubview(listView);
+                window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("|-0-[listView]-0-|", { listView: listView }));
+                window.addConstraints(XTLayoutConstraint.constraintsWithVisualFormat("V:|-0-[listView]-0-|", { listView: listView }));
             }
         })
     </script>

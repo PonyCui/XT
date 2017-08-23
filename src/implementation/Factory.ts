@@ -32,6 +32,8 @@ export class Factory {
     static RenderingMode = I.RenderingMode;
     static InsetsMake = I.InsetsMake;
     static ScrollView = I.ScrollView;
+    static ListView = I.ListView;
+    static ListCell = I.ListCell;
 
 }
 

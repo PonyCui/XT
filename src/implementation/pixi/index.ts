@@ -7,6 +7,7 @@ import { Label } from "./Label";
 import { Button } from "./Button";
 import { ImageView, Image } from "./ImageView";
 import { ScrollView } from "./ScrollView";
+import { ListCell, ListView } from "./ListView";
 
 export function usePixi(force = false) {
     const use = () => {
@@ -19,6 +20,8 @@ export function usePixi(force = false) {
         Factory.ImageView = ImageView as any
         Factory.Image = Image as any
         Factory.ScrollView = ScrollView as any
+        Factory.ListView = ListView as any
+        Factory.ListCell = ListCell as any
     }
     if (force) {
         use()

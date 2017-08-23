@@ -41,6 +41,7 @@ export class ScrollView extends View {
     public set contentSize(value: Size) {
         this._contentSize = value;
         this.innerView.frame = RectMake(this.contentOffset.x, this.contentOffset.y, value.width, value.height);
+        this.resetScroller();
     }
 
     private _contentOffset: Point = PointZero
@@ -188,7 +189,7 @@ export class ScrollView extends View {
         this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
     }
 
-    private handleScroll(x: number, y: number) {
+    protected handleScroll(x: number, y: number) {
         this.contentOffset = { x, y }
         this.onScroll && this.onScroll(this);
         clearTimeout(this._indicatorHidingTimer);
