@@ -9,6 +9,7 @@ export class ListCell extends View {
     currentItem?: ListItem
     reuseIdentifier: string = ""
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
+    onSelected?: () => void
     readonly selectionView: View
     readonly contentView: View
     _isBusy = false
@@ -194,7 +195,11 @@ export class ListView extends ScrollView {
 
     protected onTouchEnd() {
         super.onTouchEnd();
-        if (this._highlightedCell) { this._selectionCancelled = true; this._highlightedCell.highligted = false; }
+        if (this._highlightedCell) {
+            if (!this._selectionCancelled) { this._highlightedCell.onSelected && this._highlightedCell.onSelected() }
+            this._selectionCancelled = true;
+            this._highlightedCell.highligted = false;
+        }
     }
 
 }

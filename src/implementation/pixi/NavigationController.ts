@@ -44,7 +44,7 @@ export class NavigationController extends ViewController {
                     this.popViewController(true);
                 }
                 else {
-                    View.animationWithBouncinessAndSpeed(1.0, 24.0, () => {
+                    View.animationWithBouncinessAndSpeed(1.0, 32.0, () => {
                         if (targetController) {
                             targetController.view.frame = { ...targetController.view.frame, x: 0 }
                         }
@@ -72,10 +72,12 @@ export class NavigationController extends ViewController {
         if (animated === true) {
             viewController.viewWillAppear();
             viewController.view.frame = { x: this.view.bounds.width, y: 0, width: viewController.view.frame.width, height: viewController.view.frame.height }
-            View.animationWithBouncinessAndSpeed(1.0, 16.0, () => {
+            this.view.userInteractionEnabled = false;
+            View.animationWithBouncinessAndSpeed(1.0, 32.0, () => {
                 viewController.view.frame = { x: 0, y: 0, width: viewController.view.frame.width, height: viewController.view.frame.height }
             }, () => {
                 viewController.viewDidAppear();
+                this.view.userInteractionEnabled = true;
             })
         }
         else {
@@ -90,12 +92,14 @@ export class NavigationController extends ViewController {
             const targetViewController = viewControllers[viewControllers.length - 1]
             if (animated) {
                 targetViewController.viewWillDisappear();
-                View.animationWithBouncinessAndSpeed(1.0, 16.0, () => {
+                this.view.userInteractionEnabled = false;
+                View.animationWithBouncinessAndSpeed(1.0, 32.0, () => {
                     targetViewController.view.frame = { x: this.view.bounds.width, y: 0, width: targetViewController.view.frame.width, height: targetViewController.view.frame.height }
                 }, () => {
                     targetViewController.viewDidDisappear();
                     targetViewController.view.removeFromSuperview();
                     targetViewController.removeFromParentViewController();
+                    this.view.userInteractionEnabled = true;
                 })
             }
             else {
@@ -118,7 +122,8 @@ export class NavigationController extends ViewController {
                 targetViewControllers.forEach(v => {
                     v.viewWillDisappear();
                 });
-                View.animationWithBouncinessAndSpeed(1.0, 16.0, () => {
+                this.view.userInteractionEnabled = false;
+                View.animationWithBouncinessAndSpeed(1.0, 32.0, () => {
                     targetViewControllers[targetViewControllers.length - 1].view.frame = { x: this.view.bounds.width, y: 0, width: targetViewControllers[targetViewControllers.length - 1].view.frame.width, height: targetViewControllers[targetViewControllers.length - 1].view.frame.height }
                 }, () => {
                     targetViewControllers.forEach(v => {
@@ -126,6 +131,7 @@ export class NavigationController extends ViewController {
                         v.view.removeFromSuperview();
                         v.removeFromParentViewController();
                     });
+                    this.view.userInteractionEnabled = true;
                 })
             }
             else {
