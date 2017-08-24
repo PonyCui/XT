@@ -65,3 +65,6 @@ export const Window = IWindow
 
 import { ViewController as IViewController } from './interface/ViewController'
 export const ViewController = IViewController
+
+import { NavigationController as INavigationController } from './interface/NavigationController'
+export const NavigationController = INavigationController
