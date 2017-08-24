@@ -9,6 +9,12 @@
 #import "XTRView.h"
 #import "XTRUtils.h"
 
+@interface XTRView ()
+
+@property (nonatomic, strong) JSContext *context;
+
+@end
+
 @implementation XTRView
 
 + (NSString *)name {
@@ -16,7 +22,9 @@
 }
 
 + (XTRView *)create:(JSValue *)frame {
-    return [[XTRView alloc] initWithFrame:[frame toRect]];
+    XTRView *view = [[XTRView alloc] initWithFrame:[frame toRect]];
+    view.context = frame.context;
+    return view;
 }
 
 - (NSDictionary *)xtr_frame {
@@ -70,7 +78,7 @@
     self.backgroundColor = [backgroundColor toColor];
 }
 
-- (NSInteger)xtr_alpha {
+- (CGFloat)xtr_alpha {
     return self.alpha;
 }
 
@@ -185,6 +193,27 @@
 
 - (void)xtr_setTag:(JSValue *)tag{
     self.tag = [tag toInt32];
+}
+
+- (UIView *)xtr_superview {
+    return self.superview;
+}
+
+- (NSArray<UIView *> *)xtr_subviews {
+    return self.subviews;
+}
+
+- (UIWindow *)xtr_window {
+    return self.window;
+}
+
+- (void)xtr_addSubview:(JSValue *)subview {
+    if ([subview isObject] && [subview[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        UIView *nativeView = [subview[@"nativeObject"] toObject];
+        if ([nativeView isKindOfClass:[UIView class]]) {
+            [self addSubview:nativeView];
+        }
+    }
 }
 
 @end

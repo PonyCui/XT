@@ -9,8 +9,13 @@ export class View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect) {
-        this.nativeObject = XTRView.create(rect);
+    constructor(rect?: Rect, nativeObject?: any) {
+        if (nativeObject) {
+            this.nativeObject = nativeObject;
+        }
+        else {
+            this.nativeObject = XTRView.create(rect);
+        }
     }
 
     // Mark: View Geometry
@@ -163,92 +168,110 @@ export class View {
 
     private _borderWidth: number;
 
-	public get borderWidth(): number {
-		return this.nativeObject.xtr_borderWidth();
-	}
+    public get borderWidth(): number {
+        return this.nativeObject.xtr_borderWidth();
+    }
 
-	public set borderWidth(value: number) {
-		this.nativeObject.xtr_setBorderWidth(value);
-	}
-    
+    public set borderWidth(value: number) {
+        this.nativeObject.xtr_setBorderWidth(value);
+    }
+
     private _borderColor: Color | undefined;
 
-	public get borderColor(): Color | undefined  {
+    public get borderColor(): Color | undefined {
         const value = this.nativeObject.xtr_borderColor();
         if (value instanceof Object) {
             return new Color(value.r, value.g, value.b, value.a)
         }
         return undefined;
-	}
+    }
 
-	public set borderColor(value: Color | undefined ) {
-		this.nativeObject.xtr_setBorderColor(value);
-	}
+    public set borderColor(value: Color | undefined) {
+        this.nativeObject.xtr_setBorderColor(value);
+    }
 
     private _shadowColor: Color | undefined;
 
-	public get shadowColor(): Color | undefined {
+    public get shadowColor(): Color | undefined {
         const value = this.nativeObject.xtr_shadowColor();
         if (value instanceof Object) {
             return new Color(value.r, value.g, value.b, value.a)
         }
         return undefined;
-	}
+    }
 
-	public set shadowColor(value: Color | undefined) {
-		this.nativeObject.xtr_setShadowColor(value);
-	}
-    
+    public set shadowColor(value: Color | undefined) {
+        this.nativeObject.xtr_setShadowColor(value);
+    }
+
     private _shadowOpacity: number;
 
-	public get shadowOpacity(): number {
-		return this.nativeObject.xtr_shadowOpacity();
-	}
+    public get shadowOpacity(): number {
+        return this.nativeObject.xtr_shadowOpacity();
+    }
 
-	public set shadowOpacity(value: number) {
-		this.nativeObject.xtr_setShadowOpacity(value);
-	}
-    
+    public set shadowOpacity(value: number) {
+        this.nativeObject.xtr_setShadowOpacity(value);
+    }
+
     private _shadowOffset: Size | undefined;
 
-	public get shadowOffset(): Size | undefined {
-		return this.nativeObject.xtr_shadowOffset();
-	}
+    public get shadowOffset(): Size | undefined {
+        return this.nativeObject.xtr_shadowOffset();
+    }
 
-	public set shadowOffset(value: Size | undefined) {
-		this.nativeObject.xtr_setShadowOffset(value);
-	}
+    public set shadowOffset(value: Size | undefined) {
+        this.nativeObject.xtr_setShadowOffset(value);
+    }
 
     private _shadowRadius: number;
 
-	public get shadowRadius(): number {
-		return this.nativeObject.xtr_shadowRadius();
-	}
+    public get shadowRadius(): number {
+        return this.nativeObject.xtr_shadowRadius();
+    }
 
-	public set shadowRadius(value: number) {
-		this.nativeObject.xtr_setShadowRadius(value);
-	}
-    
+    public set shadowRadius(value: number) {
+        this.nativeObject.xtr_setShadowRadius(value);
+    }
+
     // Mark: View Hierarchy
     private _tag: number | undefined;
 
-	public get tag(): number | undefined {
-		return this.nativeObject.xtr_tag();
-	}
+    public get tag(): number | undefined {
+        return this.nativeObject.xtr_tag();
+    }
 
-	public set tag(value: number | undefined) {
-		this.nativeObject.xtr_setTag(value);
-	}
+    public set tag(value: number | undefined) {
+        this.nativeObject.xtr_setTag(value);
+    }
 
-    superview?: View
-    subviews: View[]
+    public get superview(): View | undefined {
+        const value = this.nativeObject.xtr_superview();
+        if (value) {
+            return new View(undefined, value);
+        }
+        return undefined;
+    }
+
+    public get subviews(): View[] {
+        const value = this.nativeObject.xtr_subviews();
+        if (value instanceof Array) {
+            return value.map(v => new View(undefined, v))
+        }
+        return []
+    }
+
+    // subviews: View[]
     window?: Window
 
     removeFromSuperview() { }
     insertSubviewAtIndex(subview: View, atIndex: number) { }
     exchangeSubviewAtIndex(index1: number, index2: number) { }
 
-    addSubview(subview: View) { }
+    addSubview(subview: View) {
+        this.nativeObject.xtr_addSubview(subview)
+    }
+
     insertSubviewBelow(subview: View, siblingSubview: View) { }
     insertSubviewAbove(subview: View, siblingSubview: View) { }
 

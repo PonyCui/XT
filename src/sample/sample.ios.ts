@@ -3,7 +3,11 @@ import { View, Application, Window, Screen, Color, ViewController, RectMake, Nav
 const application = new Application('app', {
     applicationDidFinishLaunchingWithOptions: () => {
         const view = new View({ x: 0, y: 0, width: 20, height: 20 });
-        console.log(view.frame);
+        view.alpha = 0.5;
+        const view2 = new View({ x: 0, y: 0, width: 10, height: 10 });
+        view.addSubview(view2);
+        console.log(view.subviews);
+        // console.log(view.frame);
         // view.alpha = 0.5;
         // console.log("Launched.")
         // const window = new Window(Screen.mainScreen().bounds())

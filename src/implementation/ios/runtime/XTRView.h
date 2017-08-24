@@ -26,7 +26,7 @@
 - (void)xtr_setClipsToBounds:(JSValue *)clipsToBounds;
 - (NSDictionary *)xtr_backgroundColor;
 - (void)xtr_setBackgroundColor:(JSValue *)backgroundColor;
-- (NSInteger)xtr_alpha;
+- (CGFloat)xtr_alpha;
 - (void)xtr_setAlpha:(JSValue *)alpha;
 - (BOOL)xtr_opaque;
 - (void)xtr_setOpaque:(JSValue *)opaque;
@@ -54,6 +54,20 @@
 - (void)xtr_setShadowRadius:(JSValue *)shadowRadius;
 - (NSInteger)xtr_tag;
 - (void)xtr_setTag:(JSValue *)tag;
+- (UIView *)xtr_superview;
+- (NSArray<UIView *> *)xtr_subviews;
+- (UIWindow *)xtr_window;
+- (void)xtr_removeFromSuperview;
+- (void)xtr_insertSubviewAtIndex:(UIView *)subview atIndex:(NSInteger)atIndex;
+- (void)xtr_exchangeSubviewAtIndex:(NSInteger)index1 index2:(NSInteger)index2;
+- (void)xtr_addSubview:(JSValue *)subview;
+//- (void)xtr_;
+//- (void)xtr_;
+//- (void)xtr_;
+//- (void)xtr_;
+//- (void)xtr_;
+//- (void)xtr_;
+//- (void)xtr_;
 
 @end
 
