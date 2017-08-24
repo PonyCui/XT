@@ -18,6 +18,8 @@
 		905708231F4EB4AC00D5EC05 /* XTRBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708221F4EB4AC00D5EC05 /* XTRBridge.m */; };
 		905708261F4EB61100D5EC05 /* XTRApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708251F4EB61100D5EC05 /* XTRApplicationDelegate.m */; };
 		905708291F4EBCD500D5EC05 /* XTRApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708281F4EBCD500D5EC05 /* XTRApplication.m */; };
+		9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057082E1F4EC84100D5EC05 /* XTRView.m */; };
+		905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708311F4EC8F600D5EC05 /* XTRUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,10 @@
 		905708271F4EBCD500D5EC05 /* XTRApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRApplication.h; sourceTree = "<group>"; };
 		905708281F4EBCD500D5EC05 /* XTRApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRApplication.m; sourceTree = "<group>"; };
 		9057082A1F4EBD7F00D5EC05 /* XTRComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRComponent.h; sourceTree = "<group>"; };
+		9057082D1F4EC84100D5EC05 /* XTRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRView.h; sourceTree = "<group>"; };
+		9057082E1F4EC84100D5EC05 /* XTRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRView.m; sourceTree = "<group>"; };
+		905708301F4EC8F600D5EC05 /* XTRUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRUtils.h; sourceTree = "<group>"; };
+		905708311F4EC8F600D5EC05 /* XTRUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +114,10 @@
 				905708251F4EB61100D5EC05 /* XTRApplicationDelegate.m */,
 				905708271F4EBCD500D5EC05 /* XTRApplication.h */,
 				905708281F4EBCD500D5EC05 /* XTRApplication.m */,
+				9057082D1F4EC84100D5EC05 /* XTRView.h */,
+				9057082E1F4EC84100D5EC05 /* XTRView.m */,
+				905708301F4EC8F600D5EC05 /* XTRUtils.h */,
+				905708311F4EC8F600D5EC05 /* XTRUtils.m */,
 			);
 			name = runtime;
 			path = ../../src/implementation/ios/runtime;
@@ -192,7 +202,9 @@
 				905708291F4EBCD500D5EC05 /* XTRApplication.m in Sources */,
 				9057080C1F4EB2AF00D5EC05 /* ViewController.m in Sources */,
 				905708091F4EB2AF00D5EC05 /* AppDelegate.m in Sources */,
+				9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */,
 				905708201F4EB49300D5EC05 /* XTRuntime.m in Sources */,
+				905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */,
 				905708061F4EB2AF00D5EC05 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

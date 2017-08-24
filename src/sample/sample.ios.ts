@@ -2,7 +2,10 @@ import { View, Application, Window, Screen, Color, ViewController, RectMake, Nav
 
 const application = new Application('app', {
     applicationDidFinishLaunchingWithOptions: () => {
-        console.log("Launched.")
+        const view = new View({ x: 0, y: 0, width: 20, height: 20 });
+        console.log(view.frame);
+        // view.alpha = 0.5;
+        // console.log("Launched.")
         // const window = new Window(Screen.mainScreen().bounds())
         // window.backgroundColor = new Color(1, 1, 0)
         // // window.rootViewController = new NavigationController(new FirstViewController());

@@ -6,8 +6,21 @@
 //  Copyright © 2017年 UED Center, YY Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRUtils : NSObject
+
+@end
+
+@interface JSValue (XTRUtils)
+
++ (NSDictionary *)fromRect:(CGRect)rect;
++ (NSDictionary *)fromSize:(CGSize)size;
++ (NSDictionary *)fromPoint:(CGPoint)point;
++ (NSDictionary *)fromTransform:(CGAffineTransform)transform;
+- (CGAffineTransform)toTransform;
++ (NSDictionary *)fromColor:(UIColor *)color;
+- (UIColor *)toColor;
 
 @end

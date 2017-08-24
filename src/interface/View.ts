@@ -1,4 +1,4 @@
-import { Rect, RectMake, Point, PointMake } from './Rect'
+import { Rect, RectMake, Point, PointMake, Size } from './Rect'
 import { Color } from './Color'
 import { Window } from './Window'
 import { TransformMatrix } from './TransformMatrix'
@@ -45,7 +45,7 @@ export class View {
     borderColor?: Color;
     shadowColor?: Color;
     shadowOpacity: number;
-    shadowOffset?: Point;
+    shadowOffset?: Size;
     shadowRadius: number;
 
     // Mark: View Hierarchy

@@ -9,6 +9,7 @@
 #import "XTRBridge.h"
 #import "XTRComponent.h"
 #import "XTRApplication.h"
+#import "XTRView.h"
 #import "XTRApplicationDelegate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
@@ -37,6 +38,7 @@ static NSString *globalBridgeScript;
         self.components = @[
                             [XTRApplication class],
                             [XTRApplicationDelegate class],
+                            [XTRView class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

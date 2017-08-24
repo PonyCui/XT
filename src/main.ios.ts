@@ -56,7 +56,8 @@ import { TransformMatrix as ITransformMatrix } from './interface/TransformMatrix
 export const TransformMatrix = ITransformMatrix
 
 import { View as IView, InteractionState as IInteractionState, SwipeDirection as ISwipeDirection } from './interface/View'
-export const View = IView
+import { View as MView } from './implementation/ios/View'
+export const View: typeof IView = MView as any
 export const InteractionState = IInteractionState
 export const SwipeDirection = ISwipeDirection
 
