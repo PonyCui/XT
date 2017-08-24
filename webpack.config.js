@@ -4,6 +4,7 @@ var webpack = require('webpack')
 module.exports = {
     entry: {
         "sample.pixi.min": "./src/sample/sample.pixi.ts",
+        "sample.ios.min": "./src/sample/sample.ios.ts",
     },
     output: {
         filename: "[name].js",

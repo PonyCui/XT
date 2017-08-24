@@ -20,8 +20,9 @@ export class Application extends IApplication {
     nativeObject: any;
     keyWindow?: Window | any = undefined;
 
-    constructor(canvas: HTMLCanvasElement, delegate: IApplicationDelegate) {
-        super(canvas, delegate)
+    constructor(canvasID: string, delegate: IApplicationDelegate) {
+        super(undefined, delegate)
+        const canvas = document.getElementById(canvasID) as HTMLCanvasElement;
         if (sharedApplication === undefined) {
             sharedApplication = this;
             const scale = Math.ceil(window.devicePixelRatio);
@@ -56,7 +57,7 @@ export class Application extends IApplication {
         setTimeout(callback);
     }
 
-    static sharedApplication(): Application | undefined {
+    static sharedApplication(): Application | any {
         return sharedApplication;
     }
 

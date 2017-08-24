@@ -7,7 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "XTRComponent.h"
 
-@interface XTRApplication : NSObject
+@class XTRApplication;
+
+@protocol XTRApplicationExport <JSExport>
+
++ (XTRApplication *)create;
+
+@end
+
+@interface XTRApplication : NSObject<XTRComponent, XTRApplicationExport>
 
 @end

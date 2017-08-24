@@ -10,4 +10,12 @@
 
 @implementation XTRApplication
 
++ (XTRApplication *)create {
+    return [XTRApplication new];
+}
+
++ (NSString *)name {
+    return @"XTRApplication";
+}
+
 @end

@@ -7,7 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <JavaScriptCore/JavaScriptCore.h>
 
-@interface XTRComponent : NSObject
+@protocol XTRComponent <NSObject>
+
++ (NSString *)name;
 
 @end
