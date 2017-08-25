@@ -324,19 +324,20 @@ export class View {
     public get userInteractionEnabled(): boolean {
         return this.nativeObject.xtr_userInteractionEnabled();
     }
-    
+
     public set userInteractionEnabled(value: boolean) {
         this.nativeObject.xtr_setUserInteractionEnabled(value);
     }
 
 
-	public get longPressDuration(): number {
-		return this.nativeObject.xtr_longPressDuration();
-	}
+    public get longPressDuration(): number {
+        return this.nativeObject.xtr_longPressDuration();
+    }
 
-	public set longPressDuration(value: number) {
-		this.nativeObject.xtr_setLongPressDuration(value);
-	}
+    public set longPressDuration(value: number) {
+        this.nativeObject.xtr_setLongPressDuration(value);
+        this.nativeObject.xtr_activeLongPress();
+    }
 
     private _onTap?: () => void
 
@@ -353,13 +354,77 @@ export class View {
         this.onTap && this.onTap();
     }
 
-    onDoubleTap?: () => void
-    onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
-    onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
+    private _onDoubleTap?: () => void
+
+    public get onDoubleTap() {
+        return this._onDoubleTap;
+    }
+
+    public set onDoubleTap(value: (() => void) | undefined) {
+        this._onDoubleTap = value;
+        this.nativeObject.xtr_activeDoubleTap();
+    }
+
+    handleDoubleTap() {
+        this.onDoubleTap && this.onDoubleTap();
+    }
+
+    private _onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
+
+    public get onLongPress() {
+        return this._onLongPress;
+    }
+
+    public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+        this._onLongPress = value;
+        this.nativeObject.xtr_activeLongPress();
+    }
+
+    handleLongPress(state: number, viewLocation: Point, absLocation: Point) {
+        if (state === 1) {
+            this.onLongPress && this.onLongPress(InteractionState.Began, viewLocation, absLocation);
+        }
+        else if (state === 2) {
+            this.onLongPress && this.onLongPress(InteractionState.Changed, viewLocation, absLocation);
+        }
+        else if (state === 3 || state === 4 || state === 5) {
+            this.onLongPress && this.onLongPress(InteractionState.Ended, viewLocation, absLocation);
+        }
+    }
+
+    private _onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
+
+    public get onPan() {
+        return this._onPan;
+    }
+
+    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+        this._onPan = value;
+        this.nativeObject.xtr_activePan();
+    }
+
+    handlePan(state: number, viewLocation: Point, absLocation: Point) {
+        if (state === 1) {
+            this.onPan && this.onPan(InteractionState.Began, viewLocation, absLocation);
+        }
+        else if (state === 2) {
+            this.onPan && this.onPan(InteractionState.Changed, viewLocation, absLocation);
+        }
+        else if (state === 3 || state === 4 || state === 5) {
+            this.onPan && this.onPan(InteractionState.Ended, viewLocation, absLocation);
+        }
+    }
 
     // Mark: View Animation
-    animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
-    animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+    static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
+        XTRView.xtr_animationWithDurationAnimationCompletion(duration, animations, completion);
+    }
+
+    static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+
+    static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) {
+        XTRView.xtr_animationWithBouncinessAndSpeedDampingVelocityAnimationCompletion(duration, damping, velocity, animations, completion);
+    }
 
 }
 

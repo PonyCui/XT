@@ -99,7 +99,8 @@ export class View {
     onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
 
     // Mark: View Animation
-    animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
-    animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+    static animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
+    static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS NOT Support
+    static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only
 
 }

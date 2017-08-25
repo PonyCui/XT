@@ -1,4 +1,5 @@
 import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController } from '../main.ios'
+import { InteractionState } from "../interface/View";
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -17,11 +18,17 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        console.log(this.view);
+        const sView = new View(RectMake(60, 60, 20, 20));
+        sView.backgroundColor = new Color(0, 0, 0)
+        this.view.addSubview(sView);
         this.view.onTap = () => {
             this.view.backgroundColor = new Color(1.0, 1.0, 1.0)
+            View.animationWithDurationDampingVelocity(1.0, 0.5, 16.0, () => {
+                sView.frame = RectMake(60, 60, 88, 88);
+            });
             // this.navigationController && this.navigationController.pushViewController(new SecondViewController())
         }
+
     }
 
 }

@@ -78,6 +78,14 @@
 - (void)xtr_activeDoubleTap;
 - (void)xtr_activeLongPress;
 - (void)xtr_activePan;
++ (void)xtr_animationWithDuration:(JSValue *)duration
+                        animation:(JSValue *)animation
+                       completion:(JSValue *)completion;
++ (void)xtr_animationWithBouncinessAndSpeed:(JSValue *)duration
+                                    damping:(JSValue *)damping
+                                   velocity:(JSValue *)velocity
+                                  animation:(JSValue *)animation
+                                 completion:(JSValue *)completion;
 
 @end
 

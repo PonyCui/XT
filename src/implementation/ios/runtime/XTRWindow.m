@@ -11,6 +11,11 @@
 
 @interface XTRWindow ()
 
+@property (nonatomic, assign) NSTimeInterval longPressDuration;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 
@@ -329,6 +334,8 @@
     }
 }
 
+
+
 - (void)didMoveToWindow {
     [super didMoveToWindow];
     JSValue *scriptObject = self.scriptObject.value;
@@ -363,6 +370,129 @@
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
+}
+
+- (BOOL)xtr_userInteractionEnabled {
+    return self.userInteractionEnabled;
+}
+
+- (void)xtr_setUserInteractionEnabled:(JSValue *)value {
+    self.userInteractionEnabled = [value toBool];
+}
+
+- (CGFloat)xtr_longPressDuration {
+    return self.longPressDuration;
+}
+
+- (void)xtr_setLongPressDuration:(JSValue *)duration {
+    self.longPressDuration = [duration toDouble];
+}
+
+- (void)xtr_activeTap {
+    if (self.tapGestureRecognizer == nil) {
+        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
+        [self addGestureRecognizer:self.tapGestureRecognizer];
+    }
+    if (self.doubleTapGestureRecognizer != nil) {
+        [self.tapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
+    }
+}
+
+- (void)handleTap {
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handleTap" withArguments:@[]];
+    }
+}
+
+- (void)xtr_activeDoubleTap {
+    if (self.doubleTapGestureRecognizer == nil) {
+        self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap)];
+        self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+        [self addGestureRecognizer:self.doubleTapGestureRecognizer];
+    }
+    if (self.tapGestureRecognizer != nil) {
+        [self.tapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
+    }
+}
+
+- (void)handleDoubleTap {
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handleDoubleTap" withArguments:@[]];
+    }
+}
+
+- (void)xtr_activeLongPress {
+    if (self.longPressGestureRecognizer == nil) {
+        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+        [self addGestureRecognizer:self.longPressGestureRecognizer];
+    }
+    self.longPressGestureRecognizer.minimumPressDuration = self.longPressDuration > 0 ? self.longPressDuration : 0.25;
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handleLongPress" withArguments:@[
+                                                                      @(sender.state),
+                                                                      [JSValue fromPoint:[sender locationInView:self]],
+                                                                      [JSValue fromPoint:[sender locationInView:self.window]],
+                                                                      ]];
+    }
+}
+
+- (void)xtr_activePan {
+    if (self.panGestureRecognizer == nil) {
+        self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        [self addGestureRecognizer:self.panGestureRecognizer];
+    }
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)sender {
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handlePan" withArguments:@[
+                                                                @(sender.state),
+                                                                [JSValue fromPoint:[sender locationInView:self]],
+                                                                [JSValue fromPoint:[sender locationInView:self.window]],
+                                                                ]];
+    }
+}
+
++ (void)xtr_animationWithDuration:(JSValue *)duration
+                        animation:(JSValue *)animation
+                       completion:(JSValue *)completion {
+    [UIView animateWithDuration:[duration toDouble] animations:^{
+        if ([animation isObject]) {
+            [animation callWithArguments:@[]];
+        }
+    } completion:^(BOOL finished) {
+        if ([completion isObject]) {
+            [completion callWithArguments:@[]];
+        }
+    }];
+}
+
++ (void)xtr_animationWithBouncinessAndSpeed:(JSValue *)duration
+                                    damping:(JSValue *)damping
+                                   velocity:(JSValue *)velocity
+                                  animation:(JSValue *)animation
+                                 completion:(JSValue *)completion {
+    [UIView animateWithDuration:[duration toDouble]
+                          delay:0.0
+         usingSpringWithDamping:[damping toDouble]
+          initialSpringVelocity:[velocity toDouble]
+                        options:kNilOptions
+                     animations:^{
+                         if ([animation isObject]) {
+                             [animation callWithArguments:@[]];
+                         }
+                     } completion:^(BOOL finished) {
+                         if ([completion isObject]) {
+                             [completion callWithArguments:@[]];
+                         }
+                     }];
 }
 
 @end

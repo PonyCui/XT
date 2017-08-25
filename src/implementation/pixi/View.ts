@@ -657,7 +657,7 @@ export class View extends IView {
 
     // Mark: View Interactive
 
-    public longPressDuration: number = 250;
+    public longPressDuration: number = 0.25;
 
     private _userInteractionEnabled: boolean = false
 
@@ -769,7 +769,7 @@ export class View extends IView {
                     this._isLongPress = true;
                     this._onLongPress && this._onLongPress(IView.InteractionState.Began);
                 }
-            }, this.longPressDuration);
+            }, this.longPressDuration * 1000);
         }
         if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this._maybeTap = true;
