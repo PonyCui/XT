@@ -48,7 +48,8 @@ export const RectEqual = IRectEqual
 export const RectInside = IRectInside
 
 import { Screen as IScreen } from './interface/Screen'
-export class Screen extends IScreen {}
+import { Screen as MScreen } from './implementation/ios/Screen'
+export class Screen extends MScreen {}
 
 import { ScrollView as IScrollView } from './interface/ScrollView'
 export class ScrollView extends IScrollView {}

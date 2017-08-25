@@ -23,6 +23,7 @@
 		905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708341F4FD6A900D5EC05 /* XTRWindow.m */; };
 		905708381F4FFF5000D5EC05 /* XTRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708371F4FFF5000D5EC05 /* XTRViewController.m */; };
 		9057083B1F502B6B00D5EC05 /* XTRNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057083A1F502B6B00D5EC05 /* XTRNavigationController.m */; };
+		9057083E1F50384600D5EC05 /* XTRScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057083D1F50384600D5EC05 /* XTRScreen.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,8 @@
 		905708371F4FFF5000D5EC05 /* XTRViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRViewController.m; sourceTree = "<group>"; };
 		905708391F502B6B00D5EC05 /* XTRNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRNavigationController.h; sourceTree = "<group>"; };
 		9057083A1F502B6B00D5EC05 /* XTRNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRNavigationController.m; sourceTree = "<group>"; };
+		9057083C1F50384600D5EC05 /* XTRScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRScreen.h; sourceTree = "<group>"; };
+		9057083D1F50384600D5EC05 /* XTRScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRScreen.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +132,8 @@
 				905708371F4FFF5000D5EC05 /* XTRViewController.m */,
 				905708391F502B6B00D5EC05 /* XTRNavigationController.h */,
 				9057083A1F502B6B00D5EC05 /* XTRNavigationController.m */,
+				9057083C1F50384600D5EC05 /* XTRScreen.h */,
+				9057083D1F50384600D5EC05 /* XTRScreen.m */,
 				905708331F4FD6A900D5EC05 /* XTRWindow.h */,
 				905708341F4FD6A900D5EC05 /* XTRWindow.m */,
 				905708301F4EC8F600D5EC05 /* XTRUtils.h */,
@@ -224,6 +229,7 @@
 				905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */,
 				9057083B1F502B6B00D5EC05 /* XTRNavigationController.m in Sources */,
 				905708061F4EB2AF00D5EC05 /* main.m in Sources */,
+				9057083E1F50384600D5EC05 /* XTRScreen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
