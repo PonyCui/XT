@@ -7,15 +7,28 @@
 //
 
 #import "XTRApplication.h"
+#import "XTRUtils.h"
+
+@interface XTRApplication ()
+
+@property (nonatomic, strong) JSContext *context;
+
+@end
 
 @implementation XTRApplication
 
-+ (XTRApplication *)create {
-    return [XTRApplication new];
++ (XTRApplication *)create:(JSValue *)scriptObject {
+    XTRApplication *app = [XTRApplication new];
+    app.context = scriptObject.context;
+    return app;
 }
 
 + (NSString *)name {
     return @"XTRApplication";
+}
+
+- (JSValue *)xtr_keyWindow {
+    return [JSValue fromView:[UIApplication sharedApplication].keyWindow context:self.context];
 }
 
 @end

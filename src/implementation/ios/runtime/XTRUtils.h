@@ -15,12 +15,15 @@
 
 @interface JSValue (XTRUtils)
 
-+ (NSDictionary *)fromRect:(CGRect)rect;
-+ (NSDictionary *)fromSize:(CGSize)size;
-+ (NSDictionary *)fromPoint:(CGPoint)point;
-+ (NSDictionary *)fromTransform:(CGAffineTransform)transform;
++ (nonnull NSDictionary *)fromRect:(CGRect)rect;
++ (nonnull NSDictionary *)fromSize:(CGSize)size;
++ (nonnull NSDictionary *)fromPoint:(CGPoint)point;
++ (nonnull NSDictionary *)fromTransform:(CGAffineTransform)transform;
 - (CGAffineTransform)toTransform;
-+ (NSDictionary *)fromColor:(UIColor *)color;
-- (UIColor *)toColor;
++ (nonnull NSDictionary *)fromColor:(nonnull UIColor *)color;
+- (nullable UIColor *)toColor;
++ (nullable JSValue *)fromView:(nullable UIView *)view context:(nonnull JSContext *)context;
+- (nullable UIView *)toView;
+- (nullable UIWindow *)toWindow;
 
 @end

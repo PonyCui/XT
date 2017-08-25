@@ -12,6 +12,7 @@
 @interface XTRView ()
 
 @property (nonatomic, strong) JSContext *context;
+@property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end
 
@@ -21,9 +22,10 @@
     return @"XTRView";
 }
 
-+ (XTRView *)create:(JSValue *)frame {
++ (XTRView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRView *view = [[XTRView alloc] initWithFrame:[frame toRect]];
-    view.context = frame.context;
+    view.context = scriptObject.context;
+    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     return view;
 }
 
@@ -195,24 +197,155 @@
     self.tag = [tag toInt32];
 }
 
-- (UIView *)xtr_superview {
-    return self.superview;
+- (JSValue *)xtr_superview {
+    return [JSValue fromView:self.superview context:self.context];
 }
 
-- (NSArray<UIView *> *)xtr_subviews {
-    return self.subviews;
+- (NSArray<JSValue *> *)xtr_subviews {
+    NSMutableArray *subviews = [NSMutableArray array];
+    for (UIView *subview in self.subviews) {
+        [subviews addObject:[JSValue fromView:subview context:self.context] ?: [NSNull null]];
+    }
+    return [subviews copy];
 }
 
 - (UIWindow *)xtr_window {
     return self.window;
 }
 
+- (void)xtr_removeFromSuperview {
+    [self removeFromSuperview];
+}
+
+- (void)xtr_insertSubviewAtIndex:(JSValue *)subview atIndex:(JSValue *)atIndex {
+    UIView *view = [subview toView];
+    if (view) {
+        [self insertSubview:view atIndex:[atIndex toInt32]];
+    }
+}
+
+- (void)xtr_exchangeSubviewAtIndex:(JSValue *)index1 index2:(JSValue *)index2 {
+    [self exchangeSubviewAtIndex:[index1 toInt32] withSubviewAtIndex:[index2 toInt32]];
+}
+
 - (void)xtr_addSubview:(JSValue *)subview {
-    if ([subview isObject] && [subview[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        UIView *nativeView = [subview[@"nativeObject"] toObject];
-        if ([nativeView isKindOfClass:[UIView class]]) {
-            [self addSubview:nativeView];
-        }
+    UIView *view = [subview toView];
+    if (view) {
+        [self addSubview:view];
+    }
+}
+
+- (void)xtr_insertSubviewBelow:(JSValue *)subview siblingSubview:(JSValue *)siblingSubview {
+    UIView *view = [subview toView];
+    UIView *siblingView = [siblingSubview toView];
+    if (view && siblingView) {
+        [self insertSubview:view belowSubview:siblingView];
+    }
+}
+
+- (void)xtr_insertSubviewAbove:(JSValue *)subview siblingSubview:(JSValue *)siblingSubview {
+    UIView *view = [subview toView];
+    UIView *siblingView = [siblingSubview toView];
+    if (view && siblingView) {
+        [self insertSubview:view aboveSubview:siblingView];
+    }
+}
+
+- (void)xtr_bringSubviewToFront:(JSValue *)subview {
+    UIView *view = [subview toView];
+    if (view) {
+        [self bringSubviewToFront:view];
+    }
+}
+
+- (void)xtr_sendSubviewToBack:(JSValue *)subview {
+    UIView *view = [subview toView];
+    if (view) {
+        [self sendSubviewToBack:view];
+    }
+}
+
+- (void)didAddSubview:(UIView *)subview {
+    [super didAddSubview:subview];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
+                                                                                      [JSValue fromView:subview context:self.context]
+                                                                                      ] : @[])];
+    }
+}
+
+- (void)willRemoveSubview:(UIView *)subview {
+    [super willRemoveSubview:subview];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
+                                                                                          [JSValue fromView:subview context:self.context]
+                                                                                          ] : @[])];
+    }
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    [super willMoveToSuperview:newSuperview];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
+                                                                                                 [JSValue fromView:newSuperview context:self.context]
+                                                                                                 ] : @[])];
+    }
+}
+
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
+    }
+}
+
+- (void)willMoveToWindow:(UIWindow *)newWindow {
+    [super willMoveToWindow:newWindow];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
+                                                                                           [JSValue fromView:newWindow context:self.context]
+                                                                                           ] : @[])];
+    }
+}
+
+- (void)didMoveToWindow {
+    [super didMoveToWindow];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
+    }
+}
+
+- (BOOL)xtr_isDescendantOfView:(JSValue *)view {
+    UIView *aView = [view toView];
+    if (aView) {
+        return [self isDescendantOfView:aView];
+    }
+    return NO;
+}
+
+- (JSValue *)xtr_viewWithTag:(JSValue *)tag {
+    return [JSValue fromView:[self viewWithTag:[tag toInt32]] context:self.context];
+}
+
+- (void)xtr_setNeedsLayout {
+    [self setNeedsLayout];
+}
+
+- (void)xtr_layoutIfNeeded {
+    [self layoutIfNeeded];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
 }
 

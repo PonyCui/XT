@@ -67,4 +67,31 @@
     return nil;
 }
 
++ (JSValue *)fromView:(UIView *)view context:(JSContext *)context {
+    if (view == nil) {
+        return nil;
+    }
+    return [[context evaluateScript:@"window.viewCreater"] invokeMethod:@"create" withArguments:@[view]];
+}
+
+- (UIView *)toView {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        UIView *nativeView = [self[@"nativeObject"] toObject];
+        if ([nativeView isKindOfClass:[UIView class]]) {
+            return nativeView;
+        }
+    }
+    return nil;
+}
+
+- (UIWindow *)toWindow {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        UIWindow *nativeView = [self[@"nativeObject"] toObject];
+        if ([nativeView isKindOfClass:[UIWindow class]]) {
+            return nativeView;
+        }
+    }
+    return nil;
+}
+
 @end

@@ -20,6 +20,7 @@
 		905708291F4EBCD500D5EC05 /* XTRApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708281F4EBCD500D5EC05 /* XTRApplication.m */; };
 		9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057082E1F4EC84100D5EC05 /* XTRView.m */; };
 		905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708311F4EC8F600D5EC05 /* XTRUtils.m */; };
+		905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708341F4FD6A900D5EC05 /* XTRWindow.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,8 @@
 		9057082E1F4EC84100D5EC05 /* XTRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRView.m; sourceTree = "<group>"; };
 		905708301F4EC8F600D5EC05 /* XTRUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRUtils.h; sourceTree = "<group>"; };
 		905708311F4EC8F600D5EC05 /* XTRUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRUtils.m; sourceTree = "<group>"; };
+		905708331F4FD6A900D5EC05 /* XTRWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRWindow.h; sourceTree = "<group>"; };
+		905708341F4FD6A900D5EC05 /* XTRWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRWindow.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +119,8 @@
 				905708281F4EBCD500D5EC05 /* XTRApplication.m */,
 				9057082D1F4EC84100D5EC05 /* XTRView.h */,
 				9057082E1F4EC84100D5EC05 /* XTRView.m */,
+				905708331F4FD6A900D5EC05 /* XTRWindow.h */,
+				905708341F4FD6A900D5EC05 /* XTRWindow.m */,
 				905708301F4EC8F600D5EC05 /* XTRUtils.h */,
 				905708311F4EC8F600D5EC05 /* XTRUtils.m */,
 			);
@@ -205,6 +210,7 @@
 				9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */,
 				905708201F4EB49300D5EC05 /* XTRuntime.m in Sources */,
 				905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */,
+				905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */,
 				905708061F4EB2AF00D5EC05 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

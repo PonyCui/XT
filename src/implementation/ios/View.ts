@@ -1,6 +1,6 @@
 /// <reference path="xtr.d.ts" />
 import { SwipeDirection, InteractionState } from '../../interface/View';
-import { Rect, Point, Size } from "../../interface/Rect";
+import { Rect, Point, Size, RectZero } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
@@ -9,12 +9,13 @@ export class View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, nativeObject?: any) {
+    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
+        if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
         }
         else {
-            this.nativeObject = XTRView.create(rect);
+            this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
         }
     }
 
@@ -246,37 +247,46 @@ export class View {
     }
 
     public get superview(): View | undefined {
-        const value = this.nativeObject.xtr_superview();
-        if (value) {
-            return new View(undefined, value);
-        }
-        return undefined;
+        return this.nativeObject.xtr_superview();
     }
 
     public get subviews(): View[] {
-        const value = this.nativeObject.xtr_subviews();
-        if (value instanceof Array) {
-            return value.map(v => new View(undefined, v))
-        }
-        return []
+        return this.nativeObject.xtr_subviews();
     }
 
-    // subviews: View[]
     window?: Window
 
-    removeFromSuperview() { }
-    insertSubviewAtIndex(subview: View, atIndex: number) { }
-    exchangeSubviewAtIndex(index1: number, index2: number) { }
+    removeFromSuperview() {
+        this.nativeObject.xtr_removeFromSuperview();
+    }
+
+    insertSubviewAtIndex(subview: View, atIndex: number) {
+        this.nativeObject.xtr_insertSubviewAtIndexAtIndex(subview, atIndex)
+    }
+
+    exchangeSubviewAtIndex(index1: number, index2: number) {
+        this.nativeObject.xtr_exchangeSubviewAtIndexIndex2(index1, index2)
+    }
 
     addSubview(subview: View) {
         this.nativeObject.xtr_addSubview(subview)
     }
 
-    insertSubviewBelow(subview: View, siblingSubview: View) { }
-    insertSubviewAbove(subview: View, siblingSubview: View) { }
+    insertSubviewBelow(subview: View, siblingSubview: View) {
+        this.nativeObject.xtr_insertSubviewBelowSiblingSubview(subview, siblingSubview);
+    }
 
-    bringSubviewToFront(subview: View) { }
-    sendSubviewToBack(subview: View) { }
+    insertSubviewAbove(subview: View, siblingSubview: View) {
+        this.nativeObject.xtr_insertSubviewAboveSiblingSubview(subview, siblingSubview);
+    }
+
+    bringSubviewToFront(subview: View) {
+        this.nativeObject.xtr_bringSubviewToFront(subview);
+    }
+
+    sendSubviewToBack(subview: View) {
+        this.nativeObject.xtr_sendSubviewToBack(subview);
+    }
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
@@ -286,11 +296,16 @@ export class View {
     willMoveToWindow(newWindow?: Window) { }
     didMoveToWindow() { }
 
-    isDescendantOfView(view: View) { return false }
-    viewWithTag(tag: number): View | undefined { return undefined }
+    isDescendantOfView(view: View) {
+        return this.nativeObject.xtr_isDescendantOfView(view);
+    }
 
-    setNeedsLayout() { }
-    layoutIfNeeded() { }
+    viewWithTag(tag: number): View | undefined {
+        return this.nativeObject.xtr_viewWithTag(tag);
+    }
+
+    setNeedsLayout() { this.nativeObject.xtr_setNeedsLayout() }
+    layoutIfNeeded() { this.nativeObject.xtr_layoutIfNeeded() }
     layoutSubviews() { }
 
     // Mark: View LayoutConstraint
@@ -316,3 +331,13 @@ export class View {
     animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
 
 }
+
+if ((window as any).viewClasses === undefined) {
+    (window as any).viewClasses = [];
+}
+(window as any).viewClasses.push((view: any) => {
+    if (view.constructor.toString() === "[object XTRViewConstructor]") {
+        return new View(undefined, view);
+    }
+    return undefined;
+})

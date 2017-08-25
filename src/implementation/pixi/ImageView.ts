@@ -81,7 +81,7 @@ export class Image {
         })
     }
 
-    private constructor(baseTexture: any, size: Size, scale: number, renderingMode: ImageRenderingMode) {
+    constructor(baseTexture: any, size: Size, scale: number, renderingMode: ImageRenderingMode) {
         this.baseTexture = baseTexture;
         this.size = size;
         this.scale = scale;

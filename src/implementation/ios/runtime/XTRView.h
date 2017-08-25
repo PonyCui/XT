@@ -13,7 +13,7 @@
 
 @protocol XTRViewExport <JSExport>
 
-+ (XTRView *)create:(JSValue *)frame;
++ (XTRView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSDictionary *)xtr_frame;
 - (void)xtr_setFrame:(JSValue *)frame;
 - (NSDictionary *)xtr_bounds;
@@ -54,20 +54,21 @@
 - (void)xtr_setShadowRadius:(JSValue *)shadowRadius;
 - (NSInteger)xtr_tag;
 - (void)xtr_setTag:(JSValue *)tag;
-- (UIView *)xtr_superview;
-- (NSArray<UIView *> *)xtr_subviews;
+- (JSValue *)xtr_superview;
+- (NSArray<JSValue *> *)xtr_subviews;
 - (UIWindow *)xtr_window;
 - (void)xtr_removeFromSuperview;
-- (void)xtr_insertSubviewAtIndex:(UIView *)subview atIndex:(NSInteger)atIndex;
-- (void)xtr_exchangeSubviewAtIndex:(NSInteger)index1 index2:(NSInteger)index2;
+- (void)xtr_insertSubviewAtIndex:(JSValue *)subview atIndex:(JSValue *)atIndex;
+- (void)xtr_exchangeSubviewAtIndex:(JSValue *)index1 index2:(JSValue *)index2;
 - (void)xtr_addSubview:(JSValue *)subview;
-//- (void)xtr_;
-//- (void)xtr_;
-//- (void)xtr_;
-//- (void)xtr_;
-//- (void)xtr_;
-//- (void)xtr_;
-//- (void)xtr_;
+- (void)xtr_insertSubviewBelow:(JSValue *)subview siblingSubview:(JSValue *)siblingSubview;
+- (void)xtr_insertSubviewAbove:(JSValue *)subview siblingSubview:(JSValue *)siblingSubview;
+- (void)xtr_bringSubviewToFront:(JSValue *)subview;
+- (void)xtr_sendSubviewToBack:(JSValue *)subview;
+- (BOOL)xtr_isDescendantOfView:(JSValue *)view;
+- (JSValue *)xtr_viewWithTag:(JSValue *)tag;
+- (void)xtr_setNeedsLayout;
+- (void)xtr_layoutIfNeeded;
 
 @end
 

@@ -7,7 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XTRView.h"
+#import "XTRComponent.h"
 
-@interface XTRWindow : UIWindow
+@class XTRWindow;
+
+@protocol XTRWindowExport <JSExport>
+
++ (XTRWindow *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
+- (void)xtr_makeKeyAndVisible;
+
+@end
+
+@interface XTRWindow : UIWindow<XTRComponent, XTRWindowExport, XTRViewExport>
 
 @end

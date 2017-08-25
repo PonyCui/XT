@@ -1,6 +1,6 @@
 import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController } from '../main.pixi'
 
-const application = new Application(document.getElementById("app"), {
+const application = new Application("app", {
     applicationDidFinishLaunchingWithOptions: () => {
         const window = new Window(Screen.mainScreen().bounds())
         window.rootViewController = new NavigationController(new FirstViewController());

@@ -8,11 +8,13 @@
 
 #import "XTRApplicationDelegate.h"
 #import "XTRBridge.h"
+#import "XTRUtils.h"
 
 @interface XTRApplicationDelegate()
 
 @property (nonatomic, strong) XTRBridge *bridge;
-@property (nonatomic, strong) JSValue *scriptObject;
+@property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, strong) JSContext *context;
 
 @end
 
@@ -22,7 +24,8 @@ static XTRApplicationDelegate *sharedDelegate;
 
 + (void)attachDelegate:(JSValue *)delegate {
     if (sharedDelegate != nil) {
-        [sharedDelegate setScriptObject:delegate];
+        [sharedDelegate setScriptObject:[JSManagedValue managedValueWithValue:delegate andOwner:sharedDelegate]];
+        [sharedDelegate setContext:delegate.context];
     }
 }
 
@@ -42,10 +45,22 @@ static XTRApplicationDelegate *sharedDelegate;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (self.scriptObject != nil) {
-        [self.scriptObject invokeMethod:@"applicationDidFinishLaunchingWithOptions"
-                          withArguments:@[@"", launchOptions ?: @{}]];
+        JSValue *value = self.scriptObject.value;
+        if (value != nil) {
+            [value invokeMethod:@"resetNativeObject" withArguments:@[self]];
+            [value invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
+        }
     }
     return YES;
+}
+
+- (JSValue *)xtr_window {
+    return [JSValue fromView:self.window context:self.context];
+}
+
+- (void)xtr_setWindow:(JSValue *)window {
+    self.window = [window toWindow];
+    self.window.rootViewController = [UIViewController new];
 }
 
 @end
