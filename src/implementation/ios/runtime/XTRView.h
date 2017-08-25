@@ -13,6 +13,7 @@
 
 @protocol XTRViewExport <JSExport>
 
+@property (nonatomic, copy) NSString *objectUUID;
 + (XTRView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSDictionary *)xtr_frame;
 - (void)xtr_setFrame:(JSValue *)frame;
@@ -69,9 +70,19 @@
 - (JSValue *)xtr_viewWithTag:(JSValue *)tag;
 - (void)xtr_setNeedsLayout;
 - (void)xtr_layoutIfNeeded;
+- (BOOL)xtr_userInteractionEnabled;
+- (void)xtr_setUserInteractionEnabled:(JSValue *)value;
+- (CGFloat)xtr_longPressDuration;
+- (void)xtr_setLongPressDuration:(JSValue *)duration;
+- (void)xtr_activeTap;
+- (void)xtr_activeDoubleTap;
+- (void)xtr_activeLongPress;
+- (void)xtr_activePan;
 
 @end
 
 @interface XTRView : UIView<XTRComponent, XTRViewExport>
+
+@property (nonatomic, copy) NSString *objectUUID;
 
 @end

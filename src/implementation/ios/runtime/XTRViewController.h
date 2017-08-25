@@ -13,6 +13,7 @@
 
 @protocol XTRViewControllerExport <JSExport>
 
+@property (nonatomic, copy) NSString *objectUUID;
 + (XTRViewController *)create:(JSValue *)scriptObject;
 - (JSValue *)xtr_view;
 - (void)xtr_setView:(JSValue *)view;
@@ -25,5 +26,7 @@
 @end
 
 @interface XTRViewController : UIViewController<XTRComponent, XTRViewControllerExport>
+
+@property (nonatomic, copy) NSString *objectUUID;
 
 @end

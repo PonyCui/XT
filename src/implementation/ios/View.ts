@@ -16,6 +16,7 @@ export class View {
         }
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
+            (window as any).objectCreater.store(this);
         }
     }
 
@@ -319,9 +320,39 @@ export class View {
     // Mark: View Interactive
     static InteractionState = InteractionState
     static SwipeDirection = SwipeDirection
-    userInteractionEnabled: boolean;
-    longPressDuration: number;
-    onTap?: () => void
+
+    public get userInteractionEnabled(): boolean {
+        return this.nativeObject.xtr_userInteractionEnabled();
+    }
+    
+    public set userInteractionEnabled(value: boolean) {
+        this.nativeObject.xtr_setUserInteractionEnabled(value);
+    }
+
+
+	public get longPressDuration(): number {
+		return this.nativeObject.xtr_longPressDuration();
+	}
+
+	public set longPressDuration(value: number) {
+		this.nativeObject.xtr_setLongPressDuration(value);
+	}
+
+    private _onTap?: () => void
+
+    public get onTap() {
+        return this._onTap;
+    }
+
+    public set onTap(value: (() => void) | undefined) {
+        this._onTap = value;
+        this.nativeObject.xtr_activeTap();
+    }
+
+    handleTap() {
+        this.onTap && this.onTap();
+    }
+
     onDoubleTap?: () => void
     onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
     onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
@@ -332,10 +363,10 @@ export class View {
 
 }
 
-if ((window as any).viewClasses === undefined) {
-    (window as any).viewClasses = [];
+if ((window as any).objectClasses === undefined) {
+    (window as any).objectClasses = [];
 }
-(window as any).viewClasses.push((view: any) => {
+(window as any).objectClasses.push((view: any) => {
     if (view.constructor.toString() === "[object XTRViewConstructor]") {
         return new View(undefined, view);
     }

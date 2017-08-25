@@ -19,6 +19,7 @@
 
 + (XTRApplication *)create:(JSValue *)scriptObject {
     XTRApplication *app = [XTRApplication new];
+    app.objectUUID = [[NSUUID UUID] UUIDString];
     app.context = scriptObject.context;
     return app;
 }

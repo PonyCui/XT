@@ -18,6 +18,7 @@ export class ViewController {
         }
         else {
             this.nativeObject = XTRViewController.create(this);
+            (window as any).objectCreater.store(this);
         }
     }
 
@@ -27,6 +28,7 @@ export class ViewController {
 
     public set view(value: View) {
         this.nativeObject.xtr_setView(value);
+        (this as any).viewRef = value;
     }
 
     loadView(): void {
@@ -67,10 +69,10 @@ export class ViewController {
 
 }
 
-if ((window as any).viewClasses === undefined) {
-    (window as any).viewClasses = [];
+if ((window as any).objectClasses === undefined) {
+    (window as any).objectClasses = [];
 }
-(window as any).viewClasses.push((target: any) => {
+(window as any).objectClasses.push((target: any) => {
     if (target.constructor.toString() === "[object XTRViewControllerConstructor]") {
         return new ViewController(target);
     }

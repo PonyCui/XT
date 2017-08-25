@@ -15,6 +15,7 @@ export class Window extends View {
         }
         else {
             this.nativeObject = XTRWindow.createScriptObject(rect || RectZero, this);
+            (window as any).objectCreater.store(this);
         }
     }
 
@@ -24,6 +25,7 @@ export class Window extends View {
 
     public set rootViewController(value: ViewController | undefined) {
         this.nativeObject.xtr_setRootViewController(value);
+        (this as any).rootViewControllerRef = value;
     }
 
     makeKeyAndVisible(): void {
@@ -32,10 +34,10 @@ export class Window extends View {
 
 }
 
-if ((window as any).viewClasses === undefined) {
-    (window as any).viewClasses = [];
+if ((window as any).objectClasses === undefined) {
+    (window as any).objectClasses = [];
 }
-(window as any).viewClasses.push((view: any) => {
+(window as any).objectClasses.push((view: any) => {
     if (view.constructor.toString() === "[object XTRWindowConstructor]") {
         return new Window(undefined, view);
     }

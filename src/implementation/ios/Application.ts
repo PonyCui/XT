@@ -17,6 +17,7 @@ export class ApplicationDelegate {
 
     public set window(value: Window | undefined) {
         this.nativeObject.xtr_setWindow(value);
+        (this as any).windowRef = value;
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
@@ -47,20 +48,30 @@ export class Application {
 
 }
 
-if ((window as any).viewCreater === undefined) {
-    (window as any).viewCreater = {
-        create: (view: any) => {
-            for (let index = 0; index < (window as any).viewClasses.length; index++) {
-                const element = (window as any).viewClasses[index];
+if ((window as any).objectCreater === undefined) {
+    (window as any).objectCreater = {
+        create: function (view: any) {
+            if (this.objectStore[view.objectUUID] !== undefined) {
+                return this.objectStore[view.objectUUID];
+            }
+            for (let index = 0; index < (window as any).objectClasses.length; index++) {
+                const element = (window as any).objectClasses[index];
                 const instance = element(view);
                 if (instance !== undefined) {
+                    this.store(instance);
                     return instance;
                 }
             }
             return undefined;
-        }
+        },
+        store: function (target: any) {
+            if (target.nativeObject instanceof Object && typeof target.nativeObject.objectUUID === "string") {
+                this.objectStore[target.nativeObject.objectUUID] = target;
+            }
+        },
+        objectStore: {},
     };
 }
-if ((window as any).viewClasses === undefined) {
-    (window as any).viewClasses = [];
+if ((window as any).objectClasses === undefined) {
+    (window as any).objectClasses = [];
 }

@@ -24,6 +24,7 @@
 
 + (XTRViewController *)create:(JSValue *)scriptObject {
     XTRViewController *viewController = [XTRViewController new];
+    viewController.objectUUID = [[NSUUID UUID] UUIDString];
     viewController.context = scriptObject.context;
     viewController.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:viewController];
     return viewController;

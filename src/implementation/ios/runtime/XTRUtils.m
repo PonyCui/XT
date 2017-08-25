@@ -71,7 +71,7 @@
     if (object == nil) {
         return nil;
     }
-    return [[context evaluateScript:@"window.viewCreater"] invokeMethod:@"create" withArguments:@[object]];
+    return [[context evaluateScript:@"window.objectCreater"] invokeMethod:@"create" withArguments:@[object]];
 }
 
 - (UIView *)toView {

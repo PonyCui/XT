@@ -17,9 +17,11 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        // this.view.onTap = () => {
-        //     this.navigationController && this.navigationController.pushViewController(new SecondViewController())
-        // }
+        console.log(this.view);
+        this.view.onTap = () => {
+            this.view.backgroundColor = new Color(1.0, 1.0, 1.0)
+            // this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        }
     }
 
 }

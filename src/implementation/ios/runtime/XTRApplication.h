@@ -13,11 +13,14 @@
 
 @protocol XTRApplicationExport <JSExport>
 
+@property (nonatomic, copy) NSString *objectUUID;
 + (XTRApplication *)create:(JSValue *)scriptObject;
 - (JSValue *)xtr_keyWindow;
 
 @end
 
 @interface XTRApplication : NSObject<XTRComponent, XTRApplicationExport>
+
+@property (nonatomic, copy) NSString *objectUUID;
 
 @end

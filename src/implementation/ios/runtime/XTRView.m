@@ -11,6 +11,8 @@
 
 @interface XTRView ()
 
+@property (nonatomic, assign) NSTimeInterval longPressDuration;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 
@@ -24,6 +26,7 @@
 
 + (XTRView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRView *view = [[XTRView alloc] initWithFrame:[frame toRect]];
+    view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
     view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     return view;
@@ -347,6 +350,48 @@
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
+}
+
+- (BOOL)xtr_userInteractionEnabled {
+    return self.userInteractionEnabled;
+}
+
+- (void)xtr_setUserInteractionEnabled:(JSValue *)value {
+    self.userInteractionEnabled = [value toBool];
+}
+
+- (CGFloat)xtr_longPressDuration {
+    return self.longPressDuration;
+}
+
+- (void)xtr_setLongPressDuration:(JSValue *)duration {
+    self.longPressDuration = [duration toDouble];
+}
+
+- (void)xtr_activeTap {
+    if (self.tapGestureRecognizer == nil) {
+        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
+        [self addGestureRecognizer:self.tapGestureRecognizer];
+    }
+}
+
+- (void)handleTap {
+    JSValue *scriptObject = self.scriptObject.value;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handleTap" withArguments:@[]];
+    }
+}
+
+- (void)xtr_activeDoubleTap {
+    
+}
+
+- (void)xtr_activeLongPress {
+    
+}
+
+- (void)xtr_activePan {
+    
 }
 
 @end

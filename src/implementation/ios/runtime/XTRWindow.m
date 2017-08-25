@@ -24,6 +24,7 @@
 
 + (XTRWindow *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRWindow *view = [[XTRWindow alloc] initWithFrame:[frame toRect]];
+    view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
     view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     return view;
