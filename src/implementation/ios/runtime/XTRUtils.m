@@ -104,4 +104,14 @@
     return nil;
 }
 
+- (UINavigationController *)toNavigationController {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        UINavigationController *nativeViewController = [self[@"nativeObject"] toObject];
+        if ([nativeViewController isKindOfClass:[UINavigationController class]]) {
+            return nativeViewController;
+        }
+    }
+    return nil;
+}
+
 @end

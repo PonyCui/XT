@@ -71,4 +71,5 @@ import { ViewController as MViewController } from './implementation/ios/ViewCont
 export class ViewController extends MViewController {}
 
 import { NavigationController as INavigationController } from './interface/NavigationController'
-export class NavigationController extends INavigationController {}
+import { NavigationController as MNavigationController } from './implementation/ios/NavigationController'
+export class NavigationController extends MNavigationController {}

@@ -5,10 +5,12 @@ export class NavigationController extends ViewController {
 
     XTClassName = "NavigationController"
 
-    constructor(rootViewController: ViewController) {
+    constructor(rootViewController?: ViewController) {
         super()
-        this.addChildViewController(rootViewController);
-        this.view.addSubview(rootViewController.view);
+        if (rootViewController) {
+            this.addChildViewController(rootViewController);
+            this.view.addSubview(rootViewController.view);
+        }
         this.activePanTouches();
     }
 

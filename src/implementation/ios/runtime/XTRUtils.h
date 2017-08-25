@@ -26,6 +26,7 @@
 - (nullable UIView *)toView;
 - (nullable UIWindow *)toWindow;
 - (nullable UIViewController *)toViewController;
+- (nullable UINavigationController *)toNavigationController;
 
 
 @end

@@ -13,6 +13,7 @@
 #import "XTRWindow.h"
 #import "XTRApplicationDelegate.h"
 #import "XTRViewController.h"
+#import "XTRNavigationController.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -43,6 +44,7 @@ static NSString *globalBridgeScript;
                             [XTRView class],
                             [XTRWindow class],
                             [XTRViewController class],
+                            [XTRNavigationController class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

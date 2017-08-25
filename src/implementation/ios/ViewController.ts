@@ -12,7 +12,8 @@ export class ViewController {
 
     nativeObject: any;
 
-    constructor(nativeObject?: any) {
+    constructor(nativeObject?: any, isChild: boolean = false) {
+        if (isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
         }
