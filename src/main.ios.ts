@@ -67,7 +67,8 @@ import { Window as MWindow } from './implementation/ios/Window'
 export class Window extends MWindow {}
 
 import { ViewController as IViewController } from './interface/ViewController'
-export class ViewController extends IViewController {}
+import { ViewController as MViewController } from './implementation/ios/ViewController'
+export class ViewController extends MViewController {}
 
 import { NavigationController as INavigationController } from './interface/NavigationController'
 export class NavigationController extends INavigationController {}

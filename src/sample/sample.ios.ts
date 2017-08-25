@@ -5,6 +5,7 @@ class AppDelegate extends ApplicationDelegate {
     applicationDidFinishLaunchingWithOptions() {
         this.window = new Window();
         this.window.backgroundColor = new Color(1, 1, 0)
+        this.window.rootViewController = new FirstViewController();
         this.window.makeKeyAndVisible();
     }
 
@@ -12,16 +13,16 @@ class AppDelegate extends ApplicationDelegate {
 
 const application = new Application('app', new AppDelegate());
 
-// class FirstViewController extends ViewController {
+class FirstViewController extends ViewController {
 
-//     viewDidLoad() {
-//         this.view.backgroundColor = new Color(1, 1, 0)
-//         this.view.onTap = () => {
-//             this.navigationController && this.navigationController.pushViewController(new SecondViewController())
-//         }
-//     }
+    viewDidLoad() {
+        this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
+        // this.view.onTap = () => {
+        //     this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        // }
+    }
 
-// }
+}
 
 // class SecondViewController extends ViewController {
 

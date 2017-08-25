@@ -28,7 +28,7 @@
 }
 
 - (JSValue *)xtr_keyWindow {
-    return [JSValue fromView:[UIApplication sharedApplication].keyWindow context:self.context];
+    return [JSValue fromObject:[UIApplication sharedApplication].keyWindow context:self.context];
 }
 
 @end

@@ -21,6 +21,7 @@
 		9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057082E1F4EC84100D5EC05 /* XTRView.m */; };
 		905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708311F4EC8F600D5EC05 /* XTRUtils.m */; };
 		905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708341F4FD6A900D5EC05 /* XTRWindow.m */; };
+		905708381F4FFF5000D5EC05 /* XTRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708371F4FFF5000D5EC05 /* XTRViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,8 @@
 		905708311F4EC8F600D5EC05 /* XTRUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRUtils.m; sourceTree = "<group>"; };
 		905708331F4FD6A900D5EC05 /* XTRWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRWindow.h; sourceTree = "<group>"; };
 		905708341F4FD6A900D5EC05 /* XTRWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRWindow.m; sourceTree = "<group>"; };
+		905708361F4FFF5000D5EC05 /* XTRViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRViewController.h; sourceTree = "<group>"; };
+		905708371F4FFF5000D5EC05 /* XTRViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +122,8 @@
 				905708281F4EBCD500D5EC05 /* XTRApplication.m */,
 				9057082D1F4EC84100D5EC05 /* XTRView.h */,
 				9057082E1F4EC84100D5EC05 /* XTRView.m */,
+				905708361F4FFF5000D5EC05 /* XTRViewController.h */,
+				905708371F4FFF5000D5EC05 /* XTRViewController.m */,
 				905708331F4FD6A900D5EC05 /* XTRWindow.h */,
 				905708341F4FD6A900D5EC05 /* XTRWindow.m */,
 				905708301F4EC8F600D5EC05 /* XTRUtils.h */,
@@ -205,6 +210,7 @@
 				905708261F4EB61100D5EC05 /* XTRApplicationDelegate.m in Sources */,
 				905708231F4EB4AC00D5EC05 /* XTRBridge.m in Sources */,
 				905708291F4EBCD500D5EC05 /* XTRApplication.m in Sources */,
+				905708381F4FFF5000D5EC05 /* XTRViewController.m in Sources */,
 				9057080C1F4EB2AF00D5EC05 /* ViewController.m in Sources */,
 				905708091F4EB2AF00D5EC05 /* AppDelegate.m in Sources */,
 				9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */,

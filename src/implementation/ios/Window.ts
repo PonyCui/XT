@@ -1,7 +1,7 @@
 /// <reference path="xtr.d.ts" />
 import { View } from './View'
 import { Rect, RectZero } from "../../interface/Rect";
-// import { ViewController } from "./ViewController";
+import { ViewController } from "./ViewController";
 
 export class Window extends View {
 
@@ -18,7 +18,14 @@ export class Window extends View {
         }
     }
 
-    // rootViewController?: ViewController
+    public get rootViewController(): ViewController | undefined {
+        return this.nativeObject.xtr_rootViewController();
+    }
+
+    public set rootViewController(value: ViewController | undefined) {
+        this.nativeObject.xtr_setRootViewController(value);
+    }
+
     makeKeyAndVisible(): void {
         this.nativeObject.xtr_makeKeyAndVisible();
     }

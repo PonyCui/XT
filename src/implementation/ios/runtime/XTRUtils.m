@@ -67,11 +67,11 @@
     return nil;
 }
 
-+ (JSValue *)fromView:(UIView *)view context:(JSContext *)context {
-    if (view == nil) {
++ (JSValue *)fromObject:(id)object context:(JSContext *)context {
+    if (object == nil) {
         return nil;
     }
-    return [[context evaluateScript:@"window.viewCreater"] invokeMethod:@"create" withArguments:@[view]];
+    return [[context evaluateScript:@"window.viewCreater"] invokeMethod:@"create" withArguments:@[object]];
 }
 
 - (UIView *)toView {
@@ -89,6 +89,16 @@
         UIWindow *nativeView = [self[@"nativeObject"] toObject];
         if ([nativeView isKindOfClass:[UIWindow class]]) {
             return nativeView;
+        }
+    }
+    return nil;
+}
+
+- (UIViewController *)toViewController {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        UIViewController *nativeViewController = [self[@"nativeObject"] toObject];
+        if ([nativeViewController isKindOfClass:[UIViewController class]]) {
+            return nativeViewController;
         }
     }
     return nil;

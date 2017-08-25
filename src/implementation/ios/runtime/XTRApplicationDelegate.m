@@ -55,12 +55,11 @@ static XTRApplicationDelegate *sharedDelegate;
 }
 
 - (JSValue *)xtr_window {
-    return [JSValue fromView:self.window context:self.context];
+    return [JSValue fromObject:self.window context:self.context];
 }
 
 - (void)xtr_setWindow:(JSValue *)window {
     self.window = [window toWindow];
-    self.window.rootViewController = [UIViewController new];
 }
 
 @end

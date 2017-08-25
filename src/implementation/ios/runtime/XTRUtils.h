@@ -22,8 +22,10 @@
 - (CGAffineTransform)toTransform;
 + (nonnull NSDictionary *)fromColor:(nonnull UIColor *)color;
 - (nullable UIColor *)toColor;
-+ (nullable JSValue *)fromView:(nullable UIView *)view context:(nonnull JSContext *)context;
++ (nullable JSValue *)fromObject:(nullable id)object context:(nonnull JSContext *)context;
 - (nullable UIView *)toView;
 - (nullable UIWindow *)toWindow;
+- (nullable UIViewController *)toViewController;
+
 
 @end

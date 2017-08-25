@@ -34,6 +34,14 @@
     [self makeKeyAndVisible];
 }
 
+- (JSValue *)xtr_rootViewController {
+    return [JSValue fromObject:self.rootViewController context:self.context];
+}
+
+- (void)xtr_setRootViewController:(JSValue *)viewController {
+    self.rootViewController = [viewController toViewController];
+}
+
 #pragma mark - XTRViewProtocol
 
 - (NSDictionary *)xtr_frame {
@@ -205,13 +213,13 @@
 }
 
 - (JSValue *)xtr_superview {
-    return [JSValue fromView:self.superview context:self.context];
+    return [JSValue fromObject:self.superview context:self.context];
 }
 
 - (NSArray<JSValue *> *)xtr_subviews {
     NSMutableArray *subviews = [NSMutableArray array];
     for (UIView *subview in self.subviews) {
-        [subviews addObject:[JSValue fromView:subview context:self.context] ?: [NSNull null]];
+        [subviews addObject:[JSValue fromObject:subview context:self.context] ?: [NSNull null]];
     }
     return [subviews copy];
 }
@@ -277,7 +285,7 @@
     JSValue *scriptObject = self.scriptObject.value;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
-                                                                                      [JSValue fromView:subview context:self.context]
+                                                                                      [JSValue fromObject:subview context:self.context]
                                                                                       ] : @[])];
     }
 }
@@ -287,7 +295,7 @@
     JSValue *scriptObject = self.scriptObject.value;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
-                                                                                          [JSValue fromView:subview context:self.context]
+                                                                                          [JSValue fromObject:subview context:self.context]
                                                                                           ] : @[])];
     }
 }
@@ -297,7 +305,7 @@
     JSValue *scriptObject = self.scriptObject.value;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
-                                                                                                 [JSValue fromView:newSuperview context:self.context]
+                                                                                                 [JSValue fromObject:newSuperview context:self.context]
                                                                                                  ] : @[])];
     }
 }
@@ -315,7 +323,7 @@
     JSValue *scriptObject = self.scriptObject.value;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
-                                                                                           [JSValue fromView:newWindow context:self.context]
+                                                                                           [JSValue fromObject:newWindow context:self.context]
                                                                                            ] : @[])];
     }
 }
@@ -337,7 +345,7 @@
 }
 
 - (JSValue *)xtr_viewWithTag:(JSValue *)tag {
-    return [JSValue fromView:[self viewWithTag:[tag toInt32]] context:self.context];
+    return [JSValue fromObject:[self viewWithTag:[tag toInt32]] context:self.context];
 }
 
 - (void)xtr_setNeedsLayout {
