@@ -2,8 +2,9 @@ import { View } from "./View";
 import { Size } from "./Rect";
 
 export enum ImageRenderingMode {
-    Original,
-    Template,
+    Automatic = 0,
+    Original = 1,
+    Template = 2,
 }
 
 export class Image {

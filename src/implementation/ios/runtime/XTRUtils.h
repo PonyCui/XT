@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
+@class XTRImage;
+
 @interface XTRUtils : NSObject
 
 @end
@@ -27,6 +29,7 @@
 - (nullable UIWindow *)toWindow;
 - (nullable UIViewController *)toViewController;
 - (nullable UINavigationController *)toNavigationController;
+- (nullable XTRImage *)toImage;
 
 
 @end

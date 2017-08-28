@@ -15,6 +15,8 @@
 #import "XTRViewController.h"
 #import "XTRNavigationController.h"
 #import "XTRScreen.h"
+#import "XTRImage.h"
+#import "XTRImageView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -47,6 +49,8 @@ static NSString *globalBridgeScript;
                             [XTRViewController class],
                             [XTRNavigationController class],
                             [XTRScreen class],
+                            [XTRImage class],
+                            [XTRImageView class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

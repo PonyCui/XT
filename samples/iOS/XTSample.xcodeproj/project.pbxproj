@@ -24,6 +24,8 @@
 		905708381F4FFF5000D5EC05 /* XTRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708371F4FFF5000D5EC05 /* XTRViewController.m */; };
 		9057083B1F502B6B00D5EC05 /* XTRNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057083A1F502B6B00D5EC05 /* XTRNavigationController.m */; };
 		9057083E1F50384600D5EC05 /* XTRScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057083D1F50384600D5EC05 /* XTRScreen.m */; };
+		90C118E71F5412F700991641 /* XTRImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E61F5412F700991641 /* XTRImageView.m */; };
+		90C118EA1F54131F00991641 /* XTRImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E91F54131F00991641 /* XTRImage.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +61,10 @@
 		9057083A1F502B6B00D5EC05 /* XTRNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRNavigationController.m; sourceTree = "<group>"; };
 		9057083C1F50384600D5EC05 /* XTRScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRScreen.h; sourceTree = "<group>"; };
 		9057083D1F50384600D5EC05 /* XTRScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRScreen.m; sourceTree = "<group>"; };
+		90C118E51F5412F700991641 /* XTRImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRImageView.h; sourceTree = "<group>"; };
+		90C118E61F5412F700991641 /* XTRImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRImageView.m; sourceTree = "<group>"; };
+		90C118E81F54131F00991641 /* XTRImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRImage.h; sourceTree = "<group>"; };
+		90C118E91F54131F00991641 /* XTRImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRImage.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +134,10 @@
 				905708281F4EBCD500D5EC05 /* XTRApplication.m */,
 				9057082D1F4EC84100D5EC05 /* XTRView.h */,
 				9057082E1F4EC84100D5EC05 /* XTRView.m */,
+				90C118E81F54131F00991641 /* XTRImage.h */,
+				90C118E91F54131F00991641 /* XTRImage.m */,
+				90C118E51F5412F700991641 /* XTRImageView.h */,
+				90C118E61F5412F700991641 /* XTRImageView.m */,
 				905708361F4FFF5000D5EC05 /* XTRViewController.h */,
 				905708371F4FFF5000D5EC05 /* XTRViewController.m */,
 				905708391F502B6B00D5EC05 /* XTRNavigationController.h */,
@@ -220,6 +230,7 @@
 				905708261F4EB61100D5EC05 /* XTRApplicationDelegate.m in Sources */,
 				905708231F4EB4AC00D5EC05 /* XTRBridge.m in Sources */,
 				905708291F4EBCD500D5EC05 /* XTRApplication.m in Sources */,
+				90C118E71F5412F700991641 /* XTRImageView.m in Sources */,
 				905708381F4FFF5000D5EC05 /* XTRViewController.m in Sources */,
 				9057080C1F4EB2AF00D5EC05 /* ViewController.m in Sources */,
 				905708091F4EB2AF00D5EC05 /* AppDelegate.m in Sources */,
@@ -227,6 +238,7 @@
 				905708201F4EB49300D5EC05 /* XTRuntime.m in Sources */,
 				905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */,
 				905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */,
+				90C118EA1F54131F00991641 /* XTRImage.m in Sources */,
 				9057083B1F502B6B00D5EC05 /* XTRNavigationController.m in Sources */,
 				905708061F4EB2AF00D5EC05 /* main.m in Sources */,
 				9057083E1F50384600D5EC05 /* XTRScreen.m in Sources */,

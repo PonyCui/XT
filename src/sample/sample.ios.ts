@@ -1,4 +1,4 @@
-import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController } from '../main.ios'
+import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode } from '../main.ios'
 import { InteractionState } from "../interface/View";
 
 class AppDelegate extends ApplicationDelegate {
@@ -8,7 +8,6 @@ class AppDelegate extends ApplicationDelegate {
         // this.window.backgroundColor = new Color(1, 1, 0)
         this.window.rootViewController = new NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
-        console.log(Screen.mainScreen().bounds())
     }
 
 }
@@ -19,9 +18,13 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        const sView = new View(RectMake(60, 60, 20, 20));
-        sView.backgroundColor = new Color(0, 0, 0)
+        const sView = new ImageView(RectMake(60, 60, 120, 78));
+        sView.contentMode = ContentMode.ScaleAspectFit;
         this.view.addSubview(sView);
+        Image.fromAssets("success", (image) => {
+            sView.image = image;
+            console.log(image);
+        }, () => { })
         this.view.onTap = () => {
             this.view.backgroundColor = new Color(1.0, 1.0, 1.0)
             // View.animationWithDurationDampingVelocity(1.0, 0.5, 16.0, () => {

@@ -5,3 +5,5 @@ declare const XTRWindow: any
 declare const XTRViewController: any
 declare const XTRNavigationController: any
 declare const XTRScreen: any
+declare const XTRImage: any
+declare const XTRImageView: any

@@ -7,6 +7,7 @@
 //
 
 #import "XTRUtils.h"
+#import "XTRImage.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
@@ -109,6 +110,16 @@
         UINavigationController *nativeViewController = [self[@"nativeObject"] toObject];
         if ([nativeViewController isKindOfClass:[UINavigationController class]]) {
             return nativeViewController;
+        }
+    }
+    return nil;
+}
+
+- (XTRImage *)toImage {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        XTRImage *nativeView = [self[@"nativeObject"] toObject];
+        if ([nativeView isKindOfClass:[XTRImage class]]) {
+            return nativeView;
         }
     }
     return nil;

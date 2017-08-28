@@ -7,7 +7,17 @@
 //
 
 #import "XTRView.h"
+#import "XTRComponent.h"
 
-@interface XTRImageView : XTRView
+@class XTRImageView;
+
+@protocol XTRImageViewExport <JSExport>
+
++ (XTRImageView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
+- (void)xtr_setImage:(JSValue *)image;
+
+@end
+
+@interface XTRImageView : XTRView<XTRComponent, XTRImageViewExport>
 
 @end
