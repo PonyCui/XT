@@ -17,6 +17,8 @@
 #import "XTRScreen.h"
 #import "XTRImage.h"
 #import "XTRImageView.h"
+#import "XTRLabel.h"
+#import "XTRUtils.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -41,6 +43,7 @@ static NSString *globalBridgeScript;
         _appDelegate = appDelegate;
         _context = [[JSContext alloc] init];
         [_context evaluateScript:@"var window = {}"];
+        [XTRUtils attachPolyfills:_context];
         self.components = @[
                             [XTRApplication class],
                             [XTRApplicationDelegate class],
@@ -51,6 +54,7 @@ static NSString *globalBridgeScript;
                             [XTRScreen class],
                             [XTRImage class],
                             [XTRImageView class],
+                            [XTRLabel class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

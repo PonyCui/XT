@@ -26,6 +26,7 @@
 		9057083E1F50384600D5EC05 /* XTRScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 9057083D1F50384600D5EC05 /* XTRScreen.m */; };
 		90C118E71F5412F700991641 /* XTRImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E61F5412F700991641 /* XTRImageView.m */; };
 		90C118EA1F54131F00991641 /* XTRImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E91F54131F00991641 /* XTRImage.m */; };
+		90C118ED1F5546C700991641 /* XTRLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118EC1F5546C700991641 /* XTRLabel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +66,8 @@
 		90C118E61F5412F700991641 /* XTRImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRImageView.m; sourceTree = "<group>"; };
 		90C118E81F54131F00991641 /* XTRImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRImage.h; sourceTree = "<group>"; };
 		90C118E91F54131F00991641 /* XTRImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRImage.m; sourceTree = "<group>"; };
+		90C118EB1F5546C700991641 /* XTRLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRLabel.h; sourceTree = "<group>"; };
+		90C118EC1F5546C700991641 /* XTRLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRLabel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +141,8 @@
 				90C118E91F54131F00991641 /* XTRImage.m */,
 				90C118E51F5412F700991641 /* XTRImageView.h */,
 				90C118E61F5412F700991641 /* XTRImageView.m */,
+				90C118EB1F5546C700991641 /* XTRLabel.h */,
+				90C118EC1F5546C700991641 /* XTRLabel.m */,
 				905708361F4FFF5000D5EC05 /* XTRViewController.h */,
 				905708371F4FFF5000D5EC05 /* XTRViewController.m */,
 				905708391F502B6B00D5EC05 /* XTRNavigationController.h */,
@@ -230,6 +235,7 @@
 				905708261F4EB61100D5EC05 /* XTRApplicationDelegate.m in Sources */,
 				905708231F4EB4AC00D5EC05 /* XTRBridge.m in Sources */,
 				905708291F4EBCD500D5EC05 /* XTRApplication.m in Sources */,
+				90C118ED1F5546C700991641 /* XTRLabel.m in Sources */,
 				90C118E71F5412F700991641 /* XTRImageView.m in Sources */,
 				905708381F4FFF5000D5EC05 /* XTRViewController.m in Sources */,
 				9057080C1F4EB2AF00D5EC05 /* ViewController.m in Sources */,

@@ -13,6 +13,8 @@
 
 @interface XTRUtils : NSObject
 
++ (void)attachPolyfills:(JSContext *)context;
+
 @end
 
 @interface JSValue (XTRUtils)
@@ -30,6 +32,5 @@
 - (nullable UIViewController *)toViewController;
 - (nullable UINavigationController *)toNavigationController;
 - (nullable XTRImage *)toImage;
-
 
 @end

@@ -34,4 +34,12 @@ export class Color {
         return false;
     }
 
+    static whiteColor: Color = new Color(1.0, 1.0, 1.0)
+    static blackColor: Color = new Color(0.0, 0.0, 0.0)
+    static clearColor: Color = new Color(0.0, 0.0, 0.0, 0.0)
+    static redColor: Color = new Color(1.0, 0.0, 0.0)
+    static yellowColor: Color = new Color(1.0, 1.0, 0.0)
+    static greenColor: Color = new Color(0.0, 1.0, 0.0)
+    static blueColor: Color = new Color(0.0, 0.0, 1.0)
+
 }

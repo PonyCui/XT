@@ -13,6 +13,18 @@
 
 @implementation XTRUtils
 
++ (void)attachPolyfills:(JSContext *)context {
+    [self addTimeoutPolyfill:context];
+}
+
++ (void)addTimeoutPolyfill:(JSContext *)context {
+    context[@"setTimeout"] = ^(JSValue *callback, JSValue *millsecond){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(([millsecond toInt32] / 1000.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [callback callWithArguments:@[]];
+        });
+    };
+}
+
 @end
 
 @implementation JSValue (XTRUtils)

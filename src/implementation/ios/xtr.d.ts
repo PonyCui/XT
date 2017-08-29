@@ -7,3 +7,4 @@ declare const XTRNavigationController: any
 declare const XTRScreen: any
 declare const XTRImage: any
 declare const XTRImageView: any
+declare const XTRLabel: any

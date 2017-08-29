@@ -21,10 +21,11 @@ export const ContentMode = IContentMode
 export class ImageView extends MImageView {}
 
 import { TextAlignment as ITextAlignment, TextVerticalAlignment as ITextVerticalAlignment, LineBreakMode as ILineBreakMode, Label as ILabel } from './interface/Label'
+import { Label as MLabel } from './implementation/ios/Label'
 export const TextAlignment = ITextAlignment
 export const TextVerticalAlignment = ITextVerticalAlignment
 export const LineBreakMode = ILineBreakMode
-export class Label extends ILabel {}
+export class Label extends MLabel {}
 
 import { LayoutAttribute as ILayoutAttribute, LayoutRelation as ILayoutRelation, LayoutConstraint as ILayoutConstraint } from './interface/LayoutConstraint'
 export const LayoutAttribute = ILayoutAttribute
