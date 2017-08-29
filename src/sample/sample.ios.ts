@@ -1,4 +1,4 @@
-import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint } from '../main.ios'
+import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button } from '../main.ios'
 import { InteractionState } from "../interface/View";
 
 class AppDelegate extends ApplicationDelegate {
@@ -18,11 +18,15 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        const sView = new View(RectMake(0, 0, 20, 20));
+        const sView = new Button(RectMake(60, 80, 200, 88));
         sView.backgroundColor = Color.whiteColor;
+        sView.title = "Test"
+        sView.inset = 8;
+        sView.vertical = true;
+        Image.fromAssets("location", (img) => {
+            sView.image = img;
+        }, () => {})
         this.view.addSubview(sView);
-        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[sView]-80-|", { sView }))
-        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[sView]-80-|", { sView }))
 
         // this.view.addConstraints()
 

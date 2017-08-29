@@ -19,6 +19,7 @@
 #import "XTRImageView.h"
 #import "XTRLabel.h"
 #import "XTRLayoutConstraint.h"
+#import "XTRButton.h"
 #import "XTRUtils.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
@@ -57,6 +58,7 @@ static NSString *globalBridgeScript;
                             [XTRImageView class],
                             [XTRLabel class],
                             [XTRLayoutConstraint class],
+                            [XTRButton class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

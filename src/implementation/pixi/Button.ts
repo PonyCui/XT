@@ -9,8 +9,8 @@ import { Color } from "../../interface/Color";
 
 export class Button extends View {
 
-    private readonly imageView: ImageView;
-    readonly titleLabel: Label
+    private imageView: ImageView;
+    private titleLabel: Label
 
     constructor(rect: Rect) {
         super(rect)
@@ -96,6 +96,10 @@ export class Button extends View {
     public set title(value: string | undefined) {
         this.titleLabel.text = value
         this.resetContentLayout();
+    }
+
+    public get image(): Image | undefined {
+        return this.imageView.image;
     }
 
     public set image(value: Image | undefined) {

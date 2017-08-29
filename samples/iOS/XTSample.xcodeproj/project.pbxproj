@@ -28,6 +28,7 @@
 		90C118EA1F54131F00991641 /* XTRImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E91F54131F00991641 /* XTRImage.m */; };
 		90C118ED1F5546C700991641 /* XTRLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118EC1F5546C700991641 /* XTRLabel.m */; };
 		90C118F01F55570E00991641 /* XTRLayoutConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118EF1F55570E00991641 /* XTRLayoutConstraint.m */; };
+		90C118F31F5570E300991641 /* XTRButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118F21F5570E300991641 /* XTRButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +72,8 @@
 		90C118EC1F5546C700991641 /* XTRLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRLabel.m; sourceTree = "<group>"; };
 		90C118EE1F55570E00991641 /* XTRLayoutConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRLayoutConstraint.h; sourceTree = "<group>"; };
 		90C118EF1F55570E00991641 /* XTRLayoutConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRLayoutConstraint.m; sourceTree = "<group>"; };
+		90C118F11F5570E300991641 /* XTRButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRButton.h; sourceTree = "<group>"; };
+		90C118F21F5570E300991641 /* XTRButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +149,8 @@
 				90C118E61F5412F700991641 /* XTRImageView.m */,
 				90C118EB1F5546C700991641 /* XTRLabel.h */,
 				90C118EC1F5546C700991641 /* XTRLabel.m */,
+				90C118F11F5570E300991641 /* XTRButton.h */,
+				90C118F21F5570E300991641 /* XTRButton.m */,
 				905708361F4FFF5000D5EC05 /* XTRViewController.h */,
 				905708371F4FFF5000D5EC05 /* XTRViewController.m */,
 				905708391F502B6B00D5EC05 /* XTRNavigationController.h */,
@@ -247,6 +252,7 @@
 				905708091F4EB2AF00D5EC05 /* AppDelegate.m in Sources */,
 				9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */,
 				905708201F4EB49300D5EC05 /* XTRuntime.m in Sources */,
+				90C118F31F5570E300991641 /* XTRButton.m in Sources */,
 				90C118F01F55570E00991641 /* XTRLayoutConstraint.m in Sources */,
 				905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */,
 				905708351F4FD6A900D5EC05 /* XTRWindow.m in Sources */,

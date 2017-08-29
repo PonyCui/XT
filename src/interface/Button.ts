@@ -1,16 +1,15 @@
 import { View } from "./View";
 import { Label } from "./Label";
 import { Color } from "./Color";
-import { ImageView } from "./ImageView";
+import { ImageView, Image } from "./ImageView";
 
 export class Button extends View {
 
-    readonly imageView: ImageView;
-    readonly titleLabel: Label
     vertical: boolean;
     inset: number;
-    title?: string
-    color?: Color
+    title?: string;
+    image?: Image;
+    color?: Color;
 
     onHighlighted?: (highligted: boolean) => void
     onTouchUpInside?: () => void

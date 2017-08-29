@@ -1,18 +1,77 @@
-// import { View } from "./View";
-// import { Label } from "./Label";
-// import { Color } from "./Color";
-// import { ImageView } from "./ImageView";
+/// <reference path="xtr.d.ts" />
+import { View } from "./View";
+import { ImageView, Image } from "./ImageView";
+import { Label } from "./Label";
+import { Color } from "../../interface/Color";
+import { Rect, RectZero } from "../../interface/Rect";
 
-// export class Button extends View {
+export class Button extends View {
 
-//     readonly imageView: ImageView;
-//     readonly titleLabel: Label
-//     vertical: boolean;
-//     inset: number;
-//     title?: string
-//     color?: Color
+    nativeObject: any;
 
-//     onHighlighted?: (highligted: boolean) => void
-//     onTouchUpInside?: () => void
+    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
+        super(undefined, undefined, true);
+        if (_isChild) { return; }
+        if (nativeObject) {
+            this.nativeObject = nativeObject;
+        }
+        else {
+            this.nativeObject = XTRButton.createScriptObject(rect || RectZero, this);
+            (window as any).objectCreater.store(this);
+        }
+    }
 
-// }
+    public get title(): string | undefined {
+        return this.nativeObject.xtr_title();
+    }
+
+    public set title(value: string | undefined) {
+        this.nativeObject.xtr_setTitle(value);
+    }
+
+	public get image(): Image {
+		return this.nativeObject.xtr_image();
+	}
+
+	public set image(value: Image) {
+		this.nativeObject.xtr_setImage(value);
+	}
+
+    public get color(): Color {
+        return this.nativeObject.xtr_color();
+    }
+
+    public set color(value: Color) {
+        this.nativeObject.xtr_setColor(value);
+    }
+
+	public get vertical(): boolean {
+		return this.nativeObject.xtr_vertical();
+	}
+
+	public set vertical(value: boolean) {
+		this.nativeObject.xtr_setVertical(value);
+	}
+
+	public get inset(): number {
+		return this.nativeObject.xtr_inset();
+	}
+
+	public set inset(value: number) {
+		this.nativeObject.xtr_setInset(value);
+	}
+
+    onHighlighted?: (highligted: boolean) => void
+    onTouchUpInside?: () => void
+
+}
+
+if ((window as any).objectClasses === undefined) {
+    (window as any).objectClasses = [];
+}
+(window as any).objectClasses.push((view: any) => {
+    if (view.constructor.toString() === "[object XTRButtonConstructor]") {
+        return new Label(undefined, view);
+    }
+    return undefined;
+})

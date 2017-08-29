@@ -8,4 +8,5 @@ declare const XTRScreen: any
 declare const XTRImage: any
 declare const XTRImageView: any
 declare const XTRLabel: any
+declare const XTRButton: any
 declare const XTRLayoutConstraint: any
