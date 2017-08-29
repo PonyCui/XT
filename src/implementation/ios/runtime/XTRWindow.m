@@ -409,7 +409,7 @@
 }
 
 - (void)xtr_removeAllConstraints {
-    [self xtr_removeAllConstraints];
+    [self removeConstraints:self.constraints];
 }
 
 - (BOOL)xtr_userInteractionEnabled {
