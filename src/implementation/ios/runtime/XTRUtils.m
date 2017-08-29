@@ -8,6 +8,7 @@
 
 #import "XTRUtils.h"
 #import "XTRImage.h"
+#import "XTRLayoutConstraint.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
@@ -135,6 +136,54 @@
         }
     }
     return nil;
+}
+
+- (XTRLayoutConstraint *)toLayoutConstraint {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        XTRLayoutConstraint *constraint = [self[@"nativeObject"] toObject];
+        if ([constraint isKindOfClass:[XTRLayoutConstraint class]]) {
+            return constraint;
+        }
+    }
+    return nil;
+}
+
+- (NSLayoutRelation)toLayoutRelation {
+    switch ([self toInt32]) {
+        case -1:
+            return NSLayoutRelationLessThanOrEqual;
+        case 0:
+            return NSLayoutRelationEqual;
+        case 1:
+            return NSLayoutRelationGreaterThanOrEqual;
+        default:
+            return NSLayoutRelationEqual;
+    }
+}
+
+- (NSLayoutAttribute)toLayoutAttribute {
+    switch ([self toInt32]) {
+        case 0:
+            return 0;
+        case 1:
+            return NSLayoutAttributeLeft;
+        case 2:
+            return NSLayoutAttributeRight;
+        case 3:
+            return NSLayoutAttributeTop;
+        case 4:
+            return NSLayoutAttributeBottom;
+        case 7:
+            return NSLayoutAttributeWidth;
+        case 8:
+            return NSLayoutAttributeHeight;
+        case 9:
+            return NSLayoutAttributeCenterX;
+        case 10:
+            return NSLayoutAttributeCenterY;
+        default:
+            return 0;
+    }
 }
 
 @end

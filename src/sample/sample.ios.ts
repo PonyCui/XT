@@ -1,4 +1,4 @@
-import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode } from '../main.ios'
+import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint } from '../main.ios'
 import { InteractionState } from "../interface/View";
 
 class AppDelegate extends ApplicationDelegate {
@@ -18,23 +18,13 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        const sView = new Label(RectMake(60, 60, 120, 120));
+        const sView = new View(RectMake(0, 0, 20, 20));
         sView.backgroundColor = Color.whiteColor;
-        sView.text = "Hello, World!123123691283"
-        sView.textAlignment = TextAlignment.Center;
-        sView.numberOfLines = 0;
-        sView.lineSpace = 12;
-        setTimeout(() => {
-            sView.text = "Hello, World!1fdhjklsahflkdsahffdsaf"
-        }, 1000)
         this.view.addSubview(sView);
-        this.view.onTap = () => {
-            this.view.backgroundColor = new Color(1.0, 1.0, 1.0)
-            // View.animationWithDurationDampingVelocity(1.0, 0.5, 16.0, () => {
-            //     sView.frame = RectMake(60, 60, 88, 88);
-            // });
-            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
-        }
+        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[sView]-80-|", { sView }))
+        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[sView]-80-|", { sView }))
+
+        // this.view.addConstraints()
 
     }
 

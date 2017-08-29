@@ -8,6 +8,7 @@
 
 #import "XTRView.h"
 #import "XTRUtils.h"
+#import "XTRLayoutConstraint.h"
 
 @interface XTRView ()
 
@@ -353,6 +354,45 @@
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
+}
+
+- (NSArray *)xtr_constraints {
+    NSMutableArray *output = [NSMutableArray array];
+    for (NSLayoutConstraint *constraint in self.constraints) {
+        XTRLayoutConstraint *v = [XTRLayoutConstraint new];
+        v.innerObject = constraint;
+        v.context = self.context;
+        [output addObject:[JSValue fromObject:v context:self.context] ?: [NSNull null]];
+    }
+    return output;
+}
+
+- (void)xtr_addConstraint:(JSValue *)value {
+    XTRLayoutConstraint *constraint = [value toLayoutConstraint];
+    if (constraint) {
+        [self addConstraint:constraint.innerObject];
+    }
+}
+
+- (void)xtr_addConstraints:(JSValue *)value {
+    NSArray *argConstraints = [value toArray];
+    for (NSDictionary *cValue in argConstraints) {
+        XTRLayoutConstraint *cObject = [[JSValue valueWithObject:cValue inContext:self.context] toLayoutConstraint];
+        if (cObject) {
+            [self addConstraint:cObject.innerObject];
+        }
+    }
+}
+
+- (void)xtr_removeConstraint:(JSValue *)value {
+    XTRLayoutConstraint *constraint = [value toLayoutConstraint];
+    if (constraint) {
+        [self removeConstraint:constraint.innerObject];
+    }
+}
+
+- (void)xtr_removeAllConstraints {
+    [self xtr_removeAllConstraints];
 }
 
 - (BOOL)xtr_userInteractionEnabled {

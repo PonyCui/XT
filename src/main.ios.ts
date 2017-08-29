@@ -28,9 +28,10 @@ export const LineBreakMode = ILineBreakMode
 export class Label extends MLabel {}
 
 import { LayoutAttribute as ILayoutAttribute, LayoutRelation as ILayoutRelation, LayoutConstraint as ILayoutConstraint } from './interface/LayoutConstraint'
+import { LayoutConstraint as MLayoutConstraint } from './implementation/ios/LayoutConstraint'
 export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
-export class LayoutConstraint extends ILayoutConstraint {}
+export class LayoutConstraint extends MLayoutConstraint {}
 
 import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView } from './interface/ListView'
 export const ListSelectionStyle = IListSelectionStyle

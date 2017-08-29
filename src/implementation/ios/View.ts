@@ -3,7 +3,7 @@ import { SwipeDirection, InteractionState } from '../../interface/View';
 import { Rect, Point, Size, RectZero } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { TransformMatrix } from "../../interface/TransformMatrix";
-import { LayoutConstraint } from "../../interface/LayoutConstraint";
+import { LayoutConstraint } from "./LayoutConstraint";
 
 export class View {
 
@@ -311,11 +311,25 @@ export class View {
 
     // Mark: View LayoutConstraint
 
-    constraints: LayoutConstraint[]
-    addConstraint(constraint: LayoutConstraint) { }
-    addConstraints(constraints: LayoutConstraint[]) { }
-    removeConstraint(constraint: LayoutConstraint) { }
-    removeAllConstraints() { }
+    public get constraints(): LayoutConstraint[] {
+        return this.nativeObject.xtr_constraints();
+    }
+
+    addConstraint(constraint: LayoutConstraint) {
+        this.nativeObject.xtr_addConstraint(constraint);
+    }
+
+    addConstraints(constraints: LayoutConstraint[]) {
+        this.nativeObject.xtr_addConstraints(constraints);
+    }
+
+    removeConstraint(constraint: LayoutConstraint) {
+        this.nativeObject.xtr_removeConstraint();
+    }
+
+    removeAllConstraints() {
+        this.nativeObject.xtr_removeAllConstraints();
+    }
 
     // Mark: View Interactive
     static InteractionState = InteractionState

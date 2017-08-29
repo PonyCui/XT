@@ -70,6 +70,11 @@
 - (JSValue *)xtr_viewWithTag:(JSValue *)tag;
 - (void)xtr_setNeedsLayout;
 - (void)xtr_layoutIfNeeded;
+- (NSArray *)xtr_constraints;
+- (void)xtr_addConstraint:(JSValue *)value;
+- (void)xtr_addConstraints:(JSValue *)value;
+- (void)xtr_removeConstraint:(JSValue *)value;
+- (void)xtr_removeAllConstraints;
 - (BOOL)xtr_userInteractionEnabled;
 - (void)xtr_setUserInteractionEnabled:(JSValue *)value;
 - (CGFloat)xtr_longPressDuration;

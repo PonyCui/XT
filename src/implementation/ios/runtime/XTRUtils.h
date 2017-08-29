@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@class XTRImage;
+@class XTRImage, XTRLayoutConstraint;
 
 @interface XTRUtils : NSObject
 
-+ (void)attachPolyfills:(JSContext *)context;
++ (void)attachPolyfills:(nonnull JSContext *)context;
 
 @end
 
@@ -32,5 +32,8 @@
 - (nullable UIViewController *)toViewController;
 - (nullable UINavigationController *)toNavigationController;
 - (nullable XTRImage *)toImage;
+- (nullable XTRLayoutConstraint *)toLayoutConstraint;
+- (NSLayoutAttribute)toLayoutAttribute;
+- (NSLayoutRelation)toLayoutRelation;
 
 @end
