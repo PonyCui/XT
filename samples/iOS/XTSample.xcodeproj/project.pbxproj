@@ -31,6 +31,7 @@
 		90C118F31F5570E300991641 /* XTRButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118F21F5570E300991641 /* XTRButton.m */; };
 		90C118F61F56644700991641 /* XTRFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118F51F56644700991641 /* XTRFont.m */; };
 		90C118F91F568F7C00991641 /* XTRScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118F81F568F7C00991641 /* XTRScrollView.m */; };
+		90C118FC1F56A1A800991641 /* XTRContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118FB1F56A1A800991641 /* XTRContext.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,8 @@
 		90C118F51F56644700991641 /* XTRFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRFont.m; sourceTree = "<group>"; };
 		90C118F71F568F7C00991641 /* XTRScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRScrollView.h; sourceTree = "<group>"; };
 		90C118F81F568F7C00991641 /* XTRScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRScrollView.m; sourceTree = "<group>"; };
+		90C118FA1F56A1A800991641 /* XTRContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRContext.h; sourceTree = "<group>"; };
+		90C118FB1F56A1A800991641 /* XTRContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRContext.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +143,8 @@
 			children = (
 				9057081E1F4EB49300D5EC05 /* XTRuntime.h */,
 				9057081F1F4EB49300D5EC05 /* XTRuntime.m */,
+				90C118FA1F56A1A800991641 /* XTRContext.h */,
+				90C118FB1F56A1A800991641 /* XTRContext.m */,
 				905708211F4EB4AC00D5EC05 /* XTRBridge.h */,
 				905708221F4EB4AC00D5EC05 /* XTRBridge.m */,
 				9057082A1F4EBD7F00D5EC05 /* XTRComponent.h */,
@@ -263,6 +268,7 @@
 				905708091F4EB2AF00D5EC05 /* AppDelegate.m in Sources */,
 				9057082F1F4EC84100D5EC05 /* XTRView.m in Sources */,
 				905708201F4EB49300D5EC05 /* XTRuntime.m in Sources */,
+				90C118FC1F56A1A800991641 /* XTRContext.m in Sources */,
 				90C118F31F5570E300991641 /* XTRButton.m in Sources */,
 				90C118F01F55570E00991641 /* XTRLayoutConstraint.m in Sources */,
 				905708321F4EC8F600D5EC05 /* XTRUtils.m in Sources */,

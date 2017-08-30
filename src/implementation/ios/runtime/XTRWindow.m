@@ -9,6 +9,7 @@
 #import "XTRWindow.h"
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
+#import "XTRContext.h"
 
 @interface XTRWindow ()
 
@@ -505,11 +506,11 @@
                        completion:(JSValue *)completion {
     [UIView animateWithDuration:[duration toDouble] animations:^{
         if ([animation isObject]) {
-            [animation callWithArguments:@[]];
+            [animation xtr_callWithArguments:@[]];
         }
     } completion:^(BOOL finished) {
         if ([completion isObject]) {
-            [completion callWithArguments:@[]];
+            [completion xtr_callWithArguments:@[]];
         }
     }];
 }
@@ -526,11 +527,11 @@
                         options:kNilOptions
                      animations:^{
                          if ([animation isObject]) {
-                             [animation callWithArguments:@[]];
+                             [animation xtr_callWithArguments:@[]];
                          }
                      } completion:^(BOOL finished) {
                          if ([completion isObject]) {
-                             [completion callWithArguments:@[]];
+                             [completion xtr_callWithArguments:@[]];
                          }
                      }];
 }

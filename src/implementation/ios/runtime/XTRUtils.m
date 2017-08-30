@@ -10,6 +10,7 @@
 #import "XTRImage.h"
 #import "XTRFont.h"
 #import "XTRLayoutConstraint.h"
+#import "XTRContext.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
@@ -41,7 +42,7 @@ typedef void(^IntervalBlock)(id keepBlock);
             if (handlers[uuid] == nil) {
                 return ;
             }
-            [callback callWithArguments:@[]];
+            [callback xtr_callWithArguments:@[]];
             [handlers removeObjectForKey:uuid];
         });
         return uuid;
@@ -67,7 +68,7 @@ typedef void(^IntervalBlock)(id keepBlock);
             if (handlers[uuid] == nil) {
                 return ;
             }
-            [callback callWithArguments:@[]];
+            [callback xtr_callWithArguments:@[]];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(([millsecond toInt32] / 1000.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 keepBlock(keepBlock);
             });

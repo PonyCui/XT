@@ -8,6 +8,7 @@
 
 #import "XTRImage.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRImage ()
 
@@ -40,29 +41,27 @@
                     XTRImage *nativeObject = [XTRImage new];
                     nativeObject.nativeImage = image;
                     if (success != nil) {
-                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                            [success callWithArguments:@[
+                        [success xtr_callWithArguments:@[
                                                          [JSValue fromObject:nativeObject context:success.context]
-                                                         ]];
-                        }];
+                                                         ] asyncResult:nil];
                     }
                 }
                 else {
                     if (failure) {
-                        [failure callWithArguments:@[error.localizedDescription ?: @"invalid image data."]];
+                        [failure xtr_callWithArguments:@[error.localizedDescription ?: @"invalid image data."]];
                     }
                 }
             }
             else {
                 if (failure) {
-                    [failure callWithArguments:@[error.localizedDescription ?: @"unknown error."]];
+                    [failure xtr_callWithArguments:@[error.localizedDescription ?: @"unknown error."]];
                 }
             }
         }] resume];
     }
     else {
         if (failure) {
-            [failure callWithArguments:@[@"invalid URL"]];
+            [failure xtr_callWithArguments:@[@"invalid URL"]];
         }
     }
 }
@@ -73,14 +72,14 @@
         XTRImage *nativeObject = [XTRImage new];
         nativeObject.nativeImage = image;
         if (success != nil) {
-            [success callWithArguments:@[
+            [success xtr_callWithArguments:@[
                                          [JSValue fromObject:nativeObject context:success.context]
                                          ]];
         }
     }
     else {
         if (failure) {
-            [failure callWithArguments:@[@"Image not found."]];
+            [failure xtr_callWithArguments:@[@"Image not found."]];
         }
     }
 }

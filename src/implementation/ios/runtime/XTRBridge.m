@@ -7,6 +7,7 @@
 //
 
 #import "XTRBridge.h"
+#import "XTRContext.h"
 #import "XTRComponent.h"
 #import "XTRApplication.h"
 #import "XTRView.h"
@@ -45,7 +46,7 @@ static NSString *globalBridgeScript;
     self = [super init];
     if (self) {
         _appDelegate = appDelegate;
-        _context = [[JSContext alloc] init];
+        _context = [[XTRContext alloc] initWithOperationQueue:[NSOperationQueue mainQueue]];
         [_context evaluateScript:@"var window = {}"];
         [XTRUtils attachPolyfills:_context];
         self.components = @[
