@@ -1,23 +1,24 @@
 //
-//  XTRScrollView.m
+//  XTRTableView.m
 //  XTSample
 //
 //  Created by 崔明辉 on 2017/8/30.
 //  Copyright © 2017年 UED Center, YY Inc. All rights reserved.
 //
 
-#import "XTRScrollView.h"
+#import "XTRListView.h"
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
+#import "XTRListCell.h"
 
-@interface UIScrollView (XTRScrollView)
+@interface UIScrollView (XTRListView)
 
 - (void)handlePan:(id)sender;
 
 @end
 
-@interface XTRScrollView ()<UIScrollViewDelegate>
+@interface XTRListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, assign) NSTimeInterval longPressDuration;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
@@ -25,27 +26,99 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, copy) NSArray<NSDictionary *> *items;
 
 @end
 
-@implementation XTRScrollView
+@implementation XTRListView
 
-+ (NSString *)name {
-    return @"XTRScrollView";
-}
-
-+ (XTRScrollView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
-    XTRScrollView *view = [[XTRScrollView alloc] initWithFrame:[frame toRect]];
++ (XTRListView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
+    XTRListView *view = [[XTRListView alloc] initWithFrame:[frame toRect]];
     view.delegate = view;
-    [view setContentSize:CGSizeMake(0, 2000)];
+    view.dataSource = view;
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
     view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     return view;
 }
 
++ (NSString *)name {
+    return @"XTRListView";
+}
+
 - (void)dealloc {
     self.delegate = nil;
+    self.dataSource = nil;
+}
+
+- (void)xtr_setItems:(JSValue *)items {
+    self.items = [items toArray];
+}
+
+- (void)xtr_reloadData {
+    [self reloadData];
+}
+
+#pragma mark - UITableViewDelegate & UITableViewDatasource 
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.items count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *reuseIdentifier = @"Cell";
+    if (indexPath.row < self.items.count) {
+        reuseIdentifier = self.items[indexPath.row][@"reuseIdentifier"] ?: @"Cell";
+    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+    }
+    if ([[cell contentView] viewWithTag:1000] == nil) {
+        if (self.scriptObject.value != nil) {
+            UIView *innerView = [[self.scriptObject.value xtr_invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]] toView];
+            if (innerView != nil) {
+                innerView.tag = 1000;
+                innerView.frame = cell.contentView.bounds;
+                innerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                [[cell contentView] addSubview:innerView];
+            }
+        }
+    }
+    if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
+        XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
+        [fakeCell setRealCell:cell];
+        if (self.scriptObject.value != nil) {
+            [self.scriptObject.value xtr_invokeMethod:@"handleRenderItem"
+                                        withArguments:@[
+                                                        @(indexPath.row),
+                                                        [JSValue fromObject:fakeCell
+                                                                    context:self.context] ?: [NSNull null]
+                                                        ]];
+        }
+    }
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.scriptObject.value != nil) {
+        return [[self.scriptObject.value xtr_invokeMethod:@"requestRowHeight"
+                                            withArguments:@[@(tableView.bounds.size.width), @(indexPath.row)]] toDouble];
+    }
+    return 88.0;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell != nil) {
+        if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
+            XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
+            if (fakeCell.scriptObject.value != nil) {
+                [fakeCell.scriptObject.value xtr_invokeMethod:@"handleSelected" withArguments:@[]];
+            }
+        }
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - XTRScrollViewExport

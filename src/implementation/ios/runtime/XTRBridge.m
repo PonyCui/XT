@@ -24,6 +24,8 @@
 #import "XTRFont.h"
 #import "XTRUtils.h"
 #import "XTRScrollView.h"
+#import "XTRListView.h"
+#import "XTRListCell.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -46,7 +48,7 @@ static NSString *globalBridgeScript;
     self = [super init];
     if (self) {
         _appDelegate = appDelegate;
-        _context = [[XTRContext alloc] initWithOperationQueue:[NSOperationQueue mainQueue]];
+        _context = [[XTRContext alloc] initWithThread:[NSThread mainThread]];
         [_context evaluateScript:@"var window = {}"];
         [XTRUtils attachPolyfills:_context];
         self.components = @[
@@ -64,6 +66,8 @@ static NSString *globalBridgeScript;
                             [XTRButton class],
                             [XTRFont class],
                             [XTRScrollView class],
+                            [XTRListView class],
+                            [XTRListCell class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

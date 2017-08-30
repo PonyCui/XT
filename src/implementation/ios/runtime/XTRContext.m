@@ -10,17 +10,17 @@
 
 @interface XTRContext ()
 
-@property (nonatomic, strong) NSOperationQueue *queue;
+@property (nonatomic, strong) NSThread *thread;
 
 @end
 
 @implementation XTRContext
 
-- (instancetype)initWithOperationQueue:(NSOperationQueue *)queue
+- (instancetype)initWithThread:(NSThread *)thread
 {
     self = [super init];
     if (self) {
-        _queue = queue;
+        _thread = thread;
     }
     return self;
 }
@@ -29,26 +29,89 @@
 
 @implementation JSValue (XTRContext)
 
+- (JSValue *)xtr_invokeMethod:(NSString *)method withArguments:(NSArray *)arguments {
+    return [self xtr_invokeMethod:method withArguments:arguments asyncResult:nil];
+}
+
+- (JSValue *)xtr_invokeMethod:(NSString *)method withArguments:(NSArray *)arguments asyncResult:(JSValueAsynchronousResult)asyncResult {
+    if ([self.context isKindOfClass:[XTRContext class]]) {
+        if ([(XTRContext *)self.context thread] == [NSThread currentThread]) {
+            JSValue *returnValue = [self invokeMethod:method withArguments:arguments];
+            if (asyncResult) {
+                asyncResult(returnValue);
+            }
+            return returnValue;
+        }
+        else {
+            if (asyncResult) {
+                [self performSelector:@selector(xtr_callWithArguments:)
+                             onThread:[(XTRContext *)self.context thread]
+                           withObject:@{
+                                        @"arguments": arguments ?: @[],
+                                        @"asyncResult": asyncResult,
+                                        }
+                        waitUntilDone:NO];
+            }
+            else {
+                [self performSelector:@selector(xtr_callWithArguments:)
+                             onThread:[(XTRContext *)self.context thread]
+                           withObject:@{
+                                        @"arguments": arguments ?: @[],
+                                        }
+                        waitUntilDone:NO];
+            }
+            return nil;
+        }
+    }
+    else {
+        JSValue *returnValue = [self invokeMethod:method withArguments:arguments];
+        if (asyncResult) {
+            asyncResult(returnValue);
+        }
+        return returnValue;
+    }
+}
+
 - (JSValue *)xtr_callWithArguments:(NSArray *)arguments {
     return [self xtr_callWithArguments:arguments asyncResult:nil];
 }
 
 - (JSValue *)xtr_callWithArguments:(NSArray *)arguments asyncResult:(JSValueAsynchronousResult)asyncResult {
     if ([self.context isKindOfClass:[XTRContext class]]) {
-        if ([(XTRContext *)self.context queue] == [NSOperationQueue mainQueue] && [NSThread isMainThread]) {
-            return [self callWithArguments:arguments];
+        if ([(XTRContext *)self.context thread] == [NSThread currentThread]) {
+            JSValue *returnValue = [self callWithArguments:arguments];
+            if (asyncResult) {
+                asyncResult(returnValue);
+            }
+            return returnValue;
         }
         else {
-            [[(XTRContext *)self.context queue] addOperationWithBlock:^{
-                if (asyncResult) {
-                    asyncResult([self callWithArguments:arguments]);
-                }
-            }];
+            if (asyncResult) {
+                [self performSelector:@selector(xtr_callWithArguments:)
+                             onThread:[(XTRContext *)self.context thread]
+                           withObject:@{
+                                        @"arguments": arguments ?: @[],
+                                        @"asyncResult": asyncResult,
+                                        }
+                        waitUntilDone:NO];
+            }
+            else {
+                [self performSelector:@selector(xtr_callWithArguments:)
+                             onThread:[(XTRContext *)self.context thread]
+                           withObject:@{
+                                        @"arguments": arguments ?: @[],
+                                        }
+                        waitUntilDone:NO];
+            }
             return nil;
         }
     }
     else {
-        return [self callWithArguments:arguments];
+        JSValue *returnValue = [self callWithArguments:arguments];
+        if (asyncResult) {
+            asyncResult(returnValue);
+        }
+        return returnValue;
     }
 }
 

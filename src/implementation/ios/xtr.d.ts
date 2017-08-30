@@ -12,3 +12,5 @@ declare const XTRButton: any
 declare const XTRLayoutConstraint: any
 declare const XTRFont: any
 declare const XTRScrollView: any
+declare const XTRListView: any
+declare const XTRListCell: any

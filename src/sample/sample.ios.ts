@@ -1,4 +1,4 @@
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView } from '../main.ios'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell } from '../main.ios'
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -17,14 +17,30 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        const sView = new ScrollView(RectMake(0, 0, 0, 0));
+        const sView = new ListView(RectMake(0, 0, 0, 0));
+        sView.items = [{
+            reuseIdentifier: "Test",
+            rowHeight: () => { return 88.0 }
+        }, {
+            reuseIdentifier: "Test",
+            rowHeight: () => { return 88.0 }
+        }, {
+            reuseIdentifier: "Test",
+            rowHeight: () => { return 88.0 }
+        }, {
+            reuseIdentifier: "Test",
+            rowHeight: () => { return 88.0 }
+        }, {
+            reuseIdentifier: "Test",
+            rowHeight: () => { return 88.0 }
+        }]
+        sView.renderItem = (cell, item) => {
+            cell.onSelected = () => {
+                this.navigationController && this.navigationController.pushViewController(new SecondViewController());
+            }
+        }
+        sView.reloadData();
         sView.backgroundColor = Color.whiteColor
-        sView.addSubview(((): any => {
-            const view = new Button(RectMake(0, 0, 200, 200));
-            view.title = "Hello"
-            view.backgroundColor = Color.greenColor;
-            return view;
-        })())
         this.view.addSubview(sView);
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[sView]-0-|", { sView }));
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[sView]-0-|", { sView }));

@@ -12,13 +12,22 @@ typedef JSValue *_Nullable(^JSValueAsynchronousResult)();
 
 @interface XTRContext : JSContext
 
-- (instancetype _Nonnull )initWithOperationQueue:(NSOperationQueue *_Nonnull)queue;
+- (instancetype _Nonnull )initWithThread:(NSThread *_Nonnull)thread;
 
 @end
 
 @interface JSValue (XTRContext)
 
+- (nullable JSValue *)xtr_invokeMethod:(NSString *_Nonnull)method
+                         withArguments:(NSArray *_Nonnull)arguments;
+
+- (nullable JSValue *)xtr_invokeMethod:(NSString *_Nonnull)method
+                         withArguments:(NSArray *_Nonnull)arguments
+                           asyncResult:(nullable JSValueAsynchronousResult)asyncResult;
+
 - (nullable JSValue *)xtr_callWithArguments:(nonnull NSArray *)arguments;
-- (nullable JSValue *)xtr_callWithArguments:(nonnull NSArray *)arguments asyncResult:(nullable JSValueAsynchronousResult)asyncResult;
+
+- (nullable JSValue *)xtr_callWithArguments:(nonnull NSArray *)arguments
+                                asyncResult:(nullable JSValueAsynchronousResult)asyncResult;
 
 @end
