@@ -74,28 +74,28 @@
     [self resetInset];
 }
 
-- (NSDictionary *)xtr_color; {
+- (NSDictionary *)xtr_color {
     return [JSValue fromColor:[self.innerView titleColorForState:UIControlStateNormal]];
 }
 
-- (void)xtr_setColor:(JSValue *)color; {
+- (void)xtr_setColor:(JSValue *)color {
     [self.innerView setTitleColor:[color toColor] forState:UIControlStateNormal];
 }
 
-- (BOOL)xtr_vertical; {
+- (BOOL)xtr_vertical {
     return self.vertical;
 }
 
-- (void)xtr_setVertical:(JSValue *)vertical; {
+- (void)xtr_setVertical:(JSValue *)vertical {
     self.vertical = [vertical toBool];
     [self resetInset];
 }
 
-- (NSNumber *)xtr_inset; {
+- (NSNumber *)xtr_inset {
     return @(self.inset);
 }
 
-- (void)xtr_setInset:(JSValue *)inset; {
+- (void)xtr_setInset:(JSValue *)inset {
     self.inset = [inset toDouble];
     [self resetInset];
 }

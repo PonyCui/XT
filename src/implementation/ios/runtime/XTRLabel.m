@@ -40,11 +40,11 @@
     self.innerView.frame = self.bounds;
 }
 
-- (NSString *)xtr_text; {
+- (NSString *)xtr_text {
     return self.innerView.text;
 }
 
-- (void)xtr_setText:(JSValue *)text; {
+- (void)xtr_setText:(JSValue *)text {
     self.innerView.text = [text toString];
     [self resetAttributedText];
 }
@@ -63,18 +63,18 @@
     }
 }
 
-- (NSDictionary *)xtr_textColor; {
+- (NSDictionary *)xtr_textColor {
     return [JSValue fromColor:self.innerView.textColor ?: [UIColor blackColor]];
 }
 
 
-- (void)xtr_setTextColor:(JSValue *)textColor; {
+- (void)xtr_setTextColor:(JSValue *)textColor {
     self.innerView.textColor = [textColor toColor];
     [self resetAttributedText];
 }
 
 
-- (NSNumber *)xtr_textAlignment; {
+- (NSNumber *)xtr_textAlignment {
     switch (self.innerView.textAlignment) {
         case NSTextAlignmentLeft:
             return @(0);
@@ -88,7 +88,7 @@
 }
 
 
-- (void)xtr_setTextAlignment:(JSValue *)textAlignment; {
+- (void)xtr_setTextAlignment:(JSValue *)textAlignment {
     switch ([textAlignment toInt32]) {
         case 0:
             self.innerView.textAlignment = NSTextAlignmentLeft;
@@ -106,18 +106,18 @@
 }
 
 
-- (NSNumber *)xtr_numberOfLines; {
+- (NSNumber *)xtr_numberOfLines {
     return @(self.innerView.numberOfLines);
 }
 
 
-- (void)xtr_setNumberOfLines:(JSValue *)numberOfLines; {
+- (void)xtr_setNumberOfLines:(JSValue *)numberOfLines {
     self.innerView.numberOfLines = [numberOfLines toInt32];
     [self resetAttributedText];
 }
 
 
-- (NSNumber *)xtr_lineBreakMode; {
+- (NSNumber *)xtr_lineBreakMode {
     switch (self.innerView.lineBreakMode) {
         case NSLineBreakByWordWrapping:
             return @(0);
@@ -129,7 +129,7 @@
 }
 
 
-- (void)xtr_setLineBreakMode:(JSValue *)lineBreakMode; {
+- (void)xtr_setLineBreakMode:(JSValue *)lineBreakMode {
     switch ([lineBreakMode toInt32]) {
         case 0:
             self.innerView.lineBreakMode = NSLineBreakByWordWrapping;
@@ -144,12 +144,12 @@
 }
 
 
-- (NSNumber *)xtr_lineSpace; {
+- (NSNumber *)xtr_lineSpace {
     return @(self.lineSpace);
 }
 
 
-- (void)xtr_setLineSpace:(JSValue *)lineSpace; {
+- (void)xtr_setLineSpace:(JSValue *)lineSpace {
     self.lineSpace = [lineSpace toDouble];
     [self resetAttributedText];
 }

@@ -49,6 +49,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.automaticallyAdjustsScrollViewInsets = NO;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject.value;
         if (value != nil) {

@@ -71,11 +71,11 @@
     return [outputConstraint copy];
 }
 
-- (JSValue *)xtr_firstItem; {
+- (JSValue *)xtr_firstItem {
     return [JSValue fromObject:self.innerObject.firstItem context:self.context];
 }
 
-- (NSNumber *)xtr_firstAttr; {
+- (NSNumber *)xtr_firstAttr {
     switch (self.innerObject.firstAttribute) {
         case 0:
             return @(0);
@@ -100,7 +100,7 @@
     }
 }
 
-- (NSNumber *)xtr_relation; {
+- (NSNumber *)xtr_relation {
     switch (self.innerObject.relation) {
         case NSLayoutRelationLessThanOrEqual:
             return @(-1);
@@ -113,11 +113,11 @@
     }
 }
 
-- (JSValue *)xtr_secondItem; {
+- (JSValue *)xtr_secondItem {
     return [JSValue fromObject:self.innerObject.secondItem context:self.context];
 }
 
-- (NSNumber *)xtr_secondAttr; {
+- (NSNumber *)xtr_secondAttr {
     switch (self.innerObject.secondAttribute) {
         case 0:
             return @(0);
@@ -142,15 +142,15 @@
     }
 }
 
-- (NSNumber *)xtr_constant; {
+- (NSNumber *)xtr_constant {
     return @(self.innerObject.constant);
 }
 
-- (void)xtr_setConstant:(JSValue *)constant; {
+- (void)xtr_setConstant:(JSValue *)constant {
     self.innerObject.constant = [constant toDouble];
 }
 
-- (NSNumber *)xtr_multiplier; {
+- (NSNumber *)xtr_multiplier {
     return @(self.innerObject.multiplier);
 }
 

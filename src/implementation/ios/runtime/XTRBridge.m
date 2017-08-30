@@ -22,6 +22,7 @@
 #import "XTRButton.h"
 #import "XTRFont.h"
 #import "XTRUtils.h"
+#import "XTRScrollView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -61,6 +62,7 @@ static NSString *globalBridgeScript;
                             [XTRLayoutConstraint class],
                             [XTRButton class],
                             [XTRFont class],
+                            [XTRScrollView class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

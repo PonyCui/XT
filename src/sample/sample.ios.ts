@@ -1,5 +1,4 @@
-import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font } from '../main.ios'
-import { InteractionState } from "../interface/View";
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView } from '../main.ios'
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -18,26 +17,17 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        const sView = new Button(RectMake(60, 80, 200, 88));
-        sView.backgroundColor = Color.whiteColor;
-        sView.title = "Test"
-        sView.inset = 8;
-        sView.vertical = true;
-        sView.font = Font.boldSystemFontOfSize(24);
-        sView.onTouchUpInside = () => {
-            this.navigationController &&  this.navigationController.pushViewController(new SecondViewController())
-        }
-        Image.fromAssets("location", (img) => {
-            sView.image = img.imageWithImageRenderingMode(ImageRenderingMode.Original);
-        }, () => { })
+        const sView = new ScrollView(RectMake(0, 0, 0, 0));
+        sView.backgroundColor = Color.whiteColor
+        sView.addSubview(((): any => {
+            const view = new Button(RectMake(0, 0, 200, 200));
+            view.title = "Hello"
+            view.backgroundColor = Color.greenColor;
+            return view;
+        })())
         this.view.addSubview(sView);
-
-        // const nView = new Label(RectMake(60,60,200,88))
-        // nView.text = "Hello, World!";
-        // nView.font = Font.italicSystemFontOfSize(24)
-        // this.view.addSubview(nView);
-        // console.log(nView.font.fontStyle);
-
+        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[sView]-0-|", { sView }));
+        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[sView]-0-|", { sView }));
     }
 
 }

@@ -57,7 +57,8 @@ import { Screen as MScreen } from './implementation/ios/Screen'
 export class Screen extends MScreen {}
 
 import { ScrollView as IScrollView } from './interface/ScrollView'
-export class ScrollView extends IScrollView {}
+import { ScrollView as MScrollView } from './implementation/ios/ScrollView'
+export class ScrollView extends MScrollView {}
 
 import { TransformMatrix as ITransformMatrix } from './interface/TransformMatrix';
 export class TransformMatrix extends ITransformMatrix {}
