@@ -18,6 +18,7 @@
 @property (nonatomic, assign) CGFloat inset;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, assign) BOOL highlighted;
 
 @end
 
@@ -32,6 +33,9 @@
     view.innerView = [UIButton buttonWithType:UIButtonTypeSystem];
     view.innerView.adjustsImageWhenHighlighted = NO;
     [view.innerView setTitleColor:view.tintColor forState:UIControlStateNormal];
+    [view.innerView addTarget:view action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+    [view.innerView addTarget:view action:@selector(onTouchStart) forControlEvents:UIControlEventTouchDown];
+    [view.innerView addTarget:view action:@selector(onTouchEvent) forControlEvents:UIControlEventAllTouchEvents];
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
@@ -114,6 +118,23 @@
     else {
         [self.innerView setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, self.inset)];
         [self.innerView setTitleEdgeInsets:UIEdgeInsetsMake(0, self.inset, 0, 0)];
+    }
+}
+
+- (void)onTouchUpInside {
+    if (self.scriptObject.value != nil) {
+        [self.scriptObject.value invokeMethod:@"handleTouchUpInside" withArguments:@[]];
+    }
+}
+
+- (void)onTouchStart {
+    self.highlighted = NO;
+}
+
+- (void)onTouchEvent {
+    if (self.highlighted != self.innerView.highlighted) {
+        self.highlighted = self.innerView.highlighted;
+        [self.scriptObject.value invokeMethod:@"handleHighlighted" withArguments:@[@(self.highlighted)]];
     }
 }
 

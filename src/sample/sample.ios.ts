@@ -24,6 +24,9 @@ class FirstViewController extends ViewController {
         sView.inset = 8;
         sView.vertical = true;
         sView.font = Font.boldSystemFontOfSize(24);
+        sView.onTouchUpInside = () => {
+            this.navigationController &&  this.navigationController.pushViewController(new SecondViewController())
+        }
         Image.fromAssets("location", (img) => {
             sView.image = img.imageWithImageRenderingMode(ImageRenderingMode.Original);
         }, () => { })

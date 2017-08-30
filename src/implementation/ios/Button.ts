@@ -30,21 +30,21 @@ export class Button extends View {
         this.nativeObject.xtr_setTitle(value);
     }
 
-	public get font(): Font {
-		return this.nativeObject.xtr_font();
-	}
+    public get font(): Font {
+        return this.nativeObject.xtr_font();
+    }
 
-	public set font(value: Font) {
+    public set font(value: Font) {
         this.nativeObject.xtr_setFont(value);
-	}
+    }
 
-	public get image(): Image {
-		return this.nativeObject.xtr_image();
-	}
+    public get image(): Image {
+        return this.nativeObject.xtr_image();
+    }
 
-	public set image(value: Image) {
-		this.nativeObject.xtr_setImage(value);
-	}
+    public set image(value: Image) {
+        this.nativeObject.xtr_setImage(value);
+    }
 
     public get color(): Color {
         return this.nativeObject.xtr_color();
@@ -54,24 +54,32 @@ export class Button extends View {
         this.nativeObject.xtr_setColor(value);
     }
 
-	public get vertical(): boolean {
-		return this.nativeObject.xtr_vertical();
-	}
+    public get vertical(): boolean {
+        return this.nativeObject.xtr_vertical();
+    }
 
-	public set vertical(value: boolean) {
-		this.nativeObject.xtr_setVertical(value);
-	}
+    public set vertical(value: boolean) {
+        this.nativeObject.xtr_setVertical(value);
+    }
 
-	public get inset(): number {
-		return this.nativeObject.xtr_inset();
-	}
+    public get inset(): number {
+        return this.nativeObject.xtr_inset();
+    }
 
-	public set inset(value: number) {
-		this.nativeObject.xtr_setInset(value);
-	}
+    public set inset(value: number) {
+        this.nativeObject.xtr_setInset(value);
+    }
 
     onHighlighted?: (highligted: boolean) => void
     onTouchUpInside?: () => void
+
+    handleTouchUpInside() {
+        this.onTouchUpInside && this.onTouchUpInside();
+    }
+
+    handleHighlighted(highligted: boolean) {
+        this.onHighlighted && this.onHighlighted(highligted);
+    }
 
 }
 
