@@ -1,4 +1,4 @@
-import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button } from '../main.ios'
+import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode } from '../main.ios'
 import { InteractionState } from "../interface/View";
 
 class AppDelegate extends ApplicationDelegate {
@@ -24,11 +24,9 @@ class FirstViewController extends ViewController {
         sView.inset = 8;
         sView.vertical = true;
         Image.fromAssets("location", (img) => {
-            sView.image = img;
-        }, () => {})
+            sView.image = img.imageWithImageRenderingMode(ImageRenderingMode.Original);
+        }, () => { })
         this.view.addSubview(sView);
-
-        // this.view.addConstraints()
 
     }
 

@@ -12,17 +12,69 @@
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
+typedef void(^IntervalBlock)(id keepBlock);
+
 @implementation XTRUtils
 
 + (void)attachPolyfills:(JSContext *)context {
     [self addTimeoutPolyfill:context];
+    [self addIntervalPolyfill:context];
 }
 
 + (void)addTimeoutPolyfill:(JSContext *)context {
+    static NSMutableDictionary *handlers;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        handlers = [NSMutableDictionary dictionary];
+    });
+    context[@"clearTimeout"] = ^(JSValue *timeoutHandler) {
+        NSString *uuid = [timeoutHandler toString];
+        if (uuid != nil && handlers[uuid] != nil) {
+            [handlers removeObjectForKey:uuid];
+        }
+    };
     context[@"setTimeout"] = ^(JSValue *callback, JSValue *millsecond){
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        [handlers setObject:@(0) forKey:uuid];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(([millsecond toInt32] / 1000.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (handlers[uuid] == nil) {
+                return ;
+            }
             [callback callWithArguments:@[]];
+            [handlers removeObjectForKey:uuid];
         });
+        return uuid;
+    };
+}
+
++ (void)addIntervalPolyfill:(JSContext *)context {
+    static NSMutableDictionary *handlers;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        handlers = [NSMutableDictionary dictionary];
+    });
+    context[@"clearInterval"] = ^(JSValue *timeoutHandler) {
+        NSString *uuid = [timeoutHandler toString];
+        if (uuid != nil && handlers[uuid] != nil) {
+            [handlers removeObjectForKey:uuid];
+        }
+    };
+    context[@"setInterval"] = ^(JSValue *callback, JSValue *millsecond){
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        [handlers setObject:@(0) forKey:uuid];
+        IntervalBlock __block intervalRunnable = ^(IntervalBlock keepBlock){
+            if (handlers[uuid] == nil) {
+                return ;
+            }
+            [callback callWithArguments:@[]];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(([millsecond toInt32] / 1000.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                keepBlock(keepBlock);
+            });
+        };
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(([millsecond toInt32] / 1000.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            intervalRunnable(intervalRunnable);
+        });
+        return uuid;
     };
 }
 
