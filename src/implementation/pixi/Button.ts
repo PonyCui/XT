@@ -98,6 +98,14 @@ export class Button extends View {
         this.resetContentLayout();
     }
 
+	public get font(): Font {
+		return this.titleLabel.font;
+	}
+
+	public set font(value: Font) {
+        this.titleLabel.font = value;
+	}
+
     public get image(): Image | undefined {
         return this.imageView.image;
     }

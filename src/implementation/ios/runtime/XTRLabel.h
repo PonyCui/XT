@@ -16,6 +16,8 @@
 + (XTRLabel *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSString *)xtr_text;
 - (void)xtr_setText:(JSValue *)text;
+- (JSValue *)xtr_font;
+- (void)xtr_setFont:(JSValue *)font;
 - (NSDictionary *)xtr_textColor;
 - (void)xtr_setTextColor:(JSValue *)textColor;
 - (NSNumber *)xtr_textAlignment;

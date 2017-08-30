@@ -1,7 +1,7 @@
 /// <reference path="xtr.d.ts" />
 
 import { View } from "./View";
-import { Font } from "../../interface/Font";
+import { Font } from "./Font";
 import { Color } from "../../interface/Color";
 import { Rect, RectZero } from "../../interface/Rect";
 
@@ -34,7 +34,7 @@ export class Label extends View {
         }
         else {
             this.nativeObject = XTRLabel.createScriptObject(rect || RectZero, this);
-            (window as any).objectCreater.store(this);
+            (window as any).XTRObjCreater.store(this);
         }
     }
 
@@ -47,8 +47,14 @@ export class Label extends View {
         this.nativeObject.xtr_setText(value);
     }
 
-    font?: Font;
 
+	public get font(): Font | undefined {
+		return this.nativeObject.xtr_font();
+	}
+
+	public set font(value: Font | undefined) {
+		this.nativeObject.xtr_setFont(value);
+	}
 
     public get textColor(): Color {
         return this.nativeObject.xtr_textColor();
@@ -99,10 +105,10 @@ export class Label extends View {
 
 }
 
-if ((window as any).objectClasses === undefined) {
-    (window as any).objectClasses = [];
+if ((window as any).XTRObjClasses === undefined) {
+    (window as any).XTRObjClasses = [];
 }
-(window as any).objectClasses.push((view: any) => {
+(window as any).XTRObjClasses.push((view: any) => {
     if (view.constructor.toString() === "[object XTRLabelConstructor]") {
         return new Label(undefined, view);
     }

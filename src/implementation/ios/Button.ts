@@ -4,6 +4,7 @@ import { ImageView, Image } from "./ImageView";
 import { Label } from "./Label";
 import { Color } from "../../interface/Color";
 import { Rect, RectZero } from "../../interface/Rect";
+import { Font } from "./Font";
 
 export class Button extends View {
 
@@ -17,7 +18,7 @@ export class Button extends View {
         }
         else {
             this.nativeObject = XTRButton.createScriptObject(rect || RectZero, this);
-            (window as any).objectCreater.store(this);
+            (window as any).XTRObjCreater.store(this);
         }
     }
 
@@ -28,6 +29,14 @@ export class Button extends View {
     public set title(value: string | undefined) {
         this.nativeObject.xtr_setTitle(value);
     }
+
+	public get font(): Font {
+		return this.nativeObject.xtr_font();
+	}
+
+	public set font(value: Font) {
+        this.nativeObject.xtr_setFont(value);
+	}
 
 	public get image(): Image {
 		return this.nativeObject.xtr_image();
@@ -66,10 +75,10 @@ export class Button extends View {
 
 }
 
-if ((window as any).objectClasses === undefined) {
-    (window as any).objectClasses = [];
+if ((window as any).XTRObjClasses === undefined) {
+    (window as any).XTRObjClasses = [];
 }
-(window as any).objectClasses.push((view: any) => {
+(window as any).XTRObjClasses.push((view: any) => {
     if (view.constructor.toString() === "[object XTRButtonConstructor]") {
         return new Label(undefined, view);
     }

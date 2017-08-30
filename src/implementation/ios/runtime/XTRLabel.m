@@ -8,6 +8,7 @@
 
 #import "XTRLabel.h"
 #import "XTRUtils.h"
+#import "XTRFont.h"
 
 @interface XTRLabel ()
 
@@ -46,6 +47,20 @@
 - (void)xtr_setText:(JSValue *)text; {
     self.innerView.text = [text toString];
     [self resetAttributedText];
+}
+
+- (JSValue *)xtr_font {
+    if (self.innerView.font != nil) {
+        return [JSValue fromObject:[XTRFont create:self.innerView.font] context:self.context];
+    }
+    return nil;
+}
+
+- (void)xtr_setFont:(JSValue *)font {
+    XTRFont *aFont = [font toFont];
+    if (aFont) {
+        self.innerView.font = aFont.innerObject;
+    }
 }
 
 - (NSDictionary *)xtr_textColor; {

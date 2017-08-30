@@ -2,12 +2,14 @@ import { View } from "./View";
 import { Label } from "./Label";
 import { Color } from "./Color";
 import { ImageView, Image } from "./ImageView";
+import { Font } from "./Font";
 
 export class Button extends View {
 
     vertical: boolean;
     inset: number;
     title?: string;
+    font?: Font;
     image?: Image;
     color?: Color;
 

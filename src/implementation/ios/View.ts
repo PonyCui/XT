@@ -16,7 +16,7 @@ export class View {
         }
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
-            (window as any).objectCreater.store(this);
+            (window as any).XTRObjCreater.store(this);
         }
     }
 
@@ -442,10 +442,10 @@ export class View {
 
 }
 
-if ((window as any).objectClasses === undefined) {
-    (window as any).objectClasses = [];
+if ((window as any).XTRObjClasses === undefined) {
+    (window as any).XTRObjClasses = [];
 }
-(window as any).objectClasses.push((view: any) => {
+(window as any).XTRObjClasses.push((view: any) => {
     if (view.constructor.toString() === "[object XTRViewConstructor]") {
         return new View(undefined, view);
     }

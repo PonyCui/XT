@@ -80,10 +80,10 @@ export class LayoutConstraint {
 
 }
 
-if ((window as any).objectClasses === undefined) {
-    (window as any).objectClasses = [];
+if ((window as any).XTRObjClasses === undefined) {
+    (window as any).XTRObjClasses = [];
 }
-(window as any).objectClasses.push((view: any) => {
+(window as any).XTRObjClasses.push((view: any) => {
     if (view.constructor.toString() === "[object XTRLayoutConstraintConstructor]") {
         return new LayoutConstraint(undefined, undefined, undefined, undefined, undefined, undefined, undefined, view);
     }

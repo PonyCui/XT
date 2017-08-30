@@ -10,3 +10,4 @@ declare const XTRImageView: any
 declare const XTRLabel: any
 declare const XTRButton: any
 declare const XTRLayoutConstraint: any
+declare const XTRFont: any

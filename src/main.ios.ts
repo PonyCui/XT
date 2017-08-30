@@ -12,7 +12,8 @@ import { Color as IColor } from './interface/Color'
 export class Color extends IColor {}
 
 import { Font as IFont } from './interface/Font';
-export class Font extends IFont {}
+import { Font as MFont } from './implementation/ios/Font';
+export class Font extends MFont {}
 
 import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from "./interface/ImageView";
 import { Image as MImage, ImageView as MImageView } from "./implementation/ios/ImageView";

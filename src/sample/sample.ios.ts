@@ -1,4 +1,4 @@
-import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode } from '../main.ios'
+import { View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font } from '../main.ios'
 import { InteractionState } from "../interface/View";
 
 class AppDelegate extends ApplicationDelegate {
@@ -23,10 +23,17 @@ class FirstViewController extends ViewController {
         sView.title = "Test"
         sView.inset = 8;
         sView.vertical = true;
+        sView.font = Font.boldSystemFontOfSize(24);
         Image.fromAssets("location", (img) => {
             sView.image = img.imageWithImageRenderingMode(ImageRenderingMode.Original);
         }, () => { })
         this.view.addSubview(sView);
+
+        // const nView = new Label(RectMake(60,60,200,88))
+        // nView.text = "Hello, World!";
+        // nView.font = Font.italicSystemFontOfSize(24)
+        // this.view.addSubview(nView);
+        // console.log(nView.font.fontStyle);
 
     }
 

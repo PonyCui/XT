@@ -19,7 +19,7 @@ export class ViewController {
         }
         else {
             this.nativeObject = XTRViewController.create(this);
-            (window as any).objectCreater.store(this);
+            (window as any).XTRObjCreater.store(this);
         }
     }
 
@@ -70,10 +70,10 @@ export class ViewController {
 
 }
 
-if ((window as any).objectClasses === undefined) {
-    (window as any).objectClasses = [];
+if ((window as any).XTRObjClasses === undefined) {
+    (window as any).XTRObjClasses = [];
 }
-(window as any).objectClasses.push((target: any) => {
+(window as any).XTRObjClasses.push((target: any) => {
     if (target.constructor.toString() === "[object XTRViewControllerConstructor]") {
         return new ViewController(target);
     }

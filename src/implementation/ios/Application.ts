@@ -48,14 +48,14 @@ export class Application {
 
 }
 
-if ((window as any).objectCreater === undefined) {
-    (window as any).objectCreater = {
+if ((window as any).XTRObjCreater === undefined) {
+    (window as any).XTRObjCreater = {
         create: function (view: any) {
             if (this.objectStore[view.objectUUID] !== undefined) {
                 return this.objectStore[view.objectUUID];
             }
-            for (let index = 0; index < (window as any).objectClasses.length; index++) {
-                const element = (window as any).objectClasses[index];
+            for (let index = 0; index < (window as any).XTRObjClasses.length; index++) {
+                const element = (window as any).XTRObjClasses[index];
                 const instance = element(view);
                 if (instance !== undefined) {
                     this.store(instance);
@@ -72,6 +72,6 @@ if ((window as any).objectCreater === undefined) {
         objectStore: {},
     };
 }
-if ((window as any).objectClasses === undefined) {
-    (window as any).objectClasses = [];
+if ((window as any).XTRObjClasses === undefined) {
+    (window as any).XTRObjClasses = [];
 }

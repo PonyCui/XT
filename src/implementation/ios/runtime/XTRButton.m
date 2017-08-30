@@ -9,6 +9,7 @@
 #import "XTRButton.h"
 #import "XTRUtils.h"
 #import "XTRImage.h"
+#import "XTRFont.h"
 
 @interface XTRButton ()
 
@@ -50,6 +51,14 @@
 - (void)xtr_setTitle:(JSValue *)title {
     [self.innerView setTitle:[title toString] forState:UIControlStateNormal];
     [self resetInset];
+}
+
+- (JSValue *)xtr_font {
+    return [JSValue fromObject:[XTRFont create:[[self.innerView titleLabel] font]] context:self.context];
+}
+
+- (void)xtr_setFont:(JSValue *)font {
+    [self.innerView.titleLabel setFont:[font toFont].innerObject];
 }
 
 - (JSValue *)xtr_image {

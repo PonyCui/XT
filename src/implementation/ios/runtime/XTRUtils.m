@@ -8,6 +8,7 @@
 
 #import "XTRUtils.h"
 #import "XTRImage.h"
+#import "XTRFont.h"
 #import "XTRLayoutConstraint.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
@@ -137,7 +138,7 @@ typedef void(^IntervalBlock)(id keepBlock);
     if (object == nil) {
         return nil;
     }
-    return [[context evaluateScript:@"window.objectCreater"] invokeMethod:@"create" withArguments:@[object]];
+    return [[context evaluateScript:@"window.XTRObjCreater"] invokeMethod:@"create" withArguments:@[object]];
 }
 
 - (UIView *)toView {
@@ -184,6 +185,16 @@ typedef void(^IntervalBlock)(id keepBlock);
     if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
         XTRImage *nativeView = [self[@"nativeObject"] toObject];
         if ([nativeView isKindOfClass:[XTRImage class]]) {
+            return nativeView;
+        }
+    }
+    return nil;
+}
+
+- (XTRFont *)toFont {
+    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
+        XTRFont *nativeView = [self[@"nativeObject"] toObject];
+        if ([nativeView isKindOfClass:[XTRFont class]]) {
             return nativeView;
         }
     }

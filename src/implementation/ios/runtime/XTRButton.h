@@ -16,6 +16,8 @@
 + (XTRButton *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSString *)xtr_title;
 - (void)xtr_setTitle:(JSValue *)title;
+- (JSValue *)xtr_font;
+- (void)xtr_setFont:(JSValue *)font;
 - (JSValue *)xtr_image;
 - (void)xtr_setImage:(JSValue *)image;
 - (NSDictionary *)xtr_color;
