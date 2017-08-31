@@ -26,6 +26,7 @@
     "scroller": "git+https://github.com/yyued/scroller.git",
     "typescript": "^2.4.2",
     "uglifyjs": "^2.4.11",
-    "webpack": "^3.5.2"
+    "webpack": "^3.5.2",
+    "webpack-shell-plugin": "^0.5.0"
   }
 }

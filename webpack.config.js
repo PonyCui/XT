@@ -1,10 +1,12 @@
 var path = require('path')
 var webpack = require('webpack')
+var WebpackShellPlugin = require('webpack-shell-plugin');
 
 module.exports = {
     entry: {
         "sample.pixi.min": "./src/sample/sample.pixi.ts",
         "sample.ios.min": "./src/sample/sample.ios.ts",
+        "sample.android.min": "./src/sample/sample.android.ts",
     },
     output: {
         filename: "[name].js",
@@ -27,6 +29,9 @@ module.exports = {
             include: /\.min\.js$/,
             minimize: true,
             output: { comments: false },
-        })
+        }),
+        new WebpackShellPlugin({
+            onBuildExit: ['cp dist/sample.android.min.js samples/Android/app/src/main/assets/sample.android.min.js']
+        }),
     ],
 };

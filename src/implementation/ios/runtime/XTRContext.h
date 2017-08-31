@@ -8,7 +8,7 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 
-typedef JSValue *_Nullable(^JSValueAsynchronousResult)();
+typedef void (^JSValueAsynchronousResult)(JSValue * _Nullable value);
 
 @interface XTRContext : JSContext
 
