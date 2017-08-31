@@ -10,7 +10,7 @@ import org.mozilla.javascript.ScriptableObject
  */
 class XTRContext(private val thread: Thread) {
 
-    private val jsContext: Context = Context.enter()
+    val jsContext: Context = Context.enter()
     val scope = jsContext.initStandardObjects()!!
 
     init {
@@ -33,15 +33,11 @@ class XTRContext(private val thread: Thread) {
         try {
             if (Thread.currentThread() != thread) {
                 thread.run {
-                    (ScriptableObject.getProperty(scriptObject, method) as? Function)?.let {
-                        asyncResult?.invoke(it.call(jsContext, it.parentScope ?: scope, scriptObject, arguments))
-                    }
+                    asyncResult?.invoke(ScriptableObject.callMethod(jsContext, scriptObject, method, arguments))
                 }
             }
             else {
-                (ScriptableObject.getProperty(scriptObject, method) as? Function)?.let {
-                    return it.call(jsContext, it.parentScope ?: scope, scriptObject, arrayOf())
-                }
+                return ScriptableObject.callMethod(jsContext, scriptObject, method, arguments)
             }
         } catch (e: Exception) {}
         return null

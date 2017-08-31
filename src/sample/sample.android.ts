@@ -5,8 +5,7 @@ import { InteractionState, View, Application, ApplicationDelegate, Window, Scree
 class AppDelegate extends ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
-        XTRTest.create()
-        // this.window = new Window();
+        this.window = new Window();
         // this.window.backgroundColor = new Color(1, 1, 0)
         // this.window.rootViewController = new NavigationController(new FirstViewController());
         // this.window.makeKeyAndVisible();

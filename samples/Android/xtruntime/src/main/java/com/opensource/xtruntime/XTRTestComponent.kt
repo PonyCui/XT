@@ -7,8 +7,7 @@ class XTRTestComponent : XTRComponent() {
 
     override val name: String = "XTRTest"
 
-    fun create() {
-        print(true)
+    fun log(obj: Any) {
     }
 
 }

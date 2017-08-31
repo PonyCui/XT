@@ -62,7 +62,8 @@ export const InteractionState = IInteractionState
 export const SwipeDirection = ISwipeDirection
 
 import { Window as IWindow } from './interface/Window'
-export class Window extends IWindow {}
+import { Window as MWindow } from './implementation/android/Window'
+export class Window extends MWindow {}
 
 import { ViewController as IViewController } from './interface/ViewController'
 export class ViewController extends IViewController {}

@@ -30,6 +30,7 @@ class XTRBridge {
     val context: XTRContext = XTRContext(Thread.currentThread())
 
     init {
+        XTRPolyfill.attachPolyfill(context)
         globalBridgeScript?.let {
             attachComponents()
             context.evaluateScript(it)
@@ -40,6 +41,7 @@ class XTRBridge {
         val components: List<XTRComponent> = listOf(
                 XTRApplicationDelegate.shared,
                 XTRApplication(),
+                XTRWindow(),
                 XTRTestComponent()
         )
         components.forEach { component ->

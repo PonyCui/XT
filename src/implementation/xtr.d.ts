@@ -14,3 +14,4 @@ declare const XTRFont: any
 declare const XTRScrollView: any
 declare const XTRListView: any
 declare const XTRListCell: any
+declare const XTRTest: any

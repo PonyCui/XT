@@ -1,5 +1,5 @@
 /// <reference path="xtr.d.ts" />
-// import { Window } from './Window'
+import { Window } from './Window'
 
 let sharedApplication: Application | undefined = undefined;
 
@@ -8,6 +8,7 @@ export class ApplicationDelegate {
     nativeObject: any
 
     public resetNativeObject(nativeObject: any) {
+        XTRTest.log(nativeObject);
         this.nativeObject = nativeObject;
     }
 
@@ -17,7 +18,6 @@ export class ApplicationDelegate {
 
     public set window(value: Window | undefined) {
         this.nativeObject.xtr_setWindow(value);
-        (this as any).windowRef = value;
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
