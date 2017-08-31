@@ -60,7 +60,6 @@ export class ListView extends ScrollView {
 
     public set items(value: ListItem[]) {
         this._items = value.slice();
-        this.reloadData();
     }
 
     private _cacheRows: {

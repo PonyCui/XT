@@ -13,32 +13,68 @@ class AppDelegate extends ApplicationDelegate {
 
 const application = new Application('app', new AppDelegate());
 
+class SCell extends ListCell {
+
+    viewController?: ViewController
+
+    init() {
+        this.backgroundColor = Color.yellowColor;
+        this.onSelected = () => {
+            console.log(this.currentItem);
+            this.viewController && this.viewController.navigationController && this.viewController.navigationController.pushViewController(new SecondViewController())
+        }
+    }
+
+}
+
+class S2Cell extends ListCell {
+
+    viewController?: ViewController
+
+    init() {
+        this.backgroundColor = Color.greenColor;
+    }
+
+}
+
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
         const sView = new ListView(RectMake(0, 0, 0, 0));
+        sView.register(SCell, "Test")
         sView.items = [{
             reuseIdentifier: "Test",
-            rowHeight: () => { return 88.0 }
-        }, {
-            reuseIdentifier: "Test",
-            rowHeight: () => { return 88.0 }
-        }, {
-            reuseIdentifier: "Test",
-            rowHeight: () => { return 88.0 }
-        }, {
-            reuseIdentifier: "Test",
-            rowHeight: () => { return 88.0 }
-        }, {
-            reuseIdentifier: "Test",
-            rowHeight: () => { return 88.0 }
-        }]
+            rowHeight: () => { return 88.0 },
+            ttt: "1",
+        },]
         sView.renderItem = (cell, item) => {
-            cell.onSelected = () => {
-                this.navigationController && this.navigationController.pushViewController(new SecondViewController());
-            }
+            (cell as SCell).viewController = this;
         }
+        setTimeout(() => {
+            sView.items = [{
+                reuseIdentifier: "Test",
+                rowHeight: () => { return 88.0 },
+                ttt: "1",
+            }, {
+                reuseIdentifier: "Test",
+                rowHeight: () => { return 88.0 },
+                ttt: "2",
+            }, {
+                reuseIdentifier: "Test",
+                rowHeight: () => { return 88.0 },
+                ttt: "3",
+            }, {
+                reuseIdentifier: "Test",
+                rowHeight: () => { return 88.0 },
+                ttt: "4",
+            }, {
+                reuseIdentifier: "Test",
+                rowHeight: () => { return 88.0 },
+                ttt: "5",
+            }]
+            sView.reloadData();
+        }, 5000)
         sView.reloadData();
         sView.backgroundColor = Color.whiteColor
         this.view.addSubview(sView);

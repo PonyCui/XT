@@ -22,6 +22,8 @@ export class View {
 
     constructor(rect?: Rect) { }
 
+    init() { }
+
     // Mark: View Geometry
     frame: Rect;
     bounds: Rect;

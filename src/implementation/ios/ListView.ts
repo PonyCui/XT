@@ -2,13 +2,7 @@
 import { ScrollView } from "./ScrollView";
 import { View } from "./View";
 import { Rect, RectZero } from "../../interface/Rect";
-
-export interface ListItem {
-
-    reuseIdentifier: string
-    rowHeight: (width: number) => number
-
-}
+import { ListItem } from "../../interface/ListView";
 
 export enum ListSelectionStyle {
     None,
@@ -32,6 +26,7 @@ export class ListCell extends View {
         else {
             this.nativeObject = XTRListCell.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
+            this.init();
         }
     }
 

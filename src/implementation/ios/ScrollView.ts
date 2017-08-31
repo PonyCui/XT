@@ -15,6 +15,7 @@ export class ScrollView extends View {
         else {
             this.nativeObject = XTRScrollView.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
+            this.init();
         }
     }
 

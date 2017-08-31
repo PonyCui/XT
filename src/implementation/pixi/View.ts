@@ -32,7 +32,10 @@ export class View extends IView {
         if (typeof rect === "object") {
             this.frame = rect;
         }
+        this.init();
     }
+
+    init() { }
 
     // Mark: View Geometry
 

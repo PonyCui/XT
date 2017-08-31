@@ -3,6 +3,7 @@ import { View } from "./View";
 
 export interface ListItem {
 
+    [key: string]: any,
     reuseIdentifier: string
     rowHeight: (width: number) => number
 
