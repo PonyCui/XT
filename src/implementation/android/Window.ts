@@ -1,14 +1,16 @@
 /// <reference path="xtr.d.ts" />
-// import { View } from './View'
 import { Rect, RectZero } from "../../interface/Rect";
+import { View } from "../../interface/View";
 // import { ViewController } from "./ViewController";
 
-export class Window {
+// Window under Android, is not a view.
+
+export class Window extends View {
 
     nativeObject: any;
 
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        // super(undefined, undefined, true)
+        super(undefined)
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
@@ -16,7 +18,7 @@ export class Window {
         else {
             this.nativeObject = XTRWindow.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            // this.init();
+            this.init();
         }
     }
 
