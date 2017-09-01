@@ -1,5 +1,9 @@
 package com.opensource.xtruntime
 
+import android.content.Context
+import android.graphics.Color
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
 
@@ -12,14 +16,23 @@ class XTRWindow: XTRComponent() {
 
     fun createScriptObject(rect: Any, scriptObject: Any): InnerObject? {
         (scriptObject as? ScriptableObject)?.let {
-            return InnerObject(it)
+            return InnerObject(it, xtrContext.appContext)
         }
         return null
     }
 
-    inner class InnerObject(val scriptObject: ScriptableObject): XTRObject {
+    inner class InnerObject(val scriptObject: ScriptableObject, appContext: Context?): FrameLayout(appContext), XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
+        internal var appDelegate: XTRApplicationDelegate.InnerObject? = null
+
+        init {
+            setBackgroundColor(Color.YELLOW)
+        }
+
+        fun xtr_makeKeyAndVisible() {
+            appDelegate?.windowMakeKeyAndVisibleRunnable?.invoke()
+        }
 
     }
 

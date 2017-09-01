@@ -9,12 +9,7 @@ import java.util.*
 abstract class XTRComponent {
 
     open val name: String = ""
-    open var context: XTRContext? = null
+    lateinit var xtrContext: XTRContext
 
 }
 
-interface XTRObject {
-
-    val objectUUID: String
-
-}

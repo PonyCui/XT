@@ -6,15 +6,15 @@ import org.mozilla.javascript.ScriptableObject
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-class XTRBridge {
+class XTRBridge(val appContext: android.content.Context, bridgeScript: String? = null) {
 
     companion object {
 
         var globalBridgeScript: String? = null
 
-        fun setGlobalBridgeScriptWithAssets(context: android.content.Context, assetsName: String) {
+        fun setGlobalBridgeScriptWithAssets(appContext: android.content.Context, assetsName: String) {
             try {
-                context.assets.open(assetsName)?.let { inputStream ->
+                appContext.assets.open(assetsName)?.let { inputStream ->
                     val byteArray = ByteArray(inputStream.available())
                     inputStream.read(byteArray)
                     inputStream.close()
@@ -27,26 +27,26 @@ class XTRBridge {
 
     }
 
-    val context: XTRContext = XTRContext(Thread.currentThread())
+    val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
+    var xtrApplication: XTRApplication.InnerObject? = null
 
     init {
-        XTRPolyfill.attachPolyfill(context)
-        globalBridgeScript?.let {
-            attachComponents()
-            context.evaluateScript(it)
-        }
+        XTRPolyfill.attachPolyfill(xtrContext)
+        attachComponents()
+        xtrContext.evaluateScript(globalBridgeScript ?: bridgeScript ?: "")
+        xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
     }
 
     private fun attachComponents() {
         val components: List<XTRComponent> = listOf(
-                XTRApplicationDelegate.shared,
+                XTRApplicationDelegate(),
                 XTRApplication(),
                 XTRWindow(),
                 XTRTestComponent()
         )
         components.forEach { component ->
-            component.context = context
-            ScriptableObject.putProperty(context.scope, component.name, Context.javaToJS(component, context.scope))
+            component.xtrContext = xtrContext
+            ScriptableObject.putProperty(xtrContext.scope, component.name, Context.javaToJS(component, xtrContext.scope))
         }
     }
 

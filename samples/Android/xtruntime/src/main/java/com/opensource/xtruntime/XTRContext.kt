@@ -8,7 +8,7 @@ import org.mozilla.javascript.ScriptableObject
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-class XTRContext(private val thread: Thread) {
+class XTRContext(private val thread: Thread, val appContext: android.content.Context) {
 
     val jsContext: Context = Context.enter()
     val scope = jsContext.initStandardObjects()!!
@@ -19,7 +19,7 @@ class XTRContext(private val thread: Thread) {
 
     fun evaluateScript(script: String): Any? {
         return try {
-            jsContext.evaluateString(scope, "var window = {}", "define.js", 1, null)
+            jsContext.evaluateString(scope, "var window = {}; var XTRAppRef = undefined", "define.js", 1, null)
             jsContext.evaluateString(scope, script, "app.js", 1, null)
         } catch (e: Exception) {
             null

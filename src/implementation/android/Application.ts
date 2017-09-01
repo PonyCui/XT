@@ -7,9 +7,9 @@ export class ApplicationDelegate {
 
     nativeObject: any
 
-    public resetNativeObject(nativeObject: any) {
-        XTRTest.log(nativeObject);
-        this.nativeObject = nativeObject;
+    constructor(nativeObject?: any) {
+        this.nativeObject = nativeObject || XTRApplicationDelegate.create(this);
+        (window as any).XTRObjCreater.store(this);
     }
 
     public get window(): Window | undefined {
@@ -33,12 +33,18 @@ export class Application {
         return this.nativeObject.xtr_keyWindow;
     }
 
-    constructor(t: any, delegate: ApplicationDelegate) {
+    constructor(t: any, delegate: ApplicationDelegate, nativeObject?: any) {
+        if (nativeObject) {
+            this.nativeObject = nativeObject;
+            return;
+        }
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
         this.nativeObject = XTRApplication.create(this);
-        XTRApplicationDelegate.attachDelegate(delegate);
+        XTRAppRef = this;
+        (window as any).XTRObjCreater.store(this);
+        this.nativeObject.xtr_setDelegate(delegate);
         this.delegate = delegate;
     }
 
@@ -75,3 +81,13 @@ if ((window as any).XTRObjCreater === undefined) {
 if ((window as any).XTRObjClasses === undefined) {
     (window as any).XTRObjClasses = [];
 }
+
+(window as any).XTRObjClasses.push((view: any) => {
+    if (view.toString().indexOf("com.opensource.xtruntime.XTRApplication$InnerObject") === 0) {
+        return new Application(undefined, undefined as any, view);
+    }
+    else if (view.toString().indexOf("com.opensource.xtruntime.XTRApplicationDelegate$InnerObject") === 0) {
+        return new ApplicationDelegate(view);
+    }
+    return undefined;
+})

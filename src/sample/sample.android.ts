@@ -8,7 +8,7 @@ class AppDelegate extends ApplicationDelegate {
         this.window = new Window();
         // this.window.backgroundColor = new Color(1, 1, 0)
         // this.window.rootViewController = new NavigationController(new FirstViewController());
-        // this.window.makeKeyAndVisible();
+        this.window.makeKeyAndVisible();
     }
 
 }

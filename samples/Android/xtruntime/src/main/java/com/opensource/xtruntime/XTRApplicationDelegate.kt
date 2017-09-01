@@ -1,7 +1,7 @@
 package com.opensource.xtruntime
 
-import android.app.Application
-import org.mozilla.javascript.Context
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
 
@@ -10,38 +10,39 @@ import java.util.*
  */
 
 
-class XTRApplicationDelegate: XTRComponent(), XTRObject {
-
-    override val objectUUID: String = UUID.randomUUID().toString()
-
-    companion object {
-        val shared = XTRApplicationDelegate()
-    }
+class XTRApplicationDelegate: XTRComponent() {
 
     override val name: String = "XTRApplicationDelegate"
-    var scriptObject: ScriptableObject? = null
-    var window: XTRWindow.InnerObject? = null
 
-    fun attachDelegate(scriptObject: Any) {
-        this.scriptObject = scriptObject as? ScriptableObject
-    }
-
-    fun applicationDidFinishLaunchingWithOptions() {
-        this.context?.invokeMethod(this.scriptObject, "resetNativeObject", arrayOf(Context.javaToJS(this, this.context?.scope)))
-        this.context?.invokeMethod(this.scriptObject, "applicationDidFinishLaunchingWithOptions", arrayOf("", ""))
-    }
-
-    fun xtr_window(): ScriptableObject? {
-        context?.let { context ->
-            this.window?.let { window ->
-                return XTRUtils.fromObject(context, window)
-            }
+    fun create(scriptObject: Any): InnerObject? {
+        (scriptObject as? ScriptableObject)?.let {
+            return InnerObject(it)
         }
         return null
     }
 
-    fun xtr_setWindow(value: Any) {
-        this.window = XTRUtils.toWindow(value)
+    inner class InnerObject(private val scriptObject: ScriptableObject): XTRObject {
+
+        override val objectUUID: String = UUID.randomUUID().toString()
+        var window: XTRWindow.InnerObject? = null
+        var windowMakeKeyAndVisibleRunnable: (() -> Unit)? = null
+
+        fun applicationDidFinishLaunchingWithOptions() {
+            xtrContext.invokeMethod(this.scriptObject, "applicationDidFinishLaunchingWithOptions", arrayOf("", ""))
+        }
+
+        fun xtr_window(): ScriptableObject? {
+            this.window?.let { window ->
+                return XTRUtils.fromObject(xtrContext, window)
+            }
+            return null
+        }
+
+        fun xtr_setWindow(value: Any) {
+            this.window = XTRUtils.toWindow(value)
+            this.window?.appDelegate = this
+        }
+
     }
 
 }

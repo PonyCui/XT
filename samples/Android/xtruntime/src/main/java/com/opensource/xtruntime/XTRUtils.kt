@@ -14,6 +14,14 @@ class XTRUtils {
             return (target as? ScriptableObject)?.get("nativeObject") as? XTRWindow.InnerObject
         }
 
+        fun toApplication(target: Any?): XTRApplication.InnerObject? {
+            return (target as? ScriptableObject)?.get("nativeObject") as? XTRApplication.InnerObject
+        }
+
+        fun toApplicationDelegate(target: Any?): XTRApplicationDelegate.InnerObject? {
+            return (target as? ScriptableObject)?.get("nativeObject") as? XTRApplicationDelegate.InnerObject
+        }
+
         fun fromObject(context: XTRContext, target: Any): ScriptableObject? {
             ((context.scope.get("window") as? ScriptableObject)?.get("XTRObjCreater") as? ScriptableObject)?.let { creater ->
                 (creater.get("create") as? Function)?.let {
