@@ -6,7 +6,7 @@ import org.mozilla.javascript.ScriptableObject
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-class XTRBridge(val appContext: android.content.Context, bridgeScript: String? = null) {
+class XTRBridge(appContext: android.content.Context, bridgeScript: String? = null) {
 
     companion object {
 
@@ -27,7 +27,7 @@ class XTRBridge(val appContext: android.content.Context, bridgeScript: String? =
 
     }
 
-    val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
+    private val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
     var xtrApplication: XTRApplication.InnerObject? = null
 
     init {
@@ -42,7 +42,8 @@ class XTRBridge(val appContext: android.content.Context, bridgeScript: String? =
                 XTRApplicationDelegate(),
                 XTRApplication(),
                 XTRWindow(),
-                XTRTestComponent()
+                XTRTestComponent(),
+                XTRView()
         )
         components.forEach { component ->
             component.xtrContext = xtrContext

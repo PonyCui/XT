@@ -1,16 +1,14 @@
 /// <reference path="xtr.d.ts" />
 import { Rect, RectZero } from "../../interface/Rect";
-import { View } from "../../interface/View";
+import { View } from "./View";
 // import { ViewController } from "./ViewController";
-
-// Window under Android, is not a view.
 
 export class Window extends View {
 
     nativeObject: any;
 
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined)
+        super(undefined, undefined, true)
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;

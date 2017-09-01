@@ -1,4 +1,4 @@
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell } from '../main.ios'
+import { TransformMatrix, InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell } from '../main.ios'
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -40,46 +40,12 @@ class S2Cell extends ListCell {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        this.view.backgroundColor = new Color(1.0, 1.0, 0.0)
-        const sView = new ListView(RectMake(0, 0, 0, 0));
-        sView.register(SCell, "Test")
-        sView.items = [{
-            reuseIdentifier: "Test",
-            rowHeight: () => { return 88.0 },
-            ttt: "1",
-        },]
-        sView.renderItem = (cell, item) => {
-            (cell as SCell).viewController = this;
-        }
-        setTimeout(() => {
-            sView.items = [{
-                reuseIdentifier: "Test",
-                rowHeight: () => { return 88.0 },
-                ttt: "1",
-            }, {
-                reuseIdentifier: "Test",
-                rowHeight: () => { return 88.0 },
-                ttt: "2",
-            }, {
-                reuseIdentifier: "Test",
-                rowHeight: () => { return 88.0 },
-                ttt: "3",
-            }, {
-                reuseIdentifier: "Test",
-                rowHeight: () => { return 88.0 },
-                ttt: "4",
-            }, {
-                reuseIdentifier: "Test",
-                rowHeight: () => { return 88.0 },
-                ttt: "5",
-            }]
-            sView.reloadData();
-        }, 5000)
-        sView.reloadData();
-        sView.backgroundColor = Color.whiteColor
-        this.view.addSubview(sView);
-        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[sView]-0-|", { sView }));
-        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[sView]-0-|", { sView }));
+
+        const view = new View();
+        view.frame = RectMake(80, 80, 40, 40)
+        view.backgroundColor = Color.redColor;
+        view.transform = new TransformMatrix(2.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+        this.view.addSubview(view);
     }
 
 }

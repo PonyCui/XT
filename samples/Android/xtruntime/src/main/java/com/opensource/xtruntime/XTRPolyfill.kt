@@ -22,7 +22,7 @@ class XTRPolyfill {
 
     class Console {
 
-        fun log(value: Any) {
+        fun log(value: Any?) {
             System.out.println("[XTR.Console] >>> " + value)
         }
 

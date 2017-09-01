@@ -15,6 +15,12 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     init {
         jsContext.optimizationLevel = -1
+        jsContext.setClassShutter {
+            if (it.startsWith(XTRContext::class.java.name)) {
+                return@setClassShutter false
+            }
+            return@setClassShutter true
+        }
     }
 
     fun evaluateScript(script: String): Any? {

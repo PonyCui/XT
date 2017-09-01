@@ -57,7 +57,8 @@ import { TransformMatrix as ITransformMatrix } from './interface/TransformMatrix
 export class TransformMatrix extends ITransformMatrix {}
 
 import { View as IView, InteractionState as IInteractionState, SwipeDirection as ISwipeDirection } from './interface/View'
-export class View extends IView {}
+import { View as MView } from './implementation/android/View'
+export class View extends MView {}
 export const InteractionState = IInteractionState
 export const SwipeDirection = ISwipeDirection
 

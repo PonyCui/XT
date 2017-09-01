@@ -16,12 +16,12 @@ class XTRApplicationDelegate: XTRComponent() {
 
     fun create(scriptObject: Any): InnerObject? {
         (scriptObject as? ScriptableObject)?.let {
-            return InnerObject(it)
+            return InnerObject(it, xtrContext)
         }
         return null
     }
 
-    inner class InnerObject(private val scriptObject: ScriptableObject): XTRObject {
+    class InnerObject(private val scriptObject: ScriptableObject, private val xtrContext: XTRContext): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
         var window: XTRWindow.InnerObject? = null
