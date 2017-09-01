@@ -133,7 +133,14 @@ export class View {
     shadowRadius: number; // todo
 
     // Mark: View Hierarchy
-    tag?: number;
+
+    public get tag(): number {
+        return this.nativeObject.xtr_tag;
+    }
+
+    public set tag(value: number) {
+        this.nativeObject.xtr_tag = value;
+    }
 
     public get superview(): View | undefined {
         return this.nativeObject.xtr_superview()
@@ -155,7 +162,9 @@ export class View {
         this.nativeObject.xtr_insertSubviewAtIndex(subview, atIndex)
     }
 
-    exchangeSubviewAtIndex(index1: number, index2: number) { }
+    exchangeSubviewAtIndex(index1: number, index2: number) {
+        this.nativeObject.exchangeSubviewAtIndex(index1, index2)
+    }
 
     addSubview(subview: View) {
         this.nativeObject.xtr_addSubview(subview)
@@ -179,17 +188,16 @@ export class View {
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
-
     willMoveToSuperview(newSuperview?: View) { }
     didMoveToSuperview() { }
     willMoveToWindow(newWindow?: Window) { }
     didMoveToWindow() { }
 
-    isDescendantOfView(view: View) { return false }
-    viewWithTag(tag: number): View | undefined { return undefined }
+    isDescendantOfView(view: View) { return this.nativeObject.xtr_isDescendantOfView(view) }
+    viewWithTag(tag: number): View | undefined { return this.nativeObject.xtr_viewWithTag(tag) }
 
-    setNeedsLayout() { }
-    layoutIfNeeded() { }
+    setNeedsLayout() { this.nativeObject.xtr_setNeedsLayout() }
+    layoutIfNeeded() { this.nativeObject.xtr_layoutIfNeeded() }
     layoutSubviews() { }
 
     // Mark: View LayoutConstraint

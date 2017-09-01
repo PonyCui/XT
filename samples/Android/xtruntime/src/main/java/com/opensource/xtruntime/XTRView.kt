@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.FrameLayout
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
@@ -50,7 +51,7 @@ class XTRView: XTRComponent() {
             }
 
         fun xtr_frame(): XTRRect {
-            return this.frame ?: XTRRect(0.0, 0.0, 0.0, 0.0)
+            return this.frame ?: XTRRect(0.0, 0.0, (width / resources.displayMetrics.density).toDouble(), (height / resources.displayMetrics.density).toDouble())
         }
 
         fun xtr_setFrame(value: Any?) {
@@ -118,6 +119,8 @@ class XTRView: XTRComponent() {
 
         // Mark: View Hierarchy
 
+        var xtr_tag: Int = 0
+
         fun xtr_superview(): ScriptableObject? {
             (parent as? XTRView.InnerObject)?.let {
                 return XTRUtils.fromObject(xtrContext, it)
@@ -133,24 +136,41 @@ class XTRView: XTRComponent() {
             }.toTypedArray())
         }
 
-        fun xtr_window(): ScriptableObject? {
+        fun xtr_windowObject(): XTRWindow.InnerObject? {
             var current = parent
             while (current != null) {
                 (current as? XTRWindow.InnerObject)?.let {
-                    return XTRUtils.fromObject(xtrContext, it)
+                    return it
                 }
                 current = current.parent
             }
             return null
         }
 
+        fun xtr_window(): ScriptableObject? {
+            xtr_windowObject()?.let {
+                XTRUtils.fromObject(xtrContext, it)
+            }
+            return null
+        }
+
         fun xtr_removeFromSuperview() {
+            (parent as? XTRView.InnerObject)?.willRemoveSubView(this)
+            willMoveToSuperview(null)
+            willMoveToWindow(null)
             (parent as? ViewGroup)?.removeView(this)
+            didMoveToSuperview()
+            didMoveToWindow()
         }
 
         fun xtr_insertSubviewAtIndex(subview: Any?, atIndex: Int) {
             XTRUtils.toView(subview)?.let { subview ->
+                (subview as? XTRView.InnerObject)?.willMoveToSuperview(this)
+                (subview as? XTRView.InnerObject)?.willMoveToWindow(xtr_windowObject())
                 addView(subview, atIndex, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                didAddSubview(subview)
+                (subview as? XTRView.InnerObject)?.didMoveToSuperview()
+                (subview as? XTRView.InnerObject)?.didMoveToWindow()
             }
         }
 
@@ -175,7 +195,12 @@ class XTRView: XTRComponent() {
 
         fun xtr_addSubview(view: Any?) {
             XTRUtils.toView(view)?.let {
+                (it as? XTRView.InnerObject)?.willMoveToSuperview(this)
+                (it as? XTRView.InnerObject)?.willMoveToWindow(xtr_windowObject())
                 addView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                didAddSubview(it)
+                (it as? XTRView.InnerObject)?.didMoveToSuperview()
+                (it as? XTRView.InnerObject)?.didMoveToWindow()
             }
         }
 
@@ -210,6 +235,90 @@ class XTRView: XTRComponent() {
                 removeView(it)
                 addView(it, 0, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             }
+        }
+
+        fun didAddSubview(subview: View) {
+            XTRUtils.fromObject(xtrContext, subview)?.let {
+                xtrContext.invokeMethod(scriptObject, "didAddSubview", arrayOf(it))
+            }
+        }
+
+        fun willRemoveSubView(subview: View) {
+            XTRUtils.fromObject(xtrContext, subview)?.let {
+                xtrContext.invokeMethod(scriptObject, "willRemoveSubView", arrayOf(it))
+            }
+        }
+
+        fun willMoveToSuperview(newSuperview: View?) {
+            newSuperview?.let {
+                XTRUtils.fromObject(xtrContext, it)?.let {
+                    xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", arrayOf(it))
+                    return
+                }
+            }
+            xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", arrayOf())
+        }
+
+        fun didMoveToSuperview() {
+            xtrContext.invokeMethod(scriptObject, "didMoveToSuperview", arrayOf())
+        }
+
+        fun willMoveToWindow(newWindow: XTRWindow.InnerObject?) {
+            newWindow?.let {
+                XTRUtils.fromObject(xtrContext, it)?.let {
+                    xtrContext.invokeMethod(scriptObject, "willMoveToWindow", arrayOf(it))
+                    return
+                }
+            }
+            xtrContext.invokeMethod(scriptObject, "willMoveToWindow", arrayOf())
+        }
+
+        fun didMoveToWindow() {
+            xtrContext.invokeMethod(scriptObject, "didMoveToWindow", arrayOf())
+        }
+
+        fun xtr_isDescendantOfView(view: Any?): Boolean {
+            XTRUtils.toView(view)?.let { view ->
+                var current: ViewParent? = this
+                while (current != null) {
+                    if (current == view) {
+                        return true
+                    }
+                    current = current.parent
+                }
+            }
+            return false
+        }
+
+        fun xtr_viewWithTag(tag: Int): ScriptableObject? {
+            if (xtr_tag == tag) {
+                return XTRUtils.fromObject(xtrContext, this)
+            }
+            (0 until childCount).forEach {
+                ((getChildAt(it) as? XTRView.InnerObject)?.xtr_viewWithTag(tag))?.let {
+                    return it
+                }
+            }
+            return null
+        }
+
+        fun xtr_setNeedsLayout() {
+            invalidate()
+        }
+
+        fun xtr_layoutIfNeeded() {
+            layoutSubviews()
+        }
+
+        override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+            super.onLayout(changed, left, top, right, bottom)
+            if (changed) {
+                layoutSubviews()
+            }
+        }
+
+        fun layoutSubviews() {
+            xtrContext.invokeMethod(scriptObject, "layoutSubviews", arrayOf())
         }
 
     }

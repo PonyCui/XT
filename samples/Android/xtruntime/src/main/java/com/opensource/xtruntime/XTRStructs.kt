@@ -12,6 +12,16 @@ class XTRColor(val r: Double, val g: Double, val b: Double, val a: Double) {
         return Color.argb((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
     }
 
+    override fun toString(): String {
+        return "XTRColor, r = $r, g = $g, b = $b, a = $a"
+    }
+
 }
 
-class XTRRect(val x: Double, val y: Double, val width: Double, val height: Double)
+class XTRRect(val x: Double, val y: Double, val width: Double, val height: Double) {
+
+    override fun toString(): String {
+        return "XTRRect, x: $x, y: $y, width: $width, height: $height"
+    }
+
+}
