@@ -3,6 +3,8 @@ import { Color } from '../../interface/Color'
 import { Window } from './Window'
 import { TransformMatrix } from '../../interface/TransformMatrix'
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
+declare function require(name: string): any;
+const AutoLayout = require("autolayout");
 
 export enum InteractionState {
     Began,
@@ -22,6 +24,10 @@ export class View {
 
     nativeObject: any;
 
+    public get objectUUID(): string {
+        return "" + this.nativeObject.objectUUID
+    }
+
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
         if (_isChild) { return; }
         if (nativeObject) {
@@ -29,9 +35,9 @@ export class View {
         }
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
             this.init();
         }
+        (window as any).XTRObjCreater.store(this);
     }
 
     init() { }
@@ -198,15 +204,77 @@ export class View {
 
     setNeedsLayout() { this.nativeObject.xtr_setNeedsLayout() }
     layoutIfNeeded() { this.nativeObject.xtr_layoutIfNeeded() }
-    layoutSubviews() { }
+    layoutSubviews() {
+        if (this._constraints.length > 0) {
+            let viewMapping: { [key: string]: View } = {}
+            this._constraints.forEach(item => {
+                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).objectUUID] = item.firstItem as any }
+                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).objectUUID] = item.secondItem as any }
+            })
+            const view = new AutoLayout.View({
+                constraints: this._constraints.map(item => (item as any).toALObject()),
+                width: this.bounds.width,
+                height: this.bounds.height,
+            });
+            for (const layoutID in view.subViews) {
+                const value = view.subViews[layoutID];
+                if ((value.width == 0 || value.height == 0) && viewMapping[layoutID] !== undefined) {
+                    const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
+                    if (intrinsticSize !== undefined) {
+                        value.intrinsicWidth = intrinsticSize.width;
+                        value.intrinsicHeight = intrinsticSize.height;
+                    }
+                }
+            }
+            for (const layoutID in view.subViews) {
+                const value = view.subViews[layoutID];
+                if (viewMapping[layoutID] !== undefined) {
+                    if (viewMapping[layoutID] == this) { continue; }
+                    viewMapping[layoutID].frame = {
+                        x: value.left,
+                        y: value.top,
+                        width: value.width,
+                        height: value.height,
+                    }
+                }
+            }
+        }
+    }
 
     // Mark: View LayoutConstraint
 
-    constraints: LayoutConstraint[]
-    addConstraint(constraint: LayoutConstraint) { }
-    addConstraints(constraints: LayoutConstraint[]) { }
-    removeConstraint(constraint: LayoutConstraint) { }
-    removeAllConstraints() { }
+    private _constraints: LayoutConstraint[] = [];
+
+    public get constraints(): LayoutConstraint[] {
+        return this._constraints.slice();
+    }
+
+    public intrinsicContentSize(width?: number): Size | undefined {
+        return undefined;
+    }
+
+    public addConstraint(constraint: LayoutConstraint) {
+        this._constraints.push(constraint);
+        this.setNeedsLayout();
+    }
+
+    public addConstraints(constraints: LayoutConstraint[]) {
+        constraints.forEach(constraint => this._constraints.push(constraint));
+        this.setNeedsLayout();
+    }
+
+    public removeConstraint(constraint: LayoutConstraint) {
+        const idx = this._constraints.indexOf(constraint);
+        if (idx >= 0) {
+            this._constraints.splice(idx, 1);
+        }
+        this.setNeedsLayout();
+    }
+
+    public removeAllConstraints() {
+        this._constraints = [];
+        this.setNeedsLayout();
+    }
 
     // Mark: View Interactive
     static InteractionState = InteractionState

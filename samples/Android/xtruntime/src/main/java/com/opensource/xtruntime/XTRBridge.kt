@@ -31,7 +31,6 @@ class XTRBridge(appContext: android.content.Context, bridgeScript: String? = nul
     var xtrApplication: XTRApplication.InnerObject? = null
 
     init {
-        XTRPolyfill.attachPolyfill(xtrContext)
         attachComponents()
         xtrContext.evaluateScript(globalBridgeScript ?: bridgeScript ?: "")
         xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))

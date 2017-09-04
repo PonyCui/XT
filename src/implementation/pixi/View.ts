@@ -628,7 +628,7 @@ export class View extends IView {
     private _constraints: LayoutConstraint[] = [];
 
     public get constraints(): LayoutConstraint[] {
-        return []
+        return this._constraints.slice();
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {

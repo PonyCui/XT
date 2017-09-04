@@ -57,8 +57,8 @@ export class Application {
 if ((window as any).XTRObjCreater === undefined) {
     (window as any).XTRObjCreater = {
         create: function (view: any) {
-            if (this.objectStore[view.objectUUID] !== undefined) {
-                return this.objectStore[view.objectUUID];
+            if (this.objectStore[view.objectUUID.toString()] !== undefined) {
+                return this.objectStore[view.objectUUID.toString()];
             }
             for (let index = 0; index < (window as any).XTRObjClasses.length; index++) {
                 const element = (window as any).XTRObjClasses[index];
@@ -71,8 +71,8 @@ if ((window as any).XTRObjCreater === undefined) {
             return undefined;
         },
         store: function (target: any) {
-            if (target.nativeObject instanceof Object && typeof target.nativeObject.objectUUID === "string") {
-                this.objectStore[target.nativeObject.objectUUID] = target;
+            if (typeof target.objectUUID === "string") {                
+                this.objectStore[target.objectUUID] = target;
             }
         },
         objectStore: {},

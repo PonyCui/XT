@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import android.os.Handler
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.Scriptable
@@ -12,6 +13,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     val jsContext: Context = Context.enter()
     val scope = jsContext.initStandardObjects()!!
+    val handler = Handler()
 
     init {
         jsContext.optimizationLevel = -1
@@ -21,11 +23,12 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
             }
             return@setClassShutter true
         }
+        jsContext.evaluateString(scope, "var window = {}; var XTRAppRef = undefined", "define.js", 1, null)
+        XTRPolyfill.attachPolyfill(this)
     }
 
     fun evaluateScript(script: String): Any? {
         return try {
-            jsContext.evaluateString(scope, "var window = {}; var XTRAppRef = undefined", "define.js", 1, null)
             jsContext.evaluateString(scope, script, "app.js", 1, null)
         } catch (e: Exception) {
             null
@@ -38,8 +41,9 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         }
         try {
             if (Thread.currentThread() != thread) {
-                thread.run {
-                    asyncResult?.invoke(ScriptableObject.callMethod(jsContext, scriptObject, method, arguments))
+                handler.post {
+                    val returnValue = ScriptableObject.callMethod(jsContext, scriptObject, method, arguments)
+                    asyncResult?.invoke(returnValue)
                 }
             }
             else {
@@ -52,8 +56,9 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     fun callWithArguments(func: Function, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         return try {
             if (Thread.currentThread() != thread) {
-                thread.run {
-                    asyncResult?.invoke(func.call(jsContext, func.parentScope ?: scope, func.parentScope ?: scope, arguments))
+                handler.post {
+                    val returnValue = func.call(jsContext, func.parentScope ?: scope, func.parentScope ?: scope, arguments)
+                    asyncResult?.invoke(returnValue)
                 }
                 null
             }

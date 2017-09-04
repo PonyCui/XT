@@ -1,11 +1,7 @@
 package com.opensource.xtruntime
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.Rect
-import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
@@ -77,7 +73,16 @@ class XTRView: XTRComponent() {
         // Mark: View Rendering
 
         protected var backgroundColor: XTRColor? = null
-            set(value) { field = value; setBackgroundColor(value?.intColor() ?: Color.TRANSPARENT) }
+            set(value) {
+                field = value
+                try {
+                    setBackgroundColor(value?.intColor() ?: Color.TRANSPARENT)
+                } catch (e: Exception) {
+                    print(e.message)
+                }
+
+                invalidate()
+            }
 
         fun xtr_backgroundColor(): XTRColor? {
             return this.backgroundColor
@@ -303,7 +308,7 @@ class XTRView: XTRComponent() {
         }
 
         fun xtr_setNeedsLayout() {
-            invalidate()
+            requestLayout()
         }
 
         fun xtr_layoutIfNeeded() {

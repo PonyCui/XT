@@ -12,12 +12,10 @@ class AppDelegate extends ApplicationDelegate {
         view.frame = RectMake(80, 80, 40, 40)
         view.backgroundColor = Color.redColor;
         this.window.addSubview(view);
-        view.tag = 1000;
 
-        // console.log(sView.window);
+        this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[view]-20-|", { view }));
+        this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[view]-20-|", { view }));
 
-        // this.window.backgroundColor = new Color(1, 1, 0)
-        // this.window.rootViewController = new NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
     }
 
@@ -27,7 +25,6 @@ class NWindow extends Window {
 
     layoutSubviews() {
         super.layoutSubviews();
-        console.log(this.frame)
     }
 
 }
