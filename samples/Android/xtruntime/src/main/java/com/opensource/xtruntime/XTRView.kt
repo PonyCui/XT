@@ -368,14 +368,26 @@ class XTRView: XTRComponent() {
         private var firstLongPressPoint = XTRPoint(0.0, 0.0)
         private var onLongPress: Any? = null
         private var longPressing = false
+        private var onPan: Any? = null
+        private var maybePan = false
+        private var firstPanPoint = XTRPoint(0.0, 0.0)
+        private var panning = false
 
         fun xtr_setTap(value: Any?) {
+            if (value !is Function) {
+                this.onTap = null
+                return
+            }
             this.isClickable = true
             this.onTap = value
             this.setOnClickListener(clickListener)
         }
 
         fun xtr_setDoubleTap(value: Any?) {
+            if (value !is Function) {
+                this.onDoubleTap = null
+                return
+            }
             this.isClickable = true
             this.onDoubleTap = value
             this.setOnClickListener(clickListener)
@@ -408,11 +420,16 @@ class XTRView: XTRComponent() {
         }
 
         fun xtr_setLongPress(value: Any?) {
+            if (value !is Function) {
+                this.onLongPress = null
+                return
+            }
             this.isLongClickable = true
             onLongPress = value
             this.setOnLongClickListener {
-                if (maybeLongPress) {
+                if (maybeLongPress && !panning) {
                     longPressing = true
+                    maybePan = false
                     (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(0)) }
                 }
                 else {
@@ -422,7 +439,16 @@ class XTRView: XTRComponent() {
             }
         }
 
+        fun xtr_setPan(value: Any?) {
+            if (value !is Function) {
+                this.onPan = null
+                return
+            }
+            onPan = value
+        }
+
         override fun onTouchEvent(event: MotionEvent?): Boolean {
+            handlePanEvents(event)
             handleLongPressEvents(event)
             return super.onTouchEvent(event)
         }
@@ -462,6 +488,56 @@ class XTRView: XTRComponent() {
             }
             else if (event?.action == MotionEvent.ACTION_UP) {
                 maybeLongPress = false
+            }
+        }
+
+        private fun handlePanEvents(event: MotionEvent?) {
+            if (onPan != null && event?.action == MotionEvent.ACTION_DOWN && !panning) {
+                maybePan = true
+                panning = false
+                firstPanPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+            }
+            else if (onPan != null && event?.action == MotionEvent.ACTION_MOVE && !panning && maybePan) {
+                val currentPanPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                if (Math.abs(currentPanPoint.x - firstLongPressPoint.x) > 8.0 || Math.abs(currentPanPoint.y - firstLongPressPoint.x) > 8.0) {
+                    maybeLongPress = false
+                    maybePan = false
+                    panning = true
+                    (onPan as? Function)?.let {
+                        xtrContext.callWithArguments(
+                                it,
+                                arrayOf(
+                                        0,
+                                        XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
+                                        XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                                )
+                        ) }
+                }
+            }
+            else if (panning && event?.action == MotionEvent.ACTION_MOVE) {
+                (onPan as? Function)?.let {
+                    xtrContext.callWithArguments(
+                            it,
+                            arrayOf(
+                                    1,
+                                    XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
+                                    XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                            )
+                    ) }
+            }
+            else if (panning && event?.action == MotionEvent.ACTION_UP) {
+                panning = false
+                (onPan as? Function)?.let { xtrContext.callWithArguments(
+                        it,
+                        arrayOf(
+                                2,
+                                XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
+                                XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                        )
+                ) }
+            }
+            else if (event?.action == MotionEvent.ACTION_UP) {
+                maybePan = false
             }
         }
 

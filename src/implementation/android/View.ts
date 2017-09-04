@@ -286,19 +286,21 @@ export class View {
 
     longPressDuration: number;
 
-    public set onTap(value: () => void) {
+    public set onTap(value: (() => void) | undefined) {
         this.nativeObject.xtr_setTap(value);
     }
 
-    public set onDoubleTap(value: () => void) {
+    public set onDoubleTap(value: (() => void) | undefined) {
         this.nativeObject.xtr_setDoubleTap(value);
     }
 
-    public set onLongPress(value: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) {
+    public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
         this.nativeObject.xtr_setLongPress(value);
     }
 
-    onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
+    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+        this.nativeObject.xtr_setPan(value);
+    }
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
