@@ -1,5 +1,7 @@
 package com.opensource.xtruntime
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
@@ -18,6 +20,8 @@ import java.util.*
  */
 class XTRView: XTRComponent() {
 
+    class AnimationProp<T>(val aniKey: String, val fromValue: T, val toValue: T, val onValue: (value: T) -> Unit)
+
     override val name: String = "XTRView"
 
     fun createScriptObject(rect: Any, scriptObject: Any): XTRView.InnerObject? {
@@ -25,6 +29,56 @@ class XTRView: XTRComponent() {
             return InnerObject(it, xtrContext)
         }
         return null
+    }
+
+    companion object {
+
+        var animationEnabled = false
+
+        var animationProps: Map<String, AnimationProp<Any>> = mapOf()
+        var animatingHandlers: Map<String, () -> Unit> = mapOf()
+
+        fun addAnimation(aniProp: AnimationProp<Any>) {
+            XTRView.animatingHandlers[aniProp.aniKey]?.invoke()
+            if (aniProp.fromValue == aniProp.toValue) {
+                return
+            }
+            val mutableMap = animationProps.toMutableMap()
+            mutableMap[aniProp.aniKey] = aniProp
+            animationProps = mutableMap.toMap()
+        }
+
+    }
+
+    fun animationWithDuration(duration: Any?, animations: Any?, completion: Any?) {
+        val duration = duration as? Double ?: return
+        animationEnabled = true
+        (animations as? Function)?.let {
+            xtrContext.callWithArguments(it, arrayOf())
+        }
+        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+        val animators = animationProps.values.map { aniProp ->
+            var animator: ValueAnimator? = null
+            (aniProp.fromValue as? Float)?.let {
+                animator = ValueAnimator.ofFloat(aniProp.fromValue as Float, aniProp.toValue as Float)
+            }
+            animator?.duration = (duration * 1000).toLong()
+            animator?.addUpdateListener {
+                aniProp.onValue(it.animatedValue as Float)
+            }
+            animatingHandlers[aniProp.aniKey] = {
+                animator?.cancel()
+            }
+            return@map animator
+        }
+        XTRView.animatingHandlers = animatingHandlers.toMap()
+        animationEnabled = false
+        animators.forEach { it?.start() }
+    }
+
+    fun animationWithBouncinessAndSpeed(bounciness: Any?, speed: Any?, animations: Any?, completion: Any?) {
+        animationEnabled = true
+        animationEnabled = false
     }
 
     @Suppress("CanBeParameter", "unused")
@@ -43,10 +97,20 @@ class XTRView: XTRComponent() {
             invalidate()
         }
 
+        override fun setAlpha(alpha: Float) {
+            if (animationEnabled) {
+                addAnimation(AnimationProp("$objectUUID.alpha", this.alpha as Any, alpha as Any, {
+                    setAlpha(it as Float)
+                }))
+                return
+            }
+            super.setAlpha(alpha)
+        }
+
         protected var frame: XTRRect? = null
             set(value) {
                 field = value
-                invalidate()
+                requestLayout()
             }
 
         fun xtr_frame(): XTRRect {
@@ -55,8 +119,30 @@ class XTRView: XTRComponent() {
 
         fun xtr_setFrame(value: Any?) {
             XTRUtils.toRect(value)?.let {
+                if (animationEnabled) {
+                    addAnimation(AnimationProp("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, it.x.toFloat() as Any, { x ->
+                        this.frame?.let {
+                            this.frame = XTRRect((x as Float).toDouble(), it.y, it.width, it.height)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.frame.y", (this.frame?.y ?: 0.0).toFloat() as Any, it.y.toFloat() as Any, { y ->
+                        this.frame?.let {
+                            this.frame = XTRRect(it.x, (y as Float).toDouble(), it.width, it.height)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.frame.width", (this.frame?.width ?: 0.0).toFloat() as Any, it.width.toFloat() as Any, { width ->
+                        this.frame?.let {
+                            this.frame = XTRRect(it.x, it.y, (width as Float).toDouble(), it.height)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.frame.height", (this.frame?.height ?: 0.0).toFloat() as Any, it.height.toFloat() as Any, { height ->
+                        this.frame?.let {
+                            this.frame = XTRRect(it.x, it.y, it.width, (height as Float).toDouble())
+                        }
+                    }))
+                    return@let
+                }
                 frame = it
-                requestLayout()
             }
         }
 
@@ -79,11 +165,7 @@ class XTRView: XTRComponent() {
         protected var backgroundColor: XTRColor? = null
             set(value) {
                 field = value
-                try {
-                    setBackgroundColor(value?.intColor() ?: Color.TRANSPARENT)
-                } catch (e: Exception) {
-                    print(e.message)
-                }
+                setBackgroundColor(value?.intColor() ?: Color.TRANSPARENT)
                 invalidate()
             }
 
@@ -92,7 +174,32 @@ class XTRView: XTRComponent() {
         }
 
         fun xtr_setBackgroundColor(value: Any?) {
-            this.backgroundColor = XTRUtils.toColor(value)
+            XTRUtils.toColor(value)?.let {
+                if (animationEnabled) {
+                    addAnimation(AnimationProp("$objectUUID.backgroundColor.r", (this.backgroundColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
+                        this.backgroundColor?.let {
+                            this.backgroundColor= XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.backgroundColor.g", (this.backgroundColor?.g ?: 0.0).toFloat() as Any, it.g.toFloat() as Any, { g ->
+                        this.backgroundColor?.let {
+                            this.backgroundColor= XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.backgroundColor.b", (this.backgroundColor?.b ?: 0.0).toFloat() as Any, it.b.toFloat() as Any, { b ->
+                        this.backgroundColor?.let {
+                            this.backgroundColor= XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.backgroundColor.a", (this.backgroundColor?.a ?: 0.0).toFloat() as Any, it.a.toFloat() as Any, { a ->
+                        this.backgroundColor?.let {
+                            this.backgroundColor= XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
+                        }
+                    }))
+                    return@let
+                }
+                this.backgroundColor = it
+            }
         }
 
         fun xtr_hidden(): Boolean {

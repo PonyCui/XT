@@ -102,7 +102,7 @@ export class View {
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }
-    static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS NOT Support
+    static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) { } // iOS NOT Support
     static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only
 
 }

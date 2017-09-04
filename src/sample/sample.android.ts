@@ -13,23 +13,16 @@ class AppDelegate extends ApplicationDelegate {
         view.backgroundColor = Color.redColor;
         this.window.addSubview(view);
 
-        this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[view]-20-|", { view }));
-        this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[view]-20-|", { view }));
+        // this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[view]-20-|", { view }));
+        // this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[view]-20-|", { view }));
 
         view.userInteractionEnabled = true
         view.onTap = () => {
-            view.backgroundColor = Color.blueColor
+            View.animationWithDuration(1.0, () => {
+                view.frame = RectMake(120, 120, 200, 200)
+                view.backgroundColor = Color.greenColor
+            })
         }
-        view.onDoubleTap = () => {
-            view.backgroundColor = Color.blackColor
-        }
-        view.onLongPress = (state, viewLocation, absLocation) => {
-            view.backgroundColor = Color.greenColor
-        }
-        view.onPan = (state, viewLocation, absLocation) => {
-            view.backgroundColor = Color.whiteColor
-        }
-
         this.window.makeKeyAndVisible();
     }
 
