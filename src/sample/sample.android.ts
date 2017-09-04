@@ -16,6 +16,20 @@ class AppDelegate extends ApplicationDelegate {
         this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[view]-20-|", { view }));
         this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[view]-20-|", { view }));
 
+        view.userInteractionEnabled = true
+        view.onTap = () => {
+            view.backgroundColor = Color.blueColor
+        }
+        view.onDoubleTap = () => {
+            view.backgroundColor = Color.blackColor
+        }
+        view.onLongPress = (state, viewLocation, absLocation) => {
+            view.backgroundColor = Color.greenColor
+        }
+        view.onPan = (state, viewLocation, absLocation) => {
+            view.backgroundColor = Color.whiteColor
+        }
+
         this.window.makeKeyAndVisible();
     }
 

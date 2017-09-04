@@ -25,3 +25,11 @@ class XTRRect(val x: Double, val y: Double, val width: Double, val height: Doubl
     }
 
 }
+
+class XTRPoint(val x: Double, val y: Double) {
+
+    override fun toString(): String {
+        return "XTRPoint, x: $x, y: $y"
+    }
+
+}

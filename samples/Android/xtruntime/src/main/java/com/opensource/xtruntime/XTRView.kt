@@ -2,10 +2,13 @@ package com.opensource.xtruntime
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
+import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
@@ -53,6 +56,7 @@ class XTRView: XTRComponent() {
         fun xtr_setFrame(value: Any?) {
             XTRUtils.toRect(value)?.let {
                 frame = it
+                requestLayout()
             }
         }
 
@@ -80,7 +84,6 @@ class XTRView: XTRComponent() {
                 } catch (e: Exception) {
                     print(e.message)
                 }
-
                 invalidate()
             }
 
@@ -309,9 +312,11 @@ class XTRView: XTRComponent() {
 
         fun xtr_setNeedsLayout() {
             requestLayout()
+            layoutSubviews()
         }
 
         fun xtr_layoutIfNeeded() {
+            requestLayout()
             layoutSubviews()
         }
 
@@ -324,6 +329,140 @@ class XTRView: XTRComponent() {
 
         fun layoutSubviews() {
             xtrContext.invokeMethod(scriptObject, "layoutSubviews", arrayOf())
+        }
+
+        // Mark: View Interactive
+
+        private var userInteractionEnabled = false
+
+        fun xtr_userInteractionEnabled(): Boolean {
+            return this.userInteractionEnabled
+        }
+
+        fun xtr_setUserInteractionEnabled(value: Any?) {
+            (value as? Boolean)?.let {
+                this.userInteractionEnabled = it
+            }
+        }
+
+        override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+            if (!userInteractionEnabled) {
+                return false
+            }
+            return super.dispatchTouchEvent(ev)
+        }
+
+        override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+            if (!userInteractionEnabled) {
+                return false
+            }
+            return super.onInterceptTouchEvent(ev)
+        }
+
+        private var onTap: Any? = null
+        private var onDoubleTap: Any? = null
+        private var maybeDoubleTimer: Timer? = null
+        private var maybeDoubleTap = false
+        private var maybeDoubleTapTS: Long = 0
+        private var maybeLongPress = false
+        private var firstLongPressPoint = XTRPoint(0.0, 0.0)
+        private var onLongPress: Any? = null
+        private var longPressing = false
+
+        fun xtr_setTap(value: Any?) {
+            this.isClickable = true
+            this.onTap = value
+            this.setOnClickListener(clickListener)
+        }
+
+        fun xtr_setDoubleTap(value: Any?) {
+            this.isClickable = true
+            this.onDoubleTap = value
+            this.setOnClickListener(clickListener)
+        }
+
+        private var clickListener = OnClickListener {
+            if (onDoubleTap == null) {
+                (onTap as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+            }
+            else {
+                if (!maybeDoubleTap) {
+                    maybeDoubleTap = true
+                    maybeDoubleTapTS = System.currentTimeMillis()
+                    maybeDoubleTimer = Timer()
+                    maybeDoubleTimer?.schedule(object : TimerTask() {
+                        override fun run() {
+                            maybeDoubleTap = false
+                            maybeDoubleTapTS = 0
+                            (onTap as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                        }
+                    }, 300)
+                }
+                else if (maybeDoubleTap && System.currentTimeMillis() - maybeDoubleTapTS < 300) {
+                    maybeDoubleTap = false
+                    maybeDoubleTapTS = 0
+                    maybeDoubleTimer?.cancel()
+                    (onDoubleTap as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                }
+            }
+        }
+
+        fun xtr_setLongPress(value: Any?) {
+            this.isLongClickable = true
+            onLongPress = value
+            this.setOnLongClickListener {
+                if (maybeLongPress) {
+                    longPressing = true
+                    (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(0)) }
+                }
+                else {
+                    longPressing = false
+                }
+                return@setOnLongClickListener true
+            }
+        }
+
+        override fun onTouchEvent(event: MotionEvent?): Boolean {
+            handleLongPressEvents(event)
+            return super.onTouchEvent(event)
+        }
+
+        private fun handleLongPressEvents(event: MotionEvent?) {
+            if (onLongPress != null && event?.action == MotionEvent.ACTION_DOWN && !longPressing) {
+                maybeLongPress = true
+                firstLongPressPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+            }
+            else if (onLongPress != null && event?.action == MotionEvent.ACTION_MOVE && !longPressing && maybeLongPress) {
+                val currentLongPressPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                if (Math.abs(currentLongPressPoint.x - firstLongPressPoint.x) > 8.0 || Math.abs(currentLongPressPoint.y - firstLongPressPoint.x) > 8.0) {
+                    maybeLongPress = false
+                }
+            }
+            else if (longPressing && event?.action == MotionEvent.ACTION_MOVE) {
+                (onLongPress as? Function)?.let {
+                    xtrContext.callWithArguments(
+                            it,
+                            arrayOf(
+                                    1,
+                                    XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
+                                    XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                            )
+                    ) }
+            }
+            else if (longPressing && event?.action == MotionEvent.ACTION_UP) {
+                longPressing = false
+                (onLongPress as? Function)?.let { xtrContext.callWithArguments(
+                        it,
+                        arrayOf(
+                                2,
+                                XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
+                                XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                        )
+                ) }
+            }
+            else if (event?.action == MotionEvent.ACTION_UP) {
+                maybeLongPress = false
+            }
         }
 
     }

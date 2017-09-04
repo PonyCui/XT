@@ -27,6 +27,7 @@ class XTRWindow: XTRComponent() {
         internal var appDelegate: XTRApplicationDelegate.InnerObject? = null
 
         init {
+            xtr_setUserInteractionEnabled(true)
             setBackgroundColor(Color.YELLOW)
         }
 

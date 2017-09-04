@@ -255,12 +255,10 @@ export class View {
 
     public addConstraint(constraint: LayoutConstraint) {
         this._constraints.push(constraint);
-        this.setNeedsLayout();
     }
 
     public addConstraints(constraints: LayoutConstraint[]) {
         constraints.forEach(constraint => this._constraints.push(constraint));
-        this.setNeedsLayout();
     }
 
     public removeConstraint(constraint: LayoutConstraint) {
@@ -268,22 +266,38 @@ export class View {
         if (idx >= 0) {
             this._constraints.splice(idx, 1);
         }
-        this.setNeedsLayout();
     }
 
     public removeAllConstraints() {
         this._constraints = [];
-        this.setNeedsLayout();
     }
 
     // Mark: View Interactive
     static InteractionState = InteractionState
     static SwipeDirection = SwipeDirection
-    userInteractionEnabled: boolean;
+
+    public get userInteractionEnabled(): boolean {
+        return this.nativeObject.xtr_userInteractionEnabled();
+    }
+
+    public set userInteractionEnabled(value: boolean) {
+        this.nativeObject.xtr_setUserInteractionEnabled(value);
+    }
+
     longPressDuration: number;
-    onTap?: () => void
-    onDoubleTap?: () => void
-    onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
+
+    public set onTap(value: () => void) {
+        this.nativeObject.xtr_setTap(value);
+    }
+
+    public set onDoubleTap(value: () => void) {
+        this.nativeObject.xtr_setDoubleTap(value);
+    }
+
+    public set onLongPress(value: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) {
+        this.nativeObject.xtr_setLongPress(value);
+    }
+
     onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
 
     // Mark: View Animation
