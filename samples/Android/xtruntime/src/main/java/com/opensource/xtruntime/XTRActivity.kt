@@ -16,14 +16,15 @@ open class XTRActivity: Activity() {
         super.onCreate(savedInstanceState)
         actionBar?.hide()
         if (bridge == null) {
-            bridge = XTRBridge(applicationContext)
+            bridge = XTRBridge(applicationContext, null, {
+                bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
+                    bridge?.xtrApplication?.delegate?.window?.let {
+                        setContentView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                    }
+                }
+                bridge?.xtrApplication?.delegate?.applicationDidFinishLaunchingWithOptions()
+            })
         }
-        bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
-            bridge?.xtrApplication?.delegate?.window?.let {
-                setContentView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-            }
-        }
-        bridge?.xtrApplication?.delegate?.applicationDidFinishLaunchingWithOptions()
     }
 
 }

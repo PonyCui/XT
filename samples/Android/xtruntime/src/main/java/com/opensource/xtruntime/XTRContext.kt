@@ -11,27 +11,26 @@ import org.mozilla.javascript.ScriptableObject
  */
 class XTRContext(private val thread: Thread, val appContext: android.content.Context) {
 
-    val jsContext: Context = Context.enter()
+    var jsContext: Context = Context.enter()
     val scope = jsContext.initStandardObjects()!!
     val handler = Handler()
 
     init {
         jsContext.optimizationLevel = -1
-        jsContext.setClassShutter {
-            if (it.startsWith(XTRContext::class.java.name)) {
-                return@setClassShutter false
-            }
-            return@setClassShutter true
-        }
         jsContext.evaluateString(scope, "var window = {}; var XTRAppRef = undefined", "define.js", 1, null)
         XTRPolyfill.attachPolyfill(this)
+    }
+
+    fun resetJSContext() {
+        jsContext = Context.enter()
+        jsContext.optimizationLevel = -1
     }
 
     fun evaluateScript(script: String): Any? {
         return try {
             jsContext.evaluateString(scope, script, "app.js", 1, null)
         } catch (e: Exception) {
-            null
+            e.printStackTrace()
         }
     }
 
