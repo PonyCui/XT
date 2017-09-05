@@ -173,9 +173,7 @@ class XTRView: XTRComponent() {
         override val objectUUID: String = UUID.randomUUID().toString()
 
         init {
-            if (android.os.Build.VERSION.SDK_INT >= 18) {
-                clipChildren = false
-            }
+            clipChildren = false
         }
 
         // Mark: View Geometry
@@ -183,6 +181,13 @@ class XTRView: XTRComponent() {
         override fun setClipChildren(clipChildren: Boolean) {
             super.setClipChildren(clipChildren)
             invalidate()
+        }
+
+        override fun invalidate() {
+            super.invalidate()
+            if (android.os.Build.VERSION.SDK_INT < 18) {
+                (parent as? View)?.let { it.invalidate() }
+            }
         }
 
         private var clipsToBounds = false
@@ -197,6 +202,9 @@ class XTRView: XTRComponent() {
 
         fun xtr_setClipsToBounds(value: Any?) {
             this.clipsToBounds = value as? Boolean ?: false
+            if (android.os.Build.VERSION.SDK_INT < 18) {
+                setLayerType(if (value as? Boolean == true) View.LAYER_TYPE_SOFTWARE else View.LAYER_TYPE_HARDWARE, null)
+            }
         }
 
         override fun setAlpha(alpha: Float) {
@@ -247,10 +255,6 @@ class XTRView: XTRComponent() {
                 }
                 frame = it
             }
-        }
-
-        override fun onDraw(canvas: Canvas?) {
-            super.onDraw(canvas)
         }
 
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

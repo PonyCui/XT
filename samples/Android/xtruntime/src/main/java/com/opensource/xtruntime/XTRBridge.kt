@@ -12,7 +12,7 @@ class XTRBridge(appContext: android.content.Context, bridgeScript: String? = nul
     companion object {
 
         var globalBridgeScript: String? = null
-        var globalBridgeStackSize: Long = 1024 * 256
+        var globalBridgeStackSize: Long = 1024 * 128
 
         fun setGlobalBridgeScriptWithAssets(appContext: android.content.Context, assetsName: String) {
             try {
