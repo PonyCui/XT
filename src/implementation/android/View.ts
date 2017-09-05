@@ -32,12 +32,13 @@ export class View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
+            (window as any).XTRObjCreater.store(this);
             this.init();
         }
-        (window as any).XTRObjCreater.store(this);
     }
 
     init() { }

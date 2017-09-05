@@ -13,6 +13,7 @@ export class View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);

@@ -10,6 +10,7 @@ export class NavigationController extends ViewController {
         if (isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRNavigationController.create(this);

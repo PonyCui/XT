@@ -12,12 +12,13 @@ export class Window extends View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRWindow.createScriptObject(rect || RectZero, this);
+            (window as any).XTRObjCreater.store(this);
             this.init();
         }
-        (window as any).XTRObjCreater.store(this);
     }
 
     public get rootViewController(): ViewController | undefined {

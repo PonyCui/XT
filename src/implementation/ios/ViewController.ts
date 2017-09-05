@@ -16,6 +16,7 @@ export class ViewController {
         if (isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRViewController.create(this);

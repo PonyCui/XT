@@ -23,12 +23,12 @@ export class ViewController {
     }
 
     viewDidLoad(): void { }
-    viewWillAppear(): void { }
-    viewDidAppear(): void { }
-    viewWillDisappear(): void { }
-    viewDidDisappear(): void { }
-    viewWillLayoutSubviews(): void { }
-    viewDidLayoutSubviews(): void { }
+    viewWillAppear(): void { this.childViewControllers.map(v => v.viewWillAppear()) }
+    viewDidAppear(): void { this.childViewControllers.map(v => v.viewDidAppear()) }
+    viewWillDisappear(): void { this.childViewControllers.map(v => v.viewWillDisappear()) }
+    viewDidDisappear(): void { this.childViewControllers.map(v => v.viewDidDisappear()) }
+    viewWillLayoutSubviews(): void { this.childViewControllers.map(v => v.viewWillLayoutSubviews()) }
+    viewDidLayoutSubviews(): void { this.childViewControllers.map(v => v.viewDidLayoutSubviews()) }
 
     parentViewController?: ViewController
 

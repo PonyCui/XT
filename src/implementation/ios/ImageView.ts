@@ -63,6 +63,7 @@ export class ImageView extends View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRImageView.createScriptObject(rect || RectZero, this);

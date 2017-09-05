@@ -36,6 +36,7 @@ export class Application {
     constructor(t: any, delegate: ApplicationDelegate, nativeObject?: any) {
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
             return;
         }
         if (sharedApplication === undefined) {

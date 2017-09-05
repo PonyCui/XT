@@ -24,6 +24,26 @@ class FirstViewController extends ViewController {
         }
         this.view.addSubview(view);
         this.view.backgroundColor = Color.yellowColor
+        const sv = new SecondViewController()
+        this.addChildViewController(sv);
+        this.view.addSubview(sv.view);
+        sv.view.frame = RectMake(120, 120, 300, 300)
+    }
+
+}
+
+class SecondViewController extends ViewController {
+
+    viewDidLoad() {
+        const view = new View();
+        view.frame = RectMake(80, 80, 88, 88)
+        view.backgroundColor = Color.greenColor;
+        view.userInteractionEnabled = true;
+        view.onTap = () => {
+            view.backgroundColor = Color.blackColor
+        }
+        this.view.addSubview(view);
+        this.view.backgroundColor = Color.blueColor
     }
 
 }

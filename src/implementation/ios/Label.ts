@@ -31,6 +31,7 @@ export class Label extends View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRLabel.createScriptObject(rect || RectZero, this);

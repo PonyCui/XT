@@ -11,6 +11,7 @@ export class ScrollView extends View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRScrollView.createScriptObject(rect || RectZero, this);

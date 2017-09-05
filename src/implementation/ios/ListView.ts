@@ -22,6 +22,7 @@ export class ListCell extends View {
         if (_isChild) { return; }
         if (nativeObject) {
             this.nativeObject = nativeObject;
+            (window as any).XTRObjCreater.store(this);
         }
         else {
             this.nativeObject = XTRListCell.createScriptObject(rect || RectZero, this);

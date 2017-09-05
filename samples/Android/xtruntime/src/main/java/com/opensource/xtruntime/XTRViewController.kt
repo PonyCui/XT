@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
 
@@ -35,6 +36,42 @@ open class XTRViewController: XTRComponent() {
                 this.view = it
                 xtrContext.invokeMethod(scriptObject, "viewDidLoad", arrayOf())
             }
+        }
+
+        var parentViewController: XTRViewController.InnerObject? = null
+            protected set
+
+        var childViewControllers: List<XTRViewController.InnerObject> = listOf()
+            protected set
+
+        fun xtr_parentViewController(): ScriptableObject? {
+            return XTRUtils.fromObject(xtrContext, parentViewController)
+        }
+
+        fun xtr_childViewControllers(): NativeArray {
+            return NativeArray(childViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
+        }
+
+        fun xtr_addChildViewController(childController: Any?) {
+            XTRUtils.toViewController(childController)?.let { childController ->
+                if (childController.parentViewController == null) {
+                    childViewControllers.toMutableList()?.let {
+                        it.add(childController)
+                        childController.parentViewController = this
+                        childViewControllers = it.toList()
+                    }
+                }
+            }
+        }
+
+        fun xtr_removeFromParentViewController() {
+            parentViewController?.let { parentViewController ->
+                parentViewController.childViewControllers.toMutableList()?.let {
+                    it.remove(this)
+                    parentViewController.childViewControllers = it.toList()
+                }
+            }
+            parentViewController = null
         }
 
     }
