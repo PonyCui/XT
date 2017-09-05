@@ -76,11 +76,11 @@ export class View {
     // Mark: View Rendering
 
     public get clipsToBounds(): boolean {
-        return this.nativeObject.clipChildren;
+        return this.nativeObject.xtr_clipsToBounds();
     }
 
     public set clipsToBounds(value: boolean) {
-        this.nativeObject.setClipChildren(value);
+        this.nativeObject.xtr_setClipsToBounds(value);
     }
 
     public get backgroundColor(): Color {
@@ -124,15 +124,30 @@ export class View {
     // Mark: View Layer-Back Rendering
 
     public get cornerRadius(): number {
-        return this.nativeObject.cornerRadius;
+        return this.nativeObject.xtr_cornerRadius();
     }
 
     public set cornerRadius(value: number) {
-        this.nativeObject.cornerRadius = value;
+        this.nativeObject.xtr_setCornerRadius(value);
     }
 
-    borderWidth: number; // todo
-    borderColor?: Color; // todo
+
+	public get borderWidth(): number {
+		return this.nativeObject.xtr_borderWidth();
+	}
+
+	public set borderWidth(value: number) {
+		this.nativeObject.xtr_setBorderWidth(value);
+	}
+
+	public get borderColor(): Color {
+		return this.nativeObject.xtr_borderColor();
+	}
+
+	public set borderColor(value: Color) {
+		this.nativeObject.xtr_setBorderColor(value);
+    }
+    
     shadowColor?: Color; // todo
     shadowOpacity: number; // todo
     shadowOffset?: Size; // todo

@@ -2,9 +2,7 @@ package com.opensource.xtruntime
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Rect
+import android.graphics.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +33,6 @@ class XTRView: XTRComponent() {
     companion object {
 
         var animationEnabled = false
-
         var animationProps: Map<String, AnimationProp<Any>> = mapOf()
         var animatingHandlers: Map<String, () -> Unit> = mapOf()
 
@@ -173,7 +170,9 @@ class XTRView: XTRComponent() {
         override val objectUUID: String = UUID.randomUUID().toString()
 
         init {
-            clipChildren = false
+            if (android.os.Build.VERSION.SDK_INT >= 18) {
+                clipChildren = false
+            }
         }
 
         // Mark: View Geometry
@@ -181,6 +180,20 @@ class XTRView: XTRComponent() {
         override fun setClipChildren(clipChildren: Boolean) {
             super.setClipChildren(clipChildren)
             invalidate()
+        }
+
+        private var clipsToBounds = false
+            set(value) {
+                field = value
+                invalidate()
+            }
+
+        fun xtr_clipsToBounds(): Boolean {
+            return this.clipsToBounds
+        }
+
+        fun xtr_setClipsToBounds(value: Any?) {
+            this.clipsToBounds = value as? Boolean ?: false
         }
 
         override fun setAlpha(alpha: Float) {
@@ -196,6 +209,7 @@ class XTRView: XTRComponent() {
         protected var frame: XTRRect? = null
             set(value) {
                 field = value
+                resetPath()
                 requestLayout()
             }
 
@@ -264,22 +278,22 @@ class XTRView: XTRComponent() {
                 if (animationEnabled) {
                     addAnimation(AnimationProp("$objectUUID.backgroundColor.r", (this.backgroundColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
                         this.backgroundColor?.let {
-                            this.backgroundColor= XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
+                            this.backgroundColor = XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
                         }
                     }))
                     addAnimation(AnimationProp("$objectUUID.backgroundColor.g", (this.backgroundColor?.g ?: 0.0).toFloat() as Any, it.g.toFloat() as Any, { g ->
                         this.backgroundColor?.let {
-                            this.backgroundColor= XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                            this.backgroundColor = XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
                         }
                     }))
                     addAnimation(AnimationProp("$objectUUID.backgroundColor.b", (this.backgroundColor?.b ?: 0.0).toFloat() as Any, it.b.toFloat() as Any, { b ->
                         this.backgroundColor?.let {
-                            this.backgroundColor= XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                            this.backgroundColor = XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
                         }
                     }))
                     addAnimation(AnimationProp("$objectUUID.backgroundColor.a", (this.backgroundColor?.a ?: 0.0).toFloat() as Any, it.a.toFloat() as Any, { a ->
                         this.backgroundColor?.let {
-                            this.backgroundColor= XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
+                            this.backgroundColor = XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
                         }
                     }))
                     return@let
@@ -312,11 +326,116 @@ class XTRView: XTRComponent() {
 
         // Mark: View Layer-Back Rendering
 
-        protected var cornerRadius: Double = 0.0 // todo maskView.
+        private var cornerRadius: Double = 0.0
+            set(value) {
+                field = Math.max(0.0, value)
+                resetPath()
+                invalidate()
+            }
+
+        fun xtr_cornerRadius(): Double {
+            return this.cornerRadius
+        }
+
+        fun xtr_setCornerRadius(value: Any?) {
+            val value = value as? Double ?: return
+            if (animationEnabled) {
+                addAnimation(AnimationProp("$objectUUID.cornerRadius", this.cornerRadius.toFloat() as Any, value.toFloat() as Any, {
+                    this.cornerRadius = (it as Float).toDouble()
+                }))
+                return
+            }
+            this.cornerRadius = value
+        }
+
+        private var borderWidth: Double = 0.0
             set(value) {
                 field = value
                 invalidate()
             }
+
+        fun xtr_borderWidth(): Double {
+            return this.borderWidth
+        }
+
+        fun xtr_setBorderWidth(value: Any?) {
+            val value = value as? Double ?: return
+            if (animationEnabled) {
+                addAnimation(AnimationProp("$objectUUID.borderWidth", this.borderWidth.toFloat() as Any, value.toFloat() as Any, {
+                    this.borderWidth = (it as Float).toDouble()
+                }))
+                return
+            }
+            this.borderWidth = value
+        }
+
+        protected var borderColor: XTRColor? = null
+            set(value) {
+                field = value
+                invalidate()
+            }
+
+        fun xtr_borderColor(): XTRColor? {
+            return this.borderColor
+        }
+
+        fun xtr_setBorderColor(value: Any?) {
+            XTRUtils.toColor(value)?.let {
+                if (animationEnabled) {
+                    addAnimation(AnimationProp("$objectUUID.borderColor.r", (this.borderColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
+                        this.borderColor?.let {
+                            this.borderColor = XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.borderColor.g", (this.borderColor?.g ?: 0.0).toFloat() as Any, it.g.toFloat() as Any, { g ->
+                        this.borderColor?.let {
+                            this.borderColor = XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.borderColor.b", (this.borderColor?.b ?: 0.0).toFloat() as Any, it.b.toFloat() as Any, { b ->
+                        this.borderColor?.let {
+                            this.borderColor = XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.borderColor.a", (this.borderColor?.a ?: 0.0).toFloat() as Any, it.a.toFloat() as Any, { a ->
+                        this.borderColor?.let {
+                            this.borderColor = XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
+                        }
+                    }))
+                    return@let
+                }
+                this.borderColor = it
+            }
+        }
+
+        private val sharedPath = Path()
+        private val sharedPaint = Paint()
+
+        private fun resetPath() {
+            sharedPath.reset()
+            val scale = resources.displayMetrics.density
+            sharedPath.addRoundRect(RectF(0.0f, 0.0f, ((frame?.width ?: 0.0) * scale).toFloat(), ((frame?.height ?: 0.0) * scale).toFloat()), (cornerRadius * scale).toFloat(), (cornerRadius * scale).toFloat(), Path.Direction.CCW)
+        }
+
+        override fun draw(canvas: Canvas?) {
+            if (cornerRadius > 0 && clipsToBounds) {
+                canvas?.save()
+                canvas?.clipPath(sharedPath)
+                super.draw(canvas)
+                canvas?.restore()
+            }
+            else {
+                super.draw(canvas)
+            }
+            if (borderWidth > 0 && borderColor != null) {
+                sharedPaint.reset()
+                sharedPaint.isAntiAlias = true
+                sharedPaint.style = Paint.Style.STROKE
+                sharedPaint.strokeWidth = (borderWidth * resources.displayMetrics.density).toFloat()
+                sharedPaint.color = borderColor?.intColor() ?: Color.TRANSPARENT
+                canvas?.drawPath(sharedPath, sharedPaint)
+            }
+        }
 
         // Mark: View Hierarchy
 
