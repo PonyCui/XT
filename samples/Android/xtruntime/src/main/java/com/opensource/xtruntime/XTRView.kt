@@ -217,7 +217,7 @@ class XTRView: XTRComponent() {
             super.setAlpha(alpha)
         }
 
-        protected var frame: XTRRect? = null
+        var frame: XTRRect? = null
             set(value) {
                 field = value
                 resetPath()
@@ -255,6 +255,15 @@ class XTRView: XTRComponent() {
                 }
                 frame = it
             }
+        }
+
+        var bounds: XTRRect = XTRRect(0.0, 0.0, 0.0, 0.0)
+            get() {
+                return XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
+            }
+
+        fun xtr_bounds(): XTRRect {
+            return this.bounds
         }
 
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -421,7 +430,7 @@ class XTRView: XTRComponent() {
         private fun resetPath() {
             sharedPath.reset()
             val scale = resources.displayMetrics.density
-            sharedPath.addRoundRect(RectF(0.0f, 0.0f, ((frame?.width ?: 0.0) * scale).toFloat(), ((frame?.height ?: 0.0) * scale).toFloat()), (cornerRadius * scale).toFloat(), (cornerRadius * scale).toFloat(), Path.Direction.CCW)
+            sharedPath.addRoundRect(RectF(0.0f, 0.0f, (bounds.width * scale).toFloat(), (bounds.height * scale).toFloat()), (cornerRadius * scale).toFloat(), (cornerRadius * scale).toFloat(), Path.Direction.CCW)
         }
 
         override fun draw(canvas: Canvas?) {
@@ -646,7 +655,7 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun layoutSubviews() {
+        open fun layoutSubviews() {
             xtrContext.invokeMethod(scriptObject, "layoutSubviews", arrayOf())
         }
 

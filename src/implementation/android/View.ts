@@ -53,7 +53,7 @@ export class View {
     }
 
     public get bounds(): Rect {
-        return { ...this.nativeObject.xtr_frame(), x: 0, y: 0 }
+        return this.nativeObject.xtr_bounds();
     }
 
     public set bounds(value: Rect) {

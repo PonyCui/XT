@@ -28,11 +28,37 @@ class XTRWindow: XTRComponent() {
 
         init {
             xtr_setUserInteractionEnabled(true)
-            setBackgroundColor(Color.YELLOW)
+        }
+
+        private var rootViewController: XTRViewController.InnerObject? = null
+            set(value) {
+                field?.let {
+                    it.view?.xtr_removeFromSuperview()
+                }
+                field = value
+                field?.let {
+                    this.xtr_addSubview(it.view)
+                    it.view?.frame = this.bounds
+                }
+            }
+
+        fun xtr_rootViewController(): ScriptableObject? {
+            return XTRUtils.fromObject(xtrContext, rootViewController)
+        }
+
+        fun xtr_setRootViewController(value: Any?) {
+            XTRUtils.toViewController(value)?.let {
+                rootViewController = it
+            }
         }
 
         fun xtr_makeKeyAndVisible() {
             appDelegate?.windowMakeKeyAndVisibleRunnable?.invoke()
+        }
+
+        override fun layoutSubviews() {
+            super.layoutSubviews()
+            rootViewController?.view?.frame = this.bounds
         }
 
     }

@@ -5,51 +5,25 @@ import { InteractionState, View, Application, ApplicationDelegate, Window, Scree
 class AppDelegate extends ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
-        this.window = new NWindow();
-        this.window.backgroundColor = Color.yellowColor
-
-        const view = new NView();
-        view.clipsToBounds = true
-        view.frame = RectMake(80, 80, 60, 60)
-        view.cornerRadius = 30
-        view.borderWidth = 4
-        view.borderColor = Color.blackColor
-        view.backgroundColor = Color.redColor;
-        this.window.addSubview(view);
-
-        // this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-20-[view]-20-|", { view }));
-        // this.window.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-20-[view]-20-|", { view }));
-
-        view.userInteractionEnabled = true
-        view.onTap = () => {
-            View.animationWithTensionAndFriction(40.0, 3.0, () => {
-                view.frame = RectMake(120, 120, 200, 200)
-                view.cornerRadius = 5.0
-            }, () => {
-                view.backgroundColor = Color.greenColor
-            })
-        }
+        this.window = new Window();
+        this.window.rootViewController = new FirstViewController();
         this.window.makeKeyAndVisible();
     }
 
 }
 
-class NWindow extends Window {
+class FirstViewController extends ViewController {
 
-    layoutSubviews() {
-        super.layoutSubviews();
-    }
-
-}
-
-class NView extends View {
-
-    willMoveToSuperview(newSuperview: View) {
-        console.log("willMoveToSuperview" + newSuperview);
-    }
-
-    didMoveToSuperview() {
-        console.log("didMoveToSuperview")
+    viewDidLoad() {
+        const view = new View();
+        view.frame = RectMake(80, 80, 40, 40)
+        view.backgroundColor = Color.redColor;
+        view.userInteractionEnabled = true;
+        view.onTap = () => {
+            view.backgroundColor = Color.greenColor
+        }
+        this.view.addSubview(view);
+        this.view.backgroundColor = Color.yellowColor
     }
 
 }

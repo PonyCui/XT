@@ -42,22 +42,34 @@ class XTRUtils {
         }
 
         fun toView(target: Any?): View? {
+            (target as? View)?.let { return it }
             return (target as? ScriptableObject)?.get("nativeObject") as? View
         }
 
         fun toWindow(target: Any?): XTRWindow.InnerObject? {
+            (target as? XTRWindow.InnerObject)?.let { return it }
             return (target as? ScriptableObject)?.get("nativeObject") as? XTRWindow.InnerObject
         }
 
+        fun toViewController(target: Any?): XTRViewController.InnerObject? {
+            (target as? XTRViewController.InnerObject)?.let { return it }
+            return (target as? ScriptableObject)?.get("nativeObject") as? XTRViewController.InnerObject
+        }
+
         fun toApplication(target: Any?): XTRApplication.InnerObject? {
+            (target as? XTRApplication.InnerObject)?.let { return it }
             return (target as? ScriptableObject)?.get("nativeObject") as? XTRApplication.InnerObject
         }
 
         fun toApplicationDelegate(target: Any?): XTRApplicationDelegate.InnerObject? {
+            (target as? XTRApplicationDelegate.InnerObject)?.let { return it }
             return (target as? ScriptableObject)?.get("nativeObject") as? XTRApplicationDelegate.InnerObject
         }
 
-        fun fromObject(context: XTRContext, target: Any): ScriptableObject? {
+        fun fromObject(context: XTRContext, target: Any?): ScriptableObject? {
+            if (target == null) {
+                return null
+            }
             ((context.scope.get("window") as? ScriptableObject)?.get("XTRObjCreater") as? ScriptableObject)?.let { creater ->
                 (creater.get("create") as? Function)?.let {
                     return it.call(context.jsContext, context.scope, creater, arrayOf(target)) as? ScriptableObject
