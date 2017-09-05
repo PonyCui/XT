@@ -24,8 +24,7 @@ class AppDelegate extends ApplicationDelegate {
         view.onTap = () => {
             View.animationWithTensionAndFriction(40.0, 3.0, () => {
                 view.frame = RectMake(120, 120, 200, 200)
-                view.borderWidth = 10.0
-                view.cornerRadius = 0.0
+                view.cornerRadius = 5.0
             }, () => {
                 view.backgroundColor = Color.greenColor
             })

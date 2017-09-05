@@ -2,7 +2,6 @@ package com.opensource.xtruntime
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.graphics.ColorUtils
 import android.view.View
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeArray

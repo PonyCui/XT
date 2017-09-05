@@ -84,6 +84,7 @@ class XTRView: XTRComponent() {
             }
             return@map animator
         }
+        animationProps = mapOf()
         XTRView.animatingHandlers = animatingHandlers.toMap()
         animators.forEach { it?.start() }
     }
@@ -123,6 +124,7 @@ class XTRView: XTRComponent() {
             }
             spring.endValue = (aniProp.toValue as Float).toDouble()
         }
+        animationProps = mapOf()
         XTRView.animatingHandlers = animatingHandlers.toMap()
     }
 
@@ -161,6 +163,7 @@ class XTRView: XTRComponent() {
             }
             spring.endValue = (aniProp.toValue as Float).toDouble()
         }
+        animationProps = mapOf()
         XTRView.animatingHandlers = animatingHandlers.toMap()
     }
 
