@@ -307,7 +307,14 @@ export class View {
         XTRView.animationWithDuration(duration, animations, completion);
     }
 
-    static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) { } // iOS NOT Support
+    static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void) {
+        XTRView.animationWithTensionAndFriction(tension, friction, animations, completion)
+    }
+
+    static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
+        XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion)
+    }
+    
     static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only
 
 }

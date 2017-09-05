@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
+import com.facebook.rebound.*
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
@@ -56,6 +57,8 @@ class XTRView: XTRComponent() {
         (animations as? Function)?.let {
             xtrContext.callWithArguments(it, arrayOf())
         }
+        animationEnabled = false
+        var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
         val animators = animationProps.values.map { aniProp ->
             var animator: ValueAnimator? = null
@@ -64,21 +67,104 @@ class XTRView: XTRComponent() {
             }
             animator?.duration = (duration * 1000).toLong()
             animator?.addUpdateListener {
-                aniProp.onValue(it.animatedValue as Float)
+                (it.animatedValue as? Float)?.let {
+                    aniProp.onValue(it)
+                }
             }
+            animator?.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {}
+                override fun onAnimationEnd(p0: Animator?) {
+                    if (!completed) {
+                        completed = true
+                        (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                    }
+                }
+                override fun onAnimationCancel(p0: Animator?) {}
+                override fun onAnimationStart(p0: Animator?) {}
+            })
             animatingHandlers[aniProp.aniKey] = {
                 animator?.cancel()
             }
             return@map animator
         }
         XTRView.animatingHandlers = animatingHandlers.toMap()
-        animationEnabled = false
         animators.forEach { it?.start() }
     }
 
-    fun animationWithBouncinessAndSpeed(bounciness: Any?, speed: Any?, animations: Any?, completion: Any?) {
+    fun animationWithTensionAndFriction(tension: Any?, friction: Any?, animations: Any?, completion: Any?) {
+        val tension = tension as? Double ?: return
+        val friction = friction as? Double ?: return
         animationEnabled = true
+        (animations as? Function)?.let {
+            xtrContext.callWithArguments(it, arrayOf())
+        }
         animationEnabled = false
+        var completed = false
+        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+        val springSystem = SpringSystem.create()
+        animationProps.values.forEach { aniProp ->
+            val spring = springSystem.createSpring()
+            spring.springConfig = SpringConfig.fromOrigamiTensionAndFriction(tension, friction)
+            (aniProp.fromValue as? Float)?.let {
+                spring.currentValue = (aniProp.fromValue as Float).toDouble()
+            }
+            spring.addListener(object : SimpleSpringListener() {
+                override fun onSpringUpdate(spring: Spring?) {
+                    spring?.currentValue?.toFloat()?.let {
+                        aniProp.onValue(it)
+                    }
+                }
+                override fun onSpringAtRest(spring: Spring?) {
+                    if (!completed) {
+                        completed = true
+                        (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                    }
+                }
+            })
+            animatingHandlers[aniProp.aniKey] = {
+                spring.destroy()
+            }
+            spring.endValue = (aniProp.toValue as Float).toDouble()
+        }
+        XTRView.animatingHandlers = animatingHandlers.toMap()
+    }
+
+    fun animationWithBouncinessAndSpeed(bounciness: Any?, speed: Any?, animations: Any?, completion: Any?) {
+        val bounciness = bounciness as? Double ?: return
+        val speed = speed as? Double ?: return
+        animationEnabled = true
+        (animations as? Function)?.let {
+            xtrContext.callWithArguments(it, arrayOf())
+        }
+        animationEnabled = false
+        var completed = false
+        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+        val springSystem = SpringSystem.create()
+        animationProps.values.forEach { aniProp ->
+            val spring = springSystem.createSpring()
+            spring.springConfig = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
+            (aniProp.fromValue as? Float)?.let {
+                spring.currentValue = (aniProp.fromValue as Float).toDouble()
+            }
+            spring.addListener(object : SimpleSpringListener() {
+                override fun onSpringUpdate(spring: Spring?) {
+                    spring?.currentValue?.toFloat()?.let {
+                        aniProp.onValue(it)
+                    }
+                }
+                override fun onSpringAtRest(spring: Spring?) {
+                    if (!completed) {
+                        completed = true
+                        (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                    }
+                }
+            })
+            animatingHandlers[aniProp.aniKey] = {
+                spring.destroy()
+            }
+            spring.endValue = (aniProp.toValue as Float).toDouble()
+        }
+        XTRView.animatingHandlers = animatingHandlers.toMap()
     }
 
     @Suppress("CanBeParameter", "unused")

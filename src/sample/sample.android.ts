@@ -18,8 +18,9 @@ class AppDelegate extends ApplicationDelegate {
 
         view.userInteractionEnabled = true
         view.onTap = () => {
-            View.animationWithDuration(1.0, () => {
+            View.animationWithTensionAndFriction(40.0, 3.0, () => {
                 view.frame = RectMake(120, 120, 200, 200)
+            }, () => {
                 view.backgroundColor = Color.greenColor
             })
         }
