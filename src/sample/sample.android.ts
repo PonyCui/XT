@@ -26,7 +26,7 @@ class FirstViewController extends ViewController {
             this.navigationController && this.navigationController.pushViewController(new SecondViewController(), true)
         }
         this.view.addSubview(view);
-        this.view.backgroundColor = Color.whiteColor
+        this.view.backgroundColor = Color.yellowColor
     }
 
 }
@@ -39,10 +39,26 @@ class SecondViewController extends ViewController {
         view.backgroundColor = Color.whiteColor;
         view.userInteractionEnabled = true;
         view.onTap = () => {
-            this.navigationController && this.navigationController.popViewController(true)
+            this.navigationController && this.navigationController.pushViewController(new ThirdViewController(), true)
         }
         this.view.addSubview(view);
-        this.view.backgroundColor = Color.whiteColor
+        this.view.backgroundColor = Color.greenColor
+    }
+
+}
+
+class ThirdViewController extends ViewController {
+
+    viewDidLoad() {
+        const view = new View();
+        view.frame = RectMake(80, 80, 88, 88)
+        view.backgroundColor = Color.whiteColor;
+        view.userInteractionEnabled = true;
+        view.onTap = () => {
+            this.navigationController && this.navigationController.popToViewController(this.navigationController.childViewControllers[0]);
+        }
+        this.view.addSubview(view);
+        this.view.backgroundColor = Color.blueColor
     }
 
 }

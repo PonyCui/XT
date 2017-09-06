@@ -35,9 +35,14 @@ export class NavigationController extends ViewController {
     popViewController(animated: boolean = true): ViewController | undefined {
         return this.nativeObject.xtr_popViewController(animated)
     }
-    
-    popToViewController(viewController: ViewController, animated: boolean = true): ViewController[] { return [] }
-    popToRootViewController(animated: boolean = true): ViewController[] { return [] }
+
+    popToViewController(viewController: ViewController, animated: boolean = true): ViewController[] {
+        return this.nativeObject.xtr_popToViewController(viewController, animated)
+    }
+
+    popToRootViewController(animated: boolean = true): ViewController[] {
+        return this.nativeObject.xtr_popToRootViewController(animated)
+    }
 
 }
 

@@ -92,11 +92,52 @@ class XTRNavigationController: XTRComponent() {
         }
 
         fun xtr_popToViewController(viewController: Any?, animated: Any?): NativeArray {
-            return NativeArray(arrayOf())
+            if (isAnimating) {
+                return NativeArray(arrayOf())
+            }
+            isAnimating = true
+            val isAnimated = animated as? Boolean ?: true
+            val toViewController = XTRUtils.toViewController(viewController) ?: return NativeArray(arrayOf())
+            val targetViewControllers: MutableList<XTRViewController.InnerObject> = mutableListOf()
+            var found = false
+            childViewControllers?.forEach {
+                if (it == toViewController) {
+                    found = true
+                }
+                else if (found) {
+                    targetViewControllers.add(it)
+                }
+            }
+            if (isAnimated && targetViewControllers.size > 0) {
+                targetViewControllers?.forEach {
+                    if (it == targetViewControllers.lastOrNull()) { return@forEach }
+                    it.xtr_removeFromParentViewController()
+                    it.view?.xtr_removeFromSuperview()
+                }
+                targetViewControllers.lastOrNull()?.let { fromViewController ->
+                    XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, { -> Unit
+                        fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
+                            return@let XTRRect(it.width, it.y, it.width, it.height)
+                        })
+                    }, {
+                        fromViewController.xtr_removeFromParentViewController()
+                        fromViewController.view?.xtr_removeFromSuperview()
+                        isAnimating = false
+                    })
+                }
+            }
+            else {
+                targetViewControllers?.forEach {
+                    it.xtr_removeFromParentViewController()
+                    it.view?.xtr_removeFromSuperview()
+                }
+                isAnimating = false
+            }
+            return NativeArray(targetViewControllers.map { return@map XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
         }
 
         fun xtr_popToRootViewController(animated: Any?): NativeArray {
-            return NativeArray(arrayOf())
+            return this.xtr_popToViewController(childViewControllers.firstOrNull(), animated)
         }
 
         override fun viewWillLayoutSubviews() {
