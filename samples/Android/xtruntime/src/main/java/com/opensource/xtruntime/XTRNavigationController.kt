@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
+import android.view.View
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
 

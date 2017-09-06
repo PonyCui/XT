@@ -17,16 +17,16 @@ class FirstViewController extends ViewController {
     viewDidLoad() {
         const view = new View();
         view.frame = RectMake(80, 80, 40, 40)
-        view.backgroundColor = Color.redColor;
+        view.backgroundColor = Color.whiteColor;
         view.userInteractionEnabled = true;
         view.onTap = () => {
             // View.animationWithBouncinessAndSpeed(1.0, 32.0, () => {
             //     view.frame = RectMake(80, 80, 120, 120)
             // })
-            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+            this.navigationController && this.navigationController.pushViewController(new SecondViewController(), true)
         }
         this.view.addSubview(view);
-        this.view.backgroundColor = Color.yellowColor
+        this.view.backgroundColor = Color.whiteColor
     }
 
 }
@@ -36,13 +36,13 @@ class SecondViewController extends ViewController {
     viewDidLoad() {
         const view = new View();
         view.frame = RectMake(80, 80, 88, 88)
-        view.backgroundColor = Color.greenColor;
+        view.backgroundColor = Color.whiteColor;
         view.userInteractionEnabled = true;
         view.onTap = () => {
-            this.navigationController && this.navigationController.popViewController()
+            this.navigationController && this.navigationController.popViewController(true)
         }
         this.view.addSubview(view);
-        this.view.backgroundColor = Color.blueColor
+        this.view.backgroundColor = Color.whiteColor
     }
 
 }

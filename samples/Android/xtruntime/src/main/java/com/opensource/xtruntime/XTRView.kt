@@ -34,6 +34,8 @@ class XTRView: XTRComponent() {
 
     companion object {
 
+        val sharedLayoutTimer = Timer()
+        var sharedHandler: android.os.Handler? = null
         var animationEnabled = false
         var animationProps: Map<String, AnimationProp<Any>> = mapOf()
         var animatingHandlers: Map<String, () -> Unit> = mapOf()
@@ -73,6 +75,8 @@ class XTRView: XTRComponent() {
             animator?.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(p0: Animator?) {}
                 override fun onAnimationEnd(p0: Animator?) {
+                    animator?.removeAllListeners()
+                    animator?.removeAllUpdateListeners()
                     if (!completed) {
                         completed = true
                         (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
@@ -82,6 +86,8 @@ class XTRView: XTRComponent() {
                 override fun onAnimationStart(p0: Animator?) {}
             })
             animatingHandlers[aniProp.aniKey] = {
+                animator?.removeAllListeners()
+                animator?.removeAllUpdateListeners()
                 animator?.cancel()
             }
             return@map animator
@@ -115,6 +121,8 @@ class XTRView: XTRComponent() {
                     }
                 }
                 override fun onSpringAtRest(spring: Spring?) {
+                    spring?.removeAllListeners()
+                    spring?.destroy()
                     if (!completed) {
                         completed = true
                         (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
@@ -122,6 +130,7 @@ class XTRView: XTRComponent() {
                 }
             })
             animatingHandlers[aniProp.aniKey] = {
+                spring.removeAllListeners()
                 spring.destroy()
             }
             spring.endValue = (aniProp.toValue as Float).toDouble()
@@ -157,6 +166,8 @@ class XTRView: XTRComponent() {
                     }
                 }
                 override fun onSpringAtRest(spring: Spring?) {
+                    spring?.removeAllListeners()
+                    spring?.destroy()
                     if (!completed) {
                         completed = true
                         (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
@@ -165,8 +176,10 @@ class XTRView: XTRComponent() {
                         }
                     }
                 }
+
             })
             animatingHandlers[aniProp.aniKey] = {
+                spring.removeAllListeners()
                 spring.destroy()
             }
             spring.endValue = (aniProp.toValue as Float).toDouble()
@@ -182,6 +195,9 @@ class XTRView: XTRComponent() {
         override val objectUUID: String = UUID.randomUUID().toString()
 
         init {
+            if (sharedHandler == null){
+                sharedHandler = android.os.Handler(context.mainLooper)
+            }
             clipChildren = false
         }
 
@@ -235,9 +251,9 @@ class XTRView: XTRComponent() {
 
         override fun requestLayout() {
             if (isLayoutRequested) {
-                Timer().schedule(timerTask {
-                    android.os.Handler(context.mainLooper).post {
-                        requestLayout()
+                sharedLayoutTimer.schedule(timerTask {
+                    sharedHandler?.post {
+                        super.requestLayout()
                     }
                 }, 0)
                 return
@@ -358,6 +374,7 @@ class XTRView: XTRComponent() {
         }
 
         override fun isOpaque(): Boolean {
+            super.isOpaque()
             return opaque
         }
 
