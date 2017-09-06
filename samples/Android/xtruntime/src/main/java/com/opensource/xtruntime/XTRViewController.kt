@@ -55,23 +55,47 @@ open class XTRViewController: XTRComponent() {
         fun xtr_addChildViewController(childController: Any?) {
             XTRUtils.toViewController(childController)?.let { childController ->
                 if (childController.parentViewController == null) {
+                    childController.willMoveToParentViewController(this)
                     childViewControllers.toMutableList()?.let {
                         it.add(childController)
                         childController.parentViewController = this
                         childViewControllers = it.toList()
                     }
+                    childController.didMoveToParentViewController(this)
                 }
             }
         }
 
         fun xtr_removeFromParentViewController() {
             parentViewController?.let { parentViewController ->
+                willMoveToParentViewController(null)
                 parentViewController.childViewControllers.toMutableList()?.let {
                     it.remove(this)
                     parentViewController.childViewControllers = it.toList()
                 }
+                didMoveToParentViewController(null)
             }
             parentViewController = null
+        }
+
+        fun willMoveToParentViewController(parent: XTRViewController.InnerObject?) {
+            parent?.let {
+                XTRUtils.fromObject(xtrContext, it)?.let {
+                    xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", arrayOf(it))
+                    return
+                }
+            }
+            xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", arrayOf())
+        }
+
+        fun didMoveToParentViewController(parent: XTRViewController.InnerObject?) {
+            parent?.let {
+                XTRUtils.fromObject(xtrContext, it)?.let {
+                    xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", arrayOf(it))
+                    return
+                }
+            }
+            xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", arrayOf())
         }
 
     }
