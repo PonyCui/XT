@@ -48,8 +48,8 @@ export class ViewController {
     viewDidAppear(): void { this.childViewControllers.map(v => v.viewDidAppear()) }
     viewWillDisappear(): void { this.childViewControllers.map(v => v.viewWillDisappear()) }
     viewDidDisappear(): void { this.childViewControllers.map(v => v.viewDidDisappear()) }
-    viewWillLayoutSubviews(): void { this.childViewControllers.map(v => v.viewWillLayoutSubviews()) }
-    viewDidLayoutSubviews(): void { this.childViewControllers.map(v => v.viewDidLayoutSubviews()) }
+    viewWillLayoutSubviews(): void { }
+    viewDidLayoutSubviews(): void { }
 
     public get parentViewController(): ViewController | undefined {
         return this.nativeObject.xtr_parentViewController();

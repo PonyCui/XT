@@ -6,7 +6,7 @@ class AppDelegate extends ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
         this.window = new Window();
-        this.window.rootViewController = new FirstViewController();
+        this.window.rootViewController = new NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
     }
 
@@ -20,14 +20,13 @@ class FirstViewController extends ViewController {
         view.backgroundColor = Color.redColor;
         view.userInteractionEnabled = true;
         view.onTap = () => {
-            view.backgroundColor = Color.greenColor
+            // View.animationWithBouncinessAndSpeed(1.0, 32.0, () => {
+            //     view.frame = RectMake(80, 80, 120, 120)
+            // })
+            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
         }
         this.view.addSubview(view);
         this.view.backgroundColor = Color.yellowColor
-        const sv = new SecondViewController()
-        this.addChildViewController(sv);
-        this.view.addSubview(sv.view);
-        sv.view.frame = RectMake(120, 120, 300, 300)
     }
 
 }
@@ -40,7 +39,7 @@ class SecondViewController extends ViewController {
         view.backgroundColor = Color.greenColor;
         view.userInteractionEnabled = true;
         view.onTap = () => {
-            view.backgroundColor = Color.blackColor
+            this.navigationController && this.navigationController.popViewController()
         }
         this.view.addSubview(view);
         this.view.backgroundColor = Color.blueColor

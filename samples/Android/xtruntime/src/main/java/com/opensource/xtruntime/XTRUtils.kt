@@ -16,6 +16,7 @@ class XTRUtils {
     companion object {
 
         fun toColor(target: Any?): XTRColor? {
+            (target as? XTRColor)?.let { return it }
             (target as? ScriptableObject)?.let {
                 val r = it.get("r") as? Double ?: return null
                 val g = it.get("g") as? Double ?: return null
@@ -26,11 +27,13 @@ class XTRUtils {
             return null
         }
 
-        fun fromIntColor(value: Int): XTRColor {
-            return XTRColor(Color.red(value).toDouble() / 255.0, Color.green(value).toDouble() / 255.0, Color.blue(value).toDouble() / 255.0, Color.alpha(value).toDouble() / 255.0)
+        fun fromIntColor(target: Int): XTRColor {
+            (target as? XTRColor)?.let { return it }
+            return XTRColor(Color.red(target).toDouble() / 255.0, Color.green(target).toDouble() / 255.0, Color.blue(target).toDouble() / 255.0, Color.alpha(target).toDouble() / 255.0)
         }
 
         fun toRect(target: Any?): XTRRect? {
+            (target as? XTRRect)?.let { return it }
             (target as? ScriptableObject)?.let {
                 val x = it.get("x") as? Double ?: return null
                 val y = it.get("y") as? Double ?: return null

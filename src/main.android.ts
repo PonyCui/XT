@@ -72,4 +72,5 @@ import { ViewController as MViewController } from './implementation/android/View
 export class ViewController extends MViewController {}
 
 import { NavigationController as INavigationController } from './interface/NavigationController'
-export class NavigationController extends INavigationController {}
+import { NavigationController as MNavigationController } from './implementation/android/NavigationController'
+export class NavigationController extends MNavigationController {}

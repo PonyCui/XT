@@ -13,6 +13,8 @@ import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
+import java.util.logging.Handler
+import kotlin.concurrent.timerTask
 
 /**
  * Created by cuiminghui on 2017/9/1.
@@ -135,6 +137,9 @@ class XTRView: XTRComponent() {
         (animations as? Function)?.let {
             xtrContext.callWithArguments(it, arrayOf())
         }
+        (animations as? () -> Unit)?.let {
+            it.invoke()
+        }
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -155,6 +160,9 @@ class XTRView: XTRComponent() {
                     if (!completed) {
                         completed = true
                         (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                        (completion as? () -> Unit)?.let {
+                            it.invoke()
+                        }
                     }
                 }
             })
@@ -170,6 +178,7 @@ class XTRView: XTRComponent() {
     @Suppress("CanBeParameter", "unused")
     open class InnerObject(val scriptObject: ScriptableObject, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
 
+        internal var viewDelegate: XTRViewController.InnerObject? = null
         override val objectUUID: String = UUID.randomUUID().toString()
 
         init {
@@ -223,6 +232,18 @@ class XTRView: XTRComponent() {
                 resetPath()
                 requestLayout()
             }
+
+        override fun requestLayout() {
+            if (isLayoutRequested) {
+                Timer().schedule(timerTask {
+                    android.os.Handler(context.mainLooper).post {
+                        requestLayout()
+                    }
+                }, 0)
+                return
+            }
+            super.requestLayout()
+        }
 
         fun xtr_frame(): XTRRect {
             return this.frame ?: XTRRect(0.0, 0.0, (width / resources.displayMetrics.density).toDouble(), (height / resources.displayMetrics.density).toDouble())
@@ -656,7 +677,9 @@ class XTRView: XTRComponent() {
         }
 
         open fun layoutSubviews() {
+            viewDelegate?.viewWillLayoutSubviews()
             xtrContext.invokeMethod(scriptObject, "layoutSubviews", arrayOf())
+            viewDelegate?.viewDidLayoutSubviews()
         }
 
         // Mark: View Interactive
