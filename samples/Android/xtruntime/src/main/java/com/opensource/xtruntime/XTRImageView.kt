@@ -1,9 +1,6 @@
 package com.opensource.xtruntime
 
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import org.mozilla.javascript.ScriptableObject
 
 /**
@@ -55,6 +52,9 @@ class XTRImageView: XTRComponent() {
                 canvas?.let { canvas ->
                     sharedImagePaint.reset()
                     sharedImagePaint.alpha = (alpha * 255).toInt()
+                    if (image.renderingMode == 2) {
+                        sharedImagePaint.colorFilter = PorterDuffColorFilter(xtr_tintColor().intColor(), PorterDuff.Mode.SRC_IN)
+                    }
                     when (contentMode) {
                         0 -> {
                             canvas.drawBitmap(

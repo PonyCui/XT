@@ -51,7 +51,8 @@ class XTRImage: XTRComponent() {
                                 InnerObject(
                                         bitmap,
                                         1,
-                                        XTRSize(bitmap.width.toDouble(), bitmap.height.toDouble())
+                                        XTRSize(bitmap.width.toDouble(), bitmap.height.toDouble()),
+                                        1
                                 )
                         ))
                     }
@@ -89,7 +90,8 @@ class XTRImage: XTRComponent() {
                             InnerObject(
                                     bitmap,
                                     targetScale.toInt(),
-                                    XTRSize(bitmap.width / targetScale, bitmap.height / targetScale)
+                                    XTRSize(bitmap.width / targetScale, bitmap.height / targetScale),
+                                    1
                             )
                     ))
                 }
@@ -103,6 +105,18 @@ class XTRImage: XTRComponent() {
         }
     }
 
-    class InnerObject(val bitmap: Bitmap, val scale: Int, val size: XTRSize)
+    fun xtr_imageWithImageRenderingMode(image: Any?, renderingMode: Any?): XTRImage.InnerObject? {
+        val image = image as? XTRImage.InnerObject ?: return null
+        val renderingMode = renderingMode as? Double ?: return null
+        return XTRImage.InnerObject(image.bitmap, image.scale, image.size, renderingMode.toInt())
+    }
+
+    class InnerObject(val bitmap: Bitmap, val scale: Int, val size: XTRSize, val renderingMode: Int) {
+
+        fun imageWithImageRenderingMode(renderingMode: Any?): InnerObject {
+            return XTRImage.InnerObject(this.bitmap, this.scale, this.size, (renderingMode as? Double ?: 1.0).toInt())
+        }
+
+    }
 
 }

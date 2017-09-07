@@ -378,6 +378,31 @@ class XTRView: XTRComponent() {
             return opaque
         }
 
+        private var tintColor: XTRColor? = null
+            set(value) {
+                field = value
+                tintColorDidChange()
+            }
+
+        fun xtr_tintColor(): XTRColor {
+            return this.tintColor ?: (parent as? XTRView.InnerObject)?.xtr_tintColor() ?: XTRColor(0.0, 122.0 / 255.0, 1.0, 1.0)
+        }
+
+        fun xtr_setTintColor(value: Any?) {
+            XTRUtils.toColor(value)?.let {
+                this.tintColor = it
+            }
+        }
+
+        fun tintColorDidChange() {
+            xtrContext.invokeMethod(scriptObject, "tintColorDidChange", arrayOf())
+            (0 until childCount).forEach {
+                (getChildAt(it) as? XTRView.InnerObject)?.let {
+                    it.tintColorDidChange()
+                }
+            }
+        }
+
         // Mark: View Layer-Back Rendering
 
         private var cornerRadius: Double = 0.0

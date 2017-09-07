@@ -28,7 +28,7 @@ export class Image {
     }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        throw "TODO"
+        return XTRImage.xtr_imageWithImageRenderingMode(this, renderingMode);
     }
 
 }

@@ -119,8 +119,16 @@ export class View {
 
     contentMode?: any; // todo
     maskView?: View // todo
-    tintColor: Color // todo
-    tintColorDidChange() { } // todo
+
+    public get tintColor(): Color {
+        return this.nativeObject.xtr_tintColor();
+    }
+
+    public set tintColor(value: Color) {
+        this.nativeObject.xtr_setTintColor(value);
+    }
+
+    tintColorDidChange() { }
 
     // Mark: View Layer-Back Rendering
 

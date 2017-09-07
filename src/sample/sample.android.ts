@@ -29,15 +29,13 @@ class FirstViewController extends ViewController {
             })
         }
 
-        Image.fromURL("http://img.hb.aicdn.com/47a9c27bc5c45c7de196cdc0e1a13f2b9212bf611bb94-da2LzC_sq140sf", (image) => {
-            view.image = image
-        })
-
-        // Image.fromAssetsWithScales('success', [2], (image) => {
-        //     setTimeout(() => {
-        //         view.image = image
-        //     }, 2000)
+        // Image.fromURL("http://img.hb.aicdn.com/47a9c27bc5c45c7de196cdc0e1a13f2b9212bf611bb94-da2LzC_sq140sf", (image) => {
+        //     view.image = image.imageWithImageRenderingMode(ImageRenderingMode.Template)
         // })
+
+        Image.fromAssetsWithScales('success', [2], (image) => {
+            view.image = image.imageWithImageRenderingMode(ImageRenderingMode.Template)
+        })
         // Image.fromAssetsWithScales('location', [2], (image) => {
         //     setTimeout(() => {
         //         view.image = image
