@@ -15,7 +15,9 @@ export class Image {
 
     static assetsPath = "./assets/"
 
-    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) { }
+    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
+        XTRImage.xtr_fromURL(url, success, failure)
+    }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         this.fromAssetsWithScales(named, [], success, failure)
@@ -64,13 +66,13 @@ export class ImageView extends View {
         this.recursiveSetNeedLayout()
     }
 
-    public get contentMode(): ContentMode  {
-		return this.nativeObject.xtr_contentMode();
-	}
+    public get contentMode(): ContentMode {
+        return this.nativeObject.xtr_contentMode();
+    }
 
-	public set contentMode(value: ContentMode ) {
-		this.nativeObject.xtr_setContentMode(value);
-	}
+    public set contentMode(value: ContentMode) {
+        this.nativeObject.xtr_setContentMode(value);
+    }
 
 }
 

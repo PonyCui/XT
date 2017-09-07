@@ -54,6 +54,7 @@ class XTRImageView: XTRComponent() {
             image?.let { image ->
                 canvas?.let { canvas ->
                     sharedImagePaint.reset()
+                    sharedImagePaint.alpha = (alpha * 255).toInt()
                     when (contentMode) {
                         0 -> {
                             canvas.drawBitmap(

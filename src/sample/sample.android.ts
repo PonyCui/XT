@@ -17,18 +17,32 @@ class FirstViewController extends ViewController {
     viewDidLoad() {
         const view = new ImageView();
         // view.frame = RectMake(0, 0, 0, 0)
-        view.backgroundColor = Color.yellowColor
+        // view.backgroundColor = Color.yellowColor
+        view.userInteractionEnabled = true
+        view.alpha = 1.0
+        view.cornerRadius = 20.0
+        view.clipsToBounds = true
         // view.contentMode = ContentMode.ScaleAspectFill
-        Image.fromAssetsWithScales('success', [2], (image) => {
-            setTimeout(() => {
-                view.image = image
-            }, 2000)
+        view.onTap = () => {
+            View.animationWithDuration(0.3, () => {
+                view.alpha = 0.0
+            })
+        }
+
+        Image.fromURL("http://img.hb.aicdn.com/47a9c27bc5c45c7de196cdc0e1a13f2b9212bf611bb94-da2LzC_sq140sf", (image) => {
+            view.image = image
         })
-        Image.fromAssetsWithScales('location', [2], (image) => {
-            setTimeout(() => {
-                view.image = image
-            }, 5000)
-        })
+
+        // Image.fromAssetsWithScales('success', [2], (image) => {
+        //     setTimeout(() => {
+        //         view.image = image
+        //     }, 2000)
+        // })
+        // Image.fromAssetsWithScales('location', [2], (image) => {
+        //     setTimeout(() => {
+        //         view.image = image
+        //     }, 5000)
+        // })
         // view.backgroundColor = Color.yellowColor
         this.view.addSubview(view);
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]", { view }))
