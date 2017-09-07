@@ -44,6 +44,10 @@
     }
 }
 
+- (CGSize)intrinsicContentSize {
+    return self.innerView.intrinsicContentSize;
+}
+
 - (void)setContentMode:(UIViewContentMode)contentMode {
     [super setContentMode:contentMode];
     self.innerView.contentMode = contentMode;

@@ -37,6 +37,15 @@
     return view;
 }
 
+- (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
+    if ([[self nextResponder] isKindOfClass:[UIViewController class]]) {
+        [super setTranslatesAutoresizingMaskIntoConstraints:YES];
+    }
+    else {
+        [super setTranslatesAutoresizingMaskIntoConstraints:translatesAutoresizingMaskIntoConstraints];
+    }
+}
+
 - (NSDictionary *)xtr_frame {
     return [JSValue fromRect:self.frame];
 }
@@ -371,6 +380,12 @@
 - (void)xtr_addConstraint:(JSValue *)value {
     XTRLayoutConstraint *constraint = [value toLayoutConstraint];
     if (constraint) {
+        if ([constraint.innerObject.firstItem isKindOfClass:[UIView class]]) {
+            [constraint.innerObject.firstItem setTranslatesAutoresizingMaskIntoConstraints:NO];
+        }
+        if ([constraint.innerObject.secondItem isKindOfClass:[UIView class]]) {
+            [constraint.innerObject.secondItem setTranslatesAutoresizingMaskIntoConstraints:NO];
+        }
         [self addConstraint:constraint.innerObject];
     }
 }

@@ -476,10 +476,12 @@ class XTRView: XTRComponent() {
                 canvas?.save()
                 canvas?.clipPath(sharedPath)
                 super.draw(canvas)
+                drawContent(canvas)
                 canvas?.restore()
             }
             else {
                 super.draw(canvas)
+                drawContent(canvas)
             }
             if (borderWidth > 0 && borderColor != null) {
                 sharedPaint.reset()
@@ -489,6 +491,10 @@ class XTRView: XTRComponent() {
                 sharedPaint.color = borderColor?.intColor() ?: Color.TRANSPARENT
                 canvas?.drawPath(sharedPath, sharedPaint)
             }
+        }
+
+        protected open fun drawContent(canvas: Canvas?) {
+
         }
 
         // Mark: View Hierarchy
@@ -697,6 +703,12 @@ class XTRView: XTRComponent() {
             viewDelegate?.viewWillLayoutSubviews()
             xtrContext.invokeMethod(scriptObject, "layoutSubviews", arrayOf())
             viewDelegate?.viewDidLayoutSubviews()
+        }
+
+        // Mark: View LayoutConstraint
+
+        open fun xtr_intrinsicContentSize(width: Any?): XTRSize? {
+            return null
         }
 
         // Mark: View Interactive

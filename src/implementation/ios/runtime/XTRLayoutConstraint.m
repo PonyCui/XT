@@ -37,10 +37,10 @@
                      multiplier:(JSValue *)multiplier
                    scriptObject:(JSValue *)scriptObject {
     XTRLayoutConstraint *nativeObject = [XTRLayoutConstraint new];
-    nativeObject.innerObject = [NSLayoutConstraint constraintWithItem:[firstItem toView]
+    nativeObject.innerObject = [NSLayoutConstraint constraintWithItem:[firstItem toView] ?: [[secondItem toView] superview]
                                                             attribute:[firstAttr toLayoutAttribute]
                                                             relatedBy:[relation toLayoutRelation]
-                                                               toItem:[secondItem toView]
+                                                               toItem:[secondItem toView] ?: [[firstItem toView] superview]
                                                             attribute:[secondAttr toLayoutAttribute]
                                                            multiplier:[multiplier toDouble]
                                                              constant:[constant toDouble]];

@@ -37,6 +37,10 @@
     return view;
 }
 
+- (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
+    [super setTranslatesAutoresizingMaskIntoConstraints:YES];
+}
+
 - (void)xtr_makeKeyAndVisible {
     self.frame = [UIScreen mainScreen].bounds;
     [self makeKeyAndVisible];

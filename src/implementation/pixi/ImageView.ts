@@ -6,8 +6,8 @@ import { ImageRenderingMode, ContentMode } from "../../interface/ImageView";
 import * as PIXI from 'pixi.js'
 
 const imageLoader = new PIXI.loaders.Loader();
-let runningQueue: { url: string, success: (image: Image) => void, failure: (error: Error) => void }[] = [];
-let imageQueue: { url: string, success: (image: Image) => void, failure: (error: Error) => void }[] = [];
+let runningQueue: { url: string, success: (image: Image) => void, failure?: (error: Error) => void }[] = [];
+let imageQueue: { url: string, success: (image: Image) => void, failure?: (error: Error) => void }[] = [];
 let imageLoaderTimerHandler: number = 0;
 
 export class Image {
@@ -19,19 +19,19 @@ export class Image {
 
     static assetsPath = "./assets/"
 
-    static fromURL(url: string, success: (image: Image) => void, failure: (error: Error) => void) {
+    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         imageQueue.push({ url, success, failure });
         this.loadImage();
     }
 
-    static fromAssets(named: string, success: (image: Image) => void, failure: (error: Error) => void) {
+    static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         if (named.indexOf(".") < 0) {
             named = named + ".png"
         }
         this.fromURL(this.assetsPath + named, success, failure);
     }
 
-    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure: (error: Error) => void) {
+    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
         let target = 1;
         if (scales instanceof Array) {
             for (let index = 0; index < scales.length; index++) {

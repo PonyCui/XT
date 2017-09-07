@@ -8,19 +8,19 @@ export class Image {
 
     static assetsPath = "./assets/"
 
-    static fromURL(url: string, success: (image: Image) => void, failure: (error: Error) => void) {
+    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         XTRImage.xtr_fromURLSuccessFailure(url, success, (message: string) => {
-            failure(new Error(message));
+            failure && failure(new Error(message));
         });
     }
 
-    static fromAssets(named: string, success: (image: Image) => void, failure: (error: Error) => void) {
+    static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         XTRImage.xtr_fromAssetsSuccessFailure(named, success, (message: string) => {
-            failure(new Error(message));
+            failure && failure(new Error(message));
         });
     }
 
-    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure: (error: Error) => void) {
+    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
         this.fromAssets(named, success, failure);
     }
 

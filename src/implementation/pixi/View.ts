@@ -585,7 +585,7 @@ export class View extends IView {
             });
             for (const layoutID in view.subViews) {
                 const value = view.subViews[layoutID];
-                if ((value.width == 0 || value.height == 0) && viewMapping[layoutID] !== undefined) {
+                if (viewMapping[layoutID] !== undefined) {
                     const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
                     if (intrinsticSize !== undefined) {
                         value.intrinsicWidth = intrinsticSize.width;

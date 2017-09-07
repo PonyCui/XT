@@ -133,22 +133,22 @@ export class View {
     }
 
 
-	public get borderWidth(): number {
-		return this.nativeObject.xtr_borderWidth();
-	}
-
-	public set borderWidth(value: number) {
-		this.nativeObject.xtr_setBorderWidth(value);
-	}
-
-	public get borderColor(): Color {
-		return this.nativeObject.xtr_borderColor();
-	}
-
-	public set borderColor(value: Color) {
-		this.nativeObject.xtr_setBorderColor(value);
+    public get borderWidth(): number {
+        return this.nativeObject.xtr_borderWidth();
     }
-    
+
+    public set borderWidth(value: number) {
+        this.nativeObject.xtr_setBorderWidth(value);
+    }
+
+    public get borderColor(): Color {
+        return this.nativeObject.xtr_borderColor();
+    }
+
+    public set borderColor(value: Color) {
+        this.nativeObject.xtr_setBorderColor(value);
+    }
+
     shadowColor?: Color; // todo
     shadowOpacity: number; // todo
     shadowOffset?: Size; // todo
@@ -219,6 +219,15 @@ export class View {
     viewWithTag(tag: number): View | undefined { return this.nativeObject.xtr_viewWithTag(tag) }
 
     setNeedsLayout() { this.nativeObject.xtr_setNeedsLayout() }
+
+    protected recursiveSetNeedLayout() {
+        let current: View | undefined = this
+        while (current) {
+            current.setNeedsLayout()
+            current = current.superview
+        }
+    }
+
     layoutIfNeeded() { this.nativeObject.xtr_layoutIfNeeded() }
     layoutSubviews() {
         if (this._constraints.length > 0) {
@@ -234,7 +243,7 @@ export class View {
             });
             for (const layoutID in view.subViews) {
                 const value = view.subViews[layoutID];
-                if ((value.width == 0 || value.height == 0) && viewMapping[layoutID] !== undefined) {
+                if (viewMapping[layoutID] !== undefined) {
                     const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
                     if (intrinsticSize !== undefined) {
                         value.intrinsicWidth = intrinsticSize.width;
@@ -266,7 +275,7 @@ export class View {
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {
-        return undefined;
+        return this.nativeObject.xtr_intrinsicContentSize(width || Infinity);
     }
 
     public addConstraint(constraint: LayoutConstraint) {
@@ -330,7 +339,7 @@ export class View {
     static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
         XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion)
     }
-    
+
     static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only
 
 }

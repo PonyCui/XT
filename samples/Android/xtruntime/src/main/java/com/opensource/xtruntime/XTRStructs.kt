@@ -33,3 +33,11 @@ class XTRPoint(val x: Double, val y: Double) {
     }
 
 }
+
+class XTRSize(val width: Double, val height: Double) {
+
+    override fun toString(): String {
+        return "XTRPoint, width: $width, height: $height"
+    }
+
+}

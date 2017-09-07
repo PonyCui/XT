@@ -15,11 +15,11 @@ export class Image {
 
     static assetsPath = "./assets/"
 
-    static fromURL(url: string, success: (image: Image) => void, failure: (error: Error) => void) { }
+    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) { }
 
-    static fromAssets(named: string, success: (image: Image) => void, failure: (error: Error) => void) { }
+    static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) { }
 
-    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure: (error: Error) => void) { }
+    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) { }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         throw "TODO"

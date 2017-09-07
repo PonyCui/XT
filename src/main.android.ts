@@ -14,10 +14,11 @@ import { Font as IFont } from './interface/Font';
 export class Font extends IFont {}
 
 import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from "./interface/ImageView";
+import { Image as MImage, ImageView as MImageView } from "./implementation/android/ImageView";
 export const ImageRenderingMode = IImageRenderingMode
-export class Image extends IImage {}
+export class Image extends MImage {}
 export const ContentMode = IContentMode
-export class ImageView extends IImageView {}
+export class ImageView extends MImageView {}
 
 import { TextAlignment as ITextAlignment, TextVerticalAlignment as ITextVerticalAlignment, LineBreakMode as ILineBreakMode, Label as ILabel } from './interface/Label'
 export const TextAlignment = ITextAlignment
