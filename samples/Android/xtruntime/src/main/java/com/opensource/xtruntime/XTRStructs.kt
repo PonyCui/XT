@@ -41,3 +41,5 @@ class XTRSize(val width: Double, val height: Double) {
     }
 
 }
+
+class XTRFont(val pointSize: Double, val familyName: String?, val fontWeight: String = "400", val fontStyle: String = "normal")

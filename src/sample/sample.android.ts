@@ -15,38 +15,25 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new ImageView();
-        // view.frame = RectMake(0, 0, 0, 0)
-        // view.backgroundColor = Color.yellowColor
-        view.userInteractionEnabled = true
-        view.alpha = 1.0
-        view.cornerRadius = 20.0
-        view.clipsToBounds = true
-        // view.contentMode = ContentMode.ScaleAspectFill
-        view.onTap = () => {
-            View.animationWithDuration(0.3, () => {
-                view.alpha = 0.0
-            })
-        }
-
-        // Image.fromURL("http://img.hb.aicdn.com/47a9c27bc5c45c7de196cdc0e1a13f2b9212bf611bb94-da2LzC_sq140sf", (image) => {
-        //     view.image = image.imageWithImageRenderingMode(ImageRenderingMode.Template)
-        // })
-
-        Image.fromAssetsWithScales('success', [2], (image) => {
-            view.image = image.imageWithImageRenderingMode(ImageRenderingMode.Template)
-        })
-        // Image.fromAssetsWithScales('location', [2], (image) => {
-        //     setTimeout(() => {
-        //         view.image = image
-        //     }, 5000)
-        // })
-        // view.backgroundColor = Color.yellowColor
+        const view = new Label();
+        view.frame = RectMake(20, 20, 200, 200)
+        view.font = Font.boldSystemFontOfSize(18)
+        view.backgroundColor = Color.yellowColor
+        view.textAlignment = TextAlignment.Left
+        view.text = "据“印度报业托拉斯”报道，印度军队高级官员称，巴基斯坦军队于当天11:45向印度安全部队开火，同时使用了小型武器以及自动化武器，随后，两方军队爆发激烈冲突。最后，枪战于11:55时结束，共持续了10分钟。该军官称，有两名印度人员在交火中受伤，并被送入最近的医院，目前伤势已稳定。"
+        view.numberOfLines = 2
+        setTimeout(() => {
+            view.numberOfLines = 0
+        }, 3000)
+        // view.lineSpace = 8
+        view.textColor = Color.blueColor
+        view.lineBreakMode = LineBreakMode.TruncatingTail
+        // console.log(view.textRectForBounds(RectMake(0, 0, 30, 400)))
         this.view.addSubview(view);
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]", { view }))
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]", { view }))
-        this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterX, LayoutRelation.Equal, undefined, LayoutAttribute.CenterX, 0.0, 1.0))
-        this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterY, LayoutRelation.Equal, undefined, LayoutAttribute.CenterY, 0.0, 1.0))
+        // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterX, LayoutRelation.Equal, undefined, LayoutAttribute.CenterX, 0.0, 1.0))
+        // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterY, LayoutRelation.Equal, undefined, LayoutAttribute.CenterY, 0.0, 1.0))
     }
 
 }

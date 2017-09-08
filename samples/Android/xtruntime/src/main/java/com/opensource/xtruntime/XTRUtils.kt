@@ -1,11 +1,8 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
-import android.os.Bundle
 import android.view.View
 import org.mozilla.javascript.Function
-import org.mozilla.javascript.NativeArray
-import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.ScriptableObject
 
 /**
@@ -40,6 +37,19 @@ class XTRUtils {
                 val width = it.get("width") as? Double ?: return null
                 val height = it.get("height") as? Double ?: return null
                 return XTRRect(x, y, width, height)
+            }
+            return null
+        }
+
+        fun toFont(target: Any?): XTRFont? {
+            (target as? XTRFont)?.let { return it }
+            (target as? ScriptableObject)?.let {
+                return XTRFont(
+                        it.get("pointSize") as? Double ?: 14.0,
+                        it.get("familyName") as? String,
+                        it.get("fontWeight") as? String ?: "400",
+                        it.get("fontStyle") as? String ?: "normal"
+                )
             }
             return null
         }
