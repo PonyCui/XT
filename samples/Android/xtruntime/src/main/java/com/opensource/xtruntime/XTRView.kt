@@ -58,6 +58,9 @@ class XTRView: XTRComponent() {
         (animations as? Function)?.let {
             xtrContext.callWithArguments(it, arrayOf())
         }
+        (animations as? () -> Unit)?.let {
+            it.invoke()
+        }
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -80,6 +83,9 @@ class XTRView: XTRComponent() {
                     if (!completed) {
                         completed = true
                         (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                        (completion as? () -> Unit)?.let {
+                            it.invoke()
+                        }
                     }
                 }
                 override fun onAnimationCancel(p0: Animator?) {}
@@ -104,6 +110,9 @@ class XTRView: XTRComponent() {
         (animations as? Function)?.let {
             xtrContext.callWithArguments(it, arrayOf())
         }
+        (animations as? () -> Unit)?.let {
+            it.invoke()
+        }
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -126,6 +135,9 @@ class XTRView: XTRComponent() {
                     if (!completed) {
                         completed = true
                         (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
+                        (completion as? () -> Unit)?.let {
+                            it.invoke()
+                        }
                     }
                 }
             })
@@ -394,7 +406,7 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun tintColorDidChange() {
+        open fun tintColorDidChange() {
             xtrContext.invokeMethod(scriptObject, "tintColorDidChange", arrayOf())
             (0 until childCount).forEach {
                 (getChildAt(it) as? XTRView.InnerObject)?.let {

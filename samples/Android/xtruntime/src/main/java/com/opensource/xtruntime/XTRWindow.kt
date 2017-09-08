@@ -30,7 +30,7 @@ class XTRWindow: XTRComponent() {
             xtr_setUserInteractionEnabled(true)
         }
 
-        private var rootViewController: XTRViewController.InnerObject? = null
+        internal var rootViewController: XTRViewController.InnerObject? = null
             set(value) {
                 field?.let {
                     it.view?.xtr_removeFromSuperview()

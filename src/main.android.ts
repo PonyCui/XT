@@ -5,7 +5,8 @@ export class ApplicationDelegate extends MApplicationDelegate {}
 export class Application extends MApplication {}
 
 import { Button as IButton } from './interface/Button'
-export class Button extends IButton {}
+import { Button as MButton } from './implementation/android/Button'
+export class Button extends MButton {}
 
 import { Color as IColor } from './interface/Color'
 export class Color extends IColor {}

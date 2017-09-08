@@ -27,4 +27,14 @@ open class XTRActivity: Activity() {
         }
     }
 
+    override fun onBackPressed() {
+        (bridge?.xtrApplication?.delegate?.window?.rootViewController as? XTRNavigationController.InnerObject)?.let {
+            if (it.childViewControllers.size > 1) {
+                it.xtr_popViewController(true)
+                return
+            }
+        }
+        super.onBackPressed()
+    }
+
 }

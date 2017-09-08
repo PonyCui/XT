@@ -30,7 +30,6 @@ class XTRLabel: XTRComponent() {
 
     class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
-        override val objectUUID: String = UUID.randomUUID().toString()
         val textView: TextView = TextView(xtrContext.appContext)
         val listener: OnLayoutChangeListener = OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> resetTextViewPosition() }
 
@@ -67,7 +66,7 @@ class XTRLabel: XTRComponent() {
         private fun resetTextViewPosition() {
             var tWidth = textView.width
             var tHeight = textView.height
-            if (textView.height > this.height) {
+            if (numberOfLines != 1 && textView.height > this.height) {
                 textView.y = 0.0f
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     var found = false
@@ -93,6 +92,9 @@ class XTRLabel: XTRComponent() {
                     }
                 }
             }
+            else {
+                textView.visibility = View.VISIBLE
+            }
             when(xtrTextAlignment) {
                 0 -> textView.x = 0.0f
                 1 -> textView.x = ((this.width - tWidth) / 2.0).toFloat()
@@ -105,6 +107,8 @@ class XTRLabel: XTRComponent() {
             super.onLayout(changed, left, top, right, bottom)
             if (changed) {
                 textView.maxWidth = right - left
+                resetTextLines()
+                resetTextViewPosition()
             }
         }
 

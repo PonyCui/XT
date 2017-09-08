@@ -57,7 +57,8 @@ class XTRBridge(appContext: android.content.Context, bridgeScript: String? = nul
                 XTRNavigationController(),
                 XTRImageView(),
                 XTRImage(),
-                XTRLabel()
+                XTRLabel(),
+                XTRButton()
         )
         components.forEach { component ->
             component.xtrContext = xtrContext

@@ -15,20 +15,18 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new Label();
-        view.frame = RectMake(20, 20, 200, 200)
-        view.font = Font.boldSystemFontOfSize(18)
+        const view = new Button();
+        view.frame = RectMake(80, 80, 128, 88);
+        view.vertical = true
+        view.inset = 4
         view.backgroundColor = Color.yellowColor
-        view.textAlignment = TextAlignment.Left
-        view.text = "据“印度报业托拉斯”报道，印度军队高级官员称，巴基斯坦军队于当天11:45向印度安全部队开火，同时使用了小型武器以及自动化武器，随后，两方军队爆发激烈冲突。最后，枪战于11:55时结束，共持续了10分钟。该军官称，有两名印度人员在交火中受伤，并被送入最近的医院，目前伤势已稳定。"
-        view.numberOfLines = 2
-        setTimeout(() => {
-            view.numberOfLines = 0
-        }, 3000)
-        // view.lineSpace = 8
-        view.textColor = Color.blueColor
-        view.lineBreakMode = LineBreakMode.TruncatingTail
-        // console.log(view.textRectForBounds(RectMake(0, 0, 30, 400)))
+        Image.fromAssetsWithScales("location", [2], (img) => {
+            view.image = img.imageWithImageRenderingMode(ImageRenderingMode.Template)
+        })
+        view.title = "Location"
+        view.onTouchUpInside = () => {
+            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        }
         this.view.addSubview(view);
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]", { view }))
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]", { view }))
