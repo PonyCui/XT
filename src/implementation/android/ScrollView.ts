@@ -158,14 +158,16 @@ export class ScrollView extends View {
         this.scroller.doTouchStart(tTouches, timestamp)
     }
 
-    handleTouchMove(touches: any[], timestamp: number) {
+    handleTouchMove(touches: any[], timestamp: number, childInteracting = false) {
         let tTouches = [];
         for (let index = 0; index < touches.length; index++) {
             let element = touches[index];
             tTouches.push({ pageX: element.x, pageY: element.y });
         }
         this.scroller.doTouchMove(tTouches, timestamp)
-        this.nativeObject.xtr_disableChildrenInteractive(true)
+        if (!childInteracting) {
+            this.nativeObject.xtr_disableChildrenInteractive(true)
+        }
         if (!this._indicatorShowed) {
             this._indicatorShowed = true;
             View.animationWithDuration(0.15, () => {

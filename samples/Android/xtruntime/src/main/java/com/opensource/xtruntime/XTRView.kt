@@ -868,10 +868,33 @@ class XTRView: XTRComponent() {
             onPan = value
         }
 
+        private var scrollViewStack: List<XTRScrollView.InnerObject> = listOf()
+
         override fun onTouchEvent(event: MotionEvent?): Boolean {
+            if (this is XTRScrollView.InnerObject) {
+                handlePanEvents(event)
+                handleLongPressEvents(event)
+                return super.onTouchEvent(event)
+            }
+            var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
+            var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
+            while (currentParent != null) {
+                if (currentParent.stealingTouch(event, currentOffset)) {
+                    return true
+                }
+                currentOffset = XTRPoint(
+                        currentOffset.x + (currentParent.frame?.x ?: 0.0) - currentParent.scrollX / resources.displayMetrics.density,
+                        currentOffset.y + (currentParent.frame?.y ?: 0.0) - currentParent.scrollY / resources.displayMetrics.density
+                )
+                currentParent = currentParent.parent as? XTRView.InnerObject
+            }
             handlePanEvents(event)
             handleLongPressEvents(event)
             return super.onTouchEvent(event)
+        }
+
+        open fun stealingTouch(event: MotionEvent?, offset: XTRPoint): Boolean {
+            return false
         }
 
         private fun handleLongPressEvents(event: MotionEvent?) {

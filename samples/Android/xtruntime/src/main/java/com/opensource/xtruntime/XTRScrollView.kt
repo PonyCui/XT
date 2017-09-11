@@ -78,6 +78,49 @@ class XTRScrollView: XTRComponent() {
             return true
         }
 
+        private var stealingFirstPoint: XTRPoint = XTRPoint(0.0, 0.0)
+        private var stolen = false
+        private var stolenStarted = false
+
+        override fun stealingTouch(event: MotionEvent?, offset: XTRPoint): Boolean {
+            event?.let { event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    stealingFirstPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                    stolenStarted = false
+                    stolen = false
+                    return false
+                }
+                else if (event.action == MotionEvent.ACTION_MOVE) {
+                    val curPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                    if (Math.abs(curPoint.x - stealingFirstPoint.x) > 8.0 || Math.abs(curPoint.y - stealingFirstPoint.y) > 8.0) {
+                        stolen = true
+                    }
+                }
+                if (stolen) {
+                    val touches = NativeArray((0 until event.pointerCount)?.map {
+                        return@map XTRPoint(
+                                (event.getX(it) / resources.displayMetrics.density).toDouble() + offset.x,
+                                (event.getY(it) / resources.displayMetrics.density).toDouble() + offset.y
+                        )
+                    }.toTypedArray())
+                    if (!stolenStarted) {
+                        xtrContext.invokeMethod(scriptObject, "handleTouchStart", arrayOf(touches, System.currentTimeMillis(), true))
+                        stolenStarted = true
+                    }
+                    else if (event.action == MotionEvent.ACTION_MOVE) {
+                        xtrContext.invokeMethod(scriptObject, "handleTouchMove", arrayOf(touches, System.currentTimeMillis(), true))
+                    }
+                    else if (event.action == MotionEvent.ACTION_UP) {
+                        xtrContext.invokeMethod(scriptObject, "handleTouchEnd", arrayOf(touches, System.currentTimeMillis(), true))
+                        stolenStarted = false
+                        stolen = false
+                    }
+                    return true
+                }
+            }
+            return false
+        }
+
     }
 
 }
