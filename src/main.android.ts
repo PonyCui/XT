@@ -55,7 +55,8 @@ import { Screen as IScreen } from './interface/Screen'
 export class Screen extends IScreen {}
 
 import { ScrollView as IScrollView } from './interface/ScrollView'
-export class ScrollView extends IScrollView {}
+import { ScrollView as MScrollView } from './implementation/android/ScrollView'
+export class ScrollView extends MScrollView {}
 
 import { TransformMatrix as ITransformMatrix } from './interface/TransformMatrix';
 export class TransformMatrix extends ITransformMatrix {}

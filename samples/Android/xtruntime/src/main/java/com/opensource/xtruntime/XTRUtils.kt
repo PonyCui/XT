@@ -41,6 +41,16 @@ class XTRUtils {
             return null
         }
 
+        fun toPoint(target: Any?): XTRPoint? {
+            (target as? XTRPoint)?.let { return it }
+            (target as? ScriptableObject)?.let {
+                val x = it.get("x") as? Double ?: return null
+                val y = it.get("y") as? Double ?: return null
+                return XTRPoint(x, y)
+            }
+            return null
+        }
+
         fun toFont(target: Any?): XTRFont? {
             (target as? XTRFont)?.let { return it }
             (target as? ScriptableObject)?.let {

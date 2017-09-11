@@ -1,6 +1,6 @@
 declare const XTRTest: any
 
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation } from '../main.android'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake } from '../main.android'
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -15,21 +15,24 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new Button();
-        view.frame = RectMake(80, 80, 128, 88);
-        view.vertical = true
-        view.inset = 4
-        view.backgroundColor = Color.yellowColor
-        Image.fromAssetsWithScales("location", [2], (img) => {
-            view.image = img.imageWithImageRenderingMode(ImageRenderingMode.Template)
-        })
-        view.title = "Location"
-        view.onTouchUpInside = () => {
-            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        const view = new ScrollView();
+
+        for (let index = 0; index < 100; index++) {
+            const redView = new View(RectMake(60, 66 * index, 44, 44))
+            redView.backgroundColor = new Color(1, 0, 0, index / 100)
+            redView.userInteractionEnabled = true
+            redView.onTap = () => {
+                redView.backgroundColor = Color.yellowColor
+            }
+            view.addSubview(redView)
         }
+
+        view.contentSize = SizeMake(0, 6600)
+        view.alwaysBounceVertical = true
         this.view.addSubview(view);
-        // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]", { view }))
-        // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]", { view }))
+        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", { view }))
+        this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", { view }))
+        this.view.setNeedsLayout()
         // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterX, LayoutRelation.Equal, undefined, LayoutAttribute.CenterX, 0.0, 1.0))
         // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterY, LayoutRelation.Equal, undefined, LayoutAttribute.CenterY, 0.0, 1.0))
     }

@@ -253,7 +253,7 @@ export class View {
                 const value = view.subViews[layoutID];
                 if (viewMapping[layoutID] !== undefined) {
                     const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
-                    if (intrinsticSize !== undefined) {
+                    if (intrinsticSize !== undefined && intrinsticSize !== null) {
                         value.intrinsicWidth = intrinsticSize.width;
                         value.intrinsicHeight = intrinsticSize.height;
                     }

@@ -23,7 +23,11 @@ class XTRLabel: XTRComponent() {
 
     fun createScriptObject(rect: Any, scriptObject: Any): XTRLabel.InnerObject? {
         (scriptObject as? ScriptableObject)?.let {
-            return XTRLabel.InnerObject(it, xtrContext)
+            val view = InnerObject(it, xtrContext)
+            XTRUtils.toRect(rect)?.let {
+                view.frame = it
+            }
+            return view
         }
         return null
     }

@@ -12,7 +12,11 @@ class XTRImageView: XTRComponent() {
 
     fun createScriptObject(rect: Any, scriptObject: Any): XTRView.InnerObject? {
         (scriptObject as? ScriptableObject)?.let {
-            return XTRImageView.InnerObject(it, xtrContext)
+            val view = InnerObject(it, xtrContext)
+            XTRUtils.toRect(rect)?.let {
+                view.frame = it
+            }
+            return view
         }
         return null
     }

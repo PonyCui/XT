@@ -17,7 +17,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     init {
         jsContext.optimizationLevel = -1
-        jsContext.evaluateString(scope, "var window = {}; var XTRAppRef = undefined", "define.js", 1, null)
+        jsContext.evaluateString(scope, "var window = {isAndroid: true}; var document = {}; var XTRAppRef = undefined", "define.js", 1, null)
         XTRPolyfill.attachPolyfill(this)
     }
 

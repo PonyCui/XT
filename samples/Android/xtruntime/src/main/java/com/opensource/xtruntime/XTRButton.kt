@@ -1,7 +1,6 @@
 package com.opensource.xtruntime
 
 import android.view.MotionEvent
-import org.mozilla.javascript.Function
 import org.mozilla.javascript.ScriptableObject
 
 /**
@@ -13,7 +12,11 @@ class XTRButton: XTRComponent() {
 
     fun createScriptObject(rect: Any, scriptObject: Any): XTRButton.InnerObject? {
         (scriptObject as? ScriptableObject)?.let {
-            return XTRButton.InnerObject(it, xtrContext)
+            val view = InnerObject(it, xtrContext)
+            XTRUtils.toRect(rect)?.let {
+                view.frame = it
+            }
+            return view
         }
         return null
     }
