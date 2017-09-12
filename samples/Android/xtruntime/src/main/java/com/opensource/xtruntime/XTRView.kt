@@ -12,6 +12,7 @@ import com.facebook.rebound.*
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.Undefined
 import java.util.*
 import java.util.logging.Handler
 import kotlin.concurrent.timerTask
@@ -542,11 +543,11 @@ class XTRView: XTRComponent() {
 
         var xtr_tag: Int = 0
 
-        fun xtr_superview(): ScriptableObject? {
+        fun xtr_superview(): Any? {
             (parent as? XTRView.InnerObject)?.let {
                 return XTRUtils.fromObject(xtrContext, it)
             }
-            return null
+            return Undefined.instance
         }
 
         fun xtr_subviews(): NativeArray {
@@ -568,7 +569,7 @@ class XTRView: XTRComponent() {
             return null
         }
 
-        fun xtr_window(): ScriptableObject? {
+        fun xtr_window(): Any? {
             xtr_windowObject()?.let {
                 XTRUtils.fromObject(xtrContext, it)
             }
@@ -711,7 +712,7 @@ class XTRView: XTRComponent() {
             return false
         }
 
-        fun xtr_viewWithTag(tag: Int): ScriptableObject? {
+        fun xtr_viewWithTag(tag: Int): Any? {
             if (xtr_tag == tag) {
                 return XTRUtils.fromObject(xtrContext, this)
             }

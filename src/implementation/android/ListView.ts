@@ -10,6 +10,7 @@ export class ListCell extends View {
     reuseIdentifier: string = ""
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     onSelected?: () => void
+    onRender?: () => void
     readonly selectionView: View
     readonly contentView: View
     _isBusy = false
@@ -34,6 +35,9 @@ export class ListCell extends View {
         if (this.selectionStyle == ListSelectionStyle.None) { return }
         this.selectionView.alpha = value ? 1.0 : 0.0;
     }
+
+    didSelected() { }
+    didRender() { }
 
 }
 
@@ -85,6 +89,11 @@ export class ListView extends ScrollView {
         this.reloadVisibleRows();
     }
 
+    layoutSubviews() {
+        super.layoutSubviews();
+        this.reloadData()
+    }
+
     protected handleScroll(x: number, y: number) {
         super.handleScroll(x, y);
         if (this._reusingCells !== undefined) {
@@ -128,6 +137,8 @@ export class ListView extends ScrollView {
             cell._isBusy = true;
             cell.currentItem = row.item;
             this.renderItem && this.renderItem(cell, row.item);
+            cell.onRender && cell.onRender();
+            cell.didRender();
             if (this._reusingCells.indexOf(cell) < 0) {
                 this._reusingCells.push(cell);
             }
@@ -147,58 +158,5 @@ export class ListView extends ScrollView {
             cell._isBusy = false;
         });
     }
-
-    private _selectionTimer: number = 0
-    private _selectionCancelled = false;
-    private _selectionInitialPoint = { x: 0, y: 0 };
-    private _highlightedCell?: ListCell = undefined;
-
-    // protected onTouchStart(absX: number, absY: number) {
-    //     if (this.nativeObject.interactiveChildren) {
-    //         super.onTouchStart(absX, absY);
-    //         this._selectionCancelled = false;
-    //         this._selectionInitialPoint = { x: absX, y: absY };
-    //         clearTimeout(this._selectionTimer);
-    //         this._selectionTimer = setTimeout(() => {
-    //             if (!this._selectionCancelled) {
-    //                 let listY = 0;
-    //                 let cur: View | undefined = this;
-    //                 while (cur !== undefined) {
-    //                     listY += cur.frame.y;
-    //                     cur = cur.superview;
-    //                 }
-    //                 let cellY = absY - listY + this.contentOffset.y;
-    //                 this._reusingCells.forEach(cell => {
-    //                     if (cell.frame.y < cellY && cell.frame.y + cell.frame.height > cellY) {
-    //                         this._highlightedCell = cell;
-    //                         cell.highligted = true;
-    //                     }
-    //                 })
-    //             }
-    //         }, 100)
-    //     }
-    //     else {
-    //         super.onTouchStart(absX, absY);
-    //     }
-    // }
-
-    // protected onTouchMove(absX: number, absY: number) {
-    //     super.onTouchMove(absX, absY);
-    //     if (!this._selectionCancelled) {
-    //         if (Math.abs(absX - this._selectionInitialPoint.x) > 4.0 || Math.abs(absY - this._selectionInitialPoint.y) > 4.0) {
-    //             this._selectionCancelled = true;
-    //             if (this._highlightedCell) { this._highlightedCell.highligted = false }
-    //         }
-    //     }
-    // }
-
-    // protected onTouchEnd() {
-    //     super.onTouchEnd();
-    //     if (this._highlightedCell) {
-    //         if (!this._selectionCancelled) { this._highlightedCell.onSelected && this._highlightedCell.onSelected() }
-    //         this._selectionCancelled = true;
-    //         this._highlightedCell.highligted = false;
-    //     }
-    // }
 
 }

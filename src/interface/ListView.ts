@@ -21,17 +21,17 @@ export class ListCell extends View {
     readonly contentView: View
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     onSelected?: () => void
+    onRender?: () => void
+    didSelected() { }
+    didRender() { }
 
 }
 
 export class ListView extends ScrollView {
 
     items: ListItem[]
-
     renderItem?: (cell: ListCell, item: ListItem) => void
-
     register(clazz: typeof ListCell, reuseIdentifier: string) { }
-
     reloadData() { }
 
 }

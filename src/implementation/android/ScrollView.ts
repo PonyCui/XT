@@ -81,6 +81,7 @@ export class ScrollView extends View {
 
     public set bounces(value: boolean) {
         this._bounces = value;
+        this.nativeObject.xtr_setBounce(value)
         this.resetScroller();
     }
 
@@ -125,6 +126,7 @@ export class ScrollView extends View {
 
     public set alwaysBounceVertical(value: boolean) {
         this._alwaysBounceVertical = value;
+        this.nativeObject.xtr_setAlwaysBounceVertical(value)
         this.resetScroller();
     }
 
@@ -136,6 +138,7 @@ export class ScrollView extends View {
 
     public set alwaysBounceHorizontal(value: boolean) {
         this._alwaysBounceHorizontal = value;
+        this.nativeObject.xtr_setAlwaysBounceHorizontal(value)
         this.resetScroller();
     }
 

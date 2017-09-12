@@ -26,7 +26,7 @@ class XTRImageView: XTRComponent() {
         var image: XTRImage.InnerObject? = null
             private set
 
-        fun xtr_image(): ScriptableObject? {
+        fun xtr_image(): Any? {
             return XTRUtils.fromObject(xtrContext, this.image)
         }
 

@@ -3,6 +3,7 @@ package com.opensource.xtruntime
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.Undefined
 import java.util.*
 
 /**
@@ -31,11 +32,11 @@ class XTRApplicationDelegate: XTRComponent() {
             xtrContext.invokeMethod(this.scriptObject, "applicationDidFinishLaunchingWithOptions", arrayOf("", ""))
         }
 
-        fun xtr_window(): ScriptableObject? {
+        fun xtr_window(): Any? {
             this.window?.let { window ->
                 return XTRUtils.fromObject(xtrContext, window)
             }
-            return null
+            return Undefined.instance
         }
 
         fun xtr_setWindow(value: Any) {

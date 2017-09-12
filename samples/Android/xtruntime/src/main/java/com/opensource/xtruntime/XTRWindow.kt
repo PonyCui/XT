@@ -42,7 +42,7 @@ class XTRWindow: XTRComponent() {
                 }
             }
 
-        fun xtr_rootViewController(): ScriptableObject? {
+        fun xtr_rootViewController(): Any? {
             return XTRUtils.fromObject(xtrContext, rootViewController)
         }
 

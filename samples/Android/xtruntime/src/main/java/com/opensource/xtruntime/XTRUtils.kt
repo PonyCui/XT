@@ -104,7 +104,7 @@ class XTRUtils {
             return (target as? ScriptableObject)?.get("nativeObject") as? XTRImage.InnerObject
         }
 
-        fun fromObject(context: XTRContext, target: Any?): ScriptableObject? {
+        fun fromObject(context: XTRContext, target: Any?): Any? {
             if (target == null) {
                 return null
             }

@@ -1,10 +1,8 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
-import org.mozilla.javascript.Context
+import org.mozilla.javascript.*
 import org.mozilla.javascript.Function
-import org.mozilla.javascript.Scriptable
-import org.mozilla.javascript.ScriptableObject
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -36,7 +34,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     fun invokeMethod(scriptObject: ScriptableObject?, method: String, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         if (scriptObject == null) {
-            return null
+            return Undefined.instance
         }
         try {
             if (Thread.currentThread() != thread) {
@@ -49,7 +47,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 return ScriptableObject.callMethod(jsContext, scriptObject, method, arguments)
             }
         } catch (e: Exception) {}
-        return null
+        return Undefined.instance
     }
 
     fun callWithArguments(func: Function, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
@@ -59,13 +57,13 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                     val returnValue = func.call(jsContext, func.parentScope ?: scope, func.parentScope ?: scope, arguments)
                     asyncResult?.invoke(returnValue)
                 }
-                null
+                Undefined.instance
             }
             else {
                 func.call(jsContext, func.parentScope ?: scope, func.parentScope ?: scope, arguments)
             }
         } catch (e: Exception) {
-            null
+            Undefined.instance
         }
     }
 

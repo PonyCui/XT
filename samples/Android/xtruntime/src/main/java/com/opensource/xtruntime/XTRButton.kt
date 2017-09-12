@@ -54,7 +54,7 @@ class XTRButton: XTRComponent() {
             resetContents()
         }
 
-        fun xtr_image(): ScriptableObject? {
+        fun xtr_image(): Any? {
             return this.imageView.xtr_image()
         }
 

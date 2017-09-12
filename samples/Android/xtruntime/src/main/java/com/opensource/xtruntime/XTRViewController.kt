@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.Undefined
 import java.util.*
 
 /**
@@ -33,11 +34,11 @@ open class XTRViewController: XTRComponent() {
                 }
             }
 
-        fun xtr_view(): ScriptableObject? {
+        fun xtr_view(): Any? {
             view?.let {
                 return XTRUtils.fromObject(xtrContext, it)
             }
-            return null
+            return Undefined.instance
         }
 
         fun xtr_setView(value: Any) {
@@ -53,7 +54,7 @@ open class XTRViewController: XTRComponent() {
         var childViewControllers: List<XTRViewController.InnerObject> = listOf()
             protected set
 
-        fun xtr_parentViewController(): ScriptableObject? {
+        fun xtr_parentViewController(): Any? {
             return XTRUtils.fromObject(xtrContext, parentViewController)
         }
 
@@ -87,7 +88,7 @@ open class XTRViewController: XTRComponent() {
             parentViewController = null
         }
 
-        fun xtr_navigationController(): ScriptableObject? {
+        fun xtr_navigationController(): Any? {
             var current: XTRViewController.InnerObject? = this
             while (current != null) {
                 (current as? XTRNavigationController.InnerObject)?.let {
@@ -95,7 +96,7 @@ open class XTRViewController: XTRComponent() {
                 }
                 current = current.parentViewController
             }
-            return null
+            return Undefined.instance
         }
 
         fun willMoveToParentViewController(parent: XTRViewController.InnerObject?) {

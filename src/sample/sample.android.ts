@@ -1,6 +1,7 @@
 declare const XTRTest: any
 
 import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake } from '../main.android'
+import { Rect } from '../interface/Rect';
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -12,38 +13,36 @@ class AppDelegate extends ApplicationDelegate {
 
 }
 
+class TestCell extends ListCell {
+
+    constructor(rect?: Rect) {
+        super(rect);
+        this.contentView.backgroundColor = Color.redColor
+    }
+
+    didRender() {
+        this.contentView.alpha = (this.currentItem as any).alpha
+    }
+
+}
+
+
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new ScrollView();
-
+        const view = new ListView();
+        view.register(TestCell, "Cell")
+        let items = [];
         for (let index = 0; index < 100; index++) {
-            const redView = new View(RectMake(60, 66 * index, 44, 44))
-            redView.backgroundColor = new Color(1, 0, 0, index / 100)
-            redView.userInteractionEnabled = true
-            redView.onTap = () => {
-                redView.backgroundColor = Color.yellowColor
-            }
-            view.addSubview(redView)
+            items.push({
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44.0,
+                alpha: 0.01 * index,
+            })
         }
-        view.contentSize = SizeMake(0, 6600)
-        view.alwaysBounceVertical = true
-        this.view.addSubview(view);
-
-        const horiView = new ScrollView()
-        horiView.frame = RectMake(0, 0, 375, 200)
-        for (let index = 0; index < 100; index++) {
-            const yellowView = new View(RectMake(66 * index, 0, 44, 44))
-            yellowView.backgroundColor = new Color(0, 0, 0, index / 100)
-            yellowView.userInteractionEnabled = true
-            yellowView.onTap = () => {
-                yellowView.backgroundColor = Color.yellowColor
-            }
-            horiView.addSubview(yellowView)
-        }
-        view.addSubview(horiView);
-        horiView.contentSize = SizeMake(4000, 0)
-
+        view.items = items
+        view.backgroundColor = Color.yellowColor
+        this.view.addSubview(view)
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", { view }))
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", { view }))
         this.view.setNeedsLayout()

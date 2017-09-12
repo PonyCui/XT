@@ -14,6 +14,7 @@ export class ListCell extends View {
     reuseIdentifier: string
     currentItem?: ListItem
     onSelected?: () => void
+    onRender?: () => void
 
     nativeObject: any;
 
@@ -45,7 +46,11 @@ export class ListCell extends View {
 
     handleSelected() {
         this.onSelected && this.onSelected();
+        this.didSelected();
     }
+
+    didSelected() { }
+    didRender() { }
 
 }
 
@@ -109,6 +114,8 @@ export class ListView extends ScrollView {
     handleRenderItem(rowIndex: number, cell: ListCell): void {
         cell.currentItem = this.items[rowIndex];
         this.renderItem && this.renderItem(cell, this.items[rowIndex]);
+        cell.onRender && cell.onRender();
+        cell.didRender();
     }
 
 }

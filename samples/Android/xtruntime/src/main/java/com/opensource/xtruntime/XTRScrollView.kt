@@ -56,6 +56,24 @@ class XTRScrollView: XTRComponent() {
             XTRUtils.toSize(value)?.let { contentSize = it }
         }
 
+        private var bounce: Boolean = true
+
+        fun xtr_setBounce(value: Any?) {
+            (value as? Boolean)?.let { bounce = it }
+        }
+
+        private var alwaysBounceVertical: Boolean = false
+
+        fun xtr_setAlwaysBounceVertical(value: Any?) {
+            (value as? Boolean)?.let { alwaysBounceVertical = it }
+        }
+
+        private var alwaysBounceHorizontal: Boolean = false
+
+        fun xtr_setAlwaysBounceHorizontal(value: Any?) {
+            (value as? Boolean)?.let { alwaysBounceHorizontal = it }
+        }
+
         fun xtr_disableChildrenInteractive(value: Any?) {
             (value as? Boolean)?.let {
                 this.innerView.xtr_setUserInteractionEnabled(!it)
@@ -103,12 +121,12 @@ class XTRScrollView: XTRComponent() {
 
         private var isHorizonScrollable: Boolean = false
             get() {
-                return contentSize.width > this.bounds.width
+                return contentSize.width > this.bounds.width || (bounce && alwaysBounceHorizontal)
             }
 
         private var isVerticalScrollable: Boolean = false
             get() {
-                return contentSize.height > this.bounds.height
+                return contentSize.height > this.bounds.height || (bounce && alwaysBounceVertical)
             }
 
         override fun stealingTouch(event: MotionEvent?, offset: XTRPoint): Boolean {

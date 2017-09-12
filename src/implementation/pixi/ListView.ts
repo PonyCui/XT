@@ -10,6 +10,7 @@ export class ListCell extends View {
     reuseIdentifier: string = ""
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     onSelected?: () => void
+    onRender?: () => void
     readonly selectionView: View
     readonly contentView: View
     _isBusy = false
@@ -34,6 +35,9 @@ export class ListCell extends View {
         if (this.selectionStyle == ListSelectionStyle.None) { return }
         this.selectionView.alpha = value ? 1.0 : 0.0;
     }
+
+    didSelected() { }
+    didRender() { }
 
 }
 
@@ -128,6 +132,8 @@ export class ListView extends ScrollView {
             cell._isBusy = true;
             cell.currentItem = row.item;
             this.renderItem && this.renderItem(cell, row.item);
+            cell.onRender && cell.onRender();
+            cell.didRender();
             if (this._reusingCells.indexOf(cell) < 0) {
                 this._reusingCells.push(cell);
             }
@@ -195,7 +201,7 @@ export class ListView extends ScrollView {
     protected onTouchEnd() {
         super.onTouchEnd();
         if (this._highlightedCell) {
-            if (!this._selectionCancelled) { this._highlightedCell.onSelected && this._highlightedCell.onSelected() }
+            if (!this._selectionCancelled) { this._highlightedCell.onSelected && this._highlightedCell.onSelected(); this._highlightedCell.didSelected(); }
             this._selectionCancelled = true;
             this._highlightedCell.highligted = false;
         }
