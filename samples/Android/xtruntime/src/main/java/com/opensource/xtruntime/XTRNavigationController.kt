@@ -54,7 +54,7 @@ class XTRNavigationController: XTRComponent() {
                 toViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                     return@let XTRRect(it.width, it.y, it.width, it.height)
                 })
-                XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, { -> Unit
+                XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, { -> Unit
                     toViewController.view?.xtr_setFrame(this.view?.bounds)
                 }, {
                     isAnimating = false
@@ -73,7 +73,7 @@ class XTRNavigationController: XTRComponent() {
             val isAnimated = animated as? Boolean ?: true
             childViewControllers?.takeIf { it.size > 1 }?.lastOrNull()?.let { fromViewController ->
                 if (isAnimated) {
-                    XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, { -> Unit
+                    XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, { -> Unit
                         fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                             return@let XTRRect(it.width, it.y, it.width, it.height)
                         })
