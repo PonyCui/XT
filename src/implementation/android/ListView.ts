@@ -25,10 +25,14 @@ export class ListCell extends View {
         this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
         this.userInteractionEnabled = true
-        this.longPressDuration = 0.15
+        this.longPressDuration = 0.05
         this.onTap = () => {
+            this.highligted = true
             this.onSelected && this.onSelected();
             this.didSelected();
+            View.animationWithDuration(0.15, () => {
+                this.highligted = false
+            })
         }
         this.onLongPress = (state: InteractionState) => {
             if (state == InteractionState.Began) {
@@ -37,7 +41,9 @@ export class ListCell extends View {
             else if (state == InteractionState.Ended) {
                 this.onSelected && this.onSelected();
                 this.didSelected();
-                this.highligted = false
+                View.animationWithDuration(0.15, () => {
+                    this.highligted = false
+                })
             }
             else if (state == InteractionState.Cancelled) {
                 this.highligted = false
