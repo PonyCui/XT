@@ -868,14 +868,7 @@ class XTRView: XTRComponent() {
             onPan = value
         }
 
-        private var scrollViewStack: List<XTRScrollView.InnerObject> = listOf()
-
         override fun onTouchEvent(event: MotionEvent?): Boolean {
-            if (this is XTRScrollView.InnerObject) {
-                handlePanEvents(event)
-                handleLongPressEvents(event)
-                return super.onTouchEvent(event)
-            }
             var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
             var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
             while (currentParent != null) {

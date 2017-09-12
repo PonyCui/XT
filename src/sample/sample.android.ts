@@ -26,10 +26,24 @@ class FirstViewController extends ViewController {
             }
             view.addSubview(redView)
         }
-
         view.contentSize = SizeMake(0, 6600)
         view.alwaysBounceVertical = true
         this.view.addSubview(view);
+
+        const horiView = new ScrollView()
+        horiView.frame = RectMake(0, 0, 375, 200)
+        for (let index = 0; index < 100; index++) {
+            const yellowView = new View(RectMake(66 * index, 0, 44, 44))
+            yellowView.backgroundColor = new Color(0, 0, 0, index / 100)
+            yellowView.userInteractionEnabled = true
+            yellowView.onTap = () => {
+                yellowView.backgroundColor = Color.yellowColor
+            }
+            horiView.addSubview(yellowView)
+        }
+        view.addSubview(horiView);
+        horiView.contentSize = SizeMake(4000, 0)
+
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", { view }))
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", { view }))
         this.view.setNeedsLayout()

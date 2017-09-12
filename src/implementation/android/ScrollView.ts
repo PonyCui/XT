@@ -49,6 +49,7 @@ export class ScrollView extends View {
 
     public set contentSize(value: Size) {
         this._contentSize = value;
+        this.nativeObject.xtr_setContentSize(value)
         this.resetScroller();
     }
 
@@ -179,9 +180,16 @@ export class ScrollView extends View {
 
     handleTouchEnd(touches: any[], timestamp: number) {
         this._tracking = false;
+        this.nativeObject.xtr_markAsDecelarating(true)
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         this.scroller.doTouchEnd(timestamp)
+    }
+
+    handleTouchCancel() {
+        this._tracking = false;
+        clearTimeout(this._indicatorHidingTimer);
+        this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
     }
 
     private resetScroller() {
@@ -201,7 +209,7 @@ export class ScrollView extends View {
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false) }, 150);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false); this.nativeObject.xtr_markAsDecelarating(false); }, 150);
     }
 
     // Indicators

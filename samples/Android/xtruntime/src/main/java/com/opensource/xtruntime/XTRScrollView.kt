@@ -1,9 +1,6 @@
 package com.opensource.xtruntime
 
-import android.graphics.Color
 import android.view.MotionEvent
-import android.view.ViewGroup
-import android.widget.ScrollView
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.ScriptableObject
 
@@ -11,6 +8,11 @@ import org.mozilla.javascript.ScriptableObject
  * Created by cuiminghui on 2017/9/8.
  */
 class XTRScrollView: XTRComponent() {
+
+    companion object {
+        internal var trackingScrollView: XTRScrollView.InnerObject? = null
+        internal var decelaratingScrollView: XTRScrollView.InnerObject? = null
+    }
 
     override val name: String = "XTRScrollView"
 
@@ -48,77 +50,134 @@ class XTRScrollView: XTRComponent() {
             }
         }
 
+        private var contentSize: XTRSize = XTRSize(0.0, 0.0)
+
+        fun xtr_setContentSize(value: Any?) {
+            XTRUtils.toSize(value)?.let { contentSize = it }
+        }
+
         fun xtr_disableChildrenInteractive(value: Any?) {
             (value as? Boolean)?.let {
                 this.innerView.xtr_setUserInteractionEnabled(!it)
             }
         }
 
+        fun xtr_markAsDecelarating(value: Any?) {
+            (value as? Boolean)?.let {
+                if (it) { XTRScrollView.decelaratingScrollView = this }
+                else { XTRScrollView.decelaratingScrollView = null }
+            }
+        }
+
+        private var tracking = false
+
         override fun onTouchEvent(event: MotionEvent?): Boolean {
-            event?.let { event ->
-                val touches = NativeArray((0 until event.pointerCount)?.map {
-                    return@map XTRPoint(
-                            (event.getX(it) / resources.displayMetrics.density).toDouble(),
-                            (event.getY(it) / resources.displayMetrics.density).toDouble()
+            val event = event ?: return false
+            if (!tracking) {
+                var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
+                var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
+                while (currentParent != null) {
+                    if (currentParent.stealingTouch(event, currentOffset)) {
+                        if (tracking) {
+                            tracking = false
+                            xtrContext.invokeMethod(scriptObject, "handleTouchCancel", arrayOf())
+                        }
+                        return true
+                    }
+                    currentOffset = XTRPoint(
+                            currentOffset.x + (currentParent.frame?.x ?: 0.0) - currentParent.scrollX / resources.displayMetrics.density,
+                            currentOffset.y + (currentParent.frame?.y ?: 0.0) - currentParent.scrollY / resources.displayMetrics.density
                     )
-                }.toTypedArray())
-                when {
-                    event.action == MotionEvent.ACTION_DOWN -> {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchStart", arrayOf(touches, System.currentTimeMillis()))
-                    }
-                    event.action == MotionEvent.ACTION_MOVE -> {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchMove", arrayOf(touches, System.currentTimeMillis()))
-                    }
-                    event.action == MotionEvent.ACTION_UP -> {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchEnd", arrayOf(touches, System.currentTimeMillis()))
-                    }
-                    else -> { }
+                    currentParent = currentParent.parent as? XTRView.InnerObject
                 }
+            }
+            if (shouldTracking(event)) {
+                handleScrollEvent(event, XTRPoint(0.0, 0.0))
             }
             return true
         }
 
-        private var stealingFirstPoint: XTRPoint = XTRPoint(0.0, 0.0)
+        private var touchFirstPoint: XTRPoint = XTRPoint(0.0, 0.0)
+
         private var stolen = false
-        private var stolenStarted = false
+
+        private var isHorizonScrollable: Boolean = false
+            get() {
+                return contentSize.width > this.bounds.width
+            }
+
+        private var isVerticalScrollable: Boolean = false
+            get() {
+                return contentSize.height > this.bounds.height
+            }
 
         override fun stealingTouch(event: MotionEvent?, offset: XTRPoint): Boolean {
-            event?.let { event ->
+            val event = event ?: return false
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                XTRScrollView.trackingScrollView = null
+            }
+            if (XTRScrollView.trackingScrollView != null && XTRScrollView.trackingScrollView != this) {
+                return false
+            }
+            if (XTRScrollView.trackingScrollView == this || XTRScrollView.decelaratingScrollView == this) {
+                handleScrollEvent(event, offset)
+                return true
+            }
+            else {
                 if (event.action == MotionEvent.ACTION_DOWN) {
-                    stealingFirstPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                    stolenStarted = false
+                    touchFirstPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
                     stolen = false
                     return false
                 }
                 else if (event.action == MotionEvent.ACTION_MOVE) {
                     val curPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                    if (Math.abs(curPoint.x - stealingFirstPoint.x) > 8.0 || Math.abs(curPoint.y - stealingFirstPoint.y) > 8.0) {
+                    if (isHorizonScrollable && Math.abs(curPoint.x - touchFirstPoint.x) > 16.0) {
+                        stolen = true
+                    }
+                    if (isVerticalScrollable && Math.abs(curPoint.y - touchFirstPoint.y) > 16.0) {
                         stolen = true
                     }
                 }
                 if (stolen) {
-                    val touches = NativeArray((0 until event.pointerCount)?.map {
-                        return@map XTRPoint(
-                                (event.getX(it) / resources.displayMetrics.density).toDouble() + offset.x,
-                                (event.getY(it) / resources.displayMetrics.density).toDouble() + offset.y
-                        )
-                    }.toTypedArray())
-                    if (!stolenStarted) {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchStart", arrayOf(touches, System.currentTimeMillis(), true))
-                        stolenStarted = true
-                    }
-                    else if (event.action == MotionEvent.ACTION_MOVE) {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchMove", arrayOf(touches, System.currentTimeMillis(), true))
-                    }
-                    else if (event.action == MotionEvent.ACTION_UP) {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchEnd", arrayOf(touches, System.currentTimeMillis(), true))
-                        stolenStarted = false
-                        stolen = false
-                    }
+                    handleScrollEvent(event, offset)
                     return true
                 }
             }
             return false
+        }
+
+        private fun shouldTracking(event: MotionEvent): Boolean {
+            val d = XTRScrollView.decelaratingScrollView
+            return if (tracking || XTRScrollView.decelaratingScrollView == this) {
+                true
+            } else {
+                val curPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                if (isHorizonScrollable && Math.abs(curPoint.x - touchFirstPoint.x) > 16.0) {
+                    true
+                } else isVerticalScrollable && Math.abs(curPoint.y - touchFirstPoint.y) > 16.0
+            }
+        }
+
+        private fun handleScrollEvent(event: MotionEvent, offset: XTRPoint) {
+            val touches = NativeArray((0 until event.pointerCount)?.map {
+                return@map XTRPoint(
+                        (event.getX(it) / resources.displayMetrics.density).toDouble() + offset.x,
+                        (event.getY(it) / resources.displayMetrics.density).toDouble() + offset.y
+                )
+            }.toTypedArray())
+            if (!tracking) {
+                xtrContext.invokeMethod(scriptObject, "handleTouchStart", arrayOf(touches, System.currentTimeMillis(), true))
+                XTRScrollView.trackingScrollView = this
+                tracking = true
+            }
+            else if (event.action == MotionEvent.ACTION_MOVE) {
+                xtrContext.invokeMethod(scriptObject, "handleTouchMove", arrayOf(touches, System.currentTimeMillis(), true))
+            }
+            else if (event.action == MotionEvent.ACTION_UP) {
+                xtrContext.invokeMethod(scriptObject, "handleTouchEnd", arrayOf(touches, System.currentTimeMillis(), true))
+                stolen = false
+                tracking = false
+            }
         }
 
     }

@@ -51,6 +51,16 @@ class XTRUtils {
             return null
         }
 
+        fun toSize(target: Any?): XTRSize? {
+            (target as? XTRSize)?.let { return it }
+            (target as? ScriptableObject)?.let {
+                val width = it.get("width") as? Double ?: return null
+                val height = it.get("height") as? Double ?: return null
+                return XTRSize(width, height)
+            }
+            return null
+        }
+
         fun toFont(target: Any?): XTRFont? {
             (target as? XTRFont)?.let { return it }
             (target as? ScriptableObject)?.let {
