@@ -3,10 +3,7 @@ package com.opensource.xtruntime
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.graphics.*
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewParent
+import android.view.*
 import android.widget.FrameLayout
 import com.facebook.rebound.*
 import org.mozilla.javascript.Function
@@ -787,6 +784,8 @@ class XTRView: XTRComponent() {
         private var maybeDoubleTap = false
         private var maybeDoubleTapTS: Long = 0
         private var maybeLongPress = false
+        private var longPressTimer: Timer? = null
+        private var longPressDuration = 0.25
         private var firstLongPressPoint = XTRPoint(0.0, 0.0)
         private var onLongPress: Any? = null
         private var longPressing = false
@@ -794,6 +793,14 @@ class XTRView: XTRComponent() {
         private var maybePan = false
         private var firstPanPoint = XTRPoint(0.0, 0.0)
         private var panning = false
+
+        fun xtr_longPressDuration(): Double {
+            return this.longPressDuration
+        }
+
+        fun xtr_setLongPressDuration(value: Any?) {
+            (value as? Double)?.let { this.longPressDuration = it }
+        }
 
         fun xtr_setTap(value: Any?) {
             if (value !is Function) {
@@ -846,19 +853,7 @@ class XTRView: XTRComponent() {
                 this.onLongPress = null
                 return
             }
-            this.isLongClickable = true
             onLongPress = value
-            this.setOnLongClickListener {
-                if (maybeLongPress && !panning) {
-                    longPressing = true
-                    maybePan = false
-                    (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(0)) }
-                }
-                else {
-                    longPressing = false
-                }
-                return@setOnLongClickListener true
-            }
         }
 
         fun xtr_setPan(value: Any?) {
@@ -874,6 +869,7 @@ class XTRView: XTRComponent() {
             var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
             while (currentParent != null) {
                 if (currentParent.stealingTouch(event, currentOffset)) {
+                    cancelTouches()
                     return true
                 }
                 currentOffset = XTRPoint(
@@ -891,15 +887,38 @@ class XTRView: XTRComponent() {
             return false
         }
 
+        fun cancelTouches() {
+            longPressTimer?.cancel()
+            if (longPressing) {
+                (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(3)) }
+            }
+            if (panning) {
+                (onPan as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(3)) }
+            }
+        }
+
         private fun handleLongPressEvents(event: MotionEvent?) {
+            if (onLongPress == null) {
+                return
+            }
             if (onLongPress != null && event?.action == MotionEvent.ACTION_DOWN && !longPressing) {
                 maybeLongPress = true
                 firstLongPressPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
+                longPressTimer = Timer()
+                longPressTimer?.schedule(timerTask {
+                    android.os.Handler(xtrContext.appContext.mainLooper).post {
+                        if (maybeLongPress) {
+                            longPressing = true
+                            (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(0)) }
+                        }
+                    }
+                }, (this.longPressDuration * 1000).toLong())
             }
             else if (onLongPress != null && event?.action == MotionEvent.ACTION_MOVE && !longPressing && maybeLongPress) {
                 val currentLongPressPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                if (Math.abs(currentLongPressPoint.x - firstLongPressPoint.x) > 8.0 || Math.abs(currentLongPressPoint.y - firstLongPressPoint.x) > 8.0) {
+                if (Math.abs(currentLongPressPoint.x - firstLongPressPoint.x) > 16.0 || Math.abs(currentLongPressPoint.y - firstLongPressPoint.y) > 16.0) {
                     maybeLongPress = false
+                    longPressTimer?.cancel()
                 }
             }
             else if (longPressing && event?.action == MotionEvent.ACTION_MOVE) {
@@ -926,10 +945,14 @@ class XTRView: XTRComponent() {
             }
             else if (event?.action == MotionEvent.ACTION_UP) {
                 maybeLongPress = false
+                longPressTimer?.cancel()
             }
         }
 
         private fun handlePanEvents(event: MotionEvent?) {
+            if (onPan == null) {
+                return
+            }
             if (onPan != null && event?.action == MotionEvent.ACTION_DOWN && !panning) {
                 maybePan = true
                 panning = false

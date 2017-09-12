@@ -3,6 +3,7 @@ import { View } from "./View";
 import { ListItem, ListSelectionStyle } from "../../interface/ListView";
 import { Color } from "../../interface/Color";
 import { Rect } from "../../interface/Rect";
+import { InteractionState } from "../../interface/View";
 
 export class ListCell extends View {
 
@@ -23,6 +24,25 @@ export class ListCell extends View {
         this.contentView = new View();
         this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
+        this.userInteractionEnabled = true
+        this.longPressDuration = 0.15
+        this.onTap = () => {
+            this.onSelected && this.onSelected();
+            this.didSelected();
+        }
+        this.onLongPress = (state: InteractionState) => {
+            if (state == InteractionState.Began) {
+                this.highligted = true
+            }
+            else if (state == InteractionState.Ended) {
+                this.onSelected && this.onSelected();
+                this.didSelected();
+                this.highligted = false
+            }
+            else if (state == InteractionState.Cancelled) {
+                this.highligted = false
+            }
+        }
     }
 
     layoutSubviews() {

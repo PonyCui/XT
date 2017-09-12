@@ -15,17 +15,28 @@ class AppDelegate extends ApplicationDelegate {
 
 class TestCell extends ListCell {
 
+    label = new Label()
+
     constructor(rect?: Rect) {
         super(rect);
-        this.contentView.backgroundColor = Color.redColor
+        this.label.frame = RectMake(0, 0, 200, 44)
+        this.contentView.addSubview(this.label);
+    }
+
+    didSelected() {
+        if (application.delegate && application.delegate.window && application.delegate.window.rootViewController) {
+            if (application.delegate.window.rootViewController instanceof NavigationController) {
+                application.delegate.window.rootViewController.pushViewController(new SecondViewController());
+            }
+        }
+        // this.contentView.backgroundColor = Color.redColor
     }
 
     didRender() {
-        this.contentView.alpha = (this.currentItem as any).alpha
+        this.label.text = (this.currentItem as any).alpha.toString()
     }
 
 }
-
 
 class FirstViewController extends ViewController {
 
@@ -41,7 +52,7 @@ class FirstViewController extends ViewController {
             })
         }
         view.items = items
-        view.backgroundColor = Color.yellowColor
+        // view.backgroundColor = Color.yellowColor
         this.view.addSubview(view)
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", { view }))
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", { view }))

@@ -317,7 +317,14 @@ export class View {
         this.nativeObject.xtr_setUserInteractionEnabled(value);
     }
 
-    longPressDuration: number;
+
+	public get longPressDuration(): number {
+		return this.nativeObject.xtr_longPressDuration();
+	}
+
+	public set longPressDuration(value: number) {
+		this.nativeObject.xtr_setLongPressDuration(value);
+	}
 
     public set onTap(value: (() => void) | undefined) {
         this.nativeObject.xtr_setTap(value);

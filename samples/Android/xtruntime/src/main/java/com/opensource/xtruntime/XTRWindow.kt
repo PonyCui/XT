@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.content.Context
 import android.graphics.Color
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import org.mozilla.javascript.ScriptableObject
