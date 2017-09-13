@@ -308,10 +308,7 @@ class XTRView: XTRComponent() {
             }
         }
 
-        var bounds: XTRRect = XTRRect(0.0, 0.0, 0.0, 0.0)
-            get() {
-                return XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
-            }
+        var bounds: XTRRect = XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
 
         fun xtr_bounds(): XTRRect {
             return this.bounds
@@ -734,6 +731,7 @@ class XTRView: XTRComponent() {
         override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
             super.onLayout(changed, left, top, right, bottom)
             if (changed) {
+                this.bounds = XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
                 layoutSubviews()
             }
         }

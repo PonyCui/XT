@@ -203,6 +203,8 @@ export class ScrollView extends View {
         this.scroller.options.scrollingY = this.isScrollEnabled && (this.contentSize.height > this.bounds.height || this.alwaysBounceVertical);
         this.scroller.options.bouncing = this.bounces;
         this.scroller.options.locking = this.isDirectionalLockEnabled;
+        // this.scroller.options.penetrationDeceleration = 0.06
+        // this.scroller.options.penetrationAcceleration = 0.06
         this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
     }
 
@@ -212,7 +214,7 @@ export class ScrollView extends View {
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false); this.nativeObject.xtr_markAsDecelarating(false); }, 32);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false); this.nativeObject.xtr_markAsDecelarating(false); }, 150);
     }
 
     // Indicators

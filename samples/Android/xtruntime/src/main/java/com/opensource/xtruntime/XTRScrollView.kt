@@ -11,7 +11,7 @@ class XTRScrollView: XTRComponent() {
 
     companion object {
         internal var trackingScrollView: XTRScrollView.InnerObject? = null
-        internal var decelaratingScrollView: XTRScrollView.InnerObject? = null
+        internal var deceleratingScrollView: XTRScrollView.InnerObject? = null
     }
 
     override val name: String = "XTRScrollView"
@@ -82,8 +82,8 @@ class XTRScrollView: XTRComponent() {
 
         fun xtr_markAsDecelarating(value: Any?) {
             (value as? Boolean)?.let {
-                if (it) { XTRScrollView.decelaratingScrollView = this }
-                else { XTRScrollView.decelaratingScrollView = null }
+                if (it) { XTRScrollView.deceleratingScrollView = this }
+                else { XTRScrollView.deceleratingScrollView = null }
             }
         }
 
@@ -137,7 +137,7 @@ class XTRScrollView: XTRComponent() {
             if (XTRScrollView.trackingScrollView != null && XTRScrollView.trackingScrollView != this) {
                 return false
             }
-            if (XTRScrollView.trackingScrollView == this || XTRScrollView.decelaratingScrollView == this) {
+            if (XTRScrollView.trackingScrollView == this || XTRScrollView.deceleratingScrollView == this) {
                 handleScrollEvent(event, offset)
                 return true
             }
@@ -165,8 +165,7 @@ class XTRScrollView: XTRComponent() {
         }
 
         private fun shouldTracking(event: MotionEvent): Boolean {
-            val d = XTRScrollView.decelaratingScrollView
-            return if (tracking || XTRScrollView.decelaratingScrollView == this) {
+            return if (tracking || XTRScrollView.deceleratingScrollView == this) {
                 true
             } else {
                 val curPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())

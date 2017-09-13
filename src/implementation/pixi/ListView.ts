@@ -101,26 +101,60 @@ export class ListView extends ScrollView {
     private _nextReloadMaxY?: number = undefined;
 
     private reloadVisibleRows() {
-        if (this._nextSetted === true && this.contentOffset.y > (this._nextReloadMinY || -Infinity) && this.contentOffset.y < (this._nextReloadMaxY || Infinity)) {
+        let contentOffset = this.contentOffset;
+        let bounds = this.bounds;
+        if (contentOffset.y < 0 || contentOffset.y + bounds.height > this.contentSize.height) {
+            return;
+        }
+        if (this._nextSetted === true &&
+            (this._nextReloadMinY !== undefined && this.contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
+            (this._nextReloadMaxY !== undefined && this.contentOffset.y < (this._nextReloadMaxY || Infinity))) {
             return;
         }
         this.markInvisibleCellNoBusy();
         this._nextSetted = true;
         this._nextReloadMinY = undefined;
         this._nextReloadMaxY = undefined;
-        const visibleRows: {
+        let visibleRows: {
             minY: number;
             maxY: number;
             item: ListItem;
-        }[] = this._cacheRows.filter(item => {
-            if (item.maxY <= this.contentOffset.y) {
-                this._nextReloadMinY = item.maxY;
+        }[] = [];
+        let startIndex = 0;
+        let left = 0;
+        let right = this._cacheRows.length - 1
+        while (true) {
+            if (Math.abs(right - left) <= 1) { startIndex = left; break; }
+            let mid = Math.ceil((right + left) / 2)
+            if (this._cacheRows[mid].minY <= contentOffset.y && this._cacheRows[mid].maxY >= contentOffset.y) {
+                startIndex = mid;
+                break;
             }
+            else if (this._cacheRows[mid].maxY < contentOffset.y) {
+                left = mid
+            }
+            else if (this._cacheRows[mid].minY > contentOffset.y) {
+                right = mid
+            }
+        }
+        if (startIndex > 0) {
+            this._nextReloadMinY = this._cacheRows[startIndex - 1].maxY;
+        }
+        else {
+            this._nextReloadMinY = 0
+        }
+        for (let index = startIndex; index < this._cacheRows.length; index++) {
+            const item = this._cacheRows[index];
             if (this._nextReloadMaxY === undefined && item.minY >= this.contentOffset.y + this.bounds.height) {
                 this._nextReloadMaxY = item.minY - this.bounds.height;
             }
-            return item.maxY > this.contentOffset.y && item.minY < this.contentOffset.y + this.bounds.height
-        });
+            if (item.maxY > this.contentOffset.y && item.minY < this.contentOffset.y + this.bounds.height) {
+                visibleRows.push(item)
+            }
+            else if (item.minY > this.contentOffset.y + this.bounds.height) {
+                break;
+            }
+        }
         const visibleCells: ListCell[] = visibleRows.filter(row => this._reusingCells.filter(cell => cell.currentItem === row.item).length == 0).map(row => {
             const cell = this._reusingCells.filter(cell => {
                 return !cell._isBusy && cell.reuseIdentifier === row.item.reuseIdentifier

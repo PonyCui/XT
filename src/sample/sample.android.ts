@@ -52,7 +52,7 @@ class FirstViewController extends ViewController {
             })
         }
         view.items = items
-        // view.backgroundColor = Color.yellowColor
+        view.backgroundColor = Color.yellowColor
         this.view.addSubview(view)
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", { view }))
         this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", { view }))
