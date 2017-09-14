@@ -15,10 +15,11 @@ class AppDelegate extends ApplicationDelegate {
 
 class TestCell extends ListCell {
 
-    label = new Label()
+    label: Label
 
-    constructor(rect?: Rect) {
-        super(rect);
+    init() {
+        super.init()
+        this.label = new Label()
         this.label.frame = RectMake(0, 0, 200, 44)
         this.contentView.addSubview(this.label);
     }

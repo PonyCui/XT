@@ -12,11 +12,14 @@ export class ListCell extends View {
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     onSelected?: () => void
     onRender?: () => void
-    readonly selectionView: View = new View();
-    readonly contentView: View = new View();
+    selectionView: View
+    contentView: View
     _isBusy = false
 
     init() {
+        super.init();
+        this.selectionView = new View();
+        this.contentView = new View();
         this.selectionView.backgroundColor = new Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
         this.selectionView.alpha = 0.0;
         this.addSubview(this.selectionView);
@@ -67,6 +70,7 @@ export class ListCell extends View {
 export class ListView extends ScrollView {
 
     init() {
+        super.init();
         this.alwaysBounceVertical = true;
     }
 

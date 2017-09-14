@@ -9,13 +9,16 @@ export class ScrollView extends View {
 
     onScroll?: (scrollView: ScrollView) => void
 
-    private readonly innerView: View = new View();
-    private readonly horizonalScrollIndicator: View = new View();
-    private readonly verticalScrollIndicator: View = new View();
+    private innerView: View
+    private horizonalScrollIndicator: View
+    private verticalScrollIndicator: View
     private scroller: any;
 
     init() {
         super.init();
+        this.innerView = new View();
+        this.horizonalScrollIndicator = new View();
+        this.verticalScrollIndicator = new View();
         super.addSubview(this.innerView);
         this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.horizonalScrollIndicator.cornerRadius = 1.0;
