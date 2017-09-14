@@ -9,13 +9,11 @@ import { Color } from "../../interface/Color";
 
 export class Button extends View {
 
-    private imageView: ImageView;
-    private titleLabel: Label
+    private readonly imageView: ImageView = new ImageView();
+    private readonly titleLabel: Label = new Label();
 
-    constructor(rect: Rect) {
-        super(rect)
-        this.imageView = new ImageView();
-        this.titleLabel = new Label();
+    init() {
+        super.init();
         this.titleLabel.numberOfLines = 1;
         this.titleLabel.textAlignment = TextAlignment.Center
         this.titleLabel.lineBreakMode = LineBreakMode.TruncatingTail
