@@ -20,6 +20,8 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, strong) id keyboardWillShowObserver;
+@property (nonatomic, strong) id keyboardWillHideObserver;
 
 @end
 
@@ -34,7 +36,12 @@
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
     view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
+    [view setupKeyboardNotifications];
     return view;
+}
+
+- (void)dealloc {
+    [self unsetKeyboardNotifications];
 }
 
 - (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
@@ -52,6 +59,36 @@
 
 - (void)xtr_setRootViewController:(JSValue *)viewController {
     self.rootViewController = [viewController toViewController];
+}
+
+#pragma mark - Keyboard Notifications
+
+- (void)setupKeyboardNotifications {
+    __weak XTRWindow *welf = self;
+    self.keyboardWillShowObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        __strong XTRWindow *strongSelf = welf;
+        JSValue *value = strongSelf.scriptObject.value;
+        if (value) {
+            [value invokeMethod:@"handleKeyboardShow" withArguments:@[
+                                                                      [JSValue fromRect:[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue]],
+                                                                      note.userInfo[UIKeyboardAnimationDurationUserInfoKey] ?: @(0),
+                                                                      ]];
+        }
+    }];
+    self.keyboardWillHideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        __strong XTRWindow *strongSelf = welf;
+        JSValue *value = strongSelf.scriptObject.value;
+        if (value) {
+            [value invokeMethod:@"handleKeyboardHide" withArguments:@[
+                                                                      note.userInfo[UIKeyboardAnimationDurationUserInfoKey] ?: @(0),
+                                                                      ]];
+        }
+    }];
+}
+
+- (void)unsetKeyboardNotifications {
+    [[NSNotificationCenter defaultCenter] removeObserver:self.keyboardWillShowObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self.keyboardWillHideObserver];
 }
 
 #pragma mark - XTRViewProtocol

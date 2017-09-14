@@ -82,6 +82,9 @@ import { NavigationController as INavigationController } from './interface/Navig
 import { NavigationController as MNavigationController } from './implementation/ios/NavigationController'
 export class NavigationController extends MNavigationController { }
 
-import { TextField as ITextField } from './interface/TextField'
+import { TextField as ITextField, TextFieldViewMode as ITextFieldViewMode, ReturnKeyType as IReturnKeyType, KeyboardType as IKeyboardType } from './interface/TextField'
 import { TextField as MTextField } from './implementation/ios/TextField'
 export class TextField extends MTextField {}
+export const TextFieldViewMode = ITextFieldViewMode
+export const ReturnKeyType = IReturnKeyType
+export const KeyboardType = IKeyboardType

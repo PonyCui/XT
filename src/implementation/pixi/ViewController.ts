@@ -1,4 +1,5 @@
 import { View } from "./View";
+import { Rect } from "../../interface/Rect";
 
 export class ViewController {
 
@@ -81,5 +82,8 @@ export class ViewController {
         }
         return undefined;
     }
+
+    keyboardWillShow(frame: Rect, duration: number): void { }
+    keyboardWillHide(duration: number): void { }
 
 }

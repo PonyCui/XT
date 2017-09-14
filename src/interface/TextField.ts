@@ -10,6 +10,21 @@ export enum TextFieldViewMode {
     Always,
 }
 
+export enum KeyboardType {
+    Default = 0,
+    ASCIICapable = 1,
+    NumbersAndPunctuation = 2,
+}
+
+export enum ReturnKeyType {
+    Default = 0,
+    Go = 1,
+    Next = 4,
+    Search = 6,
+    Send = 7,
+    Done = 9,
+}
+
 export class TextField extends View {
 
     text?: string;
@@ -26,6 +41,15 @@ export class TextField extends View {
     rightView?: View
     rightViewMode: TextFieldViewMode = TextFieldViewMode.Never
 
+    // TextInput
+    allowAutocapitalization: Boolean = true
+    allowAutocorrection: Boolean = true
+    allowSpellChecking: Boolean = true
+    keyboardType: KeyboardType = KeyboardType.Default
+    returnKeyType: ReturnKeyType = ReturnKeyType.Default
+    enablesReturnKeyAutomatically: Boolean = false
+    secureTextEntry: Boolean = false
+
     // TextField Delegate
     shouldBeginEditing?: () => Boolean = undefined
     didBeginEditing?: () => void = undefined
@@ -34,5 +58,9 @@ export class TextField extends View {
     shouldChange?: (inRange: { location: number, length: number }, replacementString: string) => Boolean = undefined
     shouldClear?: () => Boolean = undefined
     shouldReturn?: () => Boolean = undefined
+
+    // methods
+    focus(): void { }
+    blur(): void { }
 
 }

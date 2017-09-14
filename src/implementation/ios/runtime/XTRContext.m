@@ -21,6 +21,9 @@
     self = [super init];
     if (self) {
         _thread = thread;
+        [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
+            NSLog(@"%@", [exception toString]);
+        }];
     }
     return self;
 }

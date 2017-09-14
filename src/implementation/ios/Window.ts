@@ -34,6 +34,14 @@ export class Window extends View {
         this.nativeObject.xtr_makeKeyAndVisible();
     }
 
+    handleKeyboardShow(frame: Rect, duration: number) {
+        this.rootViewController && this.rootViewController.keyboardWillShow(frame, duration)
+    }
+
+    handleKeyboardHide(duration: number) {
+        this.rootViewController && this.rootViewController.keyboardWillHide(duration)
+    }
+
 }
 
 if ((window as any).XTRObjClasses === undefined) {

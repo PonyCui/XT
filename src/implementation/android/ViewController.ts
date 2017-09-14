@@ -1,5 +1,6 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
+import { Rect } from "../../interface/Rect";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -73,6 +74,9 @@ export class ViewController {
     public get navigationController(): NavigationControllerInterface | undefined {
         return this.nativeObject.xtr_navigationController();
     }
+
+    keyboardWillShow(frame: Rect, duration: number): void { }
+    keyboardWillHide(duration: number): void { }
 
 }
 

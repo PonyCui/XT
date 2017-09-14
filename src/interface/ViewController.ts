@@ -1,4 +1,5 @@
 import { View } from "./View";
+import { Rect } from "./Rect";
 
 interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -25,6 +26,9 @@ export class ViewController {
     removeFromParentViewController(): void { }
     willMoveToParentViewController(parent?: ViewController): void { }
     didMoveToParentViewController(parent?: ViewController): void { }
+
+    keyboardWillShow(frame: Rect, duration: number): void { }
+    keyboardWillHide(duration: number): void { }
 
     readonly navigationController?: NavigationControllerInterface
 

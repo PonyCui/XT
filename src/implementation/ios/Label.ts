@@ -40,7 +40,6 @@ export class Label extends View {
         }
     }
 
-
     public get text(): string {
         return this.nativeObject.xtr_text();
     }
@@ -48,7 +47,6 @@ export class Label extends View {
     public set text(value: string) {
         this.nativeObject.xtr_setText(value);
     }
-
 
 	public get font(): Font | undefined {
 		return this.nativeObject.xtr_font();
@@ -66,7 +64,6 @@ export class Label extends View {
         this.nativeObject.xtr_setTextColor(value);
     }
 
-
     public get textAlignment(): TextAlignment {
         return this.nativeObject.xtr_textAlignment();
     }
@@ -74,7 +71,6 @@ export class Label extends View {
     public set textAlignment(value: TextAlignment) {
         this.nativeObject.xtr_setTextAlignment(value);
     }
-
 
     public get numberOfLines(): number {
         return this.nativeObject.xtr_numberOfLines();
