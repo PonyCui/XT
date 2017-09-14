@@ -81,3 +81,7 @@ export class ViewController extends MViewController { }
 import { NavigationController as INavigationController } from './interface/NavigationController'
 import { NavigationController as MNavigationController } from './implementation/ios/NavigationController'
 export class NavigationController extends MNavigationController { }
+
+import { TextField as ITextField } from './interface/TextField'
+import { TextField as MTextField } from './implementation/ios/TextField'
+export class TextField extends MTextField {}

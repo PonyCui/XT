@@ -8,14 +8,34 @@
 
 #import "XTRTextField.h"
 
+@interface XTRTextField ()
+
+@property (nonatomic, strong) UITextField *innerView;
+@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, strong) JSManagedValue *scriptObject;
+
+@end
+
 @implementation XTRTextField
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
++ (NSString *)name {
+    return @"XTRTextField";
 }
-*/
+
++ (XTRTextField *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
+    XTRTextField *view = [[XTRTextField alloc] initWithFrame:[frame toRect]];
+    view.userInteractionEnabled = YES;
+    view.innerView = [[UITextField alloc] init];
+    [view addSubview:view.innerView];
+    view.objectUUID = [[NSUUID UUID] UUIDString];
+    view.context = scriptObject.context;
+    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
+    return view;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.innerView.frame = self.bounds;
+}
 
 @end

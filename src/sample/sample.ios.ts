@@ -1,6 +1,6 @@
 declare const XTRTest: any
 
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation } from '../main.ios'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, TextField } from '../main.ios'
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -15,51 +15,23 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new ImageView();
-        // view.frame = RectMake(0, 0, 0, 0)
-        view.backgroundColor = Color.yellowColor
+        const view = new TextField();
+        view.frame = RectMake(20, 20, 200, 44)
+        // view.backgroundColor = Color.yellowColor
+        view.borderWidth = 1
+        view.borderColor = Color.blackColor
+        view.cornerRadius = 22.0
+        // view.backgroundColor = Color.yellowColor
         // view.contentMode = ContentMode.ScaleAspectFill
-        Image.fromAssetsWithScales('success', [2], (image) => {
-            view.image = image
-        })
+        // Image.fromAssetsWithScales('success', [2], (image) => {
+        //     view.image = image
+        // })
         // view.backgroundColor = Color.yellowColor
         this.view.addSubview(view);
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("|-0-[view]", { view }))
         // this.view.addConstraints(LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]", { view }))
-        this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterX, LayoutRelation.Equal, undefined, LayoutAttribute.CenterX, 0.0, 1.0))
-        this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterY, LayoutRelation.Equal, undefined, LayoutAttribute.CenterY, 0.0, 1.0))
-    }
-
-}
-
-class SecondViewController extends ViewController {
-
-    viewDidLoad() {
-        const view = new View();
-        view.frame = RectMake(80, 80, 88, 88)
-        view.backgroundColor = Color.whiteColor;
-        view.userInteractionEnabled = true;
-        view.onTap = () => {
-            this.navigationController && this.navigationController.pushViewController(new ThirdViewController(), true)
-        }
-        this.view.addSubview(view);
-        this.view.backgroundColor = Color.greenColor
-    }
-
-}
-
-class ThirdViewController extends ViewController {
-
-    viewDidLoad() {
-        const view = new View();
-        view.frame = RectMake(80, 80, 88, 88)
-        view.backgroundColor = Color.whiteColor;
-        view.userInteractionEnabled = true;
-        view.onTap = () => {
-            this.navigationController && this.navigationController.popToViewController(this.navigationController.childViewControllers[0]);
-        }
-        this.view.addSubview(view);
-        this.view.backgroundColor = Color.blueColor
+        // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterX, LayoutRelation.Equal, undefined, LayoutAttribute.CenterX, 0.0, 1.0))
+        // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterY, LayoutRelation.Equal, undefined, LayoutAttribute.CenterY, 0.0, 1.0))
     }
 
 }

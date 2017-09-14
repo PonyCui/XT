@@ -68,3 +68,6 @@ export class ViewController extends IViewController {}
 
 import { NavigationController as INavigationController } from './interface/NavigationController'
 export class NavigationController extends INavigationController {}
+
+import { TextField as ITextField } from './interface/TextField'
+export class TextField extends ITextField {}

@@ -42,4 +42,8 @@ export class Color {
     static greenColor: Color = new Color(0.0, 1.0, 0.0)
     static blueColor: Color = new Color(0.0, 0.0, 1.0)
 
+    static colorWithWhite(white: number, alpha: number) {
+        return new Color(white, white, white, alpha)
+    }
+
 }

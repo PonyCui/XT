@@ -7,7 +7,16 @@
 //
 
 #import "XTRView.h"
+#import "XTRComponent.h"
 
-@interface XTRTextField : XTRView
+@class XTRTextField;
+
+@protocol XTRTextFieldExport <JSExport>
+
++ (XTRTextField *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
+
+@end
+
+@interface XTRTextField : XTRView<XTRComponent, XTRTextFieldExport>
 
 @end
