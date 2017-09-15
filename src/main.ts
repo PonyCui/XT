@@ -74,3 +74,6 @@ export class TextField extends ITextField { }
 export const TextFieldViewMode = ITextFieldViewMode
 export const ReturnKeyType = IReturnKeyType
 export const KeyboardType = IKeyboardType
+
+import { TextView as ITextView } from './interface/TextView'
+export class TextView extends ITextView { }

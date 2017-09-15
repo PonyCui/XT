@@ -27,6 +27,7 @@
 #import "XTRListView.h"
 #import "XTRListCell.h"
 #import "XTRTextField.h"
+#import "XTRTextView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -70,6 +71,7 @@ static NSString *globalBridgeScript;
                             [XTRListView class],
                             [XTRListCell class],
                             [XTRTextField class],
+                            [XTRTextView class],
                             ];
         [_context evaluateScript:globalBridgeScript];
     }

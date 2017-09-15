@@ -1,34 +1,33 @@
 //
-//  XTRTextField.m
+//  XTRTextView.m
 //  XTSample
 //
-//  Created by 崔明辉 on 2017/9/13.
+//  Created by 崔明辉 on 2017/9/15.
 //  Copyright © 2017年 UED Center, YY Inc. All rights reserved.
 //
 
-#import "XTRTextField.h"
+#import "XTRTextView.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
 
-@interface XTRTextField ()<UITextFieldDelegate>
+@interface XTRTextView ()<UITextViewDelegate>
 
-@property (nonatomic, strong) UITextField *innerView;
+@property (nonatomic, strong) UITextView *innerView;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
-@property (nonatomic, strong) UIColor *placeholderColor;
 
 @end
 
-@implementation XTRTextField
+@implementation XTRTextView
 
 + (NSString *)name {
-    return @"XTRTextField";
+    return @"XTRTextView";
 }
 
-+ (XTRTextField *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
-    XTRTextField *view = [[XTRTextField alloc] initWithFrame:[frame toRect]];
++ (XTRTextView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
+    XTRTextView *view = [[XTRTextView alloc] initWithFrame:[frame toRect]];
     view.userInteractionEnabled = YES;
-    view.innerView = [[UITextField alloc] init];
+    view.innerView = [[UITextView alloc] init];
     view.innerView.delegate = view;
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
@@ -105,84 +104,8 @@
     }
 }
 
-- (NSString *)xtr_placeholder {
-    return self.innerView.placeholder;
-}
-
-- (void)xtr_setPlaceholder:(JSValue *)placeholder {
-    self.innerView.placeholder = [placeholder toString];
-    [self resetAttributedPlaceholder];
-}
-
-- (NSDictionary *)xtr_placeholderColor {
-    return [JSValue fromColor:self.placeholderColor ?: [UIColor colorWithWhite:0.3 alpha:1.0]];
-}
-
-- (void)xtr_setPlaceholderColor:(JSValue *)textColor {
-    self.placeholderColor = [textColor toColor];
-    [self resetAttributedPlaceholder];
-}
-
-- (void)resetAttributedPlaceholder {
-    if (self.innerView.placeholder != nil) {
-        [self.innerView setAttributedPlaceholder:[[NSAttributedString alloc]
-                                                  initWithString:self.innerView.placeholder
-                                                      attributes:@{
-                                                                   NSForegroundColorAttributeName: self.placeholderColor ?: [UIColor colorWithWhite:0.7 alpha:1.0]
-                                                                   }]];
-    }
-}
-
-- (BOOL)xtr_clearsOnBeginEditing {
-    return self.innerView.clearsOnBeginEditing;
-}
-
-- (void)xtr_setClearsOnBeginEditing:(JSValue *)clearsOnBeginEditing {
-    self.innerView.clearsOnBeginEditing = [clearsOnBeginEditing toBool];
-}
-
 - (BOOL)xtr_editing {
-    return self.innerView.editing;
-}
-
-- (NSNumber *)xtr_clearButtonMode {
-    return @(self.innerView.clearButtonMode);
-}
-
-- (void)xtr_setClearButtonMode:(JSValue *)clearButtonMode{
-    self.innerView.clearButtonMode = [clearButtonMode toInt32];
-}
-
-- (JSValue *)xtr_leftView {
-    return [JSValue fromObject:self.innerView.leftView context:self.context];
-}
-
-- (void)xtr_setLeftView:(JSValue *)leftView {
-    self.innerView.leftView = [leftView toView];
-}
-
-- (NSNumber *)xtr_leftViewMode {
-    return @(self.innerView.leftViewMode);
-}
-
-- (void)xtr_setLeftViewMode:(JSValue *)leftViewMode {
-    self.innerView.leftViewMode = [leftViewMode toInt32];
-}
-
-- (JSValue *)xtr_rightView {
-    return [JSValue fromObject:self.innerView.rightView context:self.context];
-}
-
-- (void)xtr_setRightView:(JSValue *)rightView {
-    self.innerView.rightView = [rightView toView];
-}
-
-- (NSNumber *)xtr_rightViewMode {
-    return @(self.innerView.rightViewMode);
-}
-
-- (void)xtr_setRightViewMode:(JSValue *)rightViewMode {
-    self.innerView.rightViewMode = [rightViewMode toInt32];
+    return self.innerView.isFirstResponder;
 }
 
 - (BOOL)xtr_allowAutocapitalization {
@@ -248,9 +171,9 @@
     [self.innerView resignFirstResponder];
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - UITextViewDelegate
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
     JSValue *value = self.scriptObject.value;
     if (value) {
         return [[value invokeMethod:@"handleShouldBeginEditing" withArguments:@[]] toBool];
@@ -258,14 +181,14 @@
     return YES;
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
+- (void)textViewDidBeginEditing:(UITextView *)textView {
     JSValue *value = self.scriptObject.value;
     if (value) {
         [value invokeMethod:@"handleDidBeginEditing" withArguments:@[]];
     }
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
     JSValue *value = self.scriptObject.value;
     if (value) {
         return [[value invokeMethod:@"handleShouldEndEditing" withArguments:@[]] toBool];
@@ -273,14 +196,14 @@
     return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+- (void)textViewDidEndEditing:(UITextView *)textView {
     JSValue *value = self.scriptObject.value;
     if (value) {
         [value invokeMethod:@"handleDidEndEditing" withArguments:@[]];
     }
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     JSValue *value = self.scriptObject.value;
     if (value) {
         return [[value invokeMethod:@"handleShouldChange" withArguments:@[
@@ -288,24 +211,8 @@
                                                                               @"location": @(range.location),
                                                                               @"length": @(range.length),
                                                                               },
-                                                                          string ?: [JSValue valueWithUndefinedInContext:self.context],
+                                                                          text ?: [JSValue valueWithUndefinedInContext:self.context],
                                                                           ]] toBool];
-    }
-    return YES;
-}
-
-- (BOOL)textFieldShouldClear:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
-    if (value) {
-        return [[value invokeMethod:@"handleShouldClear" withArguments:@[]] toBool];
-    }
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
-    if (value) {
-        return [[value invokeMethod:@"handleShouldReturn" withArguments:@[]] toBool];
     }
     return YES;
 }
