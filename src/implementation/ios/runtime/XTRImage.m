@@ -84,6 +84,22 @@
     }
 }
 
++ (void)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale success:(JSValue *)success {
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:value options:kNilOptions];
+    if (data != nil) {
+        UIImage *image = [UIImage imageWithData:data scale:scale];
+        if (image != nil) {
+            XTRImage *nativeObject = [XTRImage new];
+            nativeObject.nativeImage = image;
+            if (success != nil) {
+                [success xtr_callWithArguments:@[
+                                                 [JSValue fromObject:nativeObject context:success.context]
+                                                 ]];
+            }
+        }
+    }
+}
+
 - (NSDictionary *)xtr_size {
     return [JSValue fromSize:self.nativeImage.size];
 }

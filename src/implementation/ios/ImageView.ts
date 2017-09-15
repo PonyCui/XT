@@ -24,6 +24,10 @@ export class Image {
         this.fromAssets(named, success, failure);
     }
 
+    static fromBase64(value: string, scale: number, success: (image: Image) => void) {
+        XTRImage.xtr_fromBase64ScaleSuccess(value, scale, success);
+    }
+
     public nativeObject: any;
 
     constructor(nativeObject?: any) {
@@ -75,15 +79,15 @@ export class ImageView extends View {
 
     private _image?: Image;
 
-	public get image(): Image | undefined {
-		return this._image;
-	}
+    public get image(): Image | undefined {
+        return this._image;
+    }
 
-	public set image(value: Image | undefined) {
+    public set image(value: Image | undefined) {
         this._image = value;
         this.nativeObject.xtr_setImage(value);
     }
-    
+
 }
 
 if ((window as any).XTRObjClasses === undefined) {

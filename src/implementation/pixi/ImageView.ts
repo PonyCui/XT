@@ -54,6 +54,13 @@ export class Image {
         return this.fromAssets(named + "@" + target + "x.png", success, failure);
     }
 
+    static fromBase64(value: string, scale: number, success: (image: Image) => void) {
+        const baseTexture = PIXI.BaseTexture.fromImage("data:image/png;base64," + value);
+        if (baseTexture) {
+            success(new Image(baseTexture, { width: baseTexture.realWidth / scale, height: baseTexture.realHeight / scale }, scale, ImageRenderingMode.Original));
+        }
+    }
+
     static loadImage() {
         clearImmediate(imageLoaderTimerHandler);
         imageLoaderTimerHandler = setImmediate(() => {
