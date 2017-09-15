@@ -213,6 +213,7 @@ class XTRView: XTRComponent() {
                 sharedHandler = android.os.Handler(context.mainLooper)
             }
             clipChildren = false
+            setWillNotDraw(false)
         }
 
         // Mark: View Geometry
@@ -259,7 +260,6 @@ class XTRView: XTRComponent() {
         var frame: XTRRect? = null
             set(value) {
                 field = value
-                resetPath()
                 requestLayout()
             }
 
@@ -309,6 +309,11 @@ class XTRView: XTRComponent() {
         }
 
         var bounds: XTRRect = XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
+            set(value) {
+                field = value
+                resetPath()
+                invalidate()
+            }
 
         fun xtr_bounds(): XTRRect {
             return this.bounds

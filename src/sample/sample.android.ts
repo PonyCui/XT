@@ -20,7 +20,9 @@ class FirstViewController extends ViewController {
         const view2 = new TextField();
         view2.frame = RectMake(44, 0, 200, 44)
         view2.borderWidth = 1
+        view2.cornerRadius = 22
         view2.borderColor = Color.blackColor
+        // view2.backgroundColor = Color.yellowColor
         view2.returnKeyType = ReturnKeyType.Next;
         this.view.addSubview(view2);
         const view = new TextField();
@@ -47,7 +49,7 @@ class FirstViewController extends ViewController {
         view.rightView = rightView
         view.rightViewMode = TextFieldViewMode.Always
         view.clearButtonMode = TextFieldViewMode.WhileEditing
-        this.view.addSubview(view);
+        // this.view.addSubview(view);
 
         this.view.onTap = () => {
             view2.blur()
