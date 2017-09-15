@@ -234,8 +234,9 @@ export class TextField extends View {
     focus(): void {
         this.nativeObject.xtr_focus();
     }
-    
+
     blur(): void {
+        if (!this.handleShouldEndEditing()) { return }
         this.nativeObject.xtr_blur();
     }
 

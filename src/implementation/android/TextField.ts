@@ -178,18 +178,21 @@ export class TextField extends View {
     }
 
     public get enablesReturnKeyAutomatically(): Boolean {
-        return this.nativeObject.xtr_enablesReturnKeyAutomatically();
+        return false
     }
 
-    public set enablesReturnKeyAutomatically(value: Boolean) {
-        this.nativeObject.xtr_setEnablesReturnKeyAutomatically(value);
-    }
+    public set enablesReturnKeyAutomatically(value: Boolean) { }
 
     public get secureTextEntry(): Boolean {
         return this.nativeObject.xtr_secureTextEntry;
     }
 
     public set secureTextEntry(value: Boolean) {
+        if (value) {
+            this.allowAutocapitalization = false
+            this.allowAutocorrection = false
+            this.allowSpellChecking = false
+        }
         this.nativeObject.xtr_setSecureTextEntry(value);
     }
 

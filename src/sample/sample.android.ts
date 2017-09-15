@@ -1,6 +1,6 @@
 declare const XTRTest: any
 
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake, TextField, TextFieldViewMode } from '../main.android'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake, TextField, TextFieldViewMode, KeyboardType, ReturnKeyType } from '../main.android'
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -17,7 +17,17 @@ class FirstViewController extends ViewController {
     textField: TextField
 
     viewDidLoad() {
+        const view2 = new TextField();
+        view2.frame = RectMake(44, 0, 200, 44)
+        view2.borderWidth = 1
+        view2.borderColor = Color.blackColor
+        view2.returnKeyType = ReturnKeyType.Next;
+        this.view.addSubview(view2);
         const view = new TextField();
+        // view.keyboardType = KeyboardType.NumbersAndPunctuation
+        view.returnKeyType = ReturnKeyType.Done
+        // view.secureTextEntry = true
+        // view.allowAutocapitalization = false
         view.backgroundColor = Color.yellowColor
         view.frame = RectMake(44, 44, 200, 44)
         this.textField = view;
@@ -34,13 +44,23 @@ class FirstViewController extends ViewController {
         view.leftViewMode = TextFieldViewMode.WhileEditing
         const rightView = new View(RectMake(0, 0, 22, 0))
         rightView.backgroundColor = Color.greenColor
-        // view.rightView = rightView
-        view.rightViewMode = TextFieldViewMode.WhileEditing
+        view.rightView = rightView
+        view.rightViewMode = TextFieldViewMode.Always
         view.clearButtonMode = TextFieldViewMode.WhileEditing
         this.view.addSubview(view);
-        setTimeout(() => {
-            console.log(view.editing)
-        }, 5000)
+
+        this.view.onTap = () => {
+            view2.blur()
+            view.blur()
+        }
+
+        view.shouldChange = (range, replacementString) => {
+            if (replacementString === "A") {
+                return false
+            }
+            return true
+        }
+
         // view.register(TestCell, "Cell")
         // let items = [];
         // for (let index = 0; index < 100; index++) {

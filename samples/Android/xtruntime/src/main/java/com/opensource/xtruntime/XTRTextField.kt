@@ -1,12 +1,27 @@
 package com.opensource.xtruntime
 
 import android.graphics.Typeface
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.text.method.DigitsKeyListener
+import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.Undefined
 import java.util.*
+import android.app.Activity
+import android.content.Context
+import android.graphics.Color
+import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import org.mozilla.javascript.NativeJavaObject
+
 
 /**
  * Created by cuiminghui on 2017/9/14.
@@ -22,23 +37,83 @@ class XTRTextField: XTRComponent() {
         return null
     }
 
+    class Range(val location: Int, val length: Int)
+
     class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
         val editText = EditText(xtrContext.appContext)
         val onFocusListener = OnFocusChangeListener { _, _ ->
             if (editText.isFocused) {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldBeginEditing", arrayOf()) as? Boolean)?.let {
+                    if (!it) {
+                        this.xtr_blur()
+                        return@OnFocusChangeListener
+                    }
+                }
                 if (clearsOnBeginEditing) {
                     editText.editableText?.clear()
                 }
+                xtrContext.invokeMethod(scriptObject, "handleDidBeginEditing", arrayOf())
+            }
+            else {
+                xtrContext.invokeMethod(scriptObject, "handleDidEndEditing", arrayOf())
             }
             resetLayout()
         }
+        var lastResult: String = ""
+        var lastCursorStart: Int = 0
+        var lastCursorEnd: Int = 0
+        var onRevert = false
+        val onTextChangeListener = object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (clearViewMode > 0) {
+                    resetLayout()
+                }
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (!onRevert && (p1 > 0 || p2 > 0 || p3 > 0)){
+                    val replacementString: Any = if (p1 + p3 <= p0?.length ?: 0) {
+                        if (p3 > 0) p0?.substring(p1, p1 + p3) ?: Undefined.instance else Undefined.instance
+                    } else {
+                        Undefined.instance
+                    }
+                    (xtrContext.invokeMethod(scriptObject , "handleShouldChange", arrayOf(
+                        Range(p1, if (p2 > p3) p3 else p2 - p3), replacementString
+                    )) as? Boolean)?.let {
+                        if (!it) {
+                            onRevert = true
+                            post {
+                                editText.editableText.clear()
+                                editText.editableText.append(lastResult)
+                                editText.setSelection(lastCursorStart, lastCursorEnd)
+                                onRevert = false
+                            }
+                        }
+                        else {
+                            lastResult = editText.editableText.toString()
+                            lastCursorStart = editText.selectionStart
+                            lastCursorEnd = editText.selectionEnd
+                        }
+                    }
+                }
+            }
+        }
 
         init {
+            isFocusableInTouchMode = true
             editText.setSingleLine(true)
             editText.background = null
+            editText.setTextColor(Color.BLACK)
             editText.gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
             editText.onFocusChangeListener = this.onFocusListener
+            editText.addTextChangedListener(onTextChangeListener)
+            editText.setOnEditorActionListener { _, _, _ ->
+                (xtrContext.invokeMethod(scriptObject, "handleShouldReturn", arrayOf()) as? Boolean)?.let {
+                    return@setOnEditorActionListener it
+                }
+                return@setOnEditorActionListener false
+            }
             xtr_setUserInteractionEnabled(true)
             addView(editText, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
@@ -59,8 +134,9 @@ class XTRTextField: XTRComponent() {
 
         fun resetLayout() {
             val shouldShowLeftView = leftView != null && ((leftViewMode == 1 && editText.isFocused) || (leftViewMode == 2 && !editText.isFocused) || leftViewMode == 3)
-            val shouldShowRightView = rightView != null && ((rightViewMode == 1 && editText.isFocused) || (rightViewMode == 2 && !editText.isFocused) || rightViewMode == 3)
-            val shouldShowClearView = !shouldShowRightView && clearView != null && ((clearViewMode == 1 && editText.isFocused) || (clearViewMode == 2 && !editText.isFocused) || clearViewMode == 3)
+            var shouldShowRightView = rightView != null && ((rightViewMode == 1 && editText.isFocused) || (rightViewMode == 2 && !editText.isFocused) || rightViewMode == 3)
+            val shouldShowClearView = clearView != null && ((clearViewMode == 1 && editText.isFocused && editText.text.isNotEmpty()) || (clearViewMode == 2 && !editText.isFocused) || clearViewMode == 3)
+            if (shouldShowClearView) { shouldShowRightView = false }
             leftView?.xtr_setHidden(!shouldShowLeftView)
             rightView?.xtr_setHidden(!shouldShowRightView)
             clearView?.xtr_setHidden(!shouldShowClearView)
@@ -208,6 +284,9 @@ class XTRTextField: XTRComponent() {
         }
 
         fun xtr_onClearButtonTap() {
+            (xtrContext.invokeMethod(scriptObject, "handleShouldClear", arrayOf()) as? Boolean)?.let {
+                if (!it) { return }
+            }
             this.editText.editableText?.clear()
         }
 
@@ -263,6 +342,159 @@ class XTRTextField: XTRComponent() {
 
         fun xtr_setRightViewMode(value: Any?) {
             this.rightViewMode = (value as? Double ?: 0.0).toInt()
+        }
+
+        fun xtr_allowAutocapitalization(): Boolean {
+            return this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES > 0
+        }
+
+        fun xtr_setAllowAutocapitalization(value: Any?) {
+            (value as? Boolean)?.let {
+                if (it) {
+                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES <= 0) {
+                        this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                    }
+                }
+                else {
+                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES > 0) {
+                        this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                    }
+                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS > 0) {
+                        this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+                    }
+                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_WORDS > 0) {
+                        this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                    }
+                }
+            }
+        }
+
+        fun xtr_allowAutocorrection(): Boolean {
+            return this.editText.inputType and InputType.TYPE_TEXT_FLAG_AUTO_CORRECT > 0
+        }
+
+        fun xtr_setAllowAutocorrection(value: Any?) {
+            (value as? Boolean)?.let {
+                if (it) {
+                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_AUTO_CORRECT <= 0) {
+                        this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+                    }
+                }
+                else {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+                }
+            }
+        }
+
+        fun xtr_allowSpellChecking(): Boolean {
+            return this.editText.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS > 0
+        }
+
+        fun xtr_setAllowSpellChecking(value: Any?) {
+            (value as? Boolean)?.let {
+                if (it) {
+                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS <= 0) {
+                        this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                    }
+                }
+                else {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                }
+            }
+        }
+
+        fun xtr_keyboardType(): Int {
+            return when {
+                this.editText.inputType and InputType.TYPE_CLASS_TEXT > 0 -> 1
+                this.editText.inputType and InputType.TYPE_CLASS_NUMBER > 0 -> 2
+                else -> 0
+            }
+        }
+
+        fun xtr_setKeyboardType(value: Any?) {
+            (value as? Double)?.let {
+                if (this.editText.inputType and InputType.TYPE_CLASS_TEXT > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_TEXT
+                }
+                if (this.editText.inputType and InputType.TYPE_CLASS_NUMBER > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_NUMBER
+                }
+                if (this.editText.inputType and InputType.TYPE_NUMBER_FLAG_DECIMAL > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_NUMBER_FLAG_DECIMAL
+                }
+                if (this.editText.inputType and InputType.TYPE_NUMBER_FLAG_SIGNED > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_NUMBER_FLAG_SIGNED
+                }
+                when (it.toInt()) {
+                    0 -> {
+                        this.editText.inputType = this.editText.inputType or InputType.TYPE_CLASS_TEXT
+                    }
+                    1 -> {
+                        this.editText.inputType = this.editText.inputType or InputType.TYPE_CLASS_TEXT
+                    }
+                    2 -> {
+                        if (this.editText.inputType and InputType.TYPE_CLASS_NUMBER <= 0) {
+                            this.editText.inputType = this.editText.inputType or
+                                            InputType.TYPE_CLASS_NUMBER or
+                                            InputType.TYPE_NUMBER_FLAG_DECIMAL or
+                                            InputType.TYPE_NUMBER_FLAG_SIGNED
+                        }
+                    }
+                }
+            }
+        }
+
+        fun xtr_returnKeyType(): Int {
+            return when (this.editText.imeOptions) {
+                EditorInfo.IME_ACTION_GO -> 1
+                EditorInfo.IME_ACTION_NEXT -> 4
+                EditorInfo.IME_ACTION_SEARCH -> 6
+                EditorInfo.IME_ACTION_SEND -> 7
+                EditorInfo.IME_ACTION_DONE -> 8
+                else -> 0
+            }
+        }
+
+        fun xtr_setReturnKeyType(value: Any?) {
+            (value as? Double)?.let {
+                when (it.toInt()) {
+                    1 -> this.editText.imeOptions = EditorInfo.IME_ACTION_GO
+                    4 -> this.editText.imeOptions = EditorInfo.IME_ACTION_NEXT
+                    6 -> this.editText.imeOptions = EditorInfo.IME_ACTION_SEARCH
+                    7 -> this.editText.imeOptions = EditorInfo.IME_ACTION_SEND
+                    8 -> this.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+                    else -> this.editText.imeOptions = 0
+                }
+            }
+        }
+
+        fun xtr_secureTextEntry(): Boolean {
+            return this.editText.transformationMethod is PasswordTransformationMethod
+        }
+
+        fun xtr_setSecureTextEntry(value: Any?) {
+            (value as? Boolean)?.let {
+                if (it) this.editText.transformationMethod = PasswordTransformationMethod()
+                else this.editText.transformationMethod = null
+            }
+
+        }
+
+        fun xtr_focus() {
+            this.editText.requestFocus()
+        }
+
+        fun xtr_blur() {
+            if (this.editText.isFocused) {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldEndEditing", arrayOf()) as? Boolean)?.let {
+                    if (!it) {
+                        return
+                    }
+                }
+                this.editText.clearFocus()
+                val inputMethodManager = xtrContext.appContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
+            }
         }
 
     }
