@@ -129,7 +129,7 @@
         [self.innerView setAttributedPlaceholder:[[NSAttributedString alloc]
                                                   initWithString:self.innerView.placeholder
                                                       attributes:@{
-                                                                   NSForegroundColorAttributeName: self.placeholderColor ?: [UIColor colorWithWhite:0.3 alpha:1.0]
+                                                                   NSForegroundColorAttributeName: self.placeholderColor ?: [UIColor colorWithWhite:0.7 alpha:1.0]
                                                                    }]];
     }
 }

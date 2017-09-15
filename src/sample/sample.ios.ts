@@ -1,6 +1,7 @@
 declare const XTRTest: any
 
 import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, TextField, TextFieldViewMode } from '../main.ios'
+import { Rect } from '../interface/Rect';
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -14,9 +15,12 @@ class AppDelegate extends ApplicationDelegate {
 
 class FirstViewController extends ViewController {
 
+    textField: TextField
+
     viewDidLoad() {
         const view = new TextField();
-        view.frame = RectMake(20, 20, 200, 44)
+        this.textField = view;
+        view.frame = RectMake(20, this.view.bounds.height - 44, 200, 44)
         // view.text = "Hello, World!"
         view.placeholder = "输入用户名"
         view.placeholderColor = Color.colorWithWhite(0.5, 1.0)
@@ -42,12 +46,22 @@ class FirstViewController extends ViewController {
         // this.view.addConstraint(new LayoutConstraint(view, LayoutAttribute.CenterY, LayoutRelation.Equal, undefined, LayoutAttribute.CenterY, 0.0, 1.0))
     }
 
-    keyboardWillShow() {
-        this.view.alpha = 0.5
+    viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        this.textField.frame = RectMake(20, this.view.bounds.height - 44, 200, 44)
     }
 
-    keyboardWillHide() {
-        this.view.alpha = 1.0
+
+    keyboardWillShow(frame: Rect, duration: number) {
+        View.animationWithDuration(duration, () => {
+            this.textField.frame = RectMake(20, this.view.bounds.height - frame.height - 44, 200, 44)
+        })
+    }
+
+    keyboardWillHide(duration: number) {
+        View.animationWithDuration(duration, () => {
+            this.textField.frame = RectMake(20, this.view.bounds.height - 44, 200, 44)
+        })
     }
 
 }

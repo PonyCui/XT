@@ -21,6 +21,8 @@ export class Image {
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) { }
 
+    static fromBase64(value: string, scale: number, success: (image: Image) => void) { }
+
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         throw "TODO"
     }

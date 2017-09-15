@@ -8,6 +8,7 @@ import org.mozilla.javascript.NativeArray
 import java.io.InputStream
 import java.net.URL
 import android.net.http.HttpResponseCache
+import android.util.Base64
 import java.io.File
 import java.io.IOException
 
@@ -103,6 +104,25 @@ class XTRImage: XTRComponent() {
                 inputStream?.close()
             }
         }
+    }
+
+    fun xtr_fromBase64(value: Any?, scale: Any?, success: Any?) {
+        val value = value as? String ?: return
+        val scale = scale as? Double ?: return
+        try {
+            val bytes = Base64.decode(value, 0)
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            (success as? Function)?.let {
+                xtrContext.callWithArguments(it, arrayOf(
+                        InnerObject(
+                                bitmap,
+                                scale.toInt(),
+                                XTRSize(bitmap.width / scale, bitmap.height / scale),
+                                1
+                        )
+                ))
+            }
+        } catch (e: Exception) {}
     }
 
     fun xtr_imageWithImageRenderingMode(image: Any?, renderingMode: Any?): XTRImage.InnerObject? {

@@ -27,6 +27,10 @@ export class Image {
         XTRImage.xtr_fromAssets(this.assetsPath + named, scales, success, failure)
     }
 
+    static fromBase64(value: string, scale: number, success: (image: Image) => void) {
+        XTRImage.xtr_fromBase64(value, scale, success)
+    }
+
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         return XTRImage.xtr_imageWithImageRenderingMode(this, renderingMode);
     }
