@@ -38,6 +38,7 @@ class XTRTextField: XTRComponent() {
         val editText = EditText(xtrContext.appContext)
         val onFocusListener = OnFocusChangeListener { _, _ ->
             if (editText.isFocused) {
+                XTRWindow.firstResponder = this
                 (xtrContext.invokeMethod(scriptObject, "handleShouldBeginEditing", arrayOf()) as? Boolean)?.let {
                     if (!it) {
                         this.xtr_blur()

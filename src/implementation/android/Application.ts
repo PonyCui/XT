@@ -72,7 +72,7 @@ if ((window as any).XTRObjCreater === undefined) {
             return undefined;
         },
         store: function (target: any) {
-            if (typeof target.objectUUID === "string") {                
+            if (typeof target.objectUUID === "string") {
                 this.objectStore[target.objectUUID] = target;
             }
         },

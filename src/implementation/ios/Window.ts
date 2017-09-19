@@ -42,6 +42,10 @@ export class Window extends View {
         this.rootViewController && this.rootViewController.keyboardWillHide(duration)
     }
 
+    endEditing(): void {
+        this.nativeObject.xtr_endEditing();
+    }
+
 }
 
 if ((window as any).XTRObjClasses === undefined) {

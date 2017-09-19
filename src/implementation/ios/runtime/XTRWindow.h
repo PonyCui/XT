@@ -19,6 +19,7 @@
 - (void)xtr_makeKeyAndVisible;
 - (JSValue *)xtr_rootViewController;
 - (void)xtr_setRootViewController:(JSValue *)viewController;
+- (void)xtr_endEditing;
 
 @end
 

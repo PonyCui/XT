@@ -22,6 +22,12 @@ class XTRWindow: XTRComponent() {
         return null
     }
 
+    companion object {
+
+        var firstResponder: Any? = null
+
+    }
+
     class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
@@ -55,6 +61,30 @@ class XTRWindow: XTRComponent() {
 
         fun xtr_makeKeyAndVisible() {
             appDelegate?.windowMakeKeyAndVisibleRunnable?.invoke()
+        }
+
+        fun xtr_keyboardWillShow(height: Int) {
+            xtrContext.invokeMethod(scriptObject, "handleKeyboardShow", arrayOf(
+                    XTRRect(0.0, 0.0, this.bounds.width, height.toDouble() / resources.displayMetrics.density),
+                    0.15
+            ))
+        }
+
+        fun xtr_keyboardWillHide() {
+            xtrContext.invokeMethod(scriptObject, "handleKeyboardHide", arrayOf(
+                    0.0
+            ))
+            firstResponder?.let {
+                (it as? XTRTextField.InnerObject)?.xtr_blur()
+                (it as? XTRTextView.InnerObject)?.xtr_blur()
+            }
+        }
+
+        fun xtr_endEditing() {
+            firstResponder?.let {
+                (it as? XTRTextField.InnerObject)?.xtr_blur()
+                (it as? XTRTextView.InnerObject)?.xtr_blur()
+            }
         }
 
         override fun layoutSubviews() {

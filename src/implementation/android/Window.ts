@@ -33,12 +33,24 @@ export class Window extends View {
         this.nativeObject.xtr_makeKeyAndVisible();
     }
 
+    handleKeyboardShow(frame: Rect, duration: number) {
+        this.rootViewController && this.rootViewController.keyboardWillShow(frame, duration)
+    }
+
+    handleKeyboardHide(duration: number) {
+        this.rootViewController && this.rootViewController.keyboardWillHide(duration)
+    }
+
+    endEditing(): void {
+        this.nativeObject.xtr_endEditing();
+    }
+
 }
 
 if ((window as any).XTRObjClasses === undefined) {
     (window as any).XTRObjClasses = [];
 }
-(window as any).XTRObjClasses.push((view: any) => { 
+(window as any).XTRObjClasses.push((view: any) => {
     if (view.toString().indexOf("com.opensource.xtruntime.XTRWindow$InnerObject") === 0) {
         return new Window(undefined, view);
     }

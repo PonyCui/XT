@@ -58,7 +58,7 @@ open class XTRViewController: XTRComponent() {
             return XTRUtils.fromObject(xtrContext, parentViewController)
         }
 
-        fun xtr_childViewControllers(): NativeArray {
+        fun xtr_childViewControllers(): Any? {
             return NativeArray(childViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
         }
 

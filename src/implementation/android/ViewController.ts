@@ -57,7 +57,12 @@ export class ViewController {
     }
 
     public get childViewControllers(): ViewController[] {
-        return this.nativeObject.xtr_childViewControllers();
+        const value = this.nativeObject.xtr_childViewControllers()
+        let arr = [];
+        for (let index = 0; index < value.length; index++) {
+            arr.push(value[index]);
+        }
+        return arr;
     }
 
     addChildViewController(childController: ViewController): void {
@@ -75,8 +80,14 @@ export class ViewController {
         return this.nativeObject.xtr_navigationController();
     }
 
-    keyboardWillShow(frame: Rect, duration: number): void { }
-    keyboardWillHide(duration: number): void { }
+    keyboardWillShow(frame: Rect, duration: number): void {
+        console.log(this.childViewControllers.length)
+        this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))
+    }
+    
+    keyboardWillHide(duration: number): void {
+        this.childViewControllers.slice().forEach(t => t.keyboardWillHide(duration))
+    }
 
 }
 

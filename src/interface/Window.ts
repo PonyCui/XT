@@ -5,5 +5,6 @@ export class Window extends View {
 
     rootViewController?: ViewController
     makeKeyAndVisible(): void { }
+    endEditing(): void { }
 
 }

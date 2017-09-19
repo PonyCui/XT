@@ -61,6 +61,10 @@
     self.rootViewController = [viewController toViewController];
 }
 
+- (void)xtr_endEditing {
+    [self endEditing:YES];
+}
+
 #pragma mark - Keyboard Notifications
 
 - (void)setupKeyboardNotifications {
