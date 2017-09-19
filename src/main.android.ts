@@ -86,3 +86,7 @@ export class TextField extends MTextField {}
 export const TextFieldViewMode = ITextFieldViewMode
 export const ReturnKeyType = IReturnKeyType
 export const KeyboardType = IKeyboardType
+
+import { TextView as ITextView } from './interface/TextView'
+import { TextView as MTextView } from './implementation/android/TextView'
+export class TextView extends MTextView { }
