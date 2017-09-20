@@ -28,6 +28,7 @@
 #import "XTRListCell.h"
 #import "XTRTextField.h"
 #import "XTRTextView.h"
+#import "XTRDebug.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -60,6 +61,7 @@ static NSString *globalBridgeScript;
         _context = [[XTRContext alloc] initWithThread:[NSThread mainThread]];
         _context.bridge = self;
         [_context evaluateScript:@"var window = {}"];
+        [XTRBreakpoint attachBreakpoint:_context];
         [XTRUtils attachPolyfills:_context];
         self.components = @[
                             [XTRApplication class],

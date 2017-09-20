@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack -w & http-server",
+    "debug": "node service/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
   "dependencies": {
     "autolayout": "^0.7.0",
     "awesome-typescript-loader": "^3.2.2",

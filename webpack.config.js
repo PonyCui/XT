@@ -32,7 +32,6 @@ module.exports = {
             output: { comments: false },
         }),
         new WebpackShellPlugin({
-            onBuildStart: ['node service/index.js'],
             onBuildExit: ['cp dist/sample.android.min.js samples/Android/app/src/main/assets/sample.android.min.js']
         }),
         new CopyWebpackPlugin([

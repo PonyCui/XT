@@ -14,3 +14,9 @@
 + (void)showMenu:(XTRBridge *)bridge;
 
 @end
+
+@interface XTRBreakpoint: NSObject
+
++ (void)attachBreakpoint:(JSContext *)context;
+
+@end

@@ -17,3 +17,4 @@ declare const XTRListCell: any
 declare const XTRTextField: any
 declare const XTRTextView: any
 declare const XTRTest: any
+declare const XTRBreakpoint: any
