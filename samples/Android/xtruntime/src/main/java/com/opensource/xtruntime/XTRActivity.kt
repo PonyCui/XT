@@ -4,8 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -25,14 +24,18 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
         setupKeyboardHeightProvider()
         if (bridge == null) {
             bridge = XTRBridge(applicationContext, null, {
-                bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
-                    bridge?.xtrApplication?.delegate?.window?.let {
-                        setContentView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                    }
-                }
-                bridge?.xtrApplication?.delegate?.applicationDidFinishLaunchingWithOptions()
+                onBridgeReady()
             })
         }
+    }
+
+    open fun onBridgeReady() {
+        bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
+            bridge?.xtrApplication?.delegate?.window?.let {
+                setContentView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            }
+        }
+        bridge?.xtrApplication?.delegate?.applicationDidFinishLaunchingWithOptions()
     }
 
     private fun setupKeyboardHeightProvider() {
@@ -74,6 +77,34 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
             }
         }
         super.onBackPressed()
+    }
+
+    var debugTriggerTime: Long = 0
+    var debugTriggerStart = 3
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev?.action == MotionEvent.ACTION_DOWN) {
+            if (ev?.eventTime - debugTriggerTime > 500) {
+                debugTriggerStart = 3
+            }
+            debugTriggerTime = ev?.eventTime
+        }
+        if (ev?.action == MotionEvent.ACTION_UP) {
+            val rawWidth = findViewById(android.R.id.content).width / resources.displayMetrics.density
+            val rawHeight = findViewById(android.R.id.content).height / resources.displayMetrics.density
+            val rawX = ev?.x / resources.displayMetrics.density
+            val rawY = ev?.y / resources.displayMetrics.density
+            if (rawX > rawWidth - 44 && rawY > rawHeight - 44) {
+                debugTriggerStart--
+                if (debugTriggerStart <= 0) {
+                    debugTriggerStart = 3
+                    bridge?.let {
+                        XTRDebug.showMenu(it)
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
 }

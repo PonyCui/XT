@@ -1,13 +1,18 @@
 package com.opensource.xtruntime
 
+import android.net.Uri
 import android.os.Handler
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ScriptableObject
+import java.io.ByteArrayOutputStream
+import java.net.URL
 
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-class XTRBridge(appContext: android.content.Context, bridgeScript: String? = null, val completionBlock: (() -> Unit)? = null) {
+class XTRBridge(val appContext: android.content.Context, val bridgeScript: String? = null, val completionBlock: (() -> Unit)? = null) {
 
     companion object {
 
@@ -27,23 +32,25 @@ class XTRBridge(appContext: android.content.Context, bridgeScript: String? = nul
             }
         }
 
+        fun createWithSourceURL(appContext: android.content.Context, sourceURL: String?, completionBlock: (() -> Unit)? = null): XTRBridge {
+            val bridge = XTRBridge(appContext, null, completionBlock)
+            bridge.xtrSourceURL = sourceURL
+            return bridge
+        }
+
     }
 
-    private val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
+    val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
     var xtrApplication: XTRApplication.InnerObject? = null
+    var xtrSourceURL: String? = null
+        set(value) {
+            field = value
+            loadScript()
+        }
 
     init {
         attachComponents()
-        val handler = Handler()
-        Thread(Thread.currentThread().threadGroup, {
-            val childJSContext = Context.enter()
-            childJSContext.optimizationLevel = -1
-            childJSContext.evaluateString(xtrContext.scope, globalBridgeScript ?: bridgeScript, "app.js", 1, null)
-            xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
-            handler.post {
-                completionBlock?.invoke()
-            }
-        }, "XTREval", globalBridgeStackSize).start()
+        loadScript()
     }
 
     private fun attachComponents() {
@@ -66,6 +73,40 @@ class XTRBridge(appContext: android.content.Context, bridgeScript: String? = nul
         components.forEach { component ->
             component.xtrContext = xtrContext
             ScriptableObject.putProperty(xtrContext.scope, component.name, Context.javaToJS(component, xtrContext.scope))
+        }
+    }
+
+    fun loadScript() {
+        xtrSourceURL?.let { sourceURL ->
+            val handler = Handler()
+            Thread(Thread.currentThread().threadGroup, {
+                try {
+                    val req = Request.Builder().url(sourceURL).method("GET", null).build()
+                    val res = OkHttpClient().newCall(req).execute()
+                    val script = res.body()?.string() ?: return@Thread
+                    val childJSContext = Context.enter()
+                    childJSContext.optimizationLevel = -1
+                    childJSContext.evaluateString(xtrContext.scope, script, "app.js", 1, null)
+                    xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
+                    handler.post {
+                        completionBlock?.invoke()
+                    }
+                } catch (e: Exception) { e.printStackTrace() }
+            }, "XTREval", globalBridgeStackSize).start()
+            return
+        }
+        (globalBridgeScript ?: bridgeScript)?.let { script ->
+            val handler = Handler()
+            Thread(Thread.currentThread().threadGroup, {
+                val childJSContext = Context.enter()
+                childJSContext.optimizationLevel = -1
+                childJSContext.evaluateString(xtrContext.scope, script, "app.js", 1, null)
+                xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
+                handler.post {
+                    completionBlock?.invoke()
+                }
+            }, "XTREval", globalBridgeStackSize).start()
+            return
         }
     }
 
