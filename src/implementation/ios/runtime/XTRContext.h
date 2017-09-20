@@ -8,9 +8,13 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 
+@class XTRBridge;
+
 typedef void (^JSValueAsynchronousResult)(JSValue * _Nullable value);
 
 @interface XTRContext : JSContext
+
+@property (nonatomic, weak) XTRBridge * _Nullable bridge;
 
 - (instancetype _Nonnull )initWithThread:(NSThread *_Nonnull)thread;
 

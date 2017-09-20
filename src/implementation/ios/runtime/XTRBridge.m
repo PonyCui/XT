@@ -32,8 +32,9 @@
 
 @interface XTRBridge ()
 
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, strong) XTRContext *context;
 @property (nonatomic, strong) XTRApplicationDelegate *appDelegate;
+@property (nonatomic, readwrite) NSURL *sourceURL;
 
 @end
 
@@ -47,10 +48,17 @@ static NSString *globalBridgeScript;
 
 - (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
 {
+    return [self initWithAppDelegate:appDelegate sourceURL:nil];
+}
+
+- (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate sourceURL:(NSURL *)sourceURL
+{
     self = [super init];
     if (self) {
         _appDelegate = appDelegate;
+        _sourceURL = sourceURL;
         _context = [[XTRContext alloc] initWithThread:[NSThread mainThread]];
+        _context.bridge = self;
         [_context evaluateScript:@"var window = {}"];
         [XTRUtils attachPolyfills:_context];
         self.components = @[
@@ -73,9 +81,28 @@ static NSString *globalBridgeScript;
                             [XTRTextField class],
                             [XTRTextView class],
                             ];
-        [_context evaluateScript:globalBridgeScript];
+        if (_sourceURL != nil) {
+            [self loadViaSourceURL];
+        }
+        else {
+            [_context evaluateScript:globalBridgeScript];
+        }
     }
     return self;
+}
+
+- (void)loadViaSourceURL {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [[[NSURLSession sharedSession] dataTaskWithURL:self.sourceURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error == nil && data != nil) {
+            NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            if (script) {
+                [self.context evaluateScript:script];
+            }
+        }
+        dispatch_semaphore_signal(semaphore);
+    }] resume];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
 
 - (void)setComponents:(NSArray<Class> *)components {
@@ -85,6 +112,24 @@ static NSString *globalBridgeScript;
             self.context[[component name]] = component;
         }
     }
+}
+
+- (void)reload {
+    if (self.sourceURL != nil) {
+        [self loadViaSourceURL];
+        [self.appDelegate application:[UIApplication sharedApplication]
+        didFinishLaunchingWithOptions:@{}];
+    }
+    else {
+        [self.context evaluateScript:globalBridgeScript];
+        [self.appDelegate application:[UIApplication sharedApplication]
+        didFinishLaunchingWithOptions:@{}];
+    }
+}
+
+- (void)resetSourceURL:(NSURL *)sourceURL {
+    self.sourceURL = sourceURL;
+    [self reload];
 }
 
 @end

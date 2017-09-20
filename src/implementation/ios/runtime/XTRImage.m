@@ -9,6 +9,7 @@
 #import "XTRImage.h"
 #import "XTRUtils.h"
 #import "XTRContext.h"
+#import "XTRBridge.h"
 
 @interface XTRImage ()
 
@@ -32,11 +33,15 @@
 }
 
 + (void)xtr_fromURL:(NSString *)URLString success:(JSValue *)success failure:(JSValue *)failure {
+    [self xtr_fromURL:URLString scale:1.0 success:success failure:failure];
+}
+
++ (void)xtr_fromURL:(NSString *)URLString scale:(CGFloat)scale success:(JSValue *)success failure:(JSValue *)failure {
     NSURL *URL = [NSURL URLWithString:URLString];
     if (URL != nil) {
         [[[NSURLSession sharedSession] dataTaskWithURL:URL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (error == nil && data != nil) {
-                UIImage *image = [UIImage imageWithData:data];
+                UIImage *image = [UIImage imageWithData:data scale:scale];
                 if (image != nil) {
                     XTRImage *nativeObject = [XTRImage new];
                     nativeObject.nativeImage = image;
@@ -66,7 +71,30 @@
     }
 }
 
-+ (void)xtr_fromAssets:(NSString *)named success:(JSValue *)success failure:(JSValue *)failure {
++ (void)xtr_fromAssets:(NSString *)named path:(JSValue *)path scales:(JSValue *)scales success:(JSValue *)success failure:(JSValue *)failure {
+    if ([[success context] isKindOfClass:[XTRContext class]]) {
+        NSURL *sourceURL = [[(XTRContext *)success.context bridge] sourceURL];
+        if (sourceURL != nil) {
+            CGFloat scale = 1.0;
+            NSString *subfix = @".png";
+            for (NSNumber *value in [scales toArray]) {
+                if ([value isKindOfClass:[NSNumber class]]) {
+                    if ([UIScreen mainScreen].scale == [value floatValue] && [value floatValue] > 1) {
+                        subfix = [NSString stringWithFormat:@"@%dx.png", (int)[value floatValue]];
+                        scale = [value floatValue];
+                    }
+                    else {
+                        subfix = [NSString stringWithFormat:@"@%dx.png", (int)[value floatValue]];
+                        scale = [value floatValue];
+                    }
+                }
+            }
+            NSURL *imageURL = [[sourceURL URLByDeletingLastPathComponent]
+                               URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@%@", [path toString], named, subfix]];
+            [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];
+            return;
+        }
+    }
     UIImage *image = [UIImage imageNamed:named];
     if (image != nil) {
         XTRImage *nativeObject = [XTRImage new];

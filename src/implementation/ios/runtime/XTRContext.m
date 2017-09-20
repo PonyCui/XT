@@ -76,6 +76,10 @@
 }
 
 - (JSValue *)xtr_callWithArguments:(NSArray *)arguments {
+    if ([arguments isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dict = (id)arguments;
+        return [self xtr_callWithArguments:dict[@"arguments"] asyncResult:dict[@"asyncResult"]];
+    }
     return [self xtr_callWithArguments:arguments asyncResult:nil];
 }
 

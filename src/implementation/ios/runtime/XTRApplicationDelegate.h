@@ -24,7 +24,7 @@
 @interface XTRApplicationDelegate : UIResponder<UIApplicationDelegate, XTRComponent, XTRApplicationDelegateExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-@property (readonly) XTRBridge *bridge;
+@property (nonatomic, strong) XTRBridge *bridge;
 @property (strong, nonatomic) UIWindow *window;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;

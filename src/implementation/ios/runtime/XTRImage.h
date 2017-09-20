@@ -15,7 +15,7 @@
 
 @property (nonatomic, copy) NSString *objectUUID;
 + (void)xtr_fromURL:(NSString *)URLString success:(JSValue *)success failure:(JSValue *)failure;
-+ (void)xtr_fromAssets:(NSString *)named success:(JSValue *)success failure:(JSValue *)failure;
++ (void)xtr_fromAssets:(NSString *)named path:(JSValue *)path scales:(JSValue *)scales success:(JSValue *)success failure:(JSValue *)failure;
 + (void)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale success:(JSValue *)success;
 - (NSDictionary *)xtr_size;
 - (NSNumber *)xtr_scale;

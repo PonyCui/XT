@@ -15,30 +15,13 @@ class AppDelegate extends ApplicationDelegate {
 
 class FirstViewController extends ViewController {
 
-    textField: TextField
-
     viewDidLoad() {
-        const view = new TextView();
-        view.frame = RectMake(44, 44, 200, 200)
-        this.view.addSubview(view);
-    }
-
-    viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        this.textField.frame = RectMake(20, this.view.bounds.height - 44, 200, 44)
-    }
-
-
-    keyboardWillShow(frame: Rect, duration: number) {
-        View.animationWithDuration(duration, () => {
-            this.textField.frame = RectMake(20, this.view.bounds.height - frame.height - 44, 200, 44)
+        const imageView = new ImageView(RectMake(44, 44, 78, 78))
+        Image.fromAssetsWithScales("success", [2], (it) => {
+            imageView.image = it
         })
-    }
-
-    keyboardWillHide(duration: number) {
-        View.animationWithDuration(duration, () => {
-            this.textField.frame = RectMake(20, this.view.bounds.height - 44, 200, 44)
-        })
+        imageView.backgroundColor = Color.yellowColor
+        this.view.addSubview(imageView)
     }
 
 }

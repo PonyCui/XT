@@ -12,7 +12,6 @@
 
 @interface XTRApplicationDelegate()
 
-@property (nonatomic, strong) XTRBridge *bridge;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, strong) JSContext *context;
 
@@ -38,12 +37,14 @@ static XTRApplicationDelegate *sharedDelegate;
     self = [super init];
     if (self) {
         sharedDelegate = self;
-        _bridge = [[XTRBridge alloc] initWithAppDelegate:self];
     }
     return self;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    if (self.bridge == nil) {
+        self.bridge = [[XTRBridge alloc] initWithAppDelegate:self];
+    }
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject.value;
         if (value != nil) {
@@ -60,6 +61,13 @@ static XTRApplicationDelegate *sharedDelegate;
 
 - (void)xtr_setWindow:(JSValue *)window {
     self.window = [window toWindow];
+}
+
+- (void)setBridge:(XTRBridge *)bridge {
+    NSAssert(bridge != nil, @"Should not reset bridge.");
+    if (_bridge == nil) {
+        _bridge = bridge;
+    }
 }
 
 @end

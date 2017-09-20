@@ -6,7 +6,7 @@ import { ImageRenderingMode } from "../../interface/ImageView";
 
 export class Image {
 
-    static assetsPath = "./assets/"
+    static assetsPath = "assets/"
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         XTRImage.xtr_fromURLSuccessFailure(url, success, (message: string) => {
@@ -15,13 +15,15 @@ export class Image {
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsSuccessFailure(named, success, (message: string) => {
+        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, [], success, (message: string) => {
             failure && failure(new Error(message));
         });
     }
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        this.fromAssets(named, success, failure);
+        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, scales, success, (message: string) => {
+            failure && failure(new Error(message));
+        });
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {

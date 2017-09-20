@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
+#import "XTRDebug.h"
 
 @interface XTRWindow ()
 
@@ -18,7 +19,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, strong) XTRContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, strong) id keyboardWillShowObserver;
 @property (nonatomic, strong) id keyboardWillHideObserver;
@@ -33,8 +34,9 @@
 
 + (XTRWindow *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRWindow *view = [[XTRWindow alloc] initWithFrame:[frame toRect]];
+    [view setupDebug];
     view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
+    view.context = (id)scriptObject.context;
     view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     [view setupKeyboardNotifications];
     return view;
@@ -579,6 +581,28 @@
                              [completion xtr_callWithArguments:@[]];
                          }
                      }];
+}
+
+#pragma mark - XTRDEBUG
+
+- (void)setupDebug {
+    UITapGestureRecognizer *debugGesture = [[UITapGestureRecognizer alloc] init];
+    debugGesture.numberOfTouchesRequired = 3;
+    debugGesture.numberOfTapsRequired = 3;
+    [debugGesture addTarget:self action:@selector(onDebug)];
+    [self addGestureRecognizer:debugGesture];
+}
+
+#if TARGET_OS_SIMULATOR
+
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    [self onDebug];
+}
+
+#endif
+
+- (void)onDebug {
+    [XTRDebug showMenu:self.context.bridge];
 }
 
 @end

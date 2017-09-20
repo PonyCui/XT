@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var WebpackShellPlugin = require('webpack-shell-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -31,7 +32,11 @@ module.exports = {
             output: { comments: false },
         }),
         new WebpackShellPlugin({
+            onBuildStart: ['node service/index.js'],
             onBuildExit: ['cp dist/sample.android.min.js samples/Android/app/src/main/assets/sample.android.min.js']
         }),
+        new CopyWebpackPlugin([
+            { from: 'src/sample/assets', to: 'assets' }
+        ]),
     ],
 };
