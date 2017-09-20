@@ -13,7 +13,7 @@ export class Image {
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
-    static assetsPath = "./assets/"
+    static assetsPath = "assets/"
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         XTRImage.xtr_fromURL(url, success, failure)
@@ -24,7 +24,7 @@ export class Image {
     }
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssets(this.assetsPath + named, scales, success, failure)
+        XTRImage.xtr_fromAssets(named, this.assetsPath, scales, success, failure)
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {

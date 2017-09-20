@@ -9,6 +9,7 @@ import org.mozilla.javascript.Function
  */
 class XTRContext(private val thread: Thread, val appContext: android.content.Context) {
 
+    var xtrBridge: XTRBridge? = null
     var jsContext: Context = Context.enter()
     val scope = jsContext.initStandardObjects()!!
     val handler = Handler()

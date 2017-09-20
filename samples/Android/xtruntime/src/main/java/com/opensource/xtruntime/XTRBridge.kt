@@ -49,6 +49,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         }
 
     init {
+        xtrContext.xtrBridge = this
         attachComponents()
         loadScript()
     }
