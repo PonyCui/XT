@@ -99,7 +99,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                 if (debugTriggerStart <= 0) {
                     debugTriggerStart = 3
                     bridge?.let {
-                        XTRDebug.showMenu(it)
+                        XTRDebug.showMenu(this, it)
                     }
                 }
             }

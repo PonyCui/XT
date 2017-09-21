@@ -22,6 +22,10 @@ class FirstViewController extends ViewController {
             imageView.image = it
         })
         imageView.backgroundColor = Color.yellowColor
+        imageView.userInteractionEnabled = true
+        imageView.onTap = () => {
+            imageView.backgroundColor = Color.clearColor
+        }
         this.view.addSubview(imageView)
     }
 
