@@ -21,9 +21,9 @@ class FirstViewController extends ViewController {
         Image.fromAssetsWithScales("success", [2], (it) => {
             imageView.image = it
         })
-        imageView.backgroundColor = Color.yellowColor
+        imageView.backgroundColor = Color.blackColor
         imageView.onTap = () => {
-            XTRBreakpoint("Test Breakpoint", this);
+            XTRBreakpoint("Test Breakpoint", function (code: string) { return JSON.stringify(eval(code)) }.bind(this));
             imageView.backgroundColor = Color.whiteColor
         }
         this.view.addSubview(imageView)

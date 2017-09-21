@@ -9,6 +9,9 @@ var server = http.createServer(function (req, res) {
     if (url.parse(req.url).pathname.indexOf("/breakpoint") === 0) {
         breakpoint(req, res);
     }
+    else if (url.parse(req.url).pathname.indexOf("/evalresult") === 0) {
+        evalresult(req, res);
+    }
     else if (url.parse(req.url).pathname.indexOf("/build") === 0) {
         console.log("build >>> " + (new Date()).toString());
         res.end();
@@ -106,6 +109,11 @@ function serve(req, res) {
             res.end();
         }
     });
+}
+
+function evalresult(req, res) {
+    console.log(decodeURIComponent(url.parse(req.url).pathname).replace("/evalresult/", 'Eval Result >>> '))
+    res.end();
 }
 
 function breakpoint(req, res) {
