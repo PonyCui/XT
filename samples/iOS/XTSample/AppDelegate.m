@@ -23,10 +23,10 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if (self.bridge == nil) {
-        self.bridge = [[XTRBridge alloc] initWithAppDelegate:self
-                                                   sourceURL:[NSURL URLWithString:@"http://localhost:8083/sample.ios.min.js"]];
-    }
+//    if (self.bridge == nil) {
+//        self.bridge = [[XTRBridge alloc] initWithAppDelegate:self
+//                                                   sourceURL:[NSURL URLWithString:@"http://localhost:8083/sample.ios.min.js"]];
+//    }
     [super application:application didFinishLaunchingWithOptions:launchOptions];
     return YES;
 }

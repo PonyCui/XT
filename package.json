@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack -w & http-server",
-    "debug": "node service/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node service/index.js"
   },
   "author": "",
   "license": "ISC",

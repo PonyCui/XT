@@ -24,7 +24,6 @@ class FirstViewController extends ViewController {
         imageView.backgroundColor = Color.yellowColor
         imageView.onTap = () => {
             XTRBreakpoint("Test Breakpoint", this);
-            console.log("sss")
             imageView.backgroundColor = Color.whiteColor
         }
         this.view.addSubview(imageView)
