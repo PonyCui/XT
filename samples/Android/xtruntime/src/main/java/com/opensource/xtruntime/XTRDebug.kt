@@ -6,11 +6,21 @@ import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Build
 import android.os.Handler
+import android.os.StrictMode
 import android.widget.EditText
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import org.json.JSONObject
+import org.mozilla.javascript.Context
+import org.mozilla.javascript.Function
+import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.Undefined
 import java.net.URI
+import java.net.URLEncoder
+import java.util.*
+import kotlin.concurrent.timerTask
 
 /**
  * Created by cuiminghui on 2017/9/20.
@@ -20,18 +30,24 @@ class XTRDebug {
 
     companion object {
 
+        var breakpointsEnabled = false
+
         fun showMenu(activity: Activity, bridge: XTRBridge) {
             val builder = AlertDialog.Builder(activity)
             builder.setTitle("Debugger")
             builder.setItems(listOf(
                     "Reload",
-                    "Reset Source URL"
+                    "Reset Source URL",
+                    (if (breakpointsEnabled) "Disable Breakpoints" else "Enable Breakpoints")
             ).toTypedArray(), { _, idx ->
                 if (idx == 0) {
                     bridge.loadScript()
                 }
                 else if (idx == 1) {
                     resetSourceURL(activity, bridge)
+                }
+                else if (idx == 2) {
+                    breakpointsEnabled = !breakpointsEnabled
                 }
                 return@setItems
             })
@@ -133,6 +149,43 @@ class XTRDebug {
             }).start()
         }
 
+    }
+
+}
+
+class XTRBreakpoint(val bridge: XTRBridge) {
+
+    init {
+        ScriptableObject.putProperty(bridge.xtrContext.scope, "XTRBreakpointInstance", Context.javaToJS(this, bridge.xtrContext.scope))
+        bridge.xtrContext.jsContext.evaluateString(bridge.xtrContext.scope, "var XTRBreakpoint = function(id, eval) { XTRBreakpointInstance.breaking(id, eval) };", "XTRBreakpoint.js", 1, null)
+    }
+
+    fun breaking(id: Any?, eval: Any?) {
+        if (!XTRDebug.breakpointsEnabled) { return }
+        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
+        val client = OkHttpClient()
+        while (true) {
+            try {
+                val request = Request.Builder().url(URI(bridge.xtrSourceURL).resolve("/breakpoint/" + URLEncoder.encode(((id as? String) ?: ""))).toString()).get().build()
+                val response = client.newCall(request).execute()
+                val result = response.body()?.string()
+                if (result == "1") {
+                    break
+                }
+                else {
+                    (eval as? Function)?.let {
+                        var evalResult = Undefined.instance
+                        try {
+                            evalResult = it.call(bridge.xtrContext.jsContext, bridge.xtrContext.scope, it.parentScope, arrayOf(result ?: ""))
+                        } catch (e: Exception) { }
+                        val request = Request.Builder().url(URI(bridge.xtrSourceURL).resolve("/evalresult/" + URLEncoder.encode(evalResult.toString())).toString()).get().build()
+                        client.newCall(request).execute()
+                    }
+                }
+            } catch (e: Exception) {
+                break
+            }
+        }
     }
 
 }

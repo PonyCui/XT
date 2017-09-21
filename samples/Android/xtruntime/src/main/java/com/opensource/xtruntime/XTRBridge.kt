@@ -41,6 +41,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     }
 
     val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
+    val xtrBreakpoint: XTRBreakpoint
     var xtrApplication: XTRApplication.InnerObject? = null
     var xtrSourceURL: String? = null
         set(value) {
@@ -50,6 +51,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
 
     init {
         xtrContext.xtrBridge = this
+        xtrBreakpoint = XTRBreakpoint(this)
         attachComponents()
         loadScript()
     }

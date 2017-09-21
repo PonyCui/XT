@@ -55,6 +55,7 @@ class XTRImageView: XTRComponent() {
             image?.let { image ->
                 canvas?.let { canvas ->
                     sharedImagePaint.reset()
+                    sharedImagePaint.isAntiAlias = true
                     sharedImagePaint.alpha = (alpha * 255).toInt()
                     if (image.renderingMode == 2) {
                         sharedImagePaint.colorFilter = PorterDuffColorFilter(xtr_tintColor().intColor(), PorterDuff.Mode.SRC_IN)

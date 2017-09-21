@@ -23,7 +23,7 @@ class FirstViewController extends ViewController {
         })
         imageView.backgroundColor = Color.yellowColor
         imageView.onTap = () => {
-            XTRBreakpoint("Test Breakpoint", function (code: string) { return JSON.stringify(eval(code)) }.bind(this));
+            XTRBreakpoint("Test Breakpoint", function (code: string) { return "" + eval(code) }.bind(this));
             imageView.backgroundColor = Color.whiteColor
             View.animationWithDuration(0.3, () => {
                 imageView.backgroundColor = Color.clearColor

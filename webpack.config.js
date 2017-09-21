@@ -32,7 +32,7 @@ module.exports = {
             output: { comments: false },
         }),
         new WebpackShellPlugin({
-            onBuildExit: ['cp dist/sample.android.min.js samples/Android/app/src/main/assets/sample.android.min.js', 'curl http://127.0.0.1:8083/build']
+            onBuildExit: ['cp dist/sample.android.min.js samples/Android/app/src/main/assets/sample.android.min.js']
         }),
         new CopyWebpackPlugin([
             { from: 'src/sample/assets', to: 'assets' }
