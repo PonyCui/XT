@@ -1,6 +1,6 @@
 declare const XTRTest: any
 
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, TextField, TextFieldViewMode, TextView } from '../main.ios'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, TextField, TextFieldViewMode, TextView, CanvasView } from '../main.ios'
 import { Rect } from '../interface/Rect';
 
 class AppDelegate extends ApplicationDelegate {
@@ -13,23 +13,39 @@ class AppDelegate extends ApplicationDelegate {
 
 }
 
+class MyCanvasView extends CanvasView {
+
+    onDraw() {
+        super.onDraw();
+        // this.fillStyle = Color.greenColor
+        // this.fillRect(0, 0, 44, 44)
+        this.strokeStyle = Color.redColor
+        this.lineWidth = 4
+        this.strokeRect(4, 4, 44, 44)
+    }
+
+}
+
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const imageView = new ImageView(RectMake(44, 44, 78, 78))
-        imageView.userInteractionEnabled = true
-        Image.fromAssetsWithScales("success", [2], (it) => {
-            imageView.image = it
-        })
-        imageView.backgroundColor = Color.yellowColor
-        imageView.onTap = () => {
-            XTRBreakpoint("Test Breakpoint", function (code: string) { return "" + eval(code) }.bind(this));
-            imageView.backgroundColor = Color.whiteColor
-            View.animationWithDuration(0.3, () => {
-                imageView.backgroundColor = Color.clearColor
-            })
-        }
-        this.view.addSubview(imageView)
+        const canvasView = new MyCanvasView(RectMake(44, 44, 88, 88));
+        canvasView.backgroundColor = Color.yellowColor
+        this.view.addSubview(canvasView);
+        // const imageView = new ImageView(RectMake(44, 44, 78, 78))
+        // imageView.userInteractionEnabled = true
+        // Image.fromAssetsWithScales("success", [2], (it) => {
+        //     imageView.image = it
+        // })
+        // imageView.backgroundColor = Color.yellowColor
+        // imageView.onTap = () => {
+        //     XTRBreakpoint("Test Breakpoint", function (code: string) { return "" + eval(code) }.bind(this));
+        //     imageView.backgroundColor = Color.whiteColor
+        //     View.animationWithDuration(0.3, () => {
+        //         imageView.backgroundColor = Color.clearColor
+        //     })
+        // }
+        // this.view.addSubview(imageView)
     }
 
 }

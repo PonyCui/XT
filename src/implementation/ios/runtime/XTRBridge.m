@@ -29,6 +29,7 @@
 #import "XTRTextField.h"
 #import "XTRTextView.h"
 #import "XTRDebug.h"
+#import "XTRCanvasView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTRBridge ()
@@ -82,6 +83,7 @@ static NSString *globalBridgeScript;
                             [XTRListCell class],
                             [XTRTextField class],
                             [XTRTextView class],
+                            [XTRCanvasView class],
                             ];
         if (_sourceURL != nil) {
             [self loadViaSourceURL];

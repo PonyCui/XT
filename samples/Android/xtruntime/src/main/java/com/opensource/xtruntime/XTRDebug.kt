@@ -8,10 +8,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.StrictMode
 import android.widget.EditText
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.*
 import org.json.JSONObject
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
@@ -20,6 +17,7 @@ import org.mozilla.javascript.Undefined
 import java.net.URI
 import java.net.URLEncoder
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
 /**
@@ -84,7 +82,7 @@ class XTRDebug {
                 try {
                     val client = OkHttpClient()
                     if (code == "0") {
-                        val request = Request.Builder().url("http://10.0.2.2:8083/").get().build()
+                        val request = Request.Builder().cacheControl(CacheControl.Builder().noCache().build()).url("http://10.0.2.2:8083/").get().build()
                         val response = client.newCall(request).execute()
                         response.body()?.string()?.let { files ->
                             files.split("\n").forEach {
@@ -101,6 +99,7 @@ class XTRDebug {
                     }
                     else {
                         val request = Request.Builder()
+                                .cacheControl(CacheControl.Builder().noCache().build())
                                 .url("https://zax3y00w.api.lncld.net/1.1/classes/Pin?where=%7B%22PinCode%22%3A$code%7D&limit=1&&order=-updatedAt&&")
                                 .addHeader("Content-Type", "application/json")
                                 .addHeader("X-LC-Id", "zAx3Y00WjcMeXeuaxfw9HSsQ-gzGzoHsz")
@@ -143,7 +142,11 @@ class XTRDebug {
         fun sendConnectedMessage(bridge: XTRBridge) {
             Thread({
                 try {
-                    val request = Request.Builder().url(URI(bridge.xtrSourceURL).resolve("/connected/Android_OS_" + Build.VERSION.SDK_INT).toString()).get().build()
+                    val request = Request.Builder()
+                            .cacheControl(CacheControl.Builder().noCache().build())
+                            .url(URI(bridge.xtrSourceURL).resolve("/connected/Android_OS_" + Build.VERSION.SDK_INT).toString())
+                            .get()
+                            .build()
                     OkHttpClient().newCall(request).execute()
                 } catch (e: Exception) {}
             }).start()
@@ -163,10 +166,14 @@ class XTRBreakpoint(val bridge: XTRBridge) {
     fun breaking(id: Any?, eval: Any?) {
         if (!XTRDebug.breakpointsEnabled) { return }
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(600, TimeUnit.SECONDS).build()
         while (true) {
             try {
-                val request = Request.Builder().url(URI(bridge.xtrSourceURL).resolve("/breakpoint/" + URLEncoder.encode(((id as? String) ?: ""))).toString()).get().build()
+                val request = Request.Builder()
+                        .cacheControl(CacheControl.Builder().noCache().build())
+                        .url(URI(bridge.xtrSourceURL).resolve("/breakpoint/" + URLEncoder.encode(((id as? String) ?: ""))).toString())
+                        .get()
+                        .build()
                 val response = client.newCall(request).execute()
                 val result = response.body()?.string()
                 if (result == "1") {
@@ -178,7 +185,11 @@ class XTRBreakpoint(val bridge: XTRBridge) {
                         try {
                             evalResult = it.call(bridge.xtrContext.jsContext, bridge.xtrContext.scope, it.parentScope, arrayOf(result ?: ""))
                         } catch (e: Exception) { }
-                        val request = Request.Builder().url(URI(bridge.xtrSourceURL).resolve("/evalresult/" + URLEncoder.encode(evalResult.toString())).toString()).get().build()
+                        val request = Request.Builder()
+                                .cacheControl(CacheControl.Builder().noCache().build())
+                                .url(URI(bridge.xtrSourceURL).resolve("/evalresult/" + URLEncoder.encode(evalResult.toString())).toString())
+                                .get()
+                                .build()
                         client.newCall(request).execute()
                     }
                 }

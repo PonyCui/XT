@@ -92,3 +92,8 @@ export const KeyboardType = IKeyboardType
 import { TextView as ITextView } from './interface/TextView'
 import { TextView as MTextView } from './implementation/ios/TextView'
 export class TextView extends MTextView { }
+
+
+import { CanvasView as ICanvasView } from './interface/CanvasView'
+import { CanvasView as MCanvasView } from './implementation/ios/CanvasView'
+export class CanvasView extends MCanvasView { }
