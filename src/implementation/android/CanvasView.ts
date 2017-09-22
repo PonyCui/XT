@@ -121,15 +121,15 @@ export class CanvasView extends View {
     }
 
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
-        this.nativeObject.xtr_quadraticCurveToXyPoint({ x: cpx, y: cpy }, { x, y })
+        this.nativeObject.xtr_quadraticCurveTo({ x: cpx, y: cpy }, { x, y })
     }
 
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
-        this.nativeObject.xtr_bezierCurveToCp2PointXyPoint({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y })
+        this.nativeObject.xtr_bezierCurveTo({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y })
     }
 
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
-        this.nativeObject.xtr_arcRSAngleEAngleCounterclockwise({ x, y }, r, sAngle, eAngle, counterclockwise)
+        this.nativeObject.xtr_arc({ x, y }, r, sAngle, eAngle, counterclockwise)
     }
 
     postScale(x: number, y: number): void {
@@ -176,7 +176,7 @@ if ((window as any).XTRObjClasses === undefined) {
     (window as any).XTRObjClasses = [];
 }
 (window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRCanvasViewConstructor]") {
+    if (view.toString().indexOf("com.opensource.xtruntime.XTRCanvasView$InnerObject") === 0) {
         return new CanvasView(undefined, view);
     }
     return undefined;

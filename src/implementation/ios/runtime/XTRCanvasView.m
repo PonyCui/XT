@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSString *lineCap;
 @property (nonatomic, strong) NSString *lineJoin;
 @property (nonatomic, assign) CGFloat lineWidth;
-@property (nonatomic, assign) CGLineCap miterLimit;
+@property (nonatomic, assign) CGFloat miterLimit;
 @property (nonatomic, assign) CGAffineTransform currentTransform;
 
 @end
@@ -137,12 +137,12 @@
 }
 
 - (void)xtr_fillRect:(JSValue *)rect {
-    self.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
+    [self xtr_rect:rect];
     [self xtr_fill];
 }
 
 - (void)xtr_strokeRect:(JSValue *)rect {
-    self.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
+    [self xtr_rect:rect];
     [self xtr_stroke];
 }
 
@@ -246,22 +246,28 @@
 }
 
 - (BOOL)xtr_isPointInPath:(JSValue *)point {
-    return [self.currentPath containsPoint:[point toPoint]];
+    UIBezierPath *currentPath = self.currentPath;
+    if (!CGAffineTransformIsIdentity(self.currentState.currentTransform)) {
+        currentPath = [UIBezierPath bezierPath];
+        [currentPath appendPath:self.currentPath];
+        [currentPath applyTransform:self.currentState.currentTransform];
+    }
+    return [currentPath containsPoint:[point toPoint]];
 }
 
-- (void)xtr_preScale:(JSValue *)point {
+- (void)xtr_postScale:(JSValue *)point {
     self.currentState.currentTransform = CGAffineTransformScale(self.currentState.currentTransform, [point toPoint].x, [point toPoint].y);
 }
 
-- (void)xtr_preRotate:(JSValue *)angle {
+- (void)xtr_postRotate:(JSValue *)angle {
     self.currentState.currentTransform = CGAffineTransformRotate(self.currentState.currentTransform, angle.toDouble);
 }
 
-- (void)xtr_preTranslate:(JSValue *)point {
+- (void)xtr_postTranslate:(JSValue *)point {
     self.currentState.currentTransform = CGAffineTransformTranslate(self.currentState.currentTransform, [point toPoint].x, [point toPoint].y);
 }
 
-- (void)xtr_preTransform:(JSValue *)transform {
+- (void)xtr_postTransform:(JSValue *)transform {
     self.currentState.currentTransform = CGAffineTransformConcat(self.currentState.currentTransform, [transform toTransform]);
 }
 

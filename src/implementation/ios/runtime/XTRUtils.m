@@ -124,7 +124,7 @@ static NSMutableDictionary *RAFHandlers;
     context[@"XTRLog"] = ^(JSValue *value) {
         NSLog(@"%@", [value toString]);
     };
-    [context evaluateScript:@"(function(){ var originMethod = console.log; console.log = function(a, b, c, d) { originMethod(a, b, c, d); XTRLog(a) } })()"];
+    [context evaluateScript:@"(function(){ var originMethod = console.log; console.log = function() { originMethod.apply(originMethod, arguments); XTRLog(arguments[0]) } })()"];
 }
 
 @end

@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
+import android.graphics.Matrix
 
 /**
  * Created by cuiminghui on 2017/9/1.
@@ -43,3 +44,27 @@ class XTRSize(val width: Double, val height: Double) {
 }
 
 class XTRFont(val pointSize: Double, val familyName: String?, val fontWeight: String = "400", val fontStyle: String = "normal")
+
+class XTRMatrix(val a: Double, val b: Double, val c: Double, val d: Double, val tx: Double, val ty: Double) {
+
+    override fun toString(): String {
+        return "XTRMatrix, a: $a, b: $b, c: $c, d: $d, tx: $tx, ty: $ty"
+    }
+
+    fun toNativeMatrix(): Matrix {
+        val matrix = Matrix()
+        val arr = FloatArray(9)
+        arr[0] = a.toFloat()
+        arr[1] = c.toFloat()
+        arr[2] = tx.toFloat()
+        arr[3] = b.toFloat()
+        arr[4] = d.toFloat()
+        arr[5] = ty.toFloat()
+        arr[6] = 0.0.toFloat()
+        arr[7] = 0.0.toFloat()
+        arr[8] = 1.0.toFloat()
+        matrix.setValues(arr)
+        return matrix
+    }
+
+}

@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
+import android.graphics.Matrix
 import android.view.View
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.ScriptableObject
@@ -47,6 +48,20 @@ class XTRUtils {
                 val x = it.get("x") as? Double ?: return null
                 val y = it.get("y") as? Double ?: return null
                 return XTRPoint(x, y)
+            }
+            return null
+        }
+
+        fun toTransform(target: Any?): XTRMatrix? {
+            (target as? XTRMatrix)?.let { return it }
+            (target as? ScriptableObject)?.let {
+                val a = it.get("a") as? Double ?: return null
+                val b = it.get("b") as? Double ?: return null
+                val c = it.get("c") as? Double ?: return null
+                val d = it.get("d") as? Double ?: return null
+                val tx = it.get("tx") as? Double ?: return null
+                val ty = it.get("ty") as? Double ?: return null
+                return XTRMatrix(a, b, c, d, tx, ty)
             }
             return null
         }

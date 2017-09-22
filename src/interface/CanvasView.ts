@@ -25,10 +25,10 @@ export class CanvasView extends View {
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void { }
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void { }
     isPointInPath(x: number, y: number): void { }
-    preScale(x: number, y: number): void { }
-    preRotate(angle: number) { }
-    preTranslate(x: number, y: number): void { }
-    preTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void { }
+    postScale(x: number, y: number): void { }
+    postRotate(angle: number) { }
+    postTranslate(x: number, y: number): void { }
+    postTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void { }
     setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void { }
     save(): void { }
     restore(): void { }
