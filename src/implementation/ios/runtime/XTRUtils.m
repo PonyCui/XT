@@ -21,6 +21,8 @@ typedef void(^IntervalBlock)(id keepBlock);
 + (void)attachPolyfills:(JSContext *)context {
     [self addTimeoutPolyfill:context];
     [self addIntervalPolyfill:context];
+    [self addRAFPolyfill:context];
+    [self addConsolePolyfill:context];
 }
 
 + (void)addTimeoutPolyfill:(JSContext *)context {
@@ -78,6 +80,51 @@ typedef void(^IntervalBlock)(id keepBlock);
         });
         return uuid;
     };
+}
+
+static NSMutableDictionary *RAFHandlers;
+
++ (void)addRAFPolyfill:(JSContext *)context {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        RAFHandlers = [NSMutableDictionary dictionary];
+    });
+    context[@"clearAnimationFrame"] = ^(JSValue *timeoutHandler) {
+        NSString *uuid = [timeoutHandler toString];
+        if (uuid != nil && RAFHandlers[uuid] != nil) {
+            [RAFHandlers removeObjectForKey:uuid];
+        }
+    };
+    context[@"requestAnimationFrame"] = ^(JSValue *callback, JSValue *millsecond){
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        [RAFHandlers setObject:@(0) forKey:uuid];
+        [NSTimer scheduledTimerWithTimeInterval:0.0
+                                         target:self
+                                       selector:@selector(handleAnimationFrame:)
+                                       userInfo:@{@"uuid": uuid, @"callback": callback}
+                                        repeats:NO];
+        return uuid;
+    };
+}
+
++ (void)handleAnimationFrame:(NSTimer *)timer {
+    NSString *uuid = timer.userInfo[@"uuid"];
+    JSValue *callback = timer.userInfo[@"callback"];
+    if (uuid == nil || callback == nil) {
+        return;
+    }
+    if (RAFHandlers[uuid] == nil) {
+        return ;
+    }
+    [callback xtr_callWithArguments:@[]];
+    [RAFHandlers removeObjectForKey:uuid];
+}
+
++ (void)addConsolePolyfill:(JSContext *)context {
+    context[@"XTRLog"] = ^(JSValue *value) {
+        NSLog(@"%@", [value toString]);
+    };
+    [context evaluateScript:@"(function(){ var originMethod = console.log; console.log = function(a, b, c, d) { originMethod(a, b, c, d); XTRLog(a) } })()"];
 }
 
 @end

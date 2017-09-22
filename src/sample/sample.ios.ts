@@ -57,6 +57,11 @@ class FirstViewController extends ViewController {
         const canvasView = new MyCanvasView(RectMake(44, 44, 300, 300));
         canvasView.backgroundColor = Color.whiteColor
         this.view.addSubview(canvasView);
+        console.log("start")
+        requestAnimationFrame(() => {
+            console.log("end")
+            canvasView.backgroundColor = Color.yellowColor
+        })
         // this.view.backgroundColor = Color.blueColor
         // const imageView = new ImageView(RectMake(44, 44, 78, 78))
         // imageView.userInteractionEnabled = true
