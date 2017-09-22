@@ -18,11 +18,34 @@ class MyCanvasView extends CanvasView {
     onDraw() {
         super.onDraw();
         let ctx = this
-        ctx.rect(20,20,150,100);
-        if (ctx.isPointInPath(20,50))
-           {
-           ctx.stroke();
-           };
+        ctx.fillRect(0, 0, 150, 150);
+
+        //  Save the default state
+        ctx.save();
+
+        // Make changes to the settings
+        ctx.fillStyle = new Color(0x66 / 255.0, 1.0, 1.0)
+        ctx.fillRect(15, 15, 120, 120);
+
+        // Save the current state
+        ctx.save();
+
+        // Make the new changes to the settings
+        ctx.fillStyle = new Color(0x99 / 255.0, 0x33 / 255.0, 0x33 / 255.0)
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(30, 30, 90, 90);
+
+        // Restore previous state
+        ctx.restore();
+
+        // Draw a rectangle with restored settings
+        ctx.fillRect(45, 45, 60, 60);
+
+        // Restore original state
+        ctx.restore();
+
+        // Draw a rectangle with restored settings
+        ctx.fillRect(40, 40, 90, 90);
     }
 
 }
@@ -33,7 +56,7 @@ class FirstViewController extends ViewController {
         const canvasView = new MyCanvasView(RectMake(44, 44, 300, 300))
         canvasView.backgroundColor = Color.whiteColor
         this.view.addSubview(canvasView)
-        this.view.backgroundColor = Color.yellowColor
+        this.view.backgroundColor = Color.whiteColor
     }
 
 }

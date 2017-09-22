@@ -268,7 +268,7 @@ class XTRCanvasView: XTRComponent() {
 
         fun xtr_postTranslate(value: Any?) {
             XTRUtils.toPoint(value)?.let {
-                currentState.currentTransform.postTranslate(it.x.toFloat(), it.y.toFloat())
+                currentState.currentTransform.postTranslate((it.x * scale).toFloat(), (it.y * scale).toFloat())
             }
         }
 
@@ -282,6 +282,27 @@ class XTRCanvasView: XTRComponent() {
             XTRUtils.toTransform(value)?.let {
                 currentState.currentTransform = it.toNativeMatrix()
             }
+        }
+
+        fun xtr_save() {
+            val mutable = stateStack.toMutableList()
+            mutable.add(currentState)
+            stateStack = mutable.toList()
+            currentState = currentState.copy()
+        }
+
+        fun xtr_restore() {
+            if (stateStack.isNotEmpty()) {
+                val mutable = stateStack.toMutableList()
+                val lastObject = mutable[mutable.size - 1]
+                mutable.removeAt(mutable.size - 1)
+                stateStack = mutable.toList()
+                currentState = lastObject
+            }
+        }
+
+        fun xtr_setNeedsDisplay() {
+            invalidate()
         }
 
         override fun drawContent(canvas: Canvas?) {
