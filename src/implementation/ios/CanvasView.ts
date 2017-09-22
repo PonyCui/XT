@@ -20,6 +20,14 @@ export class CanvasView extends View {
         }
     }
 
+    public get globalAlpha(): number | undefined {
+        return this.nativeObject.xtr_globalAlpha()
+    }
+
+    public set globalAlpha(value: number | undefined) {
+        this.nativeObject.xtr_setGlobalAlpha(value)
+    }
+
     public get fillStyle(): Color | undefined {
         return this.nativeObject.xtr_fillStyle()
     }
@@ -122,6 +130,34 @@ export class CanvasView extends View {
 
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
         this.nativeObject.xtr_arcRSAngleEAngleCounterclockwise({ x, y }, r, sAngle, eAngle, counterclockwise)
+    }
+
+    preScale(x: number, y: number): void {
+        this.nativeObject.xtr_preScale({ x, y })
+    }
+
+    preRotate(angle: number) {
+        this.nativeObject.xtr_preRotate(angle);
+    }
+
+    preTranslate(x: number, y: number): void {
+        this.nativeObject.xtr_preTranslate({ x, y })
+    }
+
+    preTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void {
+        this.nativeObject.xtr_preTransform({ a, b, c, d, tx, ty })
+    }
+
+    setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void {
+        this.nativeObject.xtr_setCanvasTransform({ a, b, c, d, tx, ty })
+    }
+
+    save(): void {
+        this.nativeObject.xtr_save();
+    }
+    
+    restore(): void {
+        this.nativeObject.xtr_restore();
     }
 
     isPointInPath(x: number, y: number): void {

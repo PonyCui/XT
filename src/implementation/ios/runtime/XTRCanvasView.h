@@ -14,6 +14,8 @@
 @protocol XTRCanvasViewExport <JSExport>
 
 + (XTRCanvasView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
+- (CGFloat)xtr_globalAlpha;
+- (void)xtr_setGlobalAlpha:(CGFloat)globalAlpha;
 - (NSString *)xtr_fillStyle;
 - (void)xtr_setFillStyle:(JSValue *)fillStyle;
 - (NSString *)xtr_strokeStyle;
@@ -40,6 +42,13 @@
 - (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint;
 - (void)xtr_bezierCurveTo:(JSValue *)cp1Point cp2Point:(JSValue *)cp2Point xyPoint:(JSValue *)xyPoint;
 - (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise;
+- (void)xtr_preScale:(JSValue *)point;
+- (void)xtr_preRotate:(JSValue *)angle;
+- (void)xtr_preTranslate:(JSValue *)point;
+- (void)xtr_preTransform:(JSValue *)transform;
+- (void)xtr_setCanvasTransform:(JSValue *)transform;
+- (void)xtr_save;
+- (void)xtr_restore;
 - (BOOL)xtr_isPointInPath:(JSValue *)point;
 - (void)xtr_setNeedsDisplay;
 

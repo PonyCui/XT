@@ -3,11 +3,12 @@ import { Color } from './Color';
 
 export class CanvasView extends View {
 
+    globalAlpha: number = 1.0
     fillStyle?: Color
     strokeStyle?: Color
     lineCap?: string
     lineJoin?: string
-    lineWidth: number = 1
+    lineWidth: number = 1.0
     miterLimit: number
     rect(x: number, y: number, width: number, height: number): void { }
     fillRect(x: number, y: number, width: number, height: number): void { }
@@ -24,6 +25,13 @@ export class CanvasView extends View {
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void { }
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void { }
     isPointInPath(x: number, y: number): void { }
+    preScale(x: number, y: number): void { }
+    preRotate(angle: number) { }
+    preTranslate(x: number, y: number): void { }
+    preTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void { }
+    setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void { }
+    save(): void { }
+    restore(): void { }
     setNeedsDisplay(): void { }
     onDraw(): void { }
 
