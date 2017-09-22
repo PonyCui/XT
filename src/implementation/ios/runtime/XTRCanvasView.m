@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSString *lineJoin;
 @property (nonatomic, assign) CGFloat lineWidth;
 @property (nonatomic, assign) CGLineCap miterLimit;
+@property (nonatomic, strong) UIBezierPath *currentPath;
 
 @end
 
@@ -30,6 +31,8 @@
 
 + (XTRCanvasView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRCanvasView *view = [[XTRCanvasView alloc] initWithFrame:[frame toRect]];
+    view.lineWidth = 1;
+    view.backgroundColor = [UIColor clearColor];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = (id)scriptObject.context;
     view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
@@ -42,7 +45,6 @@
 
 - (void)xtr_setFillStyle:(JSValue *)fillStyle {
     self.fillStyle = [fillStyle toColor];
-    [(self.fillStyle ?: [UIColor clearColor]) setFill];
 }
 
 - (NSDictionary *)xtr_strokeStyle {
@@ -51,7 +53,6 @@
 
 - (void)xtr_setStrokeStyle:(JSValue *)strokeStyle {
     self.strokeStyle = [strokeStyle toColor];
-    [(self.strokeStyle ?: [UIColor clearColor]) setStroke];
 }
 
 - (NSString *)xtr_lineCap {
@@ -86,34 +87,107 @@
     self.miterLimit = miterLimit;
 }
 
+- (void)xtr_rect:(JSValue *)rect {
+    self.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
+}
+
 - (void)xtr_fillRect:(JSValue *)rect {
-    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
-    [bezierPath fill];
+    self.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
+    [self xtr_fill];
 }
 
 - (void)xtr_strokeRect:(JSValue *)rect {
-    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
-    if ([self.lineCap isEqualToString:@"butt"]) {
-        bezierPath.lineCapStyle = kCGLineCapButt;
+    self.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
+    [self xtr_stroke];
+}
+
+- (void)xtr_clearRect:(JSValue *)rect {
+    if (self.backgroundColor != nil && ![self.backgroundColor isEqual:[UIColor clearColor]]) {
+        [self.backgroundColor setFill];
+        CGContextFillRect(UIGraphicsGetCurrentContext(), [rect toRect]);
+        [self.fillStyle setFill];
     }
-    else if ([self.lineCap isEqualToString:@"round"]) {
-        bezierPath.lineCapStyle = kCGLineCapRound;
+    else {
+        CGContextClearRect(UIGraphicsGetCurrentContext(), [rect toRect]);
     }
-    else if ([self.lineCap isEqualToString:@"square"]) {
-        bezierPath.lineCapStyle = kCGLineCapSquare;
+}
+
+- (void)xtr_fill {
+    if (self.currentPath != nil) {
+        [(self.fillStyle ?: [UIColor blackColor]) setFill];
+        [self.currentPath fill];
     }
-    if ([self.lineJoin isEqualToString:@"bevel"]) {
-        bezierPath.lineJoinStyle = kCGLineJoinBevel;
+}
+
+- (void)xtr_stroke {
+    if (self.currentPath != nil) {
+        [(self.strokeStyle ?: [UIColor blackColor]) setStroke];
+        if ([self.lineCap isEqualToString:@"butt"]) {
+            self.currentPath.lineCapStyle = kCGLineCapButt;
+        }
+        else if ([self.lineCap isEqualToString:@"round"]) {
+            self.currentPath.lineCapStyle = kCGLineCapRound;
+        }
+        else if ([self.lineCap isEqualToString:@"square"]) {
+            self.currentPath.lineCapStyle = kCGLineCapSquare;
+        }
+        if ([self.lineJoin isEqualToString:@"bevel"]) {
+            self.currentPath.lineJoinStyle = kCGLineJoinBevel;
+        }
+        else if ([self.lineJoin isEqualToString:@"miter"]) {
+            self.currentPath.lineJoinStyle = kCGLineJoinMiter;
+        }
+        else if ([self.lineJoin isEqualToString:@"round"]) {
+            self.currentPath.lineJoinStyle = kCGLineJoinRound;
+        }
+        self.currentPath.lineWidth = self.lineWidth;
+        self.currentPath.miterLimit = self.miterLimit;
+        [self.currentPath stroke];
     }
-    else if ([self.lineJoin isEqualToString:@"miter"]) {
-        bezierPath.lineJoinStyle = kCGLineJoinMiter;
-    }
-    else if ([self.lineJoin isEqualToString:@"round"]) {
-        bezierPath.lineJoinStyle = kCGLineJoinRound;
-    }
-    bezierPath.lineWidth = self.lineWidth;
-    bezierPath.miterLimit = self.miterLimit;
-    [bezierPath stroke];
+}
+
+- (void)xtr_beginPath {
+    self.currentPath = [[UIBezierPath alloc] init];
+}
+- (void)xtr_moveTo:(JSValue *)point {
+    [self.currentPath moveToPoint:[point toPoint]];
+}
+- (void)xtr_closePath {
+    [self.currentPath closePath];
+}
+
+- (void)xtr_lineTo:(JSValue *)point {
+    [self.currentPath addLineToPoint:[point toPoint]];
+}
+
+- (void)xtr_clip {
+    [self.currentPath addClip];
+}
+
+- (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint {
+    [self.currentPath addQuadCurveToPoint:[xyPoint toPoint] controlPoint:[cpPoint toPoint]];
+}
+
+- (void)xtr_bezierCurveTo:(JSValue *)cp1Point cp2Point:(JSValue *)cp2Point xyPoint:(JSValue *)xyPoint {
+    [self.currentPath addCurveToPoint:[xyPoint toPoint]
+                        controlPoint1:[cp1Point toPoint]
+                        controlPoint2:[cp2Point toPoint]];
+}
+
+- (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise {
+    [self.currentPath addArcWithCenter:[point toPoint]
+                                radius:r.toDouble
+                            startAngle:sAngle.toDouble
+                              endAngle:eAngle.toDouble
+                             clockwise:!counterclockwise.toBool];
+}
+
+- (BOOL)xtr_isPointInPath:(JSValue *)point {
+    return [self.currentPath containsPoint:[point toPoint]];
+}
+
+- (void)xtr_setNeedsDisplay {
+    [self setNeedsDisplay];
 }
 
 - (void)drawRect:(CGRect)rect {

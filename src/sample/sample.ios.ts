@@ -17,11 +17,11 @@ class MyCanvasView extends CanvasView {
 
     onDraw() {
         super.onDraw();
-        // this.fillStyle = Color.greenColor
-        // this.fillRect(0, 0, 44, 44)
-        this.strokeStyle = Color.redColor
-        this.lineWidth = 4
-        this.strokeRect(4, 4, 44, 44)
+        this.rect(50,20,200,120);
+        this.stroke();
+        this.clip();
+        this.fillStyle=Color.greenColor
+        this.fillRect(0,0,150,100);
     }
 
 }
@@ -29,9 +29,10 @@ class MyCanvasView extends CanvasView {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const canvasView = new MyCanvasView(RectMake(44, 44, 88, 88));
+        const canvasView = new MyCanvasView(RectMake(44, 44, 300, 300));
         canvasView.backgroundColor = Color.yellowColor
         this.view.addSubview(canvasView);
+        // this.view.backgroundColor = Color.blueColor
         // const imageView = new ImageView(RectMake(44, 44, 78, 78))
         // imageView.userInteractionEnabled = true
         // Image.fromAssetsWithScales("success", [2], (it) => {

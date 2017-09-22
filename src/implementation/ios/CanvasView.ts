@@ -68,12 +68,68 @@ export class CanvasView extends View {
         this.nativeObject.xtr_setMiterLimit(value)
     }
 
+    rect(x: number, y: number, width: number, height: number): void {
+        this.nativeObject.xtr_rect({ x, y, width, height })
+    }
+
     fillRect(x: number, y: number, width: number, height: number): void {
         this.nativeObject.xtr_fillRect({ x, y, width, height })
     }
 
     strokeRect(x: number, y: number, width: number, height: number): void {
         this.nativeObject.xtr_strokeRect({ x, y, width, height })
+    }
+
+    clearRect(x: number, y: number, width: number, height: number): void {
+        this.nativeObject.xtr_clearRect({ x, y, width, height })
+    }
+
+    fill() {
+        this.nativeObject.xtr_fill();
+    }
+
+    stroke() {
+        this.nativeObject.xtr_stroke();
+    }
+
+    beginPath(): void {
+        this.nativeObject.xtr_beginPath();
+    }
+
+    moveTo(x: number, y: number): void {
+        this.nativeObject.xtr_moveTo({ x, y });
+    }
+
+    closePath(): void {
+        this.nativeObject.xtr_closePath()
+    }
+
+    lineTo(x: number, y: number): void {
+        this.nativeObject.xtr_lineTo({ x, y })
+    }
+
+    clip(): void {
+        this.nativeObject.xtr_clip();
+    }
+
+    quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
+        this.nativeObject.xtr_quadraticCurveToXyPoint({ x: cpx, y: cpy }, { x, y })
+    }
+
+    bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
+        this.nativeObject.xtr_bezierCurveToCp2PointXyPoint({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y })
+    }
+
+    arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
+        this.nativeObject.xtr_arcRSAngleEAngleCounterclockwise({ x, y }, r, sAngle, eAngle, counterclockwise)
+    }
+
+    isPointInPath(x: number, y: number): void {
+        return this.nativeObject.xtr_isPointInPath({ x, y })
+    }
+
+    setNeedsDisplay(): void {
+        this.nativeObject.xtr_setNeedsDisplay();
     }
 
     onDraw(): void { }
