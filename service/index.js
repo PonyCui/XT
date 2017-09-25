@@ -6,6 +6,7 @@ var path = require('path');
 var process = require('process');
 
 var server = http.createServer(function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
     if (url.parse(req.url).pathname.indexOf("/breakpoint") === 0) {
         breakpoint(req, res);
     }
@@ -117,17 +118,24 @@ function evalresult(req, res) {
     res.end();
 }
 
+var breakpointWaiting = false;
+
 function breakpoint(req, res) {
     process.stdin.removeAllListeners("data");
-    process.stdout.write(decodeURIComponent(url.parse(req.url).pathname) + " >>> ")
+    if (!breakpointWaiting) {
+        process.stdout.write(decodeURIComponent(url.parse(req.url).pathname) + " >>> ")
+    }
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
+    breakpointWaiting = true;
     const handler = function (text) {
         if (text.trim() === "n") {
             breakpointNext(req, res);
+            breakpointWaiting = false;
         }
         else {
             breakpointKeep(req, res, text.trim())
+            breakpointWaiting = false;
         }
     };
     process.stdin.on('data', handler)

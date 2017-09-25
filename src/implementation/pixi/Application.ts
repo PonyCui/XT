@@ -3,6 +3,9 @@ import { Application as IApplication, ApplicationDelegate as IApplicationDelegat
 import { Window } from './Window'
 import { View } from './View'
 import { Rect, RectInside } from "../../interface/Rect";
+import { XTRBreakpoint, XTRDebugger } from './Debugger'
+(window as any).XTRBreakpoint = XTRBreakpoint;
+(window as any).XTRDebugger = XTRDebugger;
 import * as PIXI from 'pixi.js'
 
 let sharedApplication: Application | undefined = undefined;

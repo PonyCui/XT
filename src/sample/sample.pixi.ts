@@ -11,17 +11,15 @@ const application = new Application("app", {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new View(RectMake(44,44,88,88))
+        const view = new View(RectMake(44, 44, 88, 88))
         view.backgroundColor = Color.blueColor
         view.userInteractionEnabled = true
         view.onTap = () => {
+            XTRBreakpoint("Test Breakpoint", function (code: string) { return "" + eval(code) }.bind(this));
             view.backgroundColor = Color.redColor
         }
         this.view.addSubview(view);
         this.view.backgroundColor = new Color(1, 1, 0)
-        this.view.onDoubleTap = () => {
-            this.view.backgroundColor = Color.blackColor
-        }
     }
 
 }

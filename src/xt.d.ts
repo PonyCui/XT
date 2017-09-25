@@ -1,3 +1,6 @@
+declare const XTRDebugger: any
+declare const XTRBreakpoint: any
+
 declare module 'xt' {
 
     enum InteractionState {

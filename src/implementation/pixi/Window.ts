@@ -15,6 +15,8 @@ export class Window extends View {
             application.nativeObject.stage.addChild(this.nativeObject);
         }
         this.hidden = true;
+        this.userInteractionEnabled = true;
+        this.setupDebuggerGestures();
     }
 
     makeKeyAndVisible(): void {
@@ -47,6 +49,24 @@ export class Window extends View {
         if (this.rootViewController) {
             this.rootViewController.view.frame = this.bounds;
         }
+    }
+
+    private setupDebuggerGestures() {
+        var triggerTime = 3;
+        var nextTime = performance.now();
+        this.nativeObject.on('pointerup', (e: any) => {
+            let x = e.data.originalEvent.pageX;
+            let y = e.data.originalEvent.pageY;
+            if (x > this.bounds.width - 44 && y > this.bounds.height - 44) {
+                if (performance.now() > nextTime) { triggerTime = 3 }
+                nextTime = performance.now() + 500;
+                triggerTime--;
+                if (triggerTime <= 0) {
+                    triggerTime = 3;
+                    (window as any).XTRDebugger()
+                }
+            }
+        })
     }
 
 }
