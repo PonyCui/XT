@@ -16,6 +16,8 @@ if (requestAnimationFrame === undefined) {
     }
 }
 
+let gestureRegconziedView: View | undefined = undefined
+
 export class View extends IView {
 
     public nativeObject: any;
@@ -689,12 +691,14 @@ export class View extends IView {
         if (this._onTap !== undefined || this._onDoubleTap !== undefined) {
             this.activeTouch();
             const onTap = () => {
+                if (gestureRegconziedView !== undefined && gestureRegconziedView !== this) { return; }
                 if (this._onDoubleTap !== undefined) {
                     if (this._firstTapped !== true && this._maybeTap === true) {
                         this._firstTapped = true;
                         setTimeout(() => {
                             if (this._onTap !== undefined && this._secondTapped === false && this._maybeTap === true) {
                                 if (this._isLongPress === false) {
+                                    gestureRegconziedView = this
                                     this._onTap && this._onTap();
                                 }
                             }
@@ -704,12 +708,14 @@ export class View extends IView {
                     else if (this._firstTapped === true && this._maybeTap === true) {
                         this._secondTapped = true;
                         if (this._isLongPress === false) {
+                            gestureRegconziedView = this
                             this._onDoubleTap && this._onDoubleTap();
                         }
                     }
                 }
                 else if (this._maybeTap === true) {
                     if (this._isLongPress === false) {
+                        gestureRegconziedView = this
                         this._onTap && this._onTap();
                     }
                 }
@@ -756,6 +762,7 @@ export class View extends IView {
     }
 
     private handleTouchStart(event: any) {
+        gestureRegconziedView = undefined;
         if (this._onPan !== undefined) {
             this._maybePan = true;
             this._isPan = false;
@@ -765,6 +772,7 @@ export class View extends IView {
             this._isLongPress = false;
             setTimeout(() => {
                 if (this._maybeLongPress === true) {
+                    gestureRegconziedView = this
                     this._isLongPress = true;
                     this._onLongPress && this._onLongPress(IView.InteractionState.Began);
                 }
@@ -780,13 +788,18 @@ export class View extends IView {
     private handleTouchMove(event: any) {
         if (this._isLongPress === true) {
             this._maybePan = false;
-            this._onLongPress && this._onLongPress(IView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            if (gestureRegconziedView !== undefined && gestureRegconziedView === this) {
+                this._onLongPress && this._onLongPress(IView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            }
         }
         else if (this._isPan === true) {
-            this._onPan && this._onPan(IView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            if (gestureRegconziedView !== undefined && gestureRegconziedView === this) {
+                this._onPan && this._onPan(IView.InteractionState.Changed, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            }
         }
         else if (this._maybePan === true) {
-            if (event.data.global.x - this._firstTapPoint.x > Screen.withScale(8) || event.data.global.y - this._firstTapPoint.y > Screen.withScale(8)) {
+            if (event.data.global.x - this._firstTapPoint.x > Screen.withScale(16) || event.data.global.y - this._firstTapPoint.y > Screen.withScale(16)) {
+                gestureRegconziedView = this
                 this._isPan = true;
                 this._maybeTap = false;
                 this._maybeLongPress = false;
@@ -794,7 +807,7 @@ export class View extends IView {
             }
         }
         else if (this._maybeTap === true || this._maybeLongPress === true) {
-            if (event.data.global.x - this._firstTapPoint.x > Screen.withScale(12) || event.data.global.y - this._firstTapPoint.y > Screen.withScale(12)) {
+            if (event.data.global.x - this._firstTapPoint.x > Screen.withScale(16) || event.data.global.y - this._firstTapPoint.y > Screen.withScale(16)) {
                 this._maybeTap = false;
                 this._maybeLongPress = false;
             }
@@ -802,19 +815,20 @@ export class View extends IView {
     }
 
     private handleTouchEnd(event: any) {
-        if (this._isLongPress !== true) {
-            this._maybeLongPress = false;
-        }
         if (this._isPan === true) {
-            this._onPan && this._onPan(IView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-            this._maybePan = false;
-            this._isPan = false;
+            if (gestureRegconziedView !== undefined && gestureRegconziedView === this) {
+                this._onPan && this._onPan(IView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            }
         }
         else if (this._isLongPress === true) {
-            this._onLongPress && this._onLongPress(IView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
-            this._maybeTap = false;
-            this._isLongPress = false;
+            if (gestureRegconziedView !== undefined && gestureRegconziedView === this) {
+                this._onLongPress && this._onLongPress(IView.InteractionState.Ended, this.requestTouchPointInView(event), this.requestTouchPointInWindow(event));
+            }
         }
+        this._maybeLongPress = false;
+        this._maybePan = false;
+        this._isPan = false;
+        this._isLongPress = false;
     }
 
     public set onTap(value: () => void) {

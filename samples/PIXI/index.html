@@ -7,7 +7,13 @@
 
 <body style="margin: 0">
     <canvas id="app"></canvas>
-    <script src="/dist/sample.pixi.min.js"></script>
 </body>
+
+<script>
+    var child = document.createElement("script")
+    child.src = "/dist/sample.pixi.min.js?" + new Date().toString()
+    document.body.appendChild(child);
+
+</script>
 
 </html>
