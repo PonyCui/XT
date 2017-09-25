@@ -17,7 +17,7 @@ export class Image {
     readonly baseTexture: any;
     readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
-    static assetsPath = "./assets/"
+    static assetsPath = "assets/"
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         imageQueue.push({ url, success, failure });

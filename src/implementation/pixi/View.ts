@@ -29,6 +29,7 @@ export class View extends IView {
         this.nativeObject.XTView = this;
         this.nativeGraphics = new PIXI.Graphics();
         this.nativeObject.addChild(this.nativeGraphics);
+        this.addContentLayers();
         this.nativeContainer = new PIXI.Container();
         this.nativeObject.addChild(this.nativeContainer);
         if (typeof rect === "object") {
@@ -38,6 +39,8 @@ export class View extends IView {
     }
 
     init() { }
+
+    addContentLayers(): void { }
 
     // Mark: View Geometry
 
@@ -385,7 +388,7 @@ export class View extends IView {
         }
     }
 
-    private draw() {
+    protected draw() {
         if (this.nativeGraphics === undefined || this.bounds.width == 0 || this.bounds.height == 0) {
             return;
         }

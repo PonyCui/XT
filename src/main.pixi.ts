@@ -79,3 +79,7 @@ export class ViewController extends MViewController {}
 import { NavigationController as INavigationController } from './interface/NavigationController'
 import { NavigationController as MNavigationController } from './implementation/pixi/NavigationController'
 export class NavigationController extends MNavigationController {}
+
+import { CanvasView as ICanvasView } from './interface/CanvasView'
+import { CanvasView as MCanvasView } from './implementation/pixi/CanvasView'
+export class CanvasView extends MCanvasView { }

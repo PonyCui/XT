@@ -3,6 +3,7 @@ import { View } from './View'
 import { Rect } from "../../interface/Rect";
 import * as PIXI from 'pixi.js'
 import { ViewController } from "../../interface/ViewController";
+import { Screen } from '../../interface/Screen';
 
 export class Window extends View {
 
@@ -54,9 +55,9 @@ export class Window extends View {
     private setupDebuggerGestures() {
         var triggerTime = 3;
         var nextTime = performance.now();
-        this.nativeObject.on('pointerup', (e: any) => {
-            let x = e.data.originalEvent.pageX;
-            let y = e.data.originalEvent.pageY;
+        this.nativeObject.on('pointerdown', (e: any) => {
+            let x = Screen.outScale(e.data.global.x);
+            let y = Screen.outScale(e.data.global.y);
             if (x > this.bounds.width - 44 && y > this.bounds.height - 44) {
                 if (performance.now() > nextTime) { triggerTime = 3 }
                 nextTime = performance.now() + 500;

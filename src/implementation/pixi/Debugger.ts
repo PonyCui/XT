@@ -8,6 +8,14 @@ export function XTRDebugger() {
 
 export function XTRBreakpoint(breakpointID: string, breakpointCallback?: (evalScript: string) => any) {
     if (!debugModeEnabled) { return; }
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://" + window.location.hostname + ":8083/" + encodeURIComponent(breakpointID), false);
+        xhr.send(null);
+    } catch (error) {
+        console.error(error);
+        return;
+    }
     let next = false;
     while (!next) {
         try {
@@ -27,6 +35,6 @@ export function XTRBreakpoint(breakpointID: string, breakpointCallback?: (evalSc
                 }
             }
             xhr.send(null);
-        } catch (error) { }
+        } catch (error) { console.error(error.message); }
     }
 }

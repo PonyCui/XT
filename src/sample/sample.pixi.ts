@@ -1,4 +1,4 @@
-import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController } from '../main.pixi'
+import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView } from '../main.pixi'
 
 const application = new Application("app", {
     applicationDidFinishLaunchingWithOptions: () => {
@@ -8,18 +8,26 @@ const application = new Application("app", {
     }
 })
 
+class MyCanvasView extends CanvasView {
+
+    onDraw(): void {
+        super.onDraw();
+        const ctx = this
+        ctx.rect(20, 20, 150, 100);
+        if (ctx.isPointInPath(20, 50)) {
+            ctx.stroke();
+        };
+    }
+
+}
+
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new View(RectMake(44, 44, 88, 88))
-        view.backgroundColor = Color.blueColor
-        view.userInteractionEnabled = true
-        view.onTap = () => {
-            XTRBreakpoint("Test Breakpoint", function (code: string) { return "" + eval(code) }.bind(this));
-            view.backgroundColor = Color.redColor
-        }
+        const view = new MyCanvasView(RectMake(44, 44, 300, 300))
+        view.backgroundColor = Color.whiteColor
         this.view.addSubview(view);
-        this.view.backgroundColor = new Color(1, 1, 0)
+        this.view.backgroundColor = Color.blackColor
     }
 
 }
