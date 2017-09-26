@@ -16,9 +16,15 @@ class XTRPolyfill {
         fun attachPolyfill(context: XTRContext) {
             ScriptableObject.putProperty(context.scope, "Polyfill", Context.javaToJS(Polyfill(context), context.scope))
             attachTimeout(context)
+            attachImmediate(context)
             attachInterval(context)
             attachConsole(context)
             attachRAF(context)
+        }
+
+        private fun attachImmediate(context: XTRContext) {
+            context.jsContext.evaluateString(context.scope, "var setImmediate = function(callback) { return Polyfill.setTimeout(callback, 0) }; window.setTimeout = setTimeout;", "polyfill.setImmediate.js", 1, null)
+            context.jsContext.evaluateString(context.scope, "var clearImmediate = function(handler) { Polyfill.clearTimeout(handler) }; window.clearTimeout = clearTimeout;", "polyfill.clearImmediate.js", 1, null)
         }
 
         private fun attachTimeout(context: XTRContext) {

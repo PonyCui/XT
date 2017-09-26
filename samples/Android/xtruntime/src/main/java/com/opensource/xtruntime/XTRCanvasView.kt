@@ -36,86 +36,140 @@ class XTRCanvasView: XTRComponent() {
 
     class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext) : XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
+        private var actions: List<(canvas: Canvas) -> Unit> = listOf()
         private var currentState = State()
+        private var fakeState = State()
         private var stateStack: List<State> = listOf()
         private var currentPath = Path()
         private var drawingPath = Path()
         private var currentPaint = Paint()
-        private var currentCanvas: Canvas? = null
         private val scale = resources.displayMetrics.density
 
         fun xtr_globalAlpha(): Double {
-            return currentState.globalAlpha
+            return fakeState.globalAlpha
         }
 
         fun xtr_setGlobalAlpha(value: Any?) {
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    (value as? Double)?.let {
+                        currentState.globalAlpha = it
+                    }
+                }
+                this.actions = actions.toList()
+            }
             (value as? Double)?.let {
-                currentState.globalAlpha = it
+                fakeState.globalAlpha = it
             }
         }
 
         fun xtr_fillStyle(): XTRColor? {
-            return currentState.fillStyle
+            return fakeState.fillStyle
         }
 
         fun xtr_setFillStyle(value: Any?) {
-            currentState.fillStyle = XTRUtils.toColor(value)
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentState.fillStyle = XTRUtils.toColor(value)
+                }
+                this.actions = actions.toList()
+            }
+            fakeState.fillStyle = XTRUtils.toColor(value)
         }
 
         fun xtr_strokeStyle(): XTRColor? {
-            return currentState.strokeStyle
+            return fakeState.strokeStyle
         }
 
         fun xtr_setStrokeStyle(value: Any?) {
-            currentState.strokeStyle = XTRUtils.toColor(value)
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentState.strokeStyle = XTRUtils.toColor(value)
+                }
+                this.actions = actions.toList()
+            }
+            fakeState.strokeStyle = XTRUtils.toColor(value)
         }
 
         fun xtr_lineCap(): String? {
-            return currentState.lineCap
+            return fakeState.lineCap
         }
 
         fun xtr_setLineCap(value: Any?) {
-            currentState.lineCap = value as? String
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentState.lineCap = value as? String
+                }
+                this.actions = actions.toList()
+            }
+            fakeState.lineCap = value as? String
         }
 
         fun xtr_lineJoin(): String? {
-            return currentState.lineJoin
+            return fakeState.lineJoin
         }
 
         fun xtr_setLineJoin(value: Any?) {
-            currentState.lineJoin = value as? String
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentState.lineJoin = value as? String
+                }
+                this.actions = actions.toList()
+            }
+            fakeState.lineJoin = value as? String
         }
 
         fun xtr_lineWidth(): Double {
-            return currentState.lineWidth
+            return fakeState.lineWidth
         }
 
         fun xtr_setLineWidth(value: Any?) {
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    (value as? Double)?.let {
+                        currentState.lineWidth = it
+                    }
+                }
+                this.actions = actions.toList()
+            }
             (value as? Double)?.let {
-                currentState.lineWidth = it
+                fakeState.lineWidth = it
             }
         }
 
         fun xtr_miterLimit(): Double {
-            return currentState.miterLimit
+            return fakeState.miterLimit
         }
 
         fun xtr_setMiterLimit(value: Any?) {
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    (value as? Double)?.let {
+                        currentState.miterLimit = it
+                    }
+                }
+                this.actions = actions.toList()
+            }
             (value as? Double)?.let {
-                currentState.miterLimit = it
+                fakeState.miterLimit = it
             }
         }
 
         fun xtr_rect(value: Any?) {
             XTRUtils.toRect(value)?.let {
-                currentPath.reset()
-                currentPath.addRect(
-                        RectF(
-                                it.x.toFloat() * scale,
-                                it.y.toFloat() * scale,
-                                (it.x + it.width).toFloat() * scale,
-                                (it.y + it.height).toFloat() * scale
-                        ), Path.Direction.CCW)
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentPath.reset()
+                        currentPath.addRect(
+                                RectF(
+                                        it.x.toFloat() * scale,
+                                        it.y.toFloat() * scale,
+                                        (it.x + it.width).toFloat() * scale,
+                                        (it.y + it.height).toFloat() * scale
+                                ), Path.Direction.CCW)
+                    }
+                    this.actions = actions.toList()
+                }
             }
         }
 
@@ -129,99 +183,120 @@ class XTRCanvasView: XTRComponent() {
             xtr_stroke()
         }
 
-        fun xtr_clearRect(value: Any?) {
-            xtr_rect(value)
-            xtr_fill(true)
-        }
-
-        fun xtr_fill(clear: Boolean = false) {
-            currentPaint.reset()
-            if (clear) {
-                currentPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        fun xtr_fill() {
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { currentCanvas ->
+                    currentPaint.reset()
+                    currentPaint.color = (currentState.fillStyle ?: XTRColor(0.0, 0.0, 0.0, 1.0)).intColor()
+                    currentPaint.alpha = (currentState.globalAlpha * 255.0).toInt()
+                    if (!currentState.currentTransform.isIdentity) {
+                        drawingPath.reset()
+                        drawingPath.addPath(currentPath)
+                        drawingPath.transform(currentState.currentTransform)
+                        currentCanvas.drawPath(drawingPath, currentPaint)
+                        return@add
+                    }
+                    currentCanvas.drawPath(currentPath, currentPaint)
+                }
+                this.actions = actions.toList()
             }
-            else {
-                currentPaint.color = (currentState.fillStyle ?: XTRColor(0.0, 0.0, 0.0, 1.0)).intColor()
-                currentPaint.alpha = (currentState.globalAlpha * 255.0).toInt()
-            }
-            if (!currentState.currentTransform.isIdentity) {
-                drawingPath.reset()
-                drawingPath.addPath(currentPath)
-                drawingPath.transform(currentState.currentTransform)
-                currentCanvas?.drawPath(drawingPath, currentPaint)
-                return
-            }
-            currentCanvas?.drawPath(currentPath, currentPaint)
+            invalidate()
         }
 
         fun xtr_stroke() {
-            currentPaint.reset()
-            currentPaint.color = (currentState.strokeStyle ?: XTRColor(0.0, 0.0, 0.0, 1.0)).intColor()
-            currentPaint.alpha = (currentState.globalAlpha * 255.0).toInt()
-            currentPaint.style = Paint.Style.STROKE
-            when (currentState.lineCap) {
-                "butt" -> currentPaint.strokeCap = Paint.Cap.BUTT
-                "round" -> currentPaint.strokeCap = Paint.Cap.ROUND
-                "square" -> currentPaint.strokeCap = Paint.Cap.SQUARE
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { currentCanvas ->
+                    currentPaint.reset()
+                    currentPaint.color = (currentState.strokeStyle ?: XTRColor(0.0, 0.0, 0.0, 1.0)).intColor()
+                    currentPaint.alpha = (currentState.globalAlpha * 255.0).toInt()
+                    currentPaint.style = Paint.Style.STROKE
+                    when (currentState.lineCap) {
+                        "butt" -> currentPaint.strokeCap = Paint.Cap.BUTT
+                        "round" -> currentPaint.strokeCap = Paint.Cap.ROUND
+                        "square" -> currentPaint.strokeCap = Paint.Cap.SQUARE
+                    }
+                    when (currentState.lineJoin) {
+                        "bevel" -> currentPaint.strokeJoin = Paint.Join.BEVEL
+                        "miter" -> currentPaint.strokeJoin = Paint.Join.MITER
+                        "round" -> currentPaint.strokeJoin = Paint.Join.ROUND
+                    }
+                    currentPaint.strokeWidth = (currentState.lineWidth * scale).toFloat()
+                    currentPaint.strokeMiter = (currentState.miterLimit * scale).toFloat()
+                    if (!currentState.currentTransform.isIdentity) {
+                        drawingPath.reset()
+                        drawingPath.addPath(currentPath)
+                        drawingPath.transform(currentState.currentTransform)
+                        currentCanvas.drawPath(drawingPath, currentPaint)
+                        return@add
+                    }
+                    currentCanvas.drawPath(currentPath, currentPaint)
+                }
+                this.actions = actions.toList()
             }
-            when (currentState.lineJoin) {
-                "bevel" -> currentPaint.strokeJoin = Paint.Join.BEVEL
-                "miter" -> currentPaint.strokeJoin = Paint.Join.MITER
-                "round" -> currentPaint.strokeJoin = Paint.Join.ROUND
-            }
-            currentPaint.strokeWidth = (currentState.lineWidth * scale).toFloat()
-            currentPaint.strokeMiter = (currentState.miterLimit * scale).toFloat()
-            if (!currentState.currentTransform.isIdentity) {
-                drawingPath.reset()
-                drawingPath.addPath(currentPath)
-                drawingPath.transform(currentState.currentTransform)
-                currentCanvas?.drawPath(drawingPath, currentPaint)
-                return
-            }
-            currentCanvas?.drawPath(currentPath, currentPaint)
+            invalidate()
         }
 
         fun xtr_beginPath() {
-            currentPath.reset()
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentPath.reset()
+                }
+                this.actions = actions.toList()
+            }
         }
 
         fun xtr_moveTo(value: Any?) {
             XTRUtils.toPoint(value)?.let {
-                currentPath.moveTo((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentPath.moveTo((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                    }
+                    this.actions = actions.toList()
+                }
             }
         }
 
         fun xtr_closePath() {
-            currentPath.close()
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentPath.close()
+                }
+                this.actions = actions.toList()
+            }
         }
 
         fun xtr_lineTo(value: Any?) {
             XTRUtils.toPoint(value)?.let {
-                currentPath.lineTo((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentPath.lineTo((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                    }
+                    this.actions = actions.toList()
+                }
             }
-        }
-
-        fun xtr_clip() {
-            if (!currentState.currentTransform.isIdentity) {
-                drawingPath.reset()
-                drawingPath.addPath(currentPath)
-                drawingPath.transform(currentState.currentTransform)
-                currentCanvas?.clipPath(drawingPath)
-                return
-            }
-            currentCanvas?.clipPath(currentPath)
         }
 
         fun xtr_quadraticCurveTo(argCpPoint: Any?, argXyPoint: Any?) {
             val cpPoint = XTRUtils.toPoint(argCpPoint) ?: return
             val xyPoint = XTRUtils.toPoint(argXyPoint) ?: return
-            currentPath.quadTo((cpPoint.x * scale).toFloat(), (cpPoint.y * scale).toFloat(), (xyPoint.x * scale).toFloat(), (xyPoint.y * scale).toFloat())
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentPath.quadTo((cpPoint.x * scale).toFloat(), (cpPoint.y * scale).toFloat(), (xyPoint.x * scale).toFloat(), (xyPoint.y * scale).toFloat())
+                }
+                this.actions = actions.toList()
+            }
         }
 
         fun xtr_bezierCurveTo(argCp1Point: Any?, argCp2Point: Any?, argXyPoint: Any?) {
             val cp1Point = XTRUtils.toPoint(argCp1Point) ?: return
             val cp2Point = XTRUtils.toPoint(argCp2Point) ?: return
             val xyPoint = XTRUtils.toPoint(argXyPoint) ?: return
-            currentPath.cubicTo((cp1Point.x * scale).toFloat(), (cp1Point.y * scale).toFloat(), (cp2Point.x * scale).toFloat(), (cp2Point.y * scale).toFloat(), (xyPoint.x * scale).toFloat(), (xyPoint.y * scale).toFloat())
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentPath.cubicTo((cp1Point.x * scale).toFloat(), (cp1Point.y * scale).toFloat(), (cp2Point.x * scale).toFloat(), (cp2Point.y * scale).toFloat(), (xyPoint.x * scale).toFloat(), (xyPoint.y * scale).toFloat())
+                }
+                this.actions = actions.toList()
+            }
         }
 
         fun xtr_arc(argPoint: Any?, argR: Any?, argSAngle: Any?, argEAngle: Any?, argCounterclockwise: Any?) {
@@ -230,15 +305,21 @@ class XTRCanvasView: XTRComponent() {
             val sAngle = argSAngle as? Double ?: return
             val eAngle = argEAngle as? Double ?: return
             val counterclockwise = argCounterclockwise as? Boolean ?: return
-            currentPath.addArc(
-                    RectF(((point.x - r) * scale).toFloat(), ((point.y - r) * scale).toFloat(), ((point.x + r) * scale).toFloat(), ((point.y + r) * scale).toFloat()),
-                    if (counterclockwise) ((eAngle / (2 * Math.PI)) * 360f).toFloat() else ((sAngle / (2 * Math.PI)) * 360f).toFloat(),
-                    if (counterclockwise) ((sAngle / (2 * Math.PI)) * 360f).toFloat() - ((eAngle / (2 * Math.PI)) * 360f).toFloat() + 360f else ((eAngle / (2 * Math.PI)) * 360f).toFloat() - ((sAngle / (2 * Math.PI)) * 360f).toFloat()
-            )
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    currentPath.addArc(
+                            RectF(((point.x - r) * scale).toFloat(), ((point.y - r) * scale).toFloat(), ((point.x + r) * scale).toFloat(), ((point.y + r) * scale).toFloat()),
+                            if (counterclockwise) ((eAngle / (2 * Math.PI)) * 360f).toFloat() else ((sAngle / (2 * Math.PI)) * 360f).toFloat(),
+                            if (counterclockwise) ((sAngle / (2 * Math.PI)) * 360f).toFloat() - ((eAngle / (2 * Math.PI)) * 360f).toFloat() + 360f else ((eAngle / (2 * Math.PI)) * 360f).toFloat() - ((sAngle / (2 * Math.PI)) * 360f).toFloat()
+                    )
+                }
+                this.actions = actions.toList()
+            }
         }
 
         fun xtr_isPointInPath(value: Any?): Boolean {
             XTRUtils.toPoint(value)?.let {
+                actions.forEach { it.invoke(Canvas()) }
                 val r = Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE)
                 if (!currentState.currentTransform.isIdentity) {
                     drawingPath.reset()
@@ -256,64 +337,104 @@ class XTRCanvasView: XTRComponent() {
 
         fun xtr_postScale(value: Any?) {
             XTRUtils.toPoint(value)?.let {
-                currentState.currentTransform.postScale(it.x.toFloat(), it.y.toFloat())
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentState.currentTransform.postScale(it.x.toFloat(), it.y.toFloat())
+                    }
+                    this.actions = actions.toList()
+                }
             }
         }
 
         fun xtr_postRotate(value: Any?) {
             (value as? Double)?.let {
-                currentState.currentTransform.postRotate(((it / (2 * Math.PI)) * 360f).toFloat())
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentState.currentTransform.postRotate(((it / (2 * Math.PI)) * 360f).toFloat())
+                    }
+                    this.actions = actions.toList()
+                }
+
             }
         }
 
         fun xtr_postTranslate(value: Any?) {
             XTRUtils.toPoint(value)?.let {
-                currentState.currentTransform.postTranslate((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentState.currentTransform.postTranslate((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                    }
+                    this.actions = actions.toList()
+                }
+
             }
         }
 
         fun xtr_postTransform(value: Any?) {
             XTRUtils.toTransform(value)?.let {
-                currentState.currentTransform.postConcat(it.toNativeMatrix())
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentState.currentTransform.postConcat(it.toNativeMatrix())
+                    }
+                    this.actions = actions.toList()
+                }
+
             }
         }
 
         fun xtr_setCanvasTransform(value: Any?) {
             XTRUtils.toTransform(value)?.let {
-                currentState.currentTransform = it.toNativeMatrix()
+                this.actions.toMutableList()?.let { actions ->
+                    actions.add { _ ->
+                        currentState.currentTransform = it.toNativeMatrix()
+                    }
+                    this.actions = actions.toList()
+                }
             }
         }
 
         fun xtr_save() {
-            val mutable = stateStack.toMutableList()
-            mutable.add(currentState)
-            stateStack = mutable.toList()
-            currentState = currentState.copy()
-        }
-
-        fun xtr_restore() {
-            if (stateStack.isNotEmpty()) {
-                val mutable = stateStack.toMutableList()
-                val lastObject = mutable[mutable.size - 1]
-                mutable.removeAt(mutable.size - 1)
-                stateStack = mutable.toList()
-                currentState = lastObject
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    val mutable = stateStack.toMutableList()
+                    mutable.add(currentState)
+                    stateStack = mutable.toList()
+                    currentState = currentState.copy()
+                }
+                this.actions = actions.toList()
             }
         }
 
-        fun xtr_setNeedsDisplay() {
+        fun xtr_restore() {
+            this.actions.toMutableList()?.let { actions ->
+                actions.add { _ ->
+                    if (stateStack.isNotEmpty()) {
+                        val mutable = stateStack.toMutableList()
+                        val lastObject = mutable[mutable.size - 1]
+                        mutable.removeAt(mutable.size - 1)
+                        stateStack = mutable.toList()
+                        currentState = lastObject
+                    }
+                }
+                this.actions = actions.toList()
+            }
+        }
+
+        fun xtr_clear() {
+            actions = listOf()
             invalidate()
         }
 
         override fun drawContent(canvas: Canvas?) {
             super.drawContent(canvas)
-            canvas?.takeIf { it.width > 0 && it.height > 0 }?.let {
-                val bitmap = Bitmap.createBitmap(it.width, it.height, Bitmap.Config.ARGB_8888)
-                val offCanvas = Canvas(bitmap)
-                currentCanvas = offCanvas
-                xtrContext.invokeMethod(scriptObject, "onDraw", arrayOf())
-                it.drawBitmap(bitmap, Matrix(), Paint())
-                bitmap.recycle()
+            canvas?.takeIf { it.width > 0 && it.height > 0 }?.let { canvas ->
+                stateStack = listOf()
+                currentState = State()
+                fakeState = State()
+                currentPath.reset()
+                drawingPath.reset()
+                currentPaint.reset()
+                actions.forEach { it.invoke(canvas) }
             }
         }
 
