@@ -196,8 +196,9 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (self.scriptObject.value != nil) {
-        [self.scriptObject.value invokeMethod:@"handleScroll" withArguments:@[]];
+    JSValue *value = self.scriptObject.value;
+    if (value != nil) {
+        [value invokeMethod:@"handleScroll" withArguments:@[]];
     }
 }
 

@@ -80,3 +80,6 @@ export class TextView extends ITextView { }
 
 import { CanvasView as ICanvasView } from './interface/CanvasView'
 export class CanvasView extends ICanvasView { }
+
+import { CustomView as ICustomView } from './interface/CustomView'
+export class CustomView extends ICustomView { }

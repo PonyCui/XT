@@ -122,8 +122,9 @@
 }
 
 - (void)onTouchUpInside {
-    if (self.scriptObject.value != nil) {
-        [self.scriptObject.value invokeMethod:@"handleTouchUpInside" withArguments:@[]];
+    JSValue *value = self.scriptObject.value;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchUpInside" withArguments:@[]];
     }
 }
 
@@ -134,7 +135,11 @@
 - (void)onTouchEvent {
     if (self.highlighted != self.innerView.highlighted) {
         self.highlighted = self.innerView.highlighted;
-        [self.scriptObject.value invokeMethod:@"handleHighlighted" withArguments:@[@(self.highlighted)]];
+        JSValue *value = self.scriptObject.value;
+        if (value != nil) {
+            [value invokeMethod:@"handleHighlighted" withArguments:@[@(self.highlighted)]];
+        }
+        
     }
 }
 

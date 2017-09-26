@@ -18,3 +18,4 @@ declare const XTRTextField: any
 declare const XTRTextView: any
 declare const XTRTest: any
 declare const XTRCanvasView: any
+declare const XTRCustomView: any

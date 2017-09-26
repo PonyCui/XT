@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "XTRBridge.h"
+#import "XTRCustomView.h"
 
 @interface XTRuntime : NSObject
 
