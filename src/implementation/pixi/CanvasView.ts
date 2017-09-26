@@ -14,7 +14,7 @@ class State {
     lineJoin?: string = undefined
     lineWidth = 1.0
     miterLimit = 0.0
-    currentTransform: TransformMatrix = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+    currentTransform?: TransformMatrix = undefined
 }
 
 export class CanvasView extends View {
@@ -91,7 +91,7 @@ export class CanvasView extends View {
     rect(x: number, y: number, width: number, height: number): void {
         this.currentPathActions = [];
         this.currentPathActions.push((graphics) => {
-            graphics.drawRect(Screen.withScale(x), Screen.withScale(y), Screen.withScale(width), Screen.withScale(height))
+            graphics.drawRect(x, y, width, height)
         })
     }
 
@@ -110,15 +110,40 @@ export class CanvasView extends View {
     }
 
     fill() {
-        this.canvasGraphics.beginFill((this.currentState.fillStyle || Color.blackColor).rgbHexNumber(), this.currentState.globalAlpha)
-        this.currentPathActions.forEach(it => it(this.canvasGraphics));
-        this.canvasGraphics.endFill();
+        const graphics = new PIXI.Graphics();
+        if (this.currentState.currentTransform) {
+            const matrix = new PIXI.Matrix();
+            matrix.fromArray([this.currentState.currentTransform.a, this.currentState.currentTransform.b, this.currentState.currentTransform.tx, this.currentState.currentTransform.c, this.currentState.currentTransform.d, this.currentState.currentTransform.ty]);
+            matrix.scale(Screen.withScale(1), Screen.withScale(1))
+            graphics.transform.setFromMatrix(matrix);
+        }
+        else {
+            const matrix = new PIXI.Matrix();
+            matrix.scale(Screen.withScale(1), Screen.withScale(1))
+            graphics.transform.setFromMatrix(matrix);
+        }
+        graphics.beginFill((this.currentState.fillStyle || Color.blackColor).rgbHexNumber(), this.currentState.globalAlpha)
+        this.currentPathActions.forEach(it => it(graphics));
+        graphics.endFill();
+        this.canvasGraphics.addChild(graphics)
     }
 
     stroke() {
-        this.canvasGraphics.lineStyle(Screen.withScale(this.currentState.lineWidth), (this.currentState.strokeStyle || Color.blackColor).rgbHexNumber(), this.currentState.globalAlpha);
-        this.currentPathActions.forEach(it => it(this.canvasGraphics));
-        this.canvasGraphics.lineStyle(0)
+        const graphics = new PIXI.Graphics();
+        if (this.currentState.currentTransform) {
+            const matrix = new PIXI.Matrix();
+            matrix.fromArray([this.currentState.currentTransform.a, this.currentState.currentTransform.b, this.currentState.currentTransform.tx, this.currentState.currentTransform.c, this.currentState.currentTransform.d, this.currentState.currentTransform.ty]);
+            matrix.scale(Screen.withScale(1), Screen.withScale(1))
+            graphics.transform.setFromMatrix(matrix);
+        }
+        else {
+            const matrix = new PIXI.Matrix();
+            matrix.scale(Screen.withScale(1), Screen.withScale(1))
+            graphics.transform.setFromMatrix(matrix);
+        }
+        graphics.lineStyle(this.currentState.lineWidth, (this.currentState.strokeStyle || Color.blackColor).rgbHexNumber(), this.currentState.globalAlpha);
+        this.currentPathActions.forEach(it => it(graphics));
+        this.canvasGraphics.addChild(graphics)
     }
 
     beginPath(): void {
@@ -127,7 +152,7 @@ export class CanvasView extends View {
 
     moveTo(x: number, y: number): void {
         this.currentPathActions.push((graphics) => {
-            graphics.moveTo(Screen.withScale(x), Screen.withScale(y));
+            graphics.moveTo(x, y);
         })
     }
 
@@ -139,26 +164,75 @@ export class CanvasView extends View {
 
     lineTo(x: number, y: number): void {
         this.currentPathActions.push((graphics) => {
-            graphics.lineTo(Screen.withScale(x), Screen.withScale(y));
+            graphics.lineTo(x, y);
         })
     }
 
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
         this.currentPathActions.push((graphics) => {
-            graphics.quadraticCurveTo(Screen.withScale(cpx), Screen.withScale(cpy), Screen.withScale(x), Screen.withScale(y));
+            graphics.quadraticCurveTo(cpx, cpy, x, y);
         })
     }
 
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
         this.currentPathActions.push((graphics) => {
-            graphics.bezierCurveTo(Screen.withScale(cp1x), Screen.withScale(cp1y), Screen.withScale(cp2x), Screen.withScale(cp2y), Screen.withScale(x), Screen.withScale(y));
+            graphics.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
         })
     }
 
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
         this.currentPathActions.push((graphics) => {
-            graphics.arc(Screen.withScale(x), Screen.withScale(y), Screen.withScale(r), sAngle, eAngle, counterclockwise);
+            graphics.arc(x, y, r, sAngle, eAngle, counterclockwise);
         })
+    }
+
+    postScale(x: number, y: number): void {
+        if (this.currentState.currentTransform === undefined) { this.currentState.currentTransform = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0) }
+        const matrix = new PIXI.Matrix();
+        matrix.fromArray([this.currentState.currentTransform.a, this.currentState.currentTransform.b, this.currentState.currentTransform.tx, this.currentState.currentTransform.c, this.currentState.currentTransform.d, this.currentState.currentTransform.ty]);
+        matrix.scale(x, y);
+        this.currentState.currentTransform = { ...matrix };
+    }
+
+    postRotate(angle: number) {
+        if (this.currentState.currentTransform === undefined) { this.currentState.currentTransform = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0) }
+        const matrix = new PIXI.Matrix();
+        matrix.fromArray([this.currentState.currentTransform.a, this.currentState.currentTransform.b, this.currentState.currentTransform.tx, this.currentState.currentTransform.c, this.currentState.currentTransform.d, this.currentState.currentTransform.ty]);
+        matrix.rotate(angle);
+        this.currentState.currentTransform = { ...matrix };
+    }
+
+    postTranslate(x: number, y: number): void {
+        if (this.currentState.currentTransform === undefined) { this.currentState.currentTransform = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0) }
+        const matrix = new PIXI.Matrix();
+        matrix.fromArray([this.currentState.currentTransform.a, this.currentState.currentTransform.b, this.currentState.currentTransform.tx, this.currentState.currentTransform.c, this.currentState.currentTransform.d, this.currentState.currentTransform.ty]);
+        matrix.translate(x, y);
+        this.currentState.currentTransform = { ...matrix };
+    }
+
+    postTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void {
+        if (this.currentState.currentTransform === undefined) { this.currentState.currentTransform = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0) }
+        const matrix = new PIXI.Matrix();
+        matrix.fromArray([this.currentState.currentTransform.a, this.currentState.currentTransform.b, this.currentState.currentTransform.tx, this.currentState.currentTransform.c, this.currentState.currentTransform.d, this.currentState.currentTransform.ty]);
+        const appendMatrix = new PIXI.Matrix();
+        appendMatrix.fromArray([a, b, tx, c, d, ty]);
+        matrix.append(appendMatrix);
+        this.currentState.currentTransform = { ...matrix };
+    }
+
+    setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void {
+        this.currentState.currentTransform = new TransformMatrix(a, b, c, d, tx, ty);
+    }
+
+    save(): void {
+        this.stateStack.push(this.currentState);
+        this.currentState = { ...this.currentState };
+    }
+
+    restore(): void {
+        if (this.stateStack.length > 0) {
+            this.currentState = this.stateStack.pop() as State
+        }
     }
 
     isPointInPath(x: number, y: number): boolean {
@@ -166,7 +240,7 @@ export class CanvasView extends View {
         tmpGraphics.beginFill(0x000000, 1.0)
         this.currentPathActions.forEach(it => it(tmpGraphics));
         tmpGraphics.endFill();
-        return tmpGraphics.containsPoint(new PIXI.Point(Screen.withScale(x), Screen.withScale(y)))
+        return tmpGraphics.containsPoint(new PIXI.Point(x, y))
     }
 
     setNeedsDisplay(): void {
@@ -178,6 +252,8 @@ export class CanvasView extends View {
         super.draw();
         this.canvasGraphics.clear();
         this.canvasGraphics.removeChildren();
+        this.currentState = new State();
+        this.stateStack = [];
         this.onDraw();
     }
 

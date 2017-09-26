@@ -145,14 +145,12 @@ export class View extends IView {
     public set transform(value: TransformMatrix | undefined) {
         this._transform = value;
         if (value) {
-            const transform = new PIXI.Transform();
             const matrix = new PIXI.Matrix();
             matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
-            transform.setFromMatrix(matrix);
-            this.nativeObject.setTransform(this.frame.x, this.frame.y, transform.scale.x, transform.scale.y, transform.rotation, transform.skew.x, transform.skew.y, transform.pivot.x, transform.pivot.y);
+            this.nativeObject.transform.setFromMatrix(matrix);
         }
         else {
-            this.nativeObject.setTransform(this.frame.x, this.frame.y, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+            this.nativeObject.transform.setFromMatrix(new PIXI.Matrix());
         }
         setNeedsDisplay(this);
     }
