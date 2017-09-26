@@ -126,6 +126,7 @@ export class CanvasView extends View {
         this.currentPathActions.forEach(it => it(graphics));
         graphics.endFill();
         this.canvasGraphics.addChild(graphics)
+        setNeedsDisplay(this);
     }
 
     stroke() {
@@ -144,6 +145,7 @@ export class CanvasView extends View {
         graphics.lineStyle(this.currentState.lineWidth, (this.currentState.strokeStyle || Color.blackColor).rgbHexNumber(), this.currentState.globalAlpha);
         this.currentPathActions.forEach(it => it(graphics));
         this.canvasGraphics.addChild(graphics)
+        setNeedsDisplay(this);
     }
 
     beginPath(): void {
@@ -243,20 +245,12 @@ export class CanvasView extends View {
         return tmpGraphics.containsPoint(new PIXI.Point(x, y))
     }
 
-    setNeedsDisplay(): void {
-        this.draw();
-        setNeedsDisplay(this);
-    }
-
-    protected draw() {
-        super.draw();
+    clear(): void { 
         this.canvasGraphics.clear();
         this.canvasGraphics.removeChildren();
         this.currentState = new State();
         this.stateStack = [];
-        this.onDraw();
+        setNeedsDisplay(this);
     }
-
-    onDraw(): void { }
 
 }

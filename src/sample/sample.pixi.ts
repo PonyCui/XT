@@ -10,8 +10,7 @@ const application = new Application("app", {
 
 class MyCanvasView extends CanvasView {
 
-    onDraw(): void {
-        super.onDraw();
+    init(): void {
         const ctx = this
         ctx.fillRect(0, 0, 150, 150);
 
@@ -51,6 +50,11 @@ class FirstViewController extends ViewController {
         const view = new MyCanvasView(RectMake(44, 44, 300, 300))
         view.clipsToBounds = true
         view.backgroundColor = Color.whiteColor
+        setTimeout(() => {
+            view.clear();
+            view.fillStyle = Color.redColor
+            view.fillRect(20, 20, 20, 20)
+        }, 2000)
         this.view.addSubview(view);
         this.view.backgroundColor = Color.blackColor
     }

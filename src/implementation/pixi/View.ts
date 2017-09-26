@@ -35,7 +35,7 @@ export class View extends IView {
         if (typeof rect === "object") {
             this.frame = rect;
         }
-        this.init();
+        setImmediate(() => { this.init(); })
     }
 
     init() { }

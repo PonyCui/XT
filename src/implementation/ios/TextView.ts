@@ -20,7 +20,7 @@ export class TextView extends View {
         else {
             this.nativeObject = XTRTextView.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); });
         }
     }
 

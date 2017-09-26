@@ -16,7 +16,7 @@ export class CanvasView extends View {
         else {
             this.nativeObject = XTRCanvasView.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); });
         }
     }
 
@@ -88,10 +88,6 @@ export class CanvasView extends View {
         this.nativeObject.xtr_strokeRect({ x, y, width, height })
     }
 
-    clearRect(x: number, y: number, width: number, height: number): void {
-        this.nativeObject.xtr_clearRect({ x, y, width, height })
-    }
-
     fill() {
         this.nativeObject.xtr_fill();
     }
@@ -114,10 +110,6 @@ export class CanvasView extends View {
 
     lineTo(x: number, y: number): void {
         this.nativeObject.xtr_lineTo({ x, y })
-    }
-
-    clip(): void {
-        this.nativeObject.xtr_clip();
     }
 
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
@@ -164,11 +156,9 @@ export class CanvasView extends View {
         return this.nativeObject.xtr_isPointInPath({ x, y })
     }
 
-    setNeedsDisplay(): void {
-        this.nativeObject.xtr_setNeedsDisplay();
+    clear(): void {
+        this.nativeObject.xtr_clear();
     }
-
-    onDraw(): void { }
 
 }
 

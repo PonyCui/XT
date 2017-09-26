@@ -30,7 +30,6 @@ export class CanvasView extends View {
     setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void { }
     save(): void { }
     restore(): void { }
-    setNeedsDisplay(): void { }
-    onDraw(): void { }
+    clear(): void { }
 
 }

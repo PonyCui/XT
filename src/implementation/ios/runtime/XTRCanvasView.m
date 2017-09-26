@@ -146,60 +146,47 @@
     [self xtr_stroke];
 }
 
-- (void)xtr_clearRect:(JSValue *)rect {
-    if (self.backgroundColor != nil && ![self.backgroundColor isEqual:[UIColor clearColor]]) {
-        [self.backgroundColor setFill];
-        CGContextFillRect(UIGraphicsGetCurrentContext(), [rect toRect]);
-        [self.currentState.fillStyle setFill];
-    }
-    else {
-        CGContextClearRect(UIGraphicsGetCurrentContext(), [rect toRect]);
-    }
-}
-
 - (void)xtr_fill {
     if (self.currentPath != nil) {
-        [[(self.currentState.fillStyle ?: [UIColor blackColor]) colorWithAlphaComponent:self.currentState.globalAlpha] setFill];
-        UIBezierPath *currentPath = self.currentPath;
-        if (!CGAffineTransformIsIdentity(self.currentState.currentTransform)) {
-            currentPath = [UIBezierPath bezierPath];
-            [currentPath appendPath:self.currentPath];
-            [currentPath applyTransform:self.currentState.currentTransform];
-        }
-        [currentPath fill];
+        CAShapeLayer *layer = [CAShapeLayer layer];
+        layer.transform = CATransform3DMakeAffineTransform(self.currentState.currentTransform);
+        [layer setPath:[self.currentPath CGPath]];
+        [layer setFillColor:[(self.currentState.fillStyle ?: [UIColor blackColor]) CGColor]];
+        [layer setOpacity:self.currentState.globalAlpha];
+        [layer setStrokeColor:[UIColor clearColor].CGColor];
+        [self.layer addSublayer:layer];
     }
 }
 
 - (void)xtr_stroke {
     if (self.currentPath != nil) {
-        [[(self.currentState.strokeStyle ?: [UIColor blackColor]) colorWithAlphaComponent:self.currentState.globalAlpha] setStroke];
+        CAShapeLayer *layer = [CAShapeLayer layer];
+        layer.transform = CATransform3DMakeAffineTransform(self.currentState.currentTransform);
+        [layer setPath:[self.currentPath CGPath]];
+        [layer setStrokeColor:[(self.currentState.strokeStyle ?: [UIColor blackColor]) CGColor]];
+        [layer setOpacity:self.currentState.globalAlpha];
         if ([self.currentState.lineCap isEqualToString:@"butt"]) {
-            self.currentPath.lineCapStyle = kCGLineCapButt;
+            layer.lineCap = @"butt";
         }
         else if ([self.currentState.lineCap isEqualToString:@"round"]) {
-            self.currentPath.lineCapStyle = kCGLineCapRound;
+            layer.lineCap = @"round";
         }
         else if ([self.currentState.lineCap isEqualToString:@"square"]) {
-            self.currentPath.lineCapStyle = kCGLineCapSquare;
+            layer.lineCap = @"suqare";
         }
         if ([self.currentState.lineJoin isEqualToString:@"bevel"]) {
-            self.currentPath.lineJoinStyle = kCGLineJoinBevel;
+            layer.lineJoin = @"bevel";
         }
         else if ([self.currentState.lineJoin isEqualToString:@"miter"]) {
-            self.currentPath.lineJoinStyle = kCGLineJoinMiter;
+            layer.lineJoin = @"miter";
         }
         else if ([self.currentState.lineJoin isEqualToString:@"round"]) {
-            self.currentPath.lineJoinStyle = kCGLineJoinRound;
+            layer.lineJoin = @"round";
         }
-        self.currentPath.lineWidth = self.currentState.lineWidth;
-        self.currentPath.miterLimit = self.currentState.miterLimit;
-        UIBezierPath *currentPath = self.currentPath;
-        if (!CGAffineTransformIsIdentity(self.currentState.currentTransform)) {
-            currentPath = [UIBezierPath bezierPath];
-            [currentPath appendPath:self.currentPath];
-            [currentPath applyTransform:self.currentState.currentTransform];
-        }
-        [currentPath stroke];
+        layer.lineWidth = self.currentState.lineWidth;
+        layer.miterLimit = self.currentState.miterLimit;
+        [layer setFillColor:[UIColor clearColor].CGColor];
+        [self.layer addSublayer:layer];
     }
 }
 
@@ -215,16 +202,6 @@
 
 - (void)xtr_lineTo:(JSValue *)point {
     [self.currentPath addLineToPoint:[point toPoint]];
-}
-
-- (void)xtr_clip {
-    UIBezierPath *currentPath = self.currentPath;
-    if (!CGAffineTransformIsIdentity(self.currentState.currentTransform)) {
-        currentPath = [UIBezierPath bezierPath];
-        [currentPath appendPath:self.currentPath];
-        [currentPath applyTransform:self.currentState.currentTransform];
-    }
-    [currentPath addClip];
 }
 
 - (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint {
@@ -291,16 +268,11 @@
     }
 }
 
-- (void)xtr_setNeedsDisplay {
-    [self setNeedsDisplay];
-}
-
-- (void)drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    JSValue *scriptObject = self.scriptObject.value;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"onDraw" withArguments:@[]];
-    }
+- (void)xtr_clear {
+    [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+    self.stateStack = @[];
+    self.currentState = [XTRCanvasState new];
+    self.currentPath = nil;
 }
 
 @end

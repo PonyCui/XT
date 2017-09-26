@@ -20,7 +20,7 @@ export class Button extends View {
         else {
             this.nativeObject = XTRButton.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); });
         }
     }
 

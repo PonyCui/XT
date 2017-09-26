@@ -18,7 +18,7 @@ export class View {
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); });
         }
     }
 

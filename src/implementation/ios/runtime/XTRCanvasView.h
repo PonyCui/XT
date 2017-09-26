@@ -31,14 +31,12 @@
 - (void)xtr_rect:(JSValue *)rect;
 - (void)xtr_fillRect:(JSValue *)rect;
 - (void)xtr_strokeRect:(JSValue *)rect;
-- (void)xtr_clearRect:(JSValue *)rect;
 - (void)xtr_fill;
 - (void)xtr_stroke;
 - (void)xtr_beginPath;
 - (void)xtr_moveTo:(JSValue *)point;
 - (void)xtr_closePath;
 - (void)xtr_lineTo:(JSValue *)point;
-- (void)xtr_clip;
 - (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint;
 - (void)xtr_bezierCurveTo:(JSValue *)cp1Point cp2Point:(JSValue *)cp2Point xyPoint:(JSValue *)xyPoint;
 - (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise;
@@ -50,7 +48,7 @@
 - (void)xtr_save;
 - (void)xtr_restore;
 - (BOOL)xtr_isPointInPath:(JSValue *)point;
-- (void)xtr_setNeedsDisplay;
+- (void)xtr_clear;
 
 @end
 

@@ -19,10 +19,37 @@ typedef void(^IntervalBlock)(id keepBlock);
 @implementation XTRUtils
 
 + (void)attachPolyfills:(JSContext *)context {
+    [self addImmediatePolyfill:context];
     [self addTimeoutPolyfill:context];
     [self addIntervalPolyfill:context];
     [self addRAFPolyfill:context];
     [self addConsolePolyfill:context];
+}
+
++ (void)addImmediatePolyfill:(JSContext *)context {
+    static NSMutableDictionary *handlers;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        handlers = [NSMutableDictionary dictionary];
+    });
+    context[@"clearImmediate"] = ^(JSValue *timeoutHandler) {
+        NSString *uuid = [timeoutHandler toString];
+        if (uuid != nil && handlers[uuid] != nil) {
+            [handlers removeObjectForKey:uuid];
+        }
+    };
+    context[@"setImmediate"] = ^(JSValue *callback){
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        [handlers setObject:@(0) forKey:uuid];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (handlers[uuid] == nil) {
+                return ;
+            }
+            [callback xtr_callWithArguments:@[]];
+            [handlers removeObjectForKey:uuid];
+        });
+        return uuid;
+    };
 }
 
 + (void)addTimeoutPolyfill:(JSContext *)context {
