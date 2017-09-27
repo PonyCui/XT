@@ -81,6 +81,7 @@ export class View {
     setNeedsLayout() { }
     layoutIfNeeded() { }
     layoutSubviews() { }
+    setNeedsDisplay() { }
 
     // Mark: View LayoutConstraint
 

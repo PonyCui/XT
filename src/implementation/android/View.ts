@@ -130,6 +130,8 @@ export class View {
 
     tintColorDidChange() { }
 
+    setNeedsDisplay() { }
+
     // Mark: View Layer-Back Rendering
 
     public get cornerRadius(): number {

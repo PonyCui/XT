@@ -1,4 +1,5 @@
-import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView } from '../main.pixi'
+import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView, CustomView } from '../main.pixi'
+import * as PIXI from 'pixi.js'
 
 const application = new Application("app", {
     applicationDidFinishLaunchingWithOptions: () => {
@@ -8,55 +9,60 @@ const application = new Application("app", {
     }
 })
 
-class MyCanvasView extends CanvasView {
+if (CustomView.registerClass) {
 
-    init(): void {
-        const ctx = this
-        ctx.fillRect(0, 0, 150, 150);
+    class FOOView {
 
-        //  Save the default state
-        ctx.save();
+        innerView = new PIXI.Graphics()
 
-        // Make changes to the settings
-        ctx.fillStyle = new Color(0x66 / 255.0, 1.0, 1.0)
-        ctx.fillRect(15, 15, 120, 120);
+        init() {
+            this.innerView.beginFill(0xff3300);
+            this.innerView.drawCircle(44, 44, 44);
+            this.innerView.endFill();
+        }
 
-        // Save the current state
-        ctx.save();
+        handleMessage(message: any, sender: CustomView) {
+            if (message instanceof Object) {
+                if (message.on === true) {
+                    this.innerView.clear()
+                    this.innerView.beginFill(0xff00ff);
+                    this.innerView.drawCircle(44, 44, 44);
+                    this.innerView.endFill();
+                    sender.setNeedsDisplay()
+                }
+                else {
+                    this.innerView.clear()
+                    this.innerView.beginFill(0xff3300);
+                    this.innerView.drawCircle(44, 44, 44);
+                    this.innerView.endFill();
+                    sender.setNeedsDisplay()
+                }
+                return "Hello, World!";
+            }
+        }
 
-        // Make the new changes to the settings
-        ctx.fillStyle = new Color(0x99 / 255.0, 0x33 / 255.0, 0x33 / 255.0)
-        ctx.globalAlpha = 0.5;
-        ctx.fillRect(30, 30, 90, 90);
-
-        // Restore previous state
-        ctx.restore();
-
-        // Draw a rectangle with restored settings
-        ctx.fillRect(45, 45, 60, 60);
-
-        // Restore original state
-        ctx.restore();
-
-        // Draw a rectangle with restored settings
-        ctx.fillRect(40, 40, 90, 90);
     }
+
+    (CustomView as any).registerClass((owner: CustomView) => {
+        const obj = new FOOView();
+        obj.init();
+        return obj;
+    }, "FOOView")
 
 }
 
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const view = new MyCanvasView(RectMake(44, 44, 300, 300))
-        view.clipsToBounds = true
-        view.backgroundColor = Color.whiteColor
+        const aView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
+        aView.backgroundColor = Color.yellowColor
+        this.view.addSubview(aView);
         setTimeout(() => {
-            view.clear();
-            view.fillStyle = Color.redColor
-            view.fillRect(20, 20, 20, 20)
+            aView.emitMessage({on: true})
         }, 2000)
-        this.view.addSubview(view);
-        this.view.backgroundColor = Color.blackColor
+        setTimeout(() => {
+            aView.emitMessage({on: false})
+        }, 4000)
     }
 
 }

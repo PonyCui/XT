@@ -161,6 +161,8 @@ export class View {
 
     tintColorDidChange() { }
 
+    setNeedsDisplay() { }
+
     // Mark: View Layer-Back Rendering
     private _cornerRadius: number;
 

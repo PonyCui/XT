@@ -1,5 +1,6 @@
 import { View } from "./View";
 import { Rect } from "../../interface/Rect";
+import { Color } from "../../interface/Color";
 
 export class ViewController {
 
@@ -20,6 +21,7 @@ export class ViewController {
 
     loadView(): void {
         this.view = new View();
+        this.view.backgroundColor = Color.whiteColor
         this.view.userInteractionEnabled = true;
     }
 

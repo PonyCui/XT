@@ -306,6 +306,10 @@ export class View extends IView {
         this.subviews.forEach((subview: View) => { subview.tintColorDidChange() });
     }
 
+    setNeedsDisplay() {
+        setNeedsDisplay(this);
+    }
+
     // Mark: View Layer-Back Rendering
 
     private _cornerRadius: number = 0;

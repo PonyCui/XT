@@ -1,6 +1,7 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
 import { Rect } from "../../interface/Rect";
+import { Color } from "../../interface/Color";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -41,6 +42,7 @@ export class ViewController {
 
     loadView(): void {
         this.view = new View();
+        this.view.backgroundColor = Color.whiteColor
         this.view.userInteractionEnabled = true;
     }
 

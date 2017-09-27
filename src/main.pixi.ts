@@ -83,3 +83,7 @@ export class NavigationController extends MNavigationController {}
 import { CanvasView as ICanvasView } from './interface/CanvasView'
 import { CanvasView as MCanvasView } from './implementation/pixi/CanvasView'
 export class CanvasView extends MCanvasView { }
+
+import { CustomView as ICustomView } from './interface/CustomView'
+import { CustomView as MCustomView } from './implementation/pixi/CustomView'
+export class CustomView extends MCustomView { }
