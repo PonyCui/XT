@@ -94,3 +94,7 @@ export class TextView extends MTextView { }
 import { CanvasView as ICanvasView } from './interface/CanvasView'
 import { CanvasView as MCanvasView } from './implementation/android/CanvasView'
 export class CanvasView extends MCanvasView { }
+
+import { CustomView as ICustomView } from './interface/CustomView'
+import { CustomView as MCustomView } from './implementation/android/CustomView'
+export class CustomView extends MCustomView { }

@@ -72,7 +72,8 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                 XTRScrollView(),
                 XTRTextField(),
                 XTRTextView(),
-                XTRCanvasView()
+                XTRCanvasView(),
+                XTRCustomView()
         )
         components.forEach { component ->
             component.xtrContext = xtrContext

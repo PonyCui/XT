@@ -69,7 +69,7 @@ if ((window as any).XTRObjCreater === undefined) {
                     return instance;
                 }
             }
-            return undefined;
+            return view;
         },
         store: function (target: any) {
             if (typeof target.objectUUID === "string") {

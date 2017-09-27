@@ -5,6 +5,7 @@ import android.graphics.Matrix
 import android.view.View
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.ScriptableObject
+import org.mozilla.javascript.Undefined
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -121,14 +122,19 @@ class XTRUtils {
 
         fun fromObject(context: XTRContext, target: Any?): Any? {
             if (target == null) {
-                return null
+                return Undefined.instance
             }
-            ((context.scope.get("window") as? ScriptableObject)?.get("XTRObjCreater") as? ScriptableObject)?.let { creater ->
-                (creater.get("create") as? Function)?.let {
-                    return it.call(context.jsContext, context.scope, creater, arrayOf(target)) as? ScriptableObject
+            (target as? String)?.let { return it }
+            (target as? Number)?.let { return it }
+            (target as? Boolean)?.let { return it }
+            try {
+                ((context.scope.get("window") as? ScriptableObject)?.get("XTRObjCreater") as? ScriptableObject)?.let { creater ->
+                    (creater.get("create") as? Function)?.let {
+                        return it.call(context.jsContext, context.scope, creater, arrayOf(target)) as? ScriptableObject
+                    }
                 }
-            }
-            return null
+            } catch (e: Exception) { }
+            return target
         }
 
     }

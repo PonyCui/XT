@@ -1,6 +1,6 @@
 declare const XTRTest: any
 
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake, TextField, TextFieldViewMode, KeyboardType, ReturnKeyType, TextView, CanvasView } from '../main.android'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake, TextField, TextFieldViewMode, KeyboardType, ReturnKeyType, TextView, CanvasView, CustomView } from '../main.android'
 import { Rect } from '../interface/Rect';
 
 class AppDelegate extends ApplicationDelegate {
@@ -13,37 +13,26 @@ class AppDelegate extends ApplicationDelegate {
 
 }
 
-class MyCanvasView extends CanvasView {
-
-    init() {
-        super.init();
-        let ctx = this
-        ctx.fillStyle=Color.yellowColor;
-        ctx.fillRect(0,0,250,100)
-        
-        ctx.setTransform(1,0.5,-0.5,1,30,10);
-        ctx.fillStyle=Color.redColor;
-        ctx.fillRect(0,0,250,100);
-        
-        ctx.setTransform(1,0.5,-0.5,1,30,10);
-        ctx.fillStyle=Color.blueColor;
-        ctx.fillRect(0,0,250,100);
-    }
-
-}
-
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const canvasView = new MyCanvasView(RectMake(44, 44, 300, 300))
-        canvasView.backgroundColor = Color.yellowColor
-        this.view.addSubview(canvasView)
+        const fooView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
+        fooView.userInteractionEnabled = true
+        fooView.onMessage = (obj: any): any => {
+            if (typeof obj.alpha === "number") {
+                fooView.alpha = obj.alpha
+            }
+            return "Alpha changed."
+        }
         setTimeout(() => {
-            canvasView.fillStyle = Color.blackColor
-            canvasView.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
-            canvasView.fillRect(20,20,20,20)
+            const returnValue = fooView.emitMessage({ on: true });
+            console.log(returnValue);
         }, 2000)
-        this.view.backgroundColor = Color.whiteColor
+        setTimeout(() => {
+            const returnValue = fooView.emitMessage({ on: false });
+            console.log(returnValue);
+        }, 4000)
+        this.view.addSubview(fooView);
     }
 
 }
