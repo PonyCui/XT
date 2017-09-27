@@ -33,6 +33,12 @@
 #import "XTRCustomView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
+@protocol XTRPluginProtocol
+
+- (instancetype)initWithJSContext:(JSContext *)context;
+
+@end
+
 @interface XTRBridge ()
 
 @property (nonatomic, strong) XTRContext *context;
@@ -65,28 +71,8 @@ static NSString *globalBridgeScript;
         [_context evaluateScript:@"var window = {}"];
         [XTRBreakpoint attachBreakpoint:_context];
         [XTRUtils attachPolyfills:_context];
-        self.components = @[
-                            [XTRApplication class],
-                            [XTRApplicationDelegate class],
-                            [XTRView class],
-                            [XTRWindow class],
-                            [XTRViewController class],
-                            [XTRNavigationController class],
-                            [XTRScreen class],
-                            [XTRImage class],
-                            [XTRImageView class],
-                            [XTRLabel class],
-                            [XTRLayoutConstraint class],
-                            [XTRButton class],
-                            [XTRFont class],
-                            [XTRScrollView class],
-                            [XTRListView class],
-                            [XTRListCell class],
-                            [XTRTextField class],
-                            [XTRTextView class],
-                            [XTRCanvasView class],
-                            [XTRCustomView class],
-                            ];
+        [self loadComponents];
+        [self loadPlugins];
         if (_sourceURL != nil) {
             [self loadViaSourceURL];
         }
@@ -111,11 +97,48 @@ static NSString *globalBridgeScript;
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
 
-- (void)setComponents:(NSArray<Class> *)components {
-    _components = components;
-    for (Class component in components) {
+- (void)loadComponents {
+    for (Class component in @[
+                              [XTRApplication class],
+                              [XTRApplicationDelegate class],
+                              [XTRView class],
+                              [XTRWindow class],
+                              [XTRViewController class],
+                              [XTRNavigationController class],
+                              [XTRScreen class],
+                              [XTRImage class],
+                              [XTRImageView class],
+                              [XTRLabel class],
+                              [XTRLayoutConstraint class],
+                              [XTRButton class],
+                              [XTRFont class],
+                              [XTRScrollView class],
+                              [XTRListView class],
+                              [XTRListCell class],
+                              [XTRTextField class],
+                              [XTRTextView class],
+                              [XTRCanvasView class],
+                              [XTRCustomView class],
+                              ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;
+        }
+    }
+}
+
+- (void)loadPlugins {
+    for (NSString *path in [[NSBundle mainBundle] pathsForResourcesOfType:@"xtplugin.json" inDirectory:nil]) {
+        NSData *data = [NSData dataWithContentsOfFile:path options:kNilOptions error:NULL];
+        if (data != nil) {
+            NSDictionary *obj = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:NULL];
+            if ([obj isKindOfClass:[NSDictionary class]] && [obj[@"main"] isKindOfClass:[NSString class]]) {
+                Class clazz = NSClassFromString(obj[@"main"]);
+                if (clazz != NULL) {
+                    if ([clazz instancesRespondToSelector:@selector(initWithJSContext:)]) {
+                        id instance = [[clazz alloc] initWithJSContext:self.context];
+                    }
+                }
+            }
         }
     }
 }

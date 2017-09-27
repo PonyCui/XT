@@ -1,0 +1,8 @@
+{
+    "name": "FOO",
+    "version": "0.0.1",
+    "description": "Hello, FOO!",
+    "main": "FOOPlugin",
+    "author": "Pony",
+    "license": "MIT"
+}

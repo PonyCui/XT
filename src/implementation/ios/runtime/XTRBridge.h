@@ -11,13 +11,12 @@
 
 @interface XTRBridge : NSObject
 
-+ (void)setGlobalBridgeScript:(nullable NSString *)globalBridgeScript;
-
-@property (nonatomic, copy) NSArray<Class> * _Nonnull components;
 @property (nonatomic, readonly) NSURL * _Nullable sourceURL;
 
-- (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate;
+#pragma mark - Public methods
 
++ (void)setGlobalBridgeScript:(nullable NSString *)globalBridgeScript;
+- (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate;
 - (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate sourceURL:(nullable NSURL *)sourceURL;
 
 #pragma mark - Private methods

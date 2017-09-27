@@ -10,4 +10,16 @@
 
 @implementation FOOPlugin
 
+- (instancetype)initWithJSContext:(JSContext *)context {
+    self = [super init];
+    if (self) {
+        context[@"FOOPlugin"] = self;
+    }
+    return self;
+}
+
+- (NSString *)sayHello {
+    return @"FOO >>> Hello, World!";
+}
+
 @end

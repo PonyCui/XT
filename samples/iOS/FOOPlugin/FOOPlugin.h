@@ -7,7 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <JavaScriptCore/JavaScriptCore.h>
 
-@interface FOOPlugin : NSObject
+@protocol FOOExport <JSExport>
+
+- (NSString *)sayHello;
+
+@end
+
+@interface FOOPlugin : NSObject<FOOExport>
+
+- (instancetype)initWithJSContext:(JSContext *)context;
 
 @end
