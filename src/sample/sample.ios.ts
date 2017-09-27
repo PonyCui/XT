@@ -17,16 +17,19 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         const fooView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
-        fooView.onMessage = (obj: any) => {
+        fooView.onMessage = (obj: any): any => {
             if (typeof obj.alpha === "number") {
                 fooView.alpha = obj.alpha
             }
+            return "Alpha changed."
         }
         setTimeout(() => {
-            fooView.emitMessage({ on: true });
+            const returnValue = fooView.emitMessage({ on: true });
+            console.log(returnValue);
         }, 2000)
         setTimeout(() => {
-            fooView.emitMessage({ on: false });
+            const returnValue = fooView.emitMessage({ on: false });
+            console.log(returnValue);
         }, 4000)
         this.view.addSubview(fooView);
     }

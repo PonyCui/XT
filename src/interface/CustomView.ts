@@ -3,9 +3,9 @@ import { Rect } from './Rect';
 
 export class CustomView extends View {
 
-    onMessage?: (message: string) => void = undefined
+    onMessage?: (message: string) => any = undefined
     constructor(className: string, rect?: Rect) { super(rect) }
-    emitMessage(message: any) { }
-    handleMessage(message: any) { }
+    emitMessage(message: any): any { }
+    handleMessage(message: any): any { }
 
 }

@@ -19,14 +19,17 @@
     [XTRCustomView registerClass:[self class] className:@"FOOView"];
 }
 
-- (void)onMessage:(JSValue *)value customView:(XTRCustomView *)customView {
+- (id)onMessage:(JSValue *)value customView:(XTRCustomView *)customView {
     NSDictionary *params = [value toDictionary];
     if (params) {
         if ([params[@"on"] isKindOfClass:[NSNumber class]]) {
             [self setOn:[params[@"on"] boolValue] animated:YES];
-            [customView emitMessage:@{@"alpha": [params[@"on"] boolValue] ? @(0.5) : @(1.0)}];
+            JSValue *ackResult = [customView emitMessage:@{@"alpha": [params[@"on"] boolValue] ? @(0.5) : @(1.0)}];
+            NSLog(@"%@", ackResult.toString);
+            return @"Hello, World";
         }
     }
+    return nil;
 }
 
 @end

@@ -14,20 +14,20 @@
 @protocol XTRCustomViewProtocol <NSObject>
 
 @optional
-- (void)onMessage:(JSValue *)value customView:(XTRCustomView *)customView;
+- (nullable id)onMessage:(nonnull JSValue *)value customView:(nonnull XTRCustomView *)customView;
 
 @end
 
 @protocol XTRCustomViewExport <JSExport>
 
-+ (XTRCustomView *)create:(JSValue *)className frame:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
-- (void)handleMessage:(JSValue *)value;
++ (nonnull XTRCustomView *)create:(nonnull JSValue *)className frame:(nonnull JSValue *)frame scriptObject:(nonnull JSValue *)scriptObject;
+- (nullable JSValue *)handleMessage:(nonnull JSValue *)value;
 
 @end
 
 @interface XTRCustomView : XTRView<XTRComponent, XTRCustomViewExport>
 
-+ (void)registerClass:(Class)viewClass className:(NSString *)className;
-- (void)emitMessage:(id)value;
++ (void)registerClass:(nonnull Class)viewClass className:(nonnull NSString *)className;
+- (nullable JSValue *)emitMessage:(nonnull id)value;
 
 @end

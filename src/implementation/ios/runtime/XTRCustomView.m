@@ -54,18 +54,21 @@ static NSDictionary<NSString *, NSString *> *classMapping;
     self.innerView.frame = self.bounds;
 }
 
-- (void)handleMessage:(JSValue *)value {
+- (JSValue *)handleMessage:(JSValue *)value {
     if ([self.innerView respondsToSelector:@selector(onMessage:customView:)]) {
-        [(id<XTRCustomViewProtocol>)self.innerView onMessage:value customView:self];
+        return [JSValue fromObject:[(id<XTRCustomViewProtocol>)self.innerView onMessage:value customView:self]
+                           context:self.context];
     }
+    return [JSValue valueWithUndefinedInContext:self.context];
 } 
 
-- (void)emitMessage:(id)value {
+- (JSValue *)emitMessage:(id)value {
     JSValue *inValue = self.scriptObject.value;
     if (inValue != nil) {
-        [inValue invokeMethod:@"handleMessage"
-                withArguments:@[[JSValue fromObject:value context:self.context] ?: [JSValue valueWithUndefinedInContext:self.context]]];
+        return [inValue invokeMethod:@"handleMessage"
+                       withArguments:@[[JSValue fromObject:value context:self.context] ?: [JSValue valueWithUndefinedInContext:self.context]]];
     }
+    return nil;
 }
 
 @end

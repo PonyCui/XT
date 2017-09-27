@@ -3,7 +3,7 @@ import { Rect, RectZero } from '../../interface/Rect';
 
 export class CustomView extends View {
 
-    onMessage?: (message: string) => void = undefined
+    onMessage?: (message: string) => any = undefined
 
     constructor(className: string, rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
         super(undefined, undefined, true);
@@ -19,12 +19,15 @@ export class CustomView extends View {
         }
     }
 
-    emitMessage(message: any) {
-        this.nativeObject.handleMessage(message);
+    emitMessage(message: any): any {
+        return this.nativeObject.handleMessage(message);
     }
 
-    handleMessage(message: any) {
-        this.onMessage && this.onMessage(message);
+    handleMessage(message: any): any {
+        if (this.onMessage) {
+            return this.onMessage(message);
+        }
+        return undefined
     }
 
 }
