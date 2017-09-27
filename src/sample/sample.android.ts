@@ -1,4 +1,5 @@
 declare const XTRTest: any
+declare const FOOPlugin: any
 
 import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake, TextField, TextFieldViewMode, KeyboardType, ReturnKeyType, TextView, CanvasView, CustomView } from '../main.android'
 import { Rect } from '../interface/Rect';
@@ -33,6 +34,13 @@ class FirstViewController extends ViewController {
             console.log(returnValue);
         }, 4000)
         this.view.addSubview(fooView);
+        this.testPlugin();
+    }
+
+    testPlugin() {
+        if (FOOPlugin) {
+            console.log(FOOPlugin.sayHello());
+        }
     }
 
 }

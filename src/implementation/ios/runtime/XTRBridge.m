@@ -44,6 +44,7 @@
 @property (nonatomic, strong) XTRContext *context;
 @property (nonatomic, strong) XTRApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
+@property (nonatomic, copy) NSArray *pluginInstances;
 
 @end
 
@@ -127,6 +128,7 @@ static NSString *globalBridgeScript;
 }
 
 - (void)loadPlugins {
+    NSMutableArray *pluginInstances = [NSMutableArray array];
     for (NSString *path in [[NSBundle mainBundle] pathsForResourcesOfType:@"xtplugin.json" inDirectory:nil]) {
         NSData *data = [NSData dataWithContentsOfFile:path options:kNilOptions error:NULL];
         if (data != nil) {
@@ -136,11 +138,15 @@ static NSString *globalBridgeScript;
                 if (clazz != NULL) {
                     if ([clazz instancesRespondToSelector:@selector(initWithJSContext:)]) {
                         id instance = [[clazz alloc] initWithJSContext:self.context];
+                        if (instance != nil) {
+                            [pluginInstances addObject:instance];
+                        }
                     }
                 }
             }
         }
     }
+    self.pluginInstances = pluginInstances;
 }
 
 - (void)reload {

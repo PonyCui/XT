@@ -1,13 +1,11 @@
 package com.opensource.xtruntime
 
-import android.net.Uri
 import android.os.Handler
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONObject
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ScriptableObject
-import java.io.ByteArrayOutputStream
-import java.net.URL
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -48,15 +46,17 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
             field = value
             loadScript()
         }
+    var xtrPluginInstances: List<Any> = listOf()
 
     init {
         xtrContext.xtrBridge = this
         xtrBreakpoint = XTRBreakpoint(this)
-        attachComponents()
+        loadComponents()
+        loadPlugins()
         loadScript()
     }
 
-    private fun attachComponents() {
+    private fun loadComponents() {
         val components: List<XTRComponent> = listOf(
                 XTRApplicationDelegate(),
                 XTRApplication(),
@@ -79,6 +79,31 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
             component.xtrContext = xtrContext
             ScriptableObject.putProperty(xtrContext.scope, component.name, Context.javaToJS(component, xtrContext.scope))
         }
+    }
+
+    private fun loadPlugins() {
+        val pluginInstances: MutableList<Any> = mutableListOf()
+        try {
+            appContext.assets.list("").forEach {
+                if (it.endsWith(".xtplugin.json")) {
+                    try {
+                        appContext.assets.open(it)?.let {
+                            val bytes = ByteArray(it.available())
+                            it.read(bytes)
+                            it.close()
+                            JSONObject(String(bytes))?.optString("main")?.let { clazzName ->
+                                val clazz = Class.forName(clazzName)
+                                val instance = clazz.getDeclaredConstructor(android.content.Context::class.java, Context::class.java, ScriptableObject::class.java).newInstance(appContext, xtrContext.jsContext, xtrContext.scope)
+                                pluginInstances.add(instance)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        System.out.println("Load Plugin Failure >>> " + it)
+                    }
+                }
+            }
+        } catch (e: Exception) {}
+        this.xtrPluginInstances = pluginInstances.toList()
     }
 
     fun loadScript() {

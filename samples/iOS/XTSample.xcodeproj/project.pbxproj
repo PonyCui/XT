@@ -31,7 +31,7 @@
 		90A76FE41F7A5D0F00CB3EA5 /* XTRCustomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE31F7A5D0F00CB3EA5 /* XTRCustomView.m */; };
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
-		90A76FED1F7B999000CB3EA5 /* FOO.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* FOO.xtplugin.json */; };
+		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
 		90C118E71F5412F700991641 /* XTRImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E61F5412F700991641 /* XTRImageView.m */; };
 		90C118EA1F54131F00991641 /* XTRImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118E91F54131F00991641 /* XTRImage.m */; };
 		90C118ED1F5546C700991641 /* XTRLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118EC1F5546C700991641 /* XTRLabel.m */; };
@@ -91,7 +91,7 @@
 		90A76FE61F7A647000CB3EA5 /* FOOView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOView.m; sourceTree = "<group>"; };
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
 		90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOPlugin.m; sourceTree = "<group>"; };
-		90A76FEC1F7B999000CB3EA5 /* FOO.xtplugin.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FOO.xtplugin.json; sourceTree = "<group>"; };
+		90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = foo.xtplugin.json; sourceTree = "<group>"; };
 		90C118E51F5412F700991641 /* XTRImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRImageView.h; sourceTree = "<group>"; };
 		90C118E61F5412F700991641 /* XTRImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRImageView.m; sourceTree = "<group>"; };
 		90C118E81F54131F00991641 /* XTRImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRImage.h; sourceTree = "<group>"; };
@@ -234,7 +234,7 @@
 			children = (
 				90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */,
 				90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */,
-				90A76FEC1F7B999000CB3EA5 /* FOO.xtplugin.json */,
+				90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */,
 			);
 			path = FOOPlugin;
 			sourceTree = "<group>";
@@ -300,7 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				905708141F4EB2AF00D5EC05 /* LaunchScreen.storyboard in Resources */,
-				90A76FED1F7B999000CB3EA5 /* FOO.xtplugin.json in Resources */,
+				90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */,
 				9057081D1F4EB44C00D5EC05 /* sample.ios.min.js in Resources */,
 				905708111F4EB2AF00D5EC05 /* Assets.xcassets in Resources */,
 				9057080F1F4EB2AF00D5EC05 /* Main.storyboard in Resources */,
