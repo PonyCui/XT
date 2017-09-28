@@ -42,6 +42,7 @@
 		90C118FC1F56A1A800991641 /* XTRContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118FB1F56A1A800991641 /* XTRContext.m */; };
 		90C118FF1F56B0F300991641 /* XTRListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C118FE1F56B0F300991641 /* XTRListView.m */; };
 		90C119021F56B2F900991641 /* XTRListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C119011F56B2F900991641 /* XTRListCell.m */; };
+		90D7C9F91F7C91F0006E74F0 /* XTRDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 90D7C9F81F7C91F0006E74F0 /* XTRDevice.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -112,6 +113,8 @@
 		90C118FE1F56B0F300991641 /* XTRListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRListView.m; sourceTree = "<group>"; };
 		90C119001F56B2F900991641 /* XTRListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRListCell.h; sourceTree = "<group>"; };
 		90C119011F56B2F900991641 /* XTRListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRListCell.m; sourceTree = "<group>"; };
+		90D7C9F71F7C91F0006E74F0 /* XTRDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRDevice.h; sourceTree = "<group>"; };
+		90D7C9F81F7C91F0006E74F0 /* XTRDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRDevice.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +227,8 @@
 				9098822F1F73BDA300C031CE /* XTRCanvasView.m */,
 				90A76FE21F7A5D0F00CB3EA5 /* XTRCustomView.h */,
 				90A76FE31F7A5D0F00CB3EA5 /* XTRCustomView.m */,
+				90D7C9F71F7C91F0006E74F0 /* XTRDevice.h */,
+				90D7C9F81F7C91F0006E74F0 /* XTRDevice.m */,
 			);
 			name = runtime;
 			path = ../../src/implementation/ios/runtime;
@@ -334,6 +339,7 @@
 				90C118FC1F56A1A800991641 /* XTRContext.m in Sources */,
 				90C118F31F5570E300991641 /* XTRButton.m in Sources */,
 				90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */,
+				90D7C9F91F7C91F0006E74F0 /* XTRDevice.m in Sources */,
 				90C118F01F55570E00991641 /* XTRLayoutConstraint.m in Sources */,
 				903DFAFF1F712AB2009CA769 /* XTRDebug.m in Sources */,
 				90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */,

@@ -19,3 +19,4 @@ declare const XTRTextView: any
 declare const XTRTest: any
 declare const XTRCanvasView: any
 declare const XTRCustomView: any
+declare const XTRDevice: any

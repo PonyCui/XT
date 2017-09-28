@@ -1,5 +1,4 @@
-
-enum DeviceOrientation {
+export enum DeviceOrientation {
     Unknown = 0,
     Portrait = 1,
     PortraitUpsideDown = 2,
@@ -20,7 +19,7 @@ export class Device {
     model: string
     orientation: DeviceOrientation
 
-    isiOS(): Boolean { return false }
+    isiOS(): Boolean { return true }
     isAndroid(): Boolean { return false }
     isWeb(): Boolean { return false }
 

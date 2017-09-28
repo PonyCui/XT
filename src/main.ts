@@ -83,3 +83,6 @@ export class CanvasView extends ICanvasView { }
 
 import { CustomView as ICustomView } from './interface/CustomView'
 export class CustomView extends ICustomView { }
+
+import { Device as IDevice } from './interface/Device'
+export class Device extends IDevice { }

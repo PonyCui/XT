@@ -10,4 +10,8 @@
 
 @implementation XTRuntime
 
++ (NSString *)version {
+    return @"0.0.1";
+}
+
 @end

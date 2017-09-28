@@ -100,3 +100,7 @@ export class CanvasView extends MCanvasView { }
 import { CustomView as ICustomView } from './interface/CustomView'
 import { CustomView as MCustomView } from './implementation/ios/CustomView'
 export class CustomView extends MCustomView { }
+
+import { Device as IDevice } from './interface/Device'
+import { Device as MDevice } from './implementation/ios/Device'
+export class Device extends MDevice { }

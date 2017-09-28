@@ -12,4 +12,6 @@
 
 @interface XTRuntime : NSObject
 
++ (NSString *)version;
+
 @end

@@ -31,6 +31,7 @@
 #import "XTRDebug.h"
 #import "XTRCanvasView.h"
 #import "XTRCustomView.h"
+#import "XTRDevice.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @protocol XTRPluginProtocol
@@ -120,6 +121,7 @@ static NSString *globalBridgeScript;
                               [XTRTextView class],
                               [XTRCanvasView class],
                               [XTRCustomView class],
+                              [XTRDevice class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;
