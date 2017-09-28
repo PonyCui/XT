@@ -9,6 +9,8 @@ class XTRuntime {
 
     companion object {
 
+        val version = "0.0.1"
+
         fun main() {
             val context = Context.enter()
             context.optimizationLevel = -1

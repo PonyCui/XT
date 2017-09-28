@@ -19,7 +19,7 @@ export class Device {
     model: string
     orientation: DeviceOrientation
 
-    isiOS(): Boolean { return true }
+    isiOS(): Boolean { return false }
     isAndroid(): Boolean { return false }
     isWeb(): Boolean { return false }
 

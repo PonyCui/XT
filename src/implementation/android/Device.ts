@@ -36,8 +36,8 @@ export class Device {
         return this.nativeObject.xtr_orientation()
     }
 
-    isiOS(): Boolean { return true }
-    isAndroid(): Boolean { return false }
+    isiOS(): Boolean { return false }
+    isAndroid(): Boolean { return true }
     isWeb(): Boolean { return false }
 
 }

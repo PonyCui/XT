@@ -1,4 +1,4 @@
-import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView, CustomView } from '../main.pixi'
+import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView, CustomView, Device } from '../main.pixi'
 import * as PIXI from 'pixi.js'
 
 const application = new Application("app", {
@@ -54,15 +54,16 @@ if (CustomView.registerClass) {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const aView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
-        aView.backgroundColor = Color.yellowColor
-        this.view.addSubview(aView);
-        setTimeout(() => {
-            aView.emitMessage({on: true})
-        }, 2000)
-        setTimeout(() => {
-            aView.emitMessage({on: false})
-        }, 4000)
+        console.log(Device.current.systemName)
+        // const aView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
+        // aView.backgroundColor = Color.yellowColor
+        // this.view.addSubview(aView);
+        // setTimeout(() => {
+        //     aView.emitMessage({on: true})
+        // }, 2000)
+        // setTimeout(() => {
+        //     aView.emitMessage({on: false})
+        // }, 4000)
     }
 
 }
