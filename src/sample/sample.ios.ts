@@ -1,7 +1,7 @@
 declare const XTRTest: any
 declare const FOOPlugin: any
 
-import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, TextField, TextFieldViewMode, TextView, CanvasView, CustomView, Device } from '../main.ios'
+import { InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, TextField, TextFieldViewMode, TextView, CanvasView, CustomView, Device, DeviceOrientation, TransformMatrix } from '../main.ios'
 import { Rect } from '../interface/Rect';
 
 class AppDelegate extends ApplicationDelegate {
@@ -17,23 +17,23 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        // const fooView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
-        // fooView.onMessage = (obj: any): any => {
-        //     if (typeof obj.alpha === "number") {
-        //         fooView.alpha = obj.alpha
-        //     }
-        //     return "Alpha changed."
-        // }
-        // setTimeout(() => {
-        //     const returnValue = fooView.emitMessage({ on: true });
-        //     console.log(returnValue);
-        // }, 2000)
-        // setTimeout(() => {
-        //     const returnValue = fooView.emitMessage({ on: false });
-        //     console.log(returnValue);
-        // }, 4000)
-        // this.view.addSubview(fooView);
-        // this.testPlugin();
+        this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
+        const redView = new View(RectMake(44, 44, 44, 44))
+        redView.backgroundColor = Color.redColor
+        this.view.addSubview(redView)
+        setTimeout(() => {
+            View.animationWithDuration(0.25, () => {
+                // redView.transform = TransformMatrix.scale(redView.transform, 2.0, 2.0)
+                redView.transform = TransformMatrix.rotate(redView.transform, 45 * Math.PI / 180)
+                // redView.transform = TransformMatrix.translate(redView.transform, 100, 100)
+                // redView.transform = TransformMatrix.concat(redView.transform, new TransformMatrix(2.0, 0.0, 0.0, 2.0, 20.0, 20.0))
+                // redView.transform = new TransformMatrix(2.0, 0.0, 0.0, 2.0, 80.0, 80.0)
+            })
+        }, 2000)
+        redView.userInteractionEnabled = true
+        redView.onTap = () => {
+            redView.backgroundColor = Color.yellowColor
+        }
     }
 
     testPlugin() {

@@ -63,6 +63,10 @@ class XTRMatrix(val a: Double, val b: Double, val c: Double, val d: Double, val 
 
     }
 
+    fun isIdentity(): Boolean {
+        return a == 1.0 && b == 0.0 && c == 0.0 && d == 0.0 && tx == 0.0 && ty == 0.0
+    }
+
     fun setScale(x: Double? = null, y: Double? = null): XTRMatrix {
         val nativeMatrix = Matrix()
         val unMatrix = this.unMatrix()

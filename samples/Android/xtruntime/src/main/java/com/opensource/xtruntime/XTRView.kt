@@ -550,7 +550,21 @@ class XTRView: XTRComponent() {
 
         override fun draw(canvas: Canvas?) {
             canvas?.save()
-            canvas?.concat(transformMatrix.toNativeMatrix())
+            if (!transformMatrix.isIdentity()) {
+                val unMatrix = transformMatrix.unMatrix()
+                if (unMatrix.degree != 0.0) {
+                    val matrix = Matrix()
+                    matrix.postTranslate(-(this.width / 2.0).toFloat(), -(this.height / 2.0).toFloat())
+                    matrix.postRotate(unMatrix.degree.toFloat())
+                    matrix.postTranslate((this.width / 2.0).toFloat(), (this.height / 2.0).toFloat())
+                    matrix.postScale(unMatrix.scale.x.toFloat(), unMatrix.scale.y.toFloat())
+                    matrix.postTranslate(unMatrix.translate.x.toFloat(), unMatrix.translate.y.toFloat())
+                    canvas?.concat(matrix)
+                }
+                else {
+                    canvas?.concat(transformMatrix.toNativeMatrix())
+                }
+            }
             if (cornerRadius > 0 && clipsToBounds) {
                 canvas?.save()
                 canvas?.clipPath(sharedPath)
