@@ -1,6 +1,8 @@
 package com.opensource.xtruntime
 
 import android.app.Activity
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -22,6 +24,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         actionBar?.hide()
         setupKeyboardHeightProvider()
+        setupOrientations()
         if (bridge == null) {
             bridge = XTRBridge(applicationContext, null, {
                 onBridgeReady()
@@ -45,6 +48,23 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
         }
     }
 
+    private var orientationListener: OrientationEventListener? = null
+
+    private fun setupOrientations() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        orientationListener = object : OrientationEventListener(this) {
+            override fun onOrientationChanged(p0: Int) {
+                when (p0) {
+                    0 -> XTRDevice.current?.orientation = DeviceOrientation.Portrait
+                    90 -> XTRDevice.current?.orientation = DeviceOrientation.LandscapeLeft
+                    180 -> XTRDevice.current?.orientation = DeviceOrientation.PortraitUpsideDown
+                    270 -> XTRDevice.current?.orientation = DeviceOrientation.LandscapeRight
+                }
+            }
+        }
+        orientationListener?.enable()
+    }
+
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
         if (height > 0) {
             bridge?.xtrApplication?.delegate?.window?.xtr_keyboardWillShow(height)
@@ -57,6 +77,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
     override fun onDestroy() {
         super.onDestroy()
         keyboardHeightProvider?.close()
+        orientationListener?.disable()
     }
 
     override fun onPause() {

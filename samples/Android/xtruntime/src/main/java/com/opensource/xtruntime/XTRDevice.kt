@@ -5,11 +5,23 @@ import android.os.Build
 /**
  * Created by cuiminghui on 2017/9/28.
  */
+enum class DeviceOrientation {
+    Unknown,
+    Portrait,
+    PortraitUpsideDown,
+    LandscapeLeft,
+    LandscapeRight,
+    FaceUp,
+    FaceDown,
+}
+
 class XTRDevice: XTRComponent() {
 
     override val name: String = "XTRDevice"
 
-    private var current: InnerObject? = null
+    companion object {
+        internal var current: InnerObject? = null
+    }
 
     fun xtr_current(): InnerObject {
         if (current == null) {
@@ -40,8 +52,10 @@ class XTRDevice: XTRComponent() {
             return Build.MODEL
         }
 
+        internal var orientation = DeviceOrientation.Unknown
+
         fun xtr_orientation(): Int {
-            return 0
+            return orientation.ordinal
         }
 
     }

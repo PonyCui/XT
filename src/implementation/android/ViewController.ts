@@ -83,12 +83,15 @@ export class ViewController {
     }
 
     keyboardWillShow(frame: Rect, duration: number): void {
-        console.log(this.childViewControllers.length)
         this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))
     }
     
     keyboardWillHide(duration: number): void {
         this.childViewControllers.slice().forEach(t => t.keyboardWillHide(duration))
+    }
+
+    orientationDidChange() {
+        this.childViewControllers.slice().forEach(t => t.orientationDidChange())
     }
 
 }

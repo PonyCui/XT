@@ -41,6 +41,10 @@ export class Window extends View {
         this.rootViewController && this.rootViewController.keyboardWillHide(duration)
     }
 
+    handleOrientationChange(): void {
+        this.rootViewController && this.rootViewController.orientationDidChange()
+    }
+
     endEditing(): void {
         this.nativeObject.xtr_endEditing();
     }
