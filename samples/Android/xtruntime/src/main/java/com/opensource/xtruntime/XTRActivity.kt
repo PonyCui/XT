@@ -60,6 +60,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                     180 -> XTRDevice.current?.orientation = DeviceOrientation.PortraitUpsideDown
                     270 -> XTRDevice.current?.orientation = DeviceOrientation.LandscapeRight
                 }
+                bridge?.xtrApplication?.delegate?.window?.xtr_orientationChanged()
             }
         }
         orientationListener?.enable()

@@ -72,7 +72,13 @@ export class View {
         this.frame = newFrame;
     }
 
-    transform?: TransformMatrix; // todo
+    public get transform(): TransformMatrix {
+        return this.nativeObject.xtr_transform()
+    }
+
+    public set transform(value: TransformMatrix) {
+        this.nativeObject.xtr_setTransform(value)
+    }
 
     // Mark: View Rendering
 
@@ -320,13 +326,13 @@ export class View {
     }
 
 
-	public get longPressDuration(): number {
-		return this.nativeObject.xtr_longPressDuration();
-	}
+    public get longPressDuration(): number {
+        return this.nativeObject.xtr_longPressDuration();
+    }
 
-	public set longPressDuration(value: number) {
-		this.nativeObject.xtr_setLongPressDuration(value);
-	}
+    public set longPressDuration(value: number) {
+        this.nativeObject.xtr_setLongPressDuration(value);
+    }
 
     public set onTap(value: (() => void) | undefined) {
         this.nativeObject.xtr_setTap(value);

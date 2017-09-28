@@ -1,6 +1,7 @@
 import { View } from "./View";
 import { Rect } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
+import { DeviceOrientation } from "../../interface/Device";
 
 export class ViewController {
 
@@ -87,5 +88,7 @@ export class ViewController {
 
     keyboardWillShow(frame: Rect, duration: number): void { }
     keyboardWillHide(duration: number): void { }
+
+    supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
 }

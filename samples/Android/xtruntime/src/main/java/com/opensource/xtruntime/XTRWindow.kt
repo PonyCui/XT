@@ -80,6 +80,10 @@ class XTRWindow: XTRComponent() {
             }
         }
 
+        fun xtr_orientationChanged() {
+            xtrContext.invokeMethod(scriptObject, "handleOrientationChange", arrayOf())
+        }
+
         fun xtr_endEditing() {
             firstResponder?.let {
                 (it as? XTRTextField.InnerObject)?.xtr_blur()

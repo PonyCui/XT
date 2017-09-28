@@ -136,22 +136,17 @@ export class View extends IView {
         this.frame = newFrame;
     }
 
-    private _transform: TransformMatrix | undefined;
+    private _transform: TransformMatrix = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
-    public get transform(): TransformMatrix | undefined {
+    public get transform(): TransformMatrix {
         return this._transform
     }
 
-    public set transform(value: TransformMatrix | undefined) {
+    public set transform(value: TransformMatrix) {
         this._transform = value;
-        if (value) {
-            const matrix = new PIXI.Matrix();
-            matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
-            this.nativeObject.transform.setFromMatrix(matrix);
-        }
-        else {
-            this.nativeObject.transform.setFromMatrix(new PIXI.Matrix());
-        }
+        const matrix = new PIXI.Matrix();
+        matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
+        this.nativeObject.transform.setFromMatrix(matrix);
         setNeedsDisplay(this);
     }
 

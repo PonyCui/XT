@@ -56,17 +56,15 @@ export class View {
         this.nativeObject.xtr_setCenter(value);
     }
 
-    private _transform: TransformMatrix | undefined;
-
-    public get transform(): TransformMatrix | undefined {
+    public get transform(): TransformMatrix {
         const value = this.nativeObject.xtr_transform();
         if (value instanceof Object) {
             return new TransformMatrix(value.a, value.b, value.c, value.d, value.tx, value.ty)
         }
-        return undefined
+        return new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
     }
 
-    public set transform(value: TransformMatrix | undefined) {
+    public set transform(value: TransformMatrix) {
         this.nativeObject.xtr_setTransform(value);
     }
 

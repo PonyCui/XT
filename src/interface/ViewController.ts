@@ -1,5 +1,6 @@
 import { View } from "./View";
 import { Rect } from "./Rect";
+import { DeviceOrientation } from "./Device";
 
 interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -30,6 +31,7 @@ export class ViewController {
     keyboardWillShow(frame: Rect, duration: number): void { }
     keyboardWillHide(duration: number): void { }
 
+    supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
     readonly navigationController?: NavigationControllerInterface
 
 }

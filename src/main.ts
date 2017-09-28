@@ -84,5 +84,6 @@ export class CanvasView extends ICanvasView { }
 import { CustomView as ICustomView } from './interface/CustomView'
 export class CustomView extends ICustomView { }
 
-import { Device as IDevice } from './interface/Device'
+import { Device as IDevice, DeviceOrientation as IDeviceOrientation } from './interface/Device'
+export const DeviceOrientation = IDeviceOrientation
 export class Device extends IDevice { }

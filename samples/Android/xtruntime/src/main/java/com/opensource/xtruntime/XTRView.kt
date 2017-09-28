@@ -319,6 +319,42 @@ class XTRView: XTRComponent() {
             return this.bounds
         }
 
+        var transformMatrix: XTRMatrix = XTRMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+            private set(value) {
+                field = value
+                invalidate()
+            }
+
+        fun xtr_transform(): XTRMatrix {
+            return transformMatrix
+        }
+
+        fun xtr_setTransform(value: Any?) {
+            XTRUtils.toTransform(value)?.let {
+                if (animationEnabled) {
+                    val oldValue = transformMatrix.unMatrix()
+                    val newValue = it.unMatrix()
+                    addAnimation(AnimationProp("$objectUUID.transform.scale.x", oldValue.scale.x.toFloat() as Any, newValue.scale.x.toFloat() as Any, { scaleX ->
+                        transformMatrix = transformMatrix.setScale((scaleX as Float).toDouble(), null)
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.transform.scale.y", oldValue.scale.y.toFloat() as Any, newValue.scale.y.toFloat() as Any, { scaleY ->
+                        transformMatrix = transformMatrix.setScale(null, (scaleY as Float).toDouble())
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.transform.rotate", oldValue.degree.toFloat() as Any, newValue.degree.toFloat() as Any, { value ->
+                        transformMatrix = transformMatrix.setRotate((value as Float).toDouble())
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.transform.translate.x", oldValue.translate.x.toFloat() as Any, newValue.translate.x.toFloat() as Any, { translateX ->
+                        transformMatrix = transformMatrix.setTranslate((translateX as Float).toDouble(), null)
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.transform.translate.y", oldValue.translate.y.toFloat() as Any, newValue.translate.y.toFloat() as Any, { translateY ->
+                        transformMatrix = transformMatrix.setTranslate(null, (translateY as Float).toDouble())
+                    }))
+                    return@let
+                }
+                transformMatrix = it
+            }
+        }
+
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             frame?.let {
@@ -513,6 +549,8 @@ class XTRView: XTRComponent() {
         }
 
         override fun draw(canvas: Canvas?) {
+            canvas?.save()
+            canvas?.concat(transformMatrix.toNativeMatrix())
             if (cornerRadius > 0 && clipsToBounds) {
                 canvas?.save()
                 canvas?.clipPath(sharedPath)
@@ -532,6 +570,7 @@ class XTRView: XTRComponent() {
                 sharedPaint.color = borderColor?.intColor() ?: Color.TRANSPARENT
                 canvas?.drawPath(sharedPath, sharedPaint)
             }
+            canvas?.restore()
         }
 
         protected open fun drawContent(canvas: Canvas?) {

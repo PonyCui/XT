@@ -28,7 +28,7 @@ export class View {
     frame: Rect;
     bounds: Rect;
     center: Point;
-    transform?: TransformMatrix;
+    transform: TransformMatrix;
 
     // Mark: View Rendering
     clipsToBounds: boolean;

@@ -2,6 +2,7 @@
 import { View } from "./View";
 import { Color } from "../../interface/Color";
 import { Rect } from "../../interface/Rect";
+import { DeviceOrientation } from "../../interface/Device";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -79,6 +80,8 @@ export class ViewController {
     keyboardWillHide(duration: number): void {
         this.childViewControllers.forEach(t => t.keyboardWillHide(duration))
     }
+
+    supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
 }
 
