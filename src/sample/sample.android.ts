@@ -16,29 +16,19 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
-        const redView = new View(RectMake(44, 44, 44, 44))
+        const redView = new View(RectMake(88, 88, 44, 44))
         redView.backgroundColor = Color.redColor
         this.view.addSubview(redView)
         setTimeout(() => {
             View.animationWithTensionAndFriction(40.0, 3.0, () => {
                 redView.transform = TransformMatrix.scale(redView.transform, 2.0, 2.0)
                 redView.transform = TransformMatrix.rotate(redView.transform, 45 * Math.PI / 180)
-                redView.transform = TransformMatrix.translate(redView.transform, 200, 200)
-                // redView.transform = TransformMatrix.concat(redView.transform, new TransformMatrix(2.0, 0.0, 0.0, 2.0, 20.0, 20.0))
-                // redView.transform = new TransformMatrix(2.0, 0.0, 0.0, 2.0, 80.0, 80.0)
             })
         }, 2000)
         redView.userInteractionEnabled = true
         redView.onTap = () => {
             redView.backgroundColor = Color.yellowColor
         }
-        // const yellowView = new View(RectMake(44, 44, 44, 44))
-        // yellowView.backgroundColor = Color.yellowColor
-        // this.view.addSubview(yellowView)
-        // yellowView.transform = TransformMatrix.scale(yellowView.transform, 2.0, 2.0)
-        // yellowView.transform = TransformMatrix.rotate(yellowView.transform, 20 * Math.PI / 180)
-        // yellowView.transform = TransformMatrix.translate(yellowView.transform, 100, 100)
     }
 
 }

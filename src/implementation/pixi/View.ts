@@ -68,6 +68,7 @@ export class View extends IView {
         this.nativeContainer.hitArea = this.nativeObject.hitArea;
         this.nativeObject.x = Screen.withScale(value.x);
         this.nativeObject.y = Screen.withScale(value.y);
+        this.resetTransform();
         setNeedsDisplay(this);
     }
 
@@ -143,11 +144,61 @@ export class View extends IView {
     }
 
     public set transform(value: TransformMatrix) {
+        if (View._animationEnabled) {
+            const oldValue = TransformMatrix.unmatrix(this._transform)
+            const newValue = TransformMatrix.unmatrix(value)
+            if (oldValue.scale.x != newValue.scale.x) { View.addAnimation(this, "transformScaleX", oldValue.scale.x, newValue.scale.x); }
+            if (oldValue.scale.y != newValue.scale.y) { View.addAnimation(this, "transformScaleY", oldValue.scale.y, newValue.scale.y); }
+            if (oldValue.degree != newValue.degree) { View.addAnimation(this, "transformDegree", oldValue.degree, newValue.degree); }
+            if (oldValue.translate.x != newValue.translate.x) { View.addAnimation(this, "transformTranslateX", oldValue.translate.x, newValue.translate.x); }
+            if (oldValue.translate.y != newValue.translate.y) { View.addAnimation(this, "transformTranslateY", oldValue.translate.y, newValue.translate.y); }
+            return;
+        }
         this._transform = value;
-        const matrix = new PIXI.Matrix();
-        matrix.fromArray([value.a, value.b, value.tx, value.c, value.d, value.ty]);
-        this.nativeObject.transform.setFromMatrix(matrix);
+        this.resetTransform();
         setNeedsDisplay(this);
+    }
+
+    private set transformScaleX(value: number) {
+        this._transform = TransformMatrix.setScale(this._transform, value, undefined)
+        this.resetTransform();
+        setNeedsDisplay(this);
+    }
+
+    private set transformScaleY(value: number) {
+        this._transform = TransformMatrix.setScale(this._transform, undefined, value)
+        this.resetTransform();
+        setNeedsDisplay(this);
+    }
+
+    private set transformDegree(value: number) {
+        this._transform = TransformMatrix.setRotate(this._transform, value * Math.PI / 180)
+        this.resetTransform();
+        setNeedsDisplay(this);
+    }
+
+    private set transformTranslateX(value: number) {
+        this._transform = TransformMatrix.setTranslate(this._transform, value, undefined)
+        this.resetTransform();
+        setNeedsDisplay(this);
+    }
+
+    private set transformTranslateY(value: number) {
+        this._transform = TransformMatrix.setTranslate(this._transform, undefined, value)
+        this.resetTransform();
+        setNeedsDisplay(this);
+    }
+
+    protected resetTransform() {
+        const unMatrix = TransformMatrix.unmatrix(this.transform)
+        const matrix = new PIXI.Matrix();
+        matrix.translate(-Screen.withScale(this.frame.width) / 2.0, -Screen.withScale(this.frame.height) / 2.0)
+        matrix.rotate(unMatrix.degree * Math.PI / 180)
+        matrix.scale(unMatrix.scale.x, unMatrix.scale.y)
+        matrix.translate(unMatrix.translate.x, unMatrix.translate.y)
+        matrix.translate(Screen.withScale(this.frame.width) / 2.0, Screen.withScale(this.frame.height) / 2.0)
+        this.nativeGraphics.transform.setFromMatrix(matrix);
+        this.nativeContainer.transform.setFromMatrix(matrix);
     }
 
     // Mark: View Rendering

@@ -1,4 +1,4 @@
-import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView, CustomView, Device } from '../main.pixi'
+import { View, Application, Window, Screen, Color, ViewController, RectMake, NavigationController, CanvasView, CustomView, Device, TransformMatrix } from '../main.pixi'
 import * as PIXI from 'pixi.js'
 
 const application = new Application("app", {
@@ -54,16 +54,23 @@ if (CustomView.registerClass) {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        console.log(Device.current.systemName)
-        // const aView = new CustomView("FOOView", RectMake(44, 44, 44, 44))
-        // aView.backgroundColor = Color.yellowColor
-        // this.view.addSubview(aView);
-        // setTimeout(() => {
-        //     aView.emitMessage({on: true})
-        // }, 2000)
-        // setTimeout(() => {
-        //     aView.emitMessage({on: false})
-        // }, 4000)
+        // this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
+        const redView = new View(RectMake(88, 88, 44, 44))
+        redView.backgroundColor = Color.redColor
+        const yellowView = new View(RectMake(0,0,22,22))
+        yellowView.backgroundColor = Color.yellowColor
+        redView.addSubview(yellowView)
+        this.view.addSubview(redView)
+        setTimeout(() => {
+            View.animationWithDuration(0.25, () => {
+                // redView.transform = TransformMatrix.scale(redView.transform, 2.0, 2.0)
+                redView.transform = TransformMatrix.rotate(redView.transform, 45 * Math.PI / 180)
+            })
+        }, 2000)
+        redView.userInteractionEnabled = true
+        redView.onTap = () => {
+            redView.backgroundColor = Color.yellowColor
+        }
     }
 
 }
