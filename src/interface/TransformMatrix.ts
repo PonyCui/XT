@@ -251,7 +251,7 @@ export class TransformMatrix {
     readonly tx: number;
     readonly ty: number;
 
-    constructor(a: number, b: number, c: number, d: number, tx: number, ty: number) {
+    constructor(a: number = 1.0, b: number = 0.0, c: number = 0.0, d: number = 1.0, tx: number = 0.0, ty: number = 0.0) {
         this.a = a;
         this.b = b;
         this.c = c;

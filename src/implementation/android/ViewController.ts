@@ -1,9 +1,10 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
-import { Rect } from "../../interface/Rect";
+import { Rect, RectMake } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { DeviceOrientation } from "../../interface/Device";
 import { Device } from "./Device";
+import { TransformMatrix } from "../../interface/TransformMatrix";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -43,9 +44,10 @@ export class ViewController {
     }
 
     loadView(): void {
-        this.view = new View();
-        this.view.backgroundColor = Color.whiteColor
-        this.view.userInteractionEnabled = true;
+        const view = new View();
+        view.backgroundColor = Color.yellowColor
+        view.userInteractionEnabled = true;
+        this.view = view;
     }
 
     viewDidLoad(): void { }
@@ -87,7 +89,7 @@ export class ViewController {
     keyboardWillShow(frame: Rect, duration: number): void {
         this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))
     }
-    
+
     keyboardWillHide(duration: number): void {
         this.childViewControllers.slice().forEach(t => t.keyboardWillHide(duration))
     }
@@ -97,7 +99,27 @@ export class ViewController {
     orientationDidChange() {
         this.childViewControllers.slice().forEach(t => t.orientationDidChange())
         if (this.supportOrientations.indexOf(Device.current.orientation) >= 0) {
-            console.log("support it");
+            if (this.parentViewController && (this.parentViewController as any).className === "NavigationController") {
+                const superViewFrame = this.parentViewController.view.frame;
+                if (Device.current.orientation === DeviceOrientation.Portrait) {
+                    View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+                        this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
+                        this.view.transform = new TransformMatrix()
+                    })
+                }
+                else if (Device.current.orientation === DeviceOrientation.LandscapeLeft) {
+                    View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+                        this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
+                        this.view.transform = TransformMatrix.rotate(new TransformMatrix(), -90 * Math.PI / 180)
+                    });
+                }
+                else if (Device.current.orientation === DeviceOrientation.LandscapeRight) {
+                    View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+                        this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
+                        this.view.transform = TransformMatrix.rotate(new TransformMatrix(), 90 * Math.PI / 180)
+                    });
+                }
+            }
         }
     }
 

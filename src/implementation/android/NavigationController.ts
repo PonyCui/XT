@@ -5,6 +5,7 @@ import { Color } from "../../interface/Color";
 export class NavigationController extends ViewController {
 
     nativeObject: any;
+    className = "NavigationController"
 
     constructor(rootViewController?: ViewController, nativeObject?: any, isChild: boolean = false) {
         super(nativeObject, true);

@@ -49,18 +49,30 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
     }
 
     private var orientationListener: OrientationEventListener? = null
+    private var orientationChangeInvokeTimer: Timer = Timer()
 
     private fun setupOrientations() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         orientationListener = object : OrientationEventListener(this) {
             override fun onOrientationChanged(p0: Int) {
-                when (p0) {
-                    0 -> XTRDevice.current?.orientation = DeviceOrientation.Portrait
-                    90 -> XTRDevice.current?.orientation = DeviceOrientation.LandscapeLeft
-                    180 -> XTRDevice.current?.orientation = DeviceOrientation.PortraitUpsideDown
-                    270 -> XTRDevice.current?.orientation = DeviceOrientation.LandscapeRight
+                val newOrientation: DeviceOrientation = when (Math.round(p0.toFloat() / 90f)) {
+                    0 -> XTRDevice.current?.orientation ?: DeviceOrientation.Portrait
+                    4 -> DeviceOrientation.Portrait
+                    1 -> DeviceOrientation.LandscapeLeft
+                    2 -> DeviceOrientation.PortraitUpsideDown
+                    3 -> DeviceOrientation.LandscapeRight
+                    else -> XTRDevice.current?.orientation ?: DeviceOrientation.Portrait
                 }
-                bridge?.xtrApplication?.delegate?.window?.xtr_orientationChanged()
+                if (newOrientation != XTRDevice.current?.orientation) {
+                    XTRDevice.current?.orientation = newOrientation
+                    orientationChangeInvokeTimer.cancel()
+                    orientationChangeInvokeTimer = Timer()
+                    orientationChangeInvokeTimer.schedule(timerTask {
+                        runOnUiThread {
+                            bridge?.xtrApplication?.delegate?.window?.xtr_orientationChanged()
+                        }
+                    }, 250)
+                }
             }
         }
         orientationListener?.enable()
