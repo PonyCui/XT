@@ -49,15 +49,23 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
     }
 
     private var orientationListener: OrientationEventListener? = null
+    private var orientationLastValue = 0
     private var orientationChangeInvokeTimer: Timer = Timer()
 
     private fun setupOrientations() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         orientationListener = object : OrientationEventListener(this) {
             override fun onOrientationChanged(p0: Int) {
+                val p0 = p0 % 360
+                if (Math.abs(orientationLastValue - p0) < 75) {
+                    return
+                }
+                else {
+                    orientationLastValue = Math.round(p0.toFloat() / 90f) * 90
+                }
                 val newOrientation: DeviceOrientation = when (Math.round(p0.toFloat() / 90f)) {
-                    0 -> XTRDevice.current?.orientation ?: DeviceOrientation.Portrait
-                    4 -> DeviceOrientation.Portrait
+//                    0 -> XTRDevice.current?.orientation ?: DeviceOrientation.Portrait
+                    0 -> DeviceOrientation.Portrait
                     1 -> DeviceOrientation.LandscapeLeft
                     2 -> DeviceOrientation.PortraitUpsideDown
                     3 -> DeviceOrientation.LandscapeRight
@@ -71,7 +79,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                         runOnUiThread {
                             bridge?.xtrApplication?.delegate?.window?.xtr_orientationChanged()
                         }
-                    }, 250)
+                    }, 500)
                 }
             }
         }
