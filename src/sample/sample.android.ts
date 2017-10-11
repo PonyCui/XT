@@ -17,8 +17,12 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
-        const redView = new View(RectMake(88, 88, 44, 44))
+        const redView = new View(RectMake(0, 0, 44, 44))
         redView.backgroundColor = Color.redColor
+        redView.userInteractionEnabled = true
+        redView.onTap = () => {
+            redView.backgroundColor = Color.blueColor
+        }
         this.view.backgroundColor = Color.yellowColor
         this.view.addSubview(redView)
     }

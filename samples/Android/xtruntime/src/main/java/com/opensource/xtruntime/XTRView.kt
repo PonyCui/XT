@@ -816,14 +816,14 @@ class XTRView: XTRComponent() {
         }
 
         override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-            if (!userInteractionEnabled) {
+            if (!userInteractionEnabled || transformMatrix.tx != 0.0 || transformMatrix.ty != 0.0) {
                 return false
             }
             return super.dispatchTouchEvent(ev)
         }
 
         override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-            if (!userInteractionEnabled) {
+            if (!userInteractionEnabled || transformMatrix.tx != 0.0 || transformMatrix.ty != 0.0) {
                 return false
             }
             return super.onInterceptTouchEvent(ev)
