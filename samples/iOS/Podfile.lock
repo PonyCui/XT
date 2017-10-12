@@ -1,0 +1,16 @@
+PODS:
+  - XT-Polyfill (0.0.1)
+
+DEPENDENCIES:
+  - XT-Polyfill (from `https://raw.githubusercontent.com/yyued/XT-Polyfill/master/XT-Polyfill.podspec`)
+
+EXTERNAL SOURCES:
+  XT-Polyfill:
+    :podspec: https://raw.githubusercontent.com/yyued/XT-Polyfill/master/XT-Polyfill.podspec
+
+SPEC CHECKSUMS:
+  XT-Polyfill: 06a1ae5021b36c85f1c272700f04473ef3d0e03f
+
+PODFILE CHECKSUM: 51528b0ab4ab86458b299267c5b597f81e1dabae
+
+COCOAPODS: 1.3.1

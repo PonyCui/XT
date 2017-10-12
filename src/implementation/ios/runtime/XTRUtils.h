@@ -13,8 +13,6 @@
 
 @interface XTRUtils : NSObject
 
-+ (void)attachPolyfills:(nonnull JSContext *)context;
-
 @end
 
 @interface JSValue (XTRUtils)

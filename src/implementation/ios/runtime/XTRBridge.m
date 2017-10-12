@@ -33,6 +33,7 @@
 #import "XTRCustomView.h"
 #import "XTRDevice.h"
 #import <JavaScriptCore/JavaScriptCore.h>
+#import <XT-Polyfill/XTPolyfill.h>
 
 @protocol XTRPluginProtocol
 
@@ -72,7 +73,7 @@ static NSString *globalBridgeScript;
         _context.bridge = self;
         [_context evaluateScript:@"var window = {}"];
         [XTRBreakpoint attachBreakpoint:_context];
-        [XTRUtils attachPolyfills:_context];
+        [XTPolyfill addPolyfills:_context];
         [self loadComponents];
         [self loadPlugins];
         if (_sourceURL != nil) {

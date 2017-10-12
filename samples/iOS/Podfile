@@ -1,0 +1,7 @@
+platform :ios, '8.0'
+
+target 'XTSample' do
+  
+  pod 'XT-Polyfill', :podspec => 'https://raw.githubusercontent.com/yyued/XT-Polyfill/master/XT-Polyfill.podspec'
+
+end
