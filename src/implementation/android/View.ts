@@ -325,7 +325,6 @@ export class View {
         this.nativeObject.xtr_setUserInteractionEnabled(value);
     }
 
-
     public get longPressDuration(): number {
         return this.nativeObject.xtr_longPressDuration();
     }

@@ -42,7 +42,11 @@ export class Window extends View {
     }
 
     handleOrientationChange(): void {
-        this.rootViewController && this.rootViewController.orientationDidChange()
+        this.rootViewController && this.rootViewController.orientationDidChange(this)
+    }
+
+    handleStatusBarHidden(hidden: boolean) {
+        this.nativeObject.xtr_setStatusBarHidden(hidden === true)
     }
 
     endEditing(): void {

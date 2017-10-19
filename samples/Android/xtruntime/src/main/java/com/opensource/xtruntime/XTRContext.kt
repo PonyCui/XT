@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
+import com.opensource.xtpolyfill.XTPolyfill
 import org.mozilla.javascript.*
 import org.mozilla.javascript.Function
 
@@ -11,18 +12,13 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     var xtrBridge: XTRBridge? = null
     var jsContext: Context = Context.enter()
-    val scope = jsContext.initStandardObjects()!!
+    val scope: ScriptableObject = jsContext.initStandardObjects()
     val handler = Handler()
 
     init {
         jsContext.optimizationLevel = -1
         jsContext.evaluateString(scope, "var window = {isAndroid: true}; var document = {}; var XTRAppRef = undefined", "define.js", 1, null)
-        XTRPolyfill.attachPolyfill(this)
-    }
-
-    fun resetJSContext() {
-        jsContext = Context.enter()
-        jsContext.optimizationLevel = -1
+        XTPolyfill.addPolyfills(jsContext, scope)
     }
 
     fun evaluateScript(script: String): Any? {

@@ -84,6 +84,10 @@ class XTRWindow: XTRComponent() {
             xtrContext.invokeMethod(scriptObject, "handleOrientationChange", arrayOf())
         }
 
+        fun xtr_setStatusBarHidden(hidden: Boolean) {
+            this.systemUiVisibility = if (hidden) View.SYSTEM_UI_FLAG_FULLSCREEN else 0
+        }
+
         fun xtr_endEditing() {
             firstResponder?.let {
                 (it as? XTRTextField.InnerObject)?.xtr_blur()

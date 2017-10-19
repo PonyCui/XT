@@ -96,28 +96,42 @@ export class ViewController {
 
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
-    orientationDidChange() {
-        this.childViewControllers.slice().forEach(t => t.orientationDidChange())
+    orientationDidChange(sender: any) {
+        this.childViewControllers.slice().forEach(t => t.orientationDidChange(sender))
         if (this.supportOrientations.indexOf(Device.current.orientation) >= 0) {
             if (this.parentViewController && (this.parentViewController as any).className === "NavigationController") {
-                const superViewFrame = this.parentViewController.view.frame;
                 if (Device.current.orientation === DeviceOrientation.Portrait) {
-                    View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-                        this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
-                        this.view.transform = new TransformMatrix()
-                    })
+                    sender.handleStatusBarHidden && sender.handleStatusBarHidden(false);
+                    setTimeout(() => {
+                        if (!this.parentViewController) { return; }
+                        const superViewFrame = this.parentViewController.view.frame;
+                        View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+                            this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
+                            this.view.transform = new TransformMatrix()
+                        })
+                    }, 500)
                 }
                 else if (Device.current.orientation === DeviceOrientation.LandscapeLeft) {
-                    View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-                        this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-                        this.view.transform = TransformMatrix.rotate(new TransformMatrix(), -90 * Math.PI / 180)
-                    });
+                    sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
+                    setTimeout(() => {
+                        if (!this.parentViewController) { return; }
+                        const superViewFrame = this.parentViewController.view.frame;
+                        View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+                            this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
+                            this.view.transform = TransformMatrix.rotate(new TransformMatrix(), -90 * Math.PI / 180)
+                        });
+                    }, 500)
                 }
                 else if (Device.current.orientation === DeviceOrientation.LandscapeRight) {
-                    View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-                        this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-                        this.view.transform = TransformMatrix.rotate(new TransformMatrix(), 90 * Math.PI / 180)
-                    });
+                    sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
+                    setTimeout(() => {
+                        if (!this.parentViewController) { return; }
+                        const superViewFrame = this.parentViewController.view.frame;
+                        View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+                            this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
+                            this.view.transform = TransformMatrix.rotate(new TransformMatrix(), 90 * Math.PI / 180)
+                        });
+                    }, 500)
                 }
             }
         }

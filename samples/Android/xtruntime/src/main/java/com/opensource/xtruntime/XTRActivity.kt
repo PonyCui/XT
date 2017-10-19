@@ -64,7 +64,6 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                     orientationLastValue = Math.round(p0.toFloat() / 90f) * 90
                 }
                 val newOrientation: DeviceOrientation = when (Math.round(p0.toFloat() / 90f)) {
-//                    0 -> XTRDevice.current?.orientation ?: DeviceOrientation.Portrait
                     0 -> DeviceOrientation.Portrait
                     1 -> DeviceOrientation.LandscapeLeft
                     2 -> DeviceOrientation.PortraitUpsideDown
