@@ -325,6 +325,10 @@ class XTRView: XTRComponent() {
                 invalidate()
             }
 
+        override fun getMatrix(): Matrix {
+            return transformMatrix.toNativeMatrix(resources.displayMetrics.density)
+        }
+
         fun xtr_transform(): XTRMatrix {
             return transformMatrix
         }
@@ -551,12 +555,13 @@ class XTRView: XTRComponent() {
         override fun draw(canvas: Canvas?) {
             canvas?.save()
             if (!transformMatrix.isIdentity()) {
+                val scale = resources.displayMetrics.density
                 val unMatrix = transformMatrix.unMatrix()
                 val matrix = Matrix()
                 matrix.postTranslate(-(this.width / 2.0).toFloat(), -(this.height / 2.0).toFloat())
                 matrix.postRotate(unMatrix.degree.toFloat())
                 matrix.postScale(unMatrix.scale.x.toFloat(), unMatrix.scale.y.toFloat())
-                matrix.postTranslate(unMatrix.translate.x.toFloat(), unMatrix.translate.y.toFloat())
+                matrix.postTranslate((unMatrix.translate.x * scale).toFloat(), (unMatrix.translate.y * scale).toFloat())
                 matrix.postTranslate((this.width / 2.0).toFloat(), (this.height / 2.0).toFloat())
                 canvas?.concat(matrix)
             }
@@ -803,7 +808,7 @@ class XTRView: XTRComponent() {
 
         // Mark: View Interactive
 
-        private var userInteractionEnabled = false
+        protected var userInteractionEnabled = false
 
         fun xtr_userInteractionEnabled(): Boolean {
             return this.userInteractionEnabled
@@ -816,14 +821,14 @@ class XTRView: XTRComponent() {
         }
 
         override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-            if (!userInteractionEnabled || transformMatrix.tx != 0.0 || transformMatrix.ty != 0.0) {
+            if (!userInteractionEnabled) {
                 return false
             }
             return super.dispatchTouchEvent(ev)
         }
 
         override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-            if (!userInteractionEnabled || transformMatrix.tx != 0.0 || transformMatrix.ty != 0.0) {
+            if (!userInteractionEnabled) {
                 return false
             }
             return super.onInterceptTouchEvent(ev)
@@ -916,6 +921,9 @@ class XTRView: XTRComponent() {
         }
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {
+//            if (!transformMatrix.isIdentity()) {
+//                event?.transform(transformMatrix.toNativeMatrix(resources.displayMetrics.density))
+//            }
             var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
             var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
             while (currentParent != null) {

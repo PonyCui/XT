@@ -160,31 +160,31 @@ export class View extends IView {
     }
 
     private set transformScaleX(value: number) {
-        this._transform = TransformMatrix.setScale(this._transform, value, undefined)
+        this._transform = TransformMatrix.postScale(this._transform, value, undefined)
         this.resetTransform();
         setNeedsDisplay(this);
     }
 
     private set transformScaleY(value: number) {
-        this._transform = TransformMatrix.setScale(this._transform, undefined, value)
+        this._transform = TransformMatrix.postScale(this._transform, undefined, value)
         this.resetTransform();
         setNeedsDisplay(this);
     }
 
     private set transformDegree(value: number) {
-        this._transform = TransformMatrix.setRotate(this._transform, value * Math.PI / 180)
+        this._transform = TransformMatrix.postRotate(this._transform, value * Math.PI / 180)
         this.resetTransform();
         setNeedsDisplay(this);
     }
 
     private set transformTranslateX(value: number) {
-        this._transform = TransformMatrix.setTranslate(this._transform, value, undefined)
+        this._transform = TransformMatrix.postTranslate(this._transform, value, undefined)
         this.resetTransform();
         setNeedsDisplay(this);
     }
 
     private set transformTranslateY(value: number) {
-        this._transform = TransformMatrix.setTranslate(this._transform, undefined, value)
+        this._transform = TransformMatrix.postTranslate(this._transform, undefined, value)
         this.resetTransform();
         setNeedsDisplay(this);
     }

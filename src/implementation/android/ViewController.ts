@@ -118,7 +118,7 @@ export class ViewController {
                         const superViewFrame = this.parentViewController.view.frame;
                         View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
                             this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-                            this.view.transform = TransformMatrix.rotate(new TransformMatrix(), -90 * Math.PI / 180)
+                            this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), -90 * Math.PI / 180)
                         });
                     }, 500)
                 }
@@ -129,7 +129,7 @@ export class ViewController {
                         const superViewFrame = this.parentViewController.view.frame;
                         View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
                             this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-                            this.view.transform = TransformMatrix.rotate(new TransformMatrix(), 90 * Math.PI / 180)
+                            this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), 90 * Math.PI / 180)
                         });
                     }, 500)
                 }

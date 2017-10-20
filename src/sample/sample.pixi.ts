@@ -64,7 +64,7 @@ class FirstViewController extends ViewController {
         setTimeout(() => {
             View.animationWithDuration(0.25, () => {
                 // redView.transform = TransformMatrix.scale(redView.transform, 2.0, 2.0)
-                redView.transform = TransformMatrix.rotate(redView.transform, 45 * Math.PI / 180)
+                redView.transform = TransformMatrix.postRotate(redView.transform, 45 * Math.PI / 180)
             })
         }, 2000)
         redView.userInteractionEnabled = true

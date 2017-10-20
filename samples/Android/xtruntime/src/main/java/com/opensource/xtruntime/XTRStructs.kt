@@ -64,7 +64,7 @@ class XTRMatrix(val a: Double, val b: Double, val c: Double, val d: Double, val 
     }
 
     fun isIdentity(): Boolean {
-        return a == 1.0 && b == 0.0 && c == 0.0 && d == 0.0 && tx == 0.0 && ty == 0.0
+        return a == 1.0 && b == 0.0 && c == 0.0 && d == 1.0 && tx == 0.0 && ty == 0.0
     }
 
     fun setScale(x: Double? = null, y: Double? = null): XTRMatrix {
@@ -103,6 +103,22 @@ class XTRMatrix(val a: Double, val b: Double, val c: Double, val d: Double, val 
         arr[3] = b.toFloat()
         arr[4] = d.toFloat()
         arr[5] = ty.toFloat()
+        arr[6] = 0.0.toFloat()
+        arr[7] = 0.0.toFloat()
+        arr[8] = 1.0.toFloat()
+        matrix.setValues(arr)
+        return matrix
+    }
+
+    fun toNativeMatrix(scale: Float): Matrix {
+        val matrix = Matrix()
+        val arr = FloatArray(9)
+        arr[0] = a.toFloat()
+        arr[1] = c.toFloat()
+        arr[2] = tx.toFloat() * scale
+        arr[3] = b.toFloat()
+        arr[4] = d.toFloat()
+        arr[5] = ty.toFloat() * scale
         arr[6] = 0.0.toFloat()
         arr[7] = 0.0.toFloat()
         arr[8] = 1.0.toFloat()

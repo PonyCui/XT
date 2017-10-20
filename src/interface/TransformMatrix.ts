@@ -291,70 +291,37 @@ export class TransformMatrix {
         return { scale: { x: scaleX, y: scaleY }, degree: Math.atan2(B, A) / (Math.PI / 180), translate: { x: matrix.tx, y: matrix.ty } }
     }
 
-    static scale(matrix: TransformMatrix, x: number, y: number) {
-        const obj = new TransformMatrixAlgorithm()
-        obj.props[0] = matrix.a
-        obj.props[1] = matrix.b
-        obj.props[4] = matrix.c
-        obj.props[5] = matrix.d
-        obj.props[12] = matrix.tx
-        obj.props[13] = matrix.ty
-        obj.scale(x, y, 1.0)
-        return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
-    }
-
-    static setScale(matrix: TransformMatrix, x?: number, y?: number) {
-        const obj = new TransformMatrixAlgorithm()
-        const unMatrix = this.unmatrix(matrix)
-        obj.rotate(-(unMatrix.degree * Math.PI / 180))
-        obj.scale(x || unMatrix.scale.x, y || unMatrix.scale.y, 1.0)
-        obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
-        return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
-    }
-
-    static translate(matrix: TransformMatrix, x: number, y: number) {
-        const obj = new TransformMatrixAlgorithm()
-        obj.props[0] = matrix.a
-        obj.props[1] = matrix.b
-        obj.props[4] = matrix.c
-        obj.props[5] = matrix.d
-        obj.props[12] = matrix.tx
-        obj.props[13] = matrix.ty
-        obj.translate(x, y, 1.0)
-        return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
-    }
-
-    static setTranslate(matrix: TransformMatrix, x?: number, y?: number) {
+    static postScale(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
         const obj = new TransformMatrixAlgorithm()
         const unMatrix = this.unmatrix(matrix)
         obj.rotate(-(unMatrix.degree * Math.PI / 180))
         obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
-        obj.translate(x || unMatrix.translate.x, y || unMatrix.translate.y, 0.0)
+        obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
+        obj.scale((x || 1.0),(y || 1.0), 1.0)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
     }
 
-    static rotate(matrix: TransformMatrix, angle: number) {
+    static postTranslate(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
         const obj = new TransformMatrixAlgorithm()
-        obj.props[0] = matrix.a
-        obj.props[1] = matrix.b
-        obj.props[4] = matrix.c
-        obj.props[5] = matrix.d
-        obj.props[12] = matrix.tx
-        obj.props[13] = matrix.ty
+        const unMatrix = this.unmatrix(matrix)
+        obj.rotate(-(unMatrix.degree * Math.PI / 180))
+        obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
+        obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
+        obj.translate((x || 0.0), (y || 0.0), 0.0)
+        return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+    }
+
+    static postRotate(matrix: TransformMatrix, angle: number): TransformMatrix {
+        const obj = new TransformMatrixAlgorithm()
+        const unMatrix = this.unmatrix(matrix)
+        obj.rotate(-(unMatrix.degree * Math.PI / 180))
+        obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
+        obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
         obj.rotate(-angle)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
     }
 
-    static setRotate(matrix: TransformMatrix, angle: number) {
-        const obj = new TransformMatrixAlgorithm()
-        const unMatrix = this.unmatrix(matrix)
-        obj.rotate(-(angle || unMatrix.degree * Math.PI / 180))
-        obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
-        obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
-        return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
-    }
-
-    static concat(preMatrix: TransformMatrix, postMatrix: TransformMatrix) {
+    static concat(preMatrix: TransformMatrix, postMatrix: TransformMatrix): TransformMatrix {
         const obj = new TransformMatrixAlgorithm()
         obj.props[0] = preMatrix.a
         obj.props[1] = preMatrix.b

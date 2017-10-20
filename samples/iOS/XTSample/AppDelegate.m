@@ -28,6 +28,13 @@
 //                                                   sourceURL:[NSURL URLWithString:@"http://localhost:8083/sample.ios.min.js"]];
 //    }
     [super application:application didFinishLaunchingWithOptions:launchOptions];
+    
+//    UIView *rootView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
+//    UIView *redView = [[UIView alloc] initWithFrame:CGRectMake(44, 44, 44, 44)];
+//    redView.transform = CGAffineTransformMakeRotation(45.0 * M_PI / 180.0);
+    
+    
+    
     return YES;
 }
 
