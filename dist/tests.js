@@ -169,14 +169,6 @@ exports.GestureManager = GestureManager;
 
 "use strict";
 
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var TransformMatrix_1 = __webpack_require__(2);
 function isPointInside(point, owner) {
@@ -194,10 +186,14 @@ function convertPointToChildView(point, parent, child) {
         return point;
     }
     else {
-        var curPoint_1 = __assign({}, point);
+        var curPoint_1 = { x: point.x, y: point.y };
         stack.forEach(function (nextView) {
-            if (nextView.transformMatrix) {
-                var unmatrix = TransformMatrix_1.TransformMatrix.unmatrix(nextView.transformMatrix);
+            var transform = nextView.transform;
+            if (transform && !TransformMatrix_1.TransformMatrix.isIdentity(transform)) {
+                if (transform.a == 0.0 || transform.d == 0.0) {
+                    return { x: 0, y: 0 };
+                }
+                var unmatrix = TransformMatrix_1.TransformMatrix.unmatrix(transform);
                 var newMatrix = TransformMatrix_1.TransformMatrix.postTranslate(new TransformMatrix_1.TransformMatrix(), -nextView.frame.width / 2.0, -nextView.frame.height / 2.0);
                 newMatrix = TransformMatrix_1.TransformMatrix.postRotate(newMatrix, unmatrix.degree * Math.PI / 180.0);
                 newMatrix = TransformMatrix_1.TransformMatrix.postScale(newMatrix, unmatrix.scale.x, unmatrix.scale.y);
@@ -206,7 +202,7 @@ function convertPointToChildView(point, parent, child) {
                 var m = point.x - nextView.frame.x - newMatrix.tx;
                 var n = point.y - nextView.frame.y - newMatrix.ty;
                 var x = (n - m * newMatrix.c / newMatrix.d) / (newMatrix.a - newMatrix.b * newMatrix.c / newMatrix.a);
-                var y = -(n - m * newMatrix.a / newMatrix.b) / (newMatrix.c - newMatrix.a * newMatrix.d / newMatrix.b);
+                var y = -(m - n * newMatrix.b / newMatrix.a) / (newMatrix.d - newMatrix.c * newMatrix.b / newMatrix.d);
                 curPoint_1 = { x: x, y: y };
             }
             else {
@@ -462,6 +458,9 @@ var TransformMatrix = /** @class */ (function () {
         }
         return { scale: { x: scaleX, y: scaleY }, degree: Math.atan2(B, A) / (Math.PI / 180), translate: { x: matrix.tx, y: matrix.ty } };
     };
+    TransformMatrix.isIdentity = function (matrix) {
+        return matrix.a == 1 && matrix.b == 0 && matrix.c == 0 && matrix.d == 1 && matrix.tx == 0 && matrix.ty == 0;
+    };
     TransformMatrix.postScale = function (matrix, x, y) {
         var obj = new TransformMatrixAlgorithm();
         var unMatrix = this.unmatrix(matrix);
@@ -610,14 +609,15 @@ function hitTests() {
     if (window.hitTest({ x: 48, y: 48 }) !== redView) {
         throw "redView hitTest Failure";
     }
-    redView.transformMatrix = TransformMatrix_1.TransformMatrix.postTranslate(TransformMatrix_1.TransformMatrix.postRotate(new TransformMatrix_1.TransformMatrix(), 45 * Math.PI / 180), 0, 0);
+    redView.transform = TransformMatrix_1.TransformMatrix.postTranslate(TransformMatrix_1.TransformMatrix.postRotate(new TransformMatrix_1.TransformMatrix(), 45 * Math.PI / 180), 0, 0);
+    console.log(CoordinateManager_1.convertPointToChildView({ x: 66, y: 66 }, window, redView));
     if (window.hitTest({ x: 48, y: 48 }) === redView) {
         throw "redView transformMatrix hitTest out Failure";
     }
     if (window.hitTest({ x: 66, y: 66 }) !== redView) {
         throw "redView transformMatrix hitTest in Failure";
     }
-    redView.transformMatrix = TransformMatrix_1.TransformMatrix.postTranslate(TransformMatrix_1.TransformMatrix.postRotate(new TransformMatrix_1.TransformMatrix(), 45 * Math.PI / 180), 100, 100);
+    redView.transform = TransformMatrix_1.TransformMatrix.postTranslate(TransformMatrix_1.TransformMatrix.postRotate(new TransformMatrix_1.TransformMatrix(), 45 * Math.PI / 180), 100, 100);
     if (window.hitTest({ x: 148, y: 148 }) === redView) {
         throw "redView transformMatrix hitTest out Failure";
     }
@@ -722,7 +722,7 @@ var TouchManager = /** @class */ (function () {
         var _this = this;
         if (this.target) {
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Began, tapCount: 1, locationInView: function (view) {
+                timestamp: timestamp, phase: TouchPhase.Moved, tapCount: 1, locationInView: function (view) {
                     return CoordinateManager_1.convertPointToChildView({ x: x, y: y }, _this.root, view);
                 }
             };
@@ -733,7 +733,7 @@ var TouchManager = /** @class */ (function () {
         var _this = this;
         if (this.target) {
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Began, tapCount: 1, locationInView: function (view) {
+                timestamp: timestamp, phase: TouchPhase.Ended, tapCount: 1, locationInView: function (view) {
                     return CoordinateManager_1.convertPointToChildView({ x: x, y: y }, _this.root, view);
                 }
             };
@@ -747,7 +747,7 @@ var TouchManager = /** @class */ (function () {
     TouchManager.prototype.handlePointerCancelEvent = function (timestamp) {
         var touches = [];
         for (var pointerID in this.touches) {
-            this.touches[pointerID].phase = TouchPhase.Ended;
+            this.touches[pointerID].phase = TouchPhase.Cancelled;
             this.touches[pointerID].timestamp = timestamp;
             touches.push(this.touches[pointerID]);
         }

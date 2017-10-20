@@ -291,13 +291,17 @@ export class TransformMatrix {
         return { scale: { x: scaleX, y: scaleY }, degree: Math.atan2(B, A) / (Math.PI / 180), translate: { x: matrix.tx, y: matrix.ty } }
     }
 
+    static isIdentity(matrix: TransformMatrix) {
+        return matrix.a == 1 && matrix.b == 0 && matrix.c == 0 && matrix.d == 1 && matrix.tx == 0 && matrix.ty == 0
+    }
+
     static postScale(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
         const obj = new TransformMatrixAlgorithm()
         const unMatrix = this.unmatrix(matrix)
         obj.rotate(-(unMatrix.degree * Math.PI / 180))
         obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
         obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
-        obj.scale((x || 1.0),(y || 1.0), 1.0)
+        obj.scale((x || 1.0), (y || 1.0), 1.0)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
     }
 

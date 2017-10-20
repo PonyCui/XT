@@ -7,7 +7,7 @@ import { LongPressGestureRecognizer } from './LongPressGestureRecognizer';
 
 class View implements Touchable, CoordinateOwner, GestureOwner {
 
-    transformMatrix?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
+    transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
     frame: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 0, height: 0 }
     superview: View | undefined
     subviews: View[] = []
@@ -88,14 +88,14 @@ export function hitTests() {
     if (window.hitTest({ x: 48, y: 48 }) !== redView) {
         throw "redView hitTest Failure";
     }
-    redView.transformMatrix = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 0, 0)
+    redView.transform = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 0, 0)
     if (window.hitTest({ x: 48, y: 48 }) === redView) {
         throw "redView transformMatrix hitTest out Failure";
     }
     if (window.hitTest({ x: 66, y: 66 }) !== redView) {
         throw "redView transformMatrix hitTest in Failure";
     }
-    redView.transformMatrix = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 100, 100)
+    redView.transform = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 100, 100)
     if (window.hitTest({ x: 148, y: 148 }) === redView) {
         throw "redView transformMatrix hitTest out Failure";
     }

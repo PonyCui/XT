@@ -2,6 +2,7 @@
 import { Rect, RectZero } from "../../interface/Rect";
 import { View } from "./View";
 import { ViewController } from "./ViewController";
+import { TouchManager } from "../libraries/touch/TouchManager";
 
 export class Window extends View {
 
@@ -51,6 +52,20 @@ export class Window extends View {
 
     endEditing(): void {
         this.nativeObject.xtr_endEditing();
+    }
+
+    touchManager = new TouchManager(this)
+
+    handlePointerDown(pid: string, timestamp: number, point: { x: number, y: number }) {
+        this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
+    }
+
+    handlePointerMove(pid: string, timestamp: number, point: { x: number, y: number }) {
+        this.touchManager.handlePointerMove(pid, timestamp, point.x, point.y)
+    }
+
+    handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {
+        this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y)
     }
 
 }

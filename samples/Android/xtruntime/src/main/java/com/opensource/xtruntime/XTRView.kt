@@ -820,20 +820,6 @@ class XTRView: XTRComponent() {
             }
         }
 
-        override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-            if (!userInteractionEnabled) {
-                return false
-            }
-            return super.dispatchTouchEvent(ev)
-        }
-
-        override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-            if (!userInteractionEnabled) {
-                return false
-            }
-            return super.onInterceptTouchEvent(ev)
-        }
-
         private var onTap: Any? = null
         private var onDoubleTap: Any? = null
         private var maybeDoubleTimer: Timer? = null
@@ -921,25 +907,26 @@ class XTRView: XTRComponent() {
         }
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {
+            return false
 //            if (!transformMatrix.isIdentity()) {
 //                event?.transform(transformMatrix.toNativeMatrix(resources.displayMetrics.density))
 //            }
-            var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
-            var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
-            while (currentParent != null) {
-                if (currentParent.stealingTouch(event, currentOffset)) {
-                    cancelTouches()
-                    return true
-                }
-                currentOffset = XTRPoint(
-                        currentOffset.x + (currentParent.frame?.x ?: 0.0) - currentParent.scrollX / resources.displayMetrics.density,
-                        currentOffset.y + (currentParent.frame?.y ?: 0.0) - currentParent.scrollY / resources.displayMetrics.density
-                )
-                currentParent = currentParent.parent as? XTRView.InnerObject
-            }
-            handlePanEvents(event)
-            handleLongPressEvents(event)
-            return super.onTouchEvent(event)
+//            var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
+//            var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
+//            while (currentParent != null) {
+//                if (currentParent.stealingTouch(event, currentOffset)) {
+//                    cancelTouches()
+//                    return true
+//                }
+//                currentOffset = XTRPoint(
+//                        currentOffset.x + (currentParent.frame?.x ?: 0.0) - currentParent.scrollX / resources.displayMetrics.density,
+//                        currentOffset.y + (currentParent.frame?.y ?: 0.0) - currentParent.scrollY / resources.displayMetrics.density
+//                )
+//                currentParent = currentParent.parent as? XTRView.InnerObject
+//            }
+//            handlePanEvents(event)
+//            handleLongPressEvents(event)
+//            return super.onTouchEvent(event)
         }
 
         open fun stealingTouch(event: MotionEvent?, offset: XTRPoint): Boolean {

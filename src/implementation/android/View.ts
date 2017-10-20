@@ -3,6 +3,11 @@ import { Color } from '../../interface/Color'
 import { Window } from './Window'
 import { TransformMatrix } from '../../interface/TransformMatrix'
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
+import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
+import { CoordinateOwner, isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
+import { GestureOwner, GestureRecongnizer, GestureManager } from '../libraries/touch/GestureManager';
+import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
+import { asArray } from "./utils"
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
@@ -20,7 +25,7 @@ export enum SwipeDirection {
     ToBottom,
 }
 
-export class View {
+export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     nativeObject: any;
 
@@ -185,7 +190,7 @@ export class View {
     }
 
     public get subviews(): View[] {
-        return this.nativeObject.xtr_subviews()
+        return asArray(this.nativeObject.xtr_subviews())
     }
 
     public get window(): Window | undefined {
@@ -317,12 +322,57 @@ export class View {
     static InteractionState = InteractionState
     static SwipeDirection = SwipeDirection
 
+    gestureRecongnizer: GestureRecongnizer[] = []
+
     public get userInteractionEnabled(): boolean {
         return this.nativeObject.xtr_userInteractionEnabled();
     }
 
     public set userInteractionEnabled(value: boolean) {
         this.nativeObject.xtr_setUserInteractionEnabled(value);
+    }
+
+    hitTest(point: { x: number; y: number; }): Touchable | undefined {
+        let target = undefined;
+        if (isPointInside(point, this)) {
+            target = this
+            let subviews = this.subviews.slice();
+            subviews.reverse()
+            subviews.forEach(subview => {
+                console.log("subview" + JSON.stringify(convertPointToChildView(point, this, subview)));
+                let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
+                if (subTarget) { target = subTarget; }
+            })
+        }
+        return target
+    }
+
+    touchesBegan(touches: Touch[], event: Event): void {
+        GestureManager.onTouchesBegan(this, touches, event)
+        if (this.superview) {
+            this.superview.touchesBegan(touches, event);
+        }
+    }
+
+    touchesMoved(touches: Touch[], event: Event): void {
+        GestureManager.onTouchesMoved(this, touches, event)
+        if (this.superview) {
+            this.superview.touchesMoved(touches, event);
+        }
+    }
+
+    touchesEnded(touches: Touch[], event: Event): void {
+        GestureManager.onTouchesEnded(this, touches, event)
+        if (this.superview) {
+            this.superview.touchesEnded(touches, event);
+        }
+    }
+
+    touchesCancelled(touches: Touch[], event: Event): void {
+        GestureManager.onTouchesCancelled(this, touches, event)
+        if (this.superview) {
+            this.superview.touchesCancelled(touches, event);
+        }
     }
 
     public get longPressDuration(): number {
@@ -334,7 +384,9 @@ export class View {
     }
 
     public set onTap(value: (() => void) | undefined) {
-        this.nativeObject.xtr_setTap(value);
+        const tapGesture = new TapGestureRecognizer();
+        tapGesture.fire = value;
+        this.gestureRecongnizer.push(tapGesture);
     }
 
     public set onDoubleTap(value: (() => void) | undefined) {

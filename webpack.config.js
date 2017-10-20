@@ -27,11 +27,11 @@ module.exports = function (env) {
         externals: {
         },
         plugins: [
-            // new webpack.optimize.UglifyJsPlugin({
-            //     include: /\.min\.js$/,
-            //     minimize: true,
-            //     output: { comments: false },
-            // }),
+            new webpack.optimize.UglifyJsPlugin({
+                include: /\.min\.js$/,
+                minimize: true,
+                output: { comments: false },
+            }),
             new WebpackShellPlugin({
                 onBuildExit: ['cp dist/sample.android.min.js samples/Android/app/src/main/assets/sample.android.min.js']
             }),

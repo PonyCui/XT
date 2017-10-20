@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.content.Context
 import android.graphics.Color
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -98,6 +99,35 @@ class XTRWindow: XTRComponent() {
         override fun layoutSubviews() {
             super.layoutSubviews()
             rootViewController?.view?.frame = this.bounds
+        }
+
+        override fun onTouchEvent(event: MotionEvent?): Boolean {
+            when (event?.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    val pid = event.getPointerId(0).toString()
+                    val timestamp = System.nanoTime() / 1000000
+                    val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
+                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", arrayOf(pid, timestamp, point))
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val pid = event.getPointerId(0).toString()
+                    val timestamp = System.nanoTime() / 1000000
+                    val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
+                    xtrContext.invokeMethod(scriptObject, "handlePointerMove", arrayOf(pid, timestamp, point))
+                }
+                MotionEvent.ACTION_UP -> {
+                    val pid = event.getPointerId(0).toString()
+                    val timestamp = System.nanoTime() / 1000000
+                    val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
+                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", arrayOf(pid, timestamp, point))
+                }
+                MotionEvent.ACTION_POINTER_DOWN -> {
+//                    val timestamp = System.nanoTime() / 1000000
+//                    val pid = event.getPointerId(0)
+//                    System.out.println("xxxxx" + pid)
+                }
+            }
+            return true
         }
 
     }

@@ -24,10 +24,8 @@ export interface Event {
 
 export interface Touchable {
 
-    transformMatrix?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
+    transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
     frame: { x: number, y: number, width: number, height: number }
-    superview: Touchable | undefined
-    subviews: Touchable[]
     hitTest(point: { x: number, y: number }): Touchable | undefined
     touchesBegan(touches: Touch[], event: Event): void;
     touchesMoved(touches: Touch[], event: Event): void;
@@ -52,7 +50,7 @@ export class TouchManager {
             this.target = target;
             this.touches[pid] = {
                 timestamp: timestamp, phase: TouchPhase.Began, tapCount: 1, locationInView: (view: Touchable) => {
-                    return convertPointToChildView({ x, y }, this.root, view)
+                    return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
             target.touchesBegan([this.touches[pid]], {})
@@ -62,8 +60,8 @@ export class TouchManager {
     handlePointerMove(pid: string, timestamp: number, x: number, y: number) {
         if (this.target) {
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Began, tapCount: 1, locationInView: (view: Touchable) => {
-                    return convertPointToChildView({ x, y }, this.root, view)
+                timestamp: timestamp, phase: TouchPhase.Moved, tapCount: 1, locationInView: (view: Touchable) => {
+                    return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
             this.target.touchesMoved([this.touches[pid]], {})
@@ -73,8 +71,8 @@ export class TouchManager {
     handlePointerUp(pid: string, timestamp: number, x: number, y: number) {
         if (this.target) {
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Began, tapCount: 1, locationInView: (view: Touchable) => {
-                    return convertPointToChildView({ x, y }, this.root, view)
+                timestamp: timestamp, phase: TouchPhase.Ended, tapCount: 1, locationInView: (view: Touchable) => {
+                    return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
             this.target.touchesEnded([this.touches[pid]], {})
@@ -88,7 +86,7 @@ export class TouchManager {
     handlePointerCancelEvent(timestamp: number) {
         let touches = [];
         for (const pointerID in this.touches) {
-            this.touches[pointerID].phase = TouchPhase.Ended
+            this.touches[pointerID].phase = TouchPhase.Cancelled
             this.touches[pointerID].timestamp = timestamp
             touches.push(this.touches[pointerID]);
         }

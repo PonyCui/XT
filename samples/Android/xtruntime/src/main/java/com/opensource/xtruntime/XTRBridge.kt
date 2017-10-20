@@ -131,7 +131,9 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
             Thread(Thread.currentThread().threadGroup, {
                 val childJSContext = Context.enter()
                 childJSContext.optimizationLevel = -1
+                System.out.println("xxx123")
                 childJSContext.evaluateString(xtrContext.scope, script, "app.js", 1, null)
+                System.out.println("xxx312")
                 xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
                 handler.post {
                     completionBlock?.invoke()
