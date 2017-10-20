@@ -1,15 +1,17 @@
-import { GestureRecongnizer, GestureOwner } from "./GestureManager";
+import { GestureRecongnizer, GestureOwner, GestureRecognizerState } from "./GestureManager";
 import { Touch, Event } from "./TouchManager"
 
-export class TapGestureRecongnizer implements GestureRecongnizer {
+export class TapGestureRecognizer implements GestureRecongnizer {
 
     enabled: boolean = true
+    state: GestureRecognizerState = GestureRecognizerState.Possible
     fire?: () => void
 
     private touchStartPoint?: { x: number, y: number }[]
 
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.touchStartPoint = touches.map(t => t.locationInView(owner as any))
+        this.state = GestureRecognizerState.Possible
         return false
     }
 
@@ -21,6 +23,7 @@ export class TapGestureRecongnizer implements GestureRecongnizer {
             if (invalidPoints.length > 0) {
                 this.touchStartPoint = undefined;
             }
+            this.state = GestureRecognizerState.Failed
         }
         return false
     }
@@ -31,7 +34,11 @@ export class TapGestureRecongnizer implements GestureRecongnizer {
                 return touches.filter(t => Math.abs(pt.x - t.locationInView(owner as any).x) > 8.0 || Math.abs(pt.y - t.locationInView(owner as any).y) > 8.0).length > 0
             });
             if (invalidPoints.length == 0) {
+                this.state = GestureRecognizerState.Recognized
                 this.fire && this.fire()
+            }
+            else {
+                this.state = GestureRecognizerState.Failed
             }
             this.touchStartPoint = undefined;
         }
@@ -39,6 +46,7 @@ export class TapGestureRecongnizer implements GestureRecongnizer {
     }
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
+        this.state = GestureRecognizerState.Cancelled
         this.touchStartPoint = undefined;
         return false
     }

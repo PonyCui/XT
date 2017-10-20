@@ -2,7 +2,8 @@ import { Touch, Event, Touchable, TouchManager } from './TouchManager'
 import { TransformMatrix } from '../../../interface/TransformMatrix';
 import { CoordinateOwner, convertPointToChildView, isPointInside } from '../coordinate/CoordinateManager';
 import { GestureManager, GestureOwner, GestureRecongnizer } from './GestureManager';
-import { TapGestureRecongnizer } from './TapGestureRecongnizer'
+import { TapGestureRecognizer } from './TapGestureRecognizer'
+import { LongPressGestureRecognizer } from './LongPressGestureRecognizer';
 
 class View implements Touchable, CoordinateOwner, GestureOwner {
 
@@ -104,6 +105,7 @@ export function hitTests() {
 }
 
 export function touchEventTests() {
+    return;
     const window = new View();
     window.frame = { x: 0, y: 0, width: 500, height: 500 }
     const redView = new View();
@@ -135,15 +137,27 @@ export function touchRecozinerTests() {
     redView.frame = { x: 44, y: 44, width: 44, height: 44 }
     window.subviews = [redView];
     redView.superview = window;
-    const tapGesture = new TapGestureRecongnizer()
+    const tapGesture = new TapGestureRecognizer()
     tapGesture.fire = () => {
         console.log("tapGesture fired.")
     }
+    const longPressGesture = new LongPressGestureRecognizer()
+    longPressGesture.fire = () => {
+        console.log("longPressGesture fired.", longPressGesture.state)
+    }
     redView.gestureRecongnizer = [
-        tapGesture
+        tapGesture,
+        // longPressGesture,
     ];
     window.handlePointerDown("PointerI", new Date().getTime(), { x: 50, y: 50 })
     setTimeout(() => {
         window.handlePointerUp("PointerI", new Date().getTime(), { x: 50, y: 50 })
-    }, 200)
+        setTimeout(() => {
+            window.handlePointerDown("PointerI", new Date().getTime(), { x: 50, y: 50 })
+            setTimeout(() => {
+                window.handlePointerUp("PointerI", new Date().getTime(), { x: 50, y: 50 })
+            }, 1000)
+        }, 50)
+        
+    }, 100)
 }

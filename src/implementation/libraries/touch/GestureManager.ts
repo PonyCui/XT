@@ -1,8 +1,19 @@
 import { Touch, Event } from './TouchManager'
 
+export enum GestureRecognizerState {
+    Possible,
+    Began,
+    Changed,
+    Ended,
+    Cancelled,
+    Failed,
+    Recognized = Ended,
+}
+
 export interface GestureRecongnizer {
 
     enabled: boolean
+    state: GestureRecognizerState
     fire?: () => void
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
     touchesMoved(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
@@ -20,6 +31,7 @@ export interface GestureOwner {
 export class GestureManager {
 
     static activeGesture: GestureRecongnizer | undefined
+    static touchCalled = false;
 
     static onTrigger(gestureRecongnizer: GestureRecongnizer): boolean {
         if (this.activeGesture) { return false }
@@ -28,7 +40,9 @@ export class GestureManager {
     }
 
     static onRelease() {
-        this.activeGesture = undefined
+        setImmediate(() => {
+            this.activeGesture = undefined
+        })
     }
 
     static onTouchesBegan(owner: GestureOwner, touches: Touch[], event: Event): void {
