@@ -416,8 +416,9 @@ var TouchTests_1 = __webpack_require__(3);
 console.log("Test start.");
 TouchTests_1.hitTests();
 TouchTests_1.touchEventTests();
+TouchTests_1.touchRecozinerTests();
 setTimeout(function () {
-    console.log("All Test Passed");
+    console.log("All Test-cases Passed");
 }, 5000);
 
 
@@ -431,10 +432,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var TouchManager_1 = __webpack_require__(4);
 var TransformMatrix_1 = __webpack_require__(1);
 var CoordinateManager_1 = __webpack_require__(0);
+var GestureManager_1 = __webpack_require__(5);
+var TapGestureRecongnizer_1 = __webpack_require__(6);
 var View = /** @class */ (function () {
     function View() {
         this.frame = { x: 0, y: 0, width: 0, height: 0 };
         this.subviews = [];
+        this.gestureRecongnizer = [];
         this.touchManager = new TouchManager_1.TouchManager(this);
     }
     View.prototype.hitTest = function (point) {
@@ -455,24 +459,28 @@ var View = /** @class */ (function () {
     };
     View.prototype.touchesBegan = function (touches, event) {
         this._touchesBeganTest = true;
+        GestureManager_1.GestureManager.onTouchesBegan(this, touches, event);
         if (this.superview) {
             this.superview.touchesBegan(touches, event);
         }
     };
     View.prototype.touchesMoved = function (touches, event) {
         this._touchesMovedTest = true;
+        GestureManager_1.GestureManager.onTouchesMoved(this, touches, event);
         if (this.superview) {
             this.superview.touchesMoved(touches, event);
         }
     };
     View.prototype.touchesEnded = function (touches, event) {
         this._touchesEndedTest = true;
+        GestureManager_1.GestureManager.onTouchesEnded(this, touches, event);
         if (this.superview) {
             this.superview.touchesEnded(touches, event);
         }
     };
     View.prototype.touchesCancelled = function (touches, event) {
         this._touchesCancelledTest = true;
+        GestureManager_1.GestureManager.onTouchesCancelled(this, touches, event);
         if (this.superview) {
             this.superview.touchesCancelled(touches, event);
         }
@@ -542,6 +550,26 @@ function touchEventTests() {
     }, 1000);
 }
 exports.touchEventTests = touchEventTests;
+function touchRecozinerTests() {
+    var window = new View();
+    window.frame = { x: 0, y: 0, width: 500, height: 500 };
+    var redView = new View();
+    redView.frame = { x: 44, y: 44, width: 44, height: 44 };
+    window.subviews = [redView];
+    redView.superview = window;
+    var tapGesture = new TapGestureRecongnizer_1.TapGestureRecongnizer();
+    tapGesture.fire = function () {
+        console.log("tapGesture fired.");
+    };
+    redView.gestureRecongnizer = [
+        tapGesture
+    ];
+    window.handlePointerDown("PointerI", new Date().getTime(), { x: 50, y: 50 });
+    setTimeout(function () {
+        window.handlePointerUp("PointerI", new Date().getTime(), { x: 50, y: 50 });
+    }, 200);
+}
+exports.touchRecozinerTests = touchRecozinerTests;
 
 
 /***/ }),
@@ -620,6 +648,138 @@ var TouchManager = /** @class */ (function () {
     return TouchManager;
 }());
 exports.TouchManager = TouchManager;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var GestureManager = /** @class */ (function () {
+    function GestureManager() {
+    }
+    GestureManager.onTrigger = function (gestureRecongnizer) {
+        if (this.activeGesture) {
+            return false;
+        }
+        this.activeGesture = gestureRecongnizer;
+        return true;
+    };
+    GestureManager.onRelease = function () {
+        this.activeGesture = undefined;
+    };
+    GestureManager.onTouchesBegan = function (owner, touches, event) {
+        if (this.activeGesture !== undefined) {
+            this.activeGesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            return;
+        }
+        for (var index = 0; index < owner.gestureRecongnizer.length; index++) {
+            var gesture = owner.gestureRecongnizer[index];
+            if (gesture.enabled) {
+                if (gesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this))) {
+                    this.activeGesture = gesture;
+                    break;
+                }
+            }
+        }
+    };
+    GestureManager.onTouchesMoved = function (owner, touches, event) {
+        if (this.activeGesture !== undefined) {
+            this.activeGesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            return;
+        }
+        for (var index = 0; index < owner.gestureRecongnizer.length; index++) {
+            var gesture = owner.gestureRecongnizer[index];
+            if (gesture.enabled) {
+                if (gesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this))) {
+                    this.activeGesture = gesture;
+                    break;
+                }
+            }
+        }
+    };
+    GestureManager.onTouchesEnded = function (owner, touches, event) {
+        if (this.activeGesture !== undefined) {
+            this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            return;
+        }
+        for (var index = 0; index < owner.gestureRecongnizer.length; index++) {
+            var gesture = owner.gestureRecongnizer[index];
+            if (gesture.enabled) {
+                if (gesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this))) {
+                    this.activeGesture = gesture;
+                    break;
+                }
+            }
+        }
+    };
+    GestureManager.onTouchesCancelled = function (owner, touches, event) {
+        if (this.activeGesture !== undefined) {
+            this.activeGesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            return;
+        }
+        for (var index = 0; index < owner.gestureRecongnizer.length; index++) {
+            var gesture = owner.gestureRecongnizer[index];
+            if (gesture.enabled) {
+                if (gesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this))) {
+                    this.activeGesture = gesture;
+                    break;
+                }
+            }
+        }
+    };
+    return GestureManager;
+}());
+exports.GestureManager = GestureManager;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var TapGestureRecongnizer = /** @class */ (function () {
+    function TapGestureRecongnizer() {
+        this.enabled = true;
+    }
+    TapGestureRecongnizer.prototype.touchesBegan = function (owner, touches, event, triggerBlock, releaseBlock) {
+        this.touchStartPoint = touches.map(function (t) { return t.locationInView(owner); });
+        return false;
+    };
+    TapGestureRecongnizer.prototype.touchesMoved = function (owner, touches, event, triggerBlock, releaseBlock) {
+        if (this.touchStartPoint) {
+            var invalidPoints = this.touchStartPoint.filter(function (pt) {
+                return touches.filter(function (t) { return Math.abs(pt.x - t.locationInView(owner).x) > 8.0 || Math.abs(pt.y - t.locationInView(owner).y) > 8.0; }).length > 0;
+            });
+            if (invalidPoints.length > 0) {
+                this.touchStartPoint = undefined;
+            }
+        }
+        return false;
+    };
+    TapGestureRecongnizer.prototype.touchesEnded = function (owner, touches, event, triggerBlock, releaseBlock) {
+        if (this.touchStartPoint) {
+            var invalidPoints = this.touchStartPoint.filter(function (pt) {
+                return touches.filter(function (t) { return Math.abs(pt.x - t.locationInView(owner).x) > 8.0 || Math.abs(pt.y - t.locationInView(owner).y) > 8.0; }).length > 0;
+            });
+            if (invalidPoints.length == 0) {
+                this.fire && this.fire();
+            }
+            this.touchStartPoint = undefined;
+        }
+        return false;
+    };
+    TapGestureRecongnizer.prototype.touchesCancelled = function (owner, touches, event, triggerBlock, releaseBlock) {
+        this.touchStartPoint = undefined;
+        return false;
+    };
+    return TapGestureRecongnizer;
+}());
+exports.TapGestureRecongnizer = TapGestureRecongnizer;
 
 
 /***/ })

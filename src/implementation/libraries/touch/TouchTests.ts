@@ -1,13 +1,16 @@
 import { Touch, Event, Touchable, TouchManager } from './TouchManager'
 import { TransformMatrix } from '../../../interface/TransformMatrix';
 import { CoordinateOwner, convertPointToChildView, isPointInside } from '../coordinate/CoordinateManager';
+import { GestureManager, GestureOwner, GestureRecongnizer } from './GestureManager';
+import { TapGestureRecongnizer } from './TapGestureRecongnizer'
 
-class View implements Touchable, CoordinateOwner {
+class View implements Touchable, CoordinateOwner, GestureOwner {
 
     transformMatrix?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
     frame: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 0, height: 0 }
     superview: View | undefined
     subviews: View[] = []
+    gestureRecongnizer: GestureRecongnizer[] = []
 
     hitTest(point: { x: number, y: number }): Touchable | undefined {
         let target = undefined;
@@ -25,6 +28,7 @@ class View implements Touchable, CoordinateOwner {
 
     touchesBegan(touches: Touch[], event: Event): void {
         (this as any)._touchesBeganTest = true
+        GestureManager.onTouchesBegan(this, touches, event)
         if (this.superview) {
             this.superview.touchesBegan(touches, event);
         }
@@ -32,6 +36,7 @@ class View implements Touchable, CoordinateOwner {
 
     touchesMoved(touches: Touch[], event: Event): void {
         (this as any)._touchesMovedTest = true
+        GestureManager.onTouchesMoved(this, touches, event)
         if (this.superview) {
             this.superview.touchesMoved(touches, event);
         }
@@ -39,6 +44,7 @@ class View implements Touchable, CoordinateOwner {
 
     touchesEnded(touches: Touch[], event: Event): void {
         (this as any)._touchesEndedTest = true
+        GestureManager.onTouchesEnded(this, touches, event)
         if (this.superview) {
             this.superview.touchesEnded(touches, event);
         }
@@ -46,6 +52,7 @@ class View implements Touchable, CoordinateOwner {
 
     touchesCancelled(touches: Touch[], event: Event): void {
         (this as any)._touchesCancelledTest = true
+        GestureManager.onTouchesCancelled(this, touches, event)
         if (this.superview) {
             this.superview.touchesCancelled(touches, event);
         }
@@ -119,4 +126,24 @@ export function touchEventTests() {
             throw "window should receive touchesEnded event."
         }
     }, 1000)
+}
+
+export function touchRecozinerTests() {
+    const window = new View();
+    window.frame = { x: 0, y: 0, width: 500, height: 500 }
+    const redView = new View();
+    redView.frame = { x: 44, y: 44, width: 44, height: 44 }
+    window.subviews = [redView];
+    redView.superview = window;
+    const tapGesture = new TapGestureRecongnizer()
+    tapGesture.fire = () => {
+        console.log("tapGesture fired.")
+    }
+    redView.gestureRecongnizer = [
+        tapGesture
+    ];
+    window.handlePointerDown("PointerI", new Date().getTime(), { x: 50, y: 50 })
+    setTimeout(() => {
+        window.handlePointerUp("PointerI", new Date().getTime(), { x: 50, y: 50 })
+    }, 200)
 }

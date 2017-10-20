@@ -1,9 +1,10 @@
-import { hitTests, touchEventTests } from "./implementation/libraries/touch/TouchTests"
+import { hitTests, touchEventTests, touchRecozinerTests } from "./implementation/libraries/touch/TouchTests"
 
 console.log("Test start.")
 
 hitTests()
 touchEventTests()
+touchRecozinerTests()
 
 setTimeout(() => {
     console.log("All Test-cases Passed")
