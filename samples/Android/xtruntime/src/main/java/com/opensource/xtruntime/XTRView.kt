@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.graphics.*
 import android.view.*
 import android.widget.FrameLayout
+import com.eclipsesource.v8.*
 import com.facebook.rebound.*
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeArray
@@ -19,20 +20,6 @@ import kotlin.concurrent.timerTask
  */
 class XTRView: XTRComponent() {
 
-    class AnimationProp<T>(val aniKey: String, val fromValue: T, val toValue: T, val onValue: (value: T) -> Unit)
-
-    override val name: String = "XTRView"
-
-    fun createScriptObject(rect: Any, scriptObject: Any): XTRView.InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            val view = InnerObject(it, xtrContext)
-            XTRUtils.toRect(rect)?.let {
-                view.frame = it
-            }
-            return view
-        }
-        return null
-    }
 
     companion object {
 
@@ -54,15 +41,31 @@ class XTRView: XTRComponent() {
 
     }
 
-    fun animationWithDuration(duration: Any?, animations: Any?, completion: Any?) {
+    class AnimationProp<T>(val aniKey: String, val fromValue: T, val toValue: T, val onValue: (value: T) -> Unit)
+
+    override val name: String = "XTRView"
+
+    override fun v8Object(): V8Object? {
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        v8Object.registerJavaMethod(this, "animationWithDuration", "animationWithDuration", arrayOf(Double::class.java, V8Function::class.java, V8Function::class.java))
+        v8Object.registerJavaMethod(this, "animationWithTensionAndFriction", "animationWithTensionAndFriction", arrayOf(Double::class.java, Double::class.java, V8Function::class.java, V8Function::class.java))
+        v8Object.registerJavaMethod(this, "animationWithBouncinessAndSpeed", "animationWithBouncinessAndSpeed", arrayOf(Double::class.java, Double::class.java, V8Function::class.java, V8Function::class.java))
+        return v8Object
+    }
+
+    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
+        val view = InnerObject(scriptObject, xtrContext)
+        XTRUtils.toRect(rect)?.let {
+            view.frame = it
+        }
+        return view.requestV8Object(xtrContext.v8Runtime)
+    }
+
+    fun animationWithDuration(duration: Double, animations: V8Function, completion: V8Function) {
         val duration = duration as? Double ?: return
         animationEnabled = true
-        (animations as? Function)?.let {
-            xtrContext.callWithArguments(it, arrayOf())
-        }
-        (animations as? () -> Unit)?.let {
-            it.invoke()
-        }
+        xtrContext.callWithArguments(animations, arrayOf())
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -84,10 +87,7 @@ class XTRView: XTRComponent() {
                     animator?.removeAllUpdateListeners()
                     if (!completed) {
                         completed = true
-                        (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
-                        (completion as? () -> Unit)?.let {
-                            it.invoke()
-                        }
+                        xtrContext.callWithArguments(completion, arrayOf())
                     }
                 }
                 override fun onAnimationCancel(p0: Animator?) {}
@@ -105,16 +105,54 @@ class XTRView: XTRComponent() {
         animators.forEach { it?.start() }
     }
 
-    fun animationWithTensionAndFriction(tension: Any?, friction: Any?, animations: Any?, completion: Any?) {
+    fun animationWithDuration(duration: Double, animations: () -> Unit, completion: () -> Unit) {
+        val duration = duration as? Double ?: return
+        animationEnabled = true
+        animations()
+        animationEnabled = false
+        var completed = false
+        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+        val animators = animationProps.values.map { aniProp ->
+            var animator: ValueAnimator? = null
+            (aniProp.fromValue as? Float)?.let {
+                animator = ValueAnimator.ofFloat(aniProp.fromValue as Float, aniProp.toValue as Float)
+            }
+            animator?.duration = (duration * 1000).toLong()
+            animator?.addUpdateListener {
+                (it.animatedValue as? Float)?.let {
+                    aniProp.onValue(it)
+                }
+            }
+            animator?.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {}
+                override fun onAnimationEnd(p0: Animator?) {
+                    animator?.removeAllListeners()
+                    animator?.removeAllUpdateListeners()
+                    if (!completed) {
+                        completed = true
+                        completion()
+                    }
+                }
+                override fun onAnimationCancel(p0: Animator?) {}
+                override fun onAnimationStart(p0: Animator?) {}
+            })
+            animatingHandlers[aniProp.aniKey] = {
+                animator?.removeAllListeners()
+                animator?.removeAllUpdateListeners()
+                animator?.cancel()
+            }
+            return@map animator
+        }
+        animationProps = mapOf()
+        XTRView.animatingHandlers = animatingHandlers.toMap()
+        animators.forEach { it?.start() }
+    }
+
+    fun animationWithTensionAndFriction(tension: Double, friction: Double, animations: V8Function, completion: V8Function) {
         val tension = tension as? Double ?: return
         val friction = friction as? Double ?: return
         animationEnabled = true
-        (animations as? Function)?.let {
-            xtrContext.callWithArguments(it, arrayOf())
-        }
-        (animations as? () -> Unit)?.let {
-            it.invoke()
-        }
+        xtrContext.callWithArguments(animations, arrayOf())
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -136,10 +174,7 @@ class XTRView: XTRComponent() {
                     spring?.destroy()
                     if (!completed) {
                         completed = true
-                        (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
-                        (completion as? () -> Unit)?.let {
-                            it.invoke()
-                        }
+                        xtrContext.callWithArguments(completion, arrayOf())
                     }
                 }
             })
@@ -153,16 +188,11 @@ class XTRView: XTRComponent() {
         XTRView.animatingHandlers = animatingHandlers.toMap()
     }
 
-    fun animationWithBouncinessAndSpeed(bounciness: Any?, speed: Any?, animations: Any?, completion: Any?) {
+    fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: V8Function, completion: V8Function) {
         val bounciness = bounciness as? Double ?: return
         val speed = speed as? Double ?: return
         animationEnabled = true
-        (animations as? Function)?.let {
-            xtrContext.callWithArguments(it, arrayOf())
-        }
-        (animations as? () -> Unit)?.let {
-            it.invoke()
-        }
+        xtrContext.callWithArguments(animations, arrayOf())
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -184,10 +214,7 @@ class XTRView: XTRComponent() {
                     spring?.destroy()
                     if (!completed) {
                         completed = true
-                        (completion as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
-                        (completion as? () -> Unit)?.let {
-                            it.invoke()
-                        }
+                        xtrContext.callWithArguments(completion, arrayOf())
                     }
                 }
 
@@ -203,7 +230,7 @@ class XTRView: XTRComponent() {
     }
 
     @Suppress("CanBeParameter", "unused")
-    open class InnerObject(val scriptObject: ScriptableObject, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
+    open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
 
         internal var viewDelegate: XTRViewController.InnerObject? = null
         override val objectUUID: String = UUID.randomUUID().toString()
@@ -214,6 +241,52 @@ class XTRView: XTRComponent() {
             }
             clipChildren = false
             setWillNotDraw(false)
+        }
+
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_clipsToBounds", "xtr_clipsToBounds", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setClipsToBounds", "", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "alpha", "alpha", arrayOf())
+            v8Object.registerJavaMethod(this, "setAlpha", "setAlpha", arrayOf(Float::class.java))
+            v8Object.registerJavaMethod(this, "xtr_frame", "xtr_frame", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setFrame", "xtr_setFrame", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_bounds", "xtr_bounds", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_transform", "xtr_transform", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setTransform", "xtr_setTransform", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_backgroundColor", "xtr_backgroundColor", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setBackgroundColor", "xtr_setBackgroundColor", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_hidden", "xtr_hidden", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setHidden", "xtr_setHidden", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_opaque", "xtr_opaque", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setOpaque", "xtr_setOpaque", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_tintColor", "xtr_tintColor", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setTintColor", "xtr_setTintColor", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_cornerRadius", "xtr_cornerRadius", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setCornerRadius", "xtr_setCornerRadius", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_borderWidth", "xtr_borderWidth", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setBorderWidth", "xtr_setBorderWidth", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_borderColor", "xtr_borderColor", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setBorderColor", "xtr_setBorderColor", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_superview", "xtr_superview", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_subviews", "xtr_subviews", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_window", "xtr_window", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_removeFromSuperview", "xtr_removeFromSuperview", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_insertSubviewAtIndex", "xtr_insertSubviewAtIndex", arrayOf(V8Object::class.java, Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_exchangeSubviewAtIndex", "xtr_exchangeSubviewAtIndex", arrayOf(Int::class.java, Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_addSubview", "xtr_addSubview", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_insertSubviewBelow", "xtr_insertSubviewBelow", arrayOf(V8Object::class.java, V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_insertSubviewAbove", "xtr_insertSubviewAbove", arrayOf(V8Object::class.java, V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_bringSubviewToFront", "xtr_bringSubviewToFront", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_sendSubviewToBack", "xtr_sendSubviewToBack", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_isDescendantOfView", "xtr_isDescendantOfView", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_viewWithTag", "xtr_viewWithTag", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_setNeedsLayout", "xtr_setNeedsLayout", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_layoutIfNeeded", "xtr_layoutIfNeeded", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_intrinsicContentSize", "xtr_intrinsicContentSize", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_userInteractionEnabled", "xtr_userInteractionEnabled", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setUserInteractionEnabled", "xtr_setUserInteractionEnabled", arrayOf(Boolean::class.java))
+            return v8Object
         }
 
         // Mark: View Geometry
@@ -240,10 +313,10 @@ class XTRView: XTRComponent() {
             return this.clipsToBounds
         }
 
-        fun xtr_setClipsToBounds(value: Any?) {
-            this.clipsToBounds = value as? Boolean ?: false
+        fun xtr_setClipsToBounds(value: Boolean) {
+            this.clipsToBounds = value
             if (android.os.Build.VERSION.SDK_INT < 18) {
-                setLayerType(if (value as? Boolean == true) View.LAYER_TYPE_SOFTWARE else View.LAYER_TYPE_HARDWARE, null)
+                setLayerType(if (value) View.LAYER_TYPE_SOFTWARE else View.LAYER_TYPE_HARDWARE, null)
             }
         }
 
@@ -279,8 +352,37 @@ class XTRView: XTRComponent() {
             return this.frame ?: XTRRect(0.0, 0.0, (width / resources.displayMetrics.density).toDouble(), (height / resources.displayMetrics.density).toDouble())
         }
 
-        fun xtr_setFrame(value: Any?) {
+        fun xtr_setFrame(value: V8Object) {
             XTRUtils.toRect(value)?.let {
+                if (animationEnabled) {
+                    addAnimation(AnimationProp("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, it.x.toFloat() as Any, { x ->
+                        this.frame?.let {
+                            this.frame = XTRRect((x as Float).toDouble(), it.y, it.width, it.height)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.frame.y", (this.frame?.y ?: 0.0).toFloat() as Any, it.y.toFloat() as Any, { y ->
+                        this.frame?.let {
+                            this.frame = XTRRect(it.x, (y as Float).toDouble(), it.width, it.height)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.frame.width", (this.frame?.width ?: 0.0).toFloat() as Any, it.width.toFloat() as Any, { width ->
+                        this.frame?.let {
+                            this.frame = XTRRect(it.x, it.y, (width as Float).toDouble(), it.height)
+                        }
+                    }))
+                    addAnimation(AnimationProp("$objectUUID.frame.height", (this.frame?.height ?: 0.0).toFloat() as Any, it.height.toFloat() as Any, { height ->
+                        this.frame?.let {
+                            this.frame = XTRRect(it.x, it.y, it.width, (height as Float).toDouble())
+                        }
+                    }))
+                    return@let
+                }
+                frame = it
+            }
+        }
+
+        fun xtr_setFrame(value: XTRRect) {
+            value?.let {
                 if (animationEnabled) {
                     addAnimation(AnimationProp("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, it.x.toFloat() as Any, { x ->
                         this.frame?.let {
@@ -333,7 +435,7 @@ class XTRView: XTRComponent() {
             return transformMatrix
         }
 
-        fun xtr_setTransform(value: Any?) {
+        fun xtr_setTransform(value: V8Object) {
             XTRUtils.toTransform(value)?.let {
                 if (animationEnabled) {
                     val oldValue = transformMatrix.unMatrix()
@@ -382,7 +484,7 @@ class XTRView: XTRComponent() {
             return this.backgroundColor
         }
 
-        fun xtr_setBackgroundColor(value: Any?) {
+        fun xtr_setBackgroundColor(value: V8Object) {
             XTRUtils.toColor(value)?.let {
                 if (animationEnabled) {
                     addAnimation(AnimationProp("$objectUUID.backgroundColor.r", (this.backgroundColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
@@ -444,7 +546,7 @@ class XTRView: XTRComponent() {
             return this.tintColor ?: (parent as? XTRView.InnerObject)?.xtr_tintColor() ?: XTRColor(0.0, 122.0 / 255.0, 1.0, 1.0)
         }
 
-        fun xtr_setTintColor(value: Any?) {
+        fun xtr_setTintColor(value: V8Object) {
             XTRUtils.toColor(value)?.let {
                 this.tintColor = it
             }
@@ -472,8 +574,7 @@ class XTRView: XTRComponent() {
             return this.cornerRadius
         }
 
-        fun xtr_setCornerRadius(value: Any?) {
-            val value = value as? Double ?: return
+        fun xtr_setCornerRadius(value: Double) {
             if (animationEnabled) {
                 addAnimation(AnimationProp("$objectUUID.cornerRadius", this.cornerRadius.toFloat() as Any, value.toFloat() as Any, {
                     this.cornerRadius = (it as Float).toDouble()
@@ -493,8 +594,7 @@ class XTRView: XTRComponent() {
             return this.borderWidth
         }
 
-        fun xtr_setBorderWidth(value: Any?) {
-            val value = value as? Double ?: return
+        fun xtr_setBorderWidth(value: Double) {
             if (animationEnabled) {
                 addAnimation(AnimationProp("$objectUUID.borderWidth", this.borderWidth.toFloat() as Any, value.toFloat() as Any, {
                     this.borderWidth = (it as Float).toDouble()
@@ -514,7 +614,7 @@ class XTRView: XTRComponent() {
             return this.borderColor
         }
 
-        fun xtr_setBorderColor(value: Any?) {
+        fun xtr_setBorderColor(value: V8Object) {
             XTRUtils.toColor(value)?.let {
                 if (animationEnabled) {
                     addAnimation(AnimationProp("$objectUUID.borderColor.r", (this.borderColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
@@ -595,19 +695,21 @@ class XTRView: XTRComponent() {
 
         var xtr_tag: Int = 0
 
-        fun xtr_superview(): Any? {
+        fun xtr_superview(): V8Value {
             (parent as? XTRView.InnerObject)?.let {
-                return XTRUtils.fromObject(xtrContext, it)
+                return XTRUtils.fromObject(xtrContext, it) as? V8Value ?: V8.getUndefined()
             }
-            return Undefined.instance
+            return V8.getUndefined()
         }
 
-        fun xtr_subviews(): NativeArray {
-            return NativeArray((0 until childCount).map {
+        fun xtr_subviews(): V8Array {
+            val v8Array = V8Array(xtrContext.v8Runtime)
+            (0 until childCount).forEach {
                 (getChildAt(it) as? XTRView.InnerObject)?.let {
-                    return@map XTRUtils.fromObject(xtrContext, it)
+                    (XTRUtils.fromObject(xtrContext, it) as? V8Value)?.let { v8Array.push(it) }
                 }
-            }.toTypedArray())
+            }
+            return v8Array
         }
 
         fun xtr_windowObject(): XTRWindow.InnerObject? {
@@ -621,11 +723,11 @@ class XTRView: XTRComponent() {
             return null
         }
 
-        fun xtr_window(): Any? {
+        fun xtr_window(): V8Value {
             xtr_windowObject()?.let {
-                XTRUtils.fromObject(xtrContext, it)
+                return XTRUtils.fromObject(xtrContext, it) as? V8Value ?: V8.getUndefined()
             }
-            return null
+            return V8.getUndefined()
         }
 
         fun xtr_removeFromSuperview() {
@@ -637,7 +739,7 @@ class XTRView: XTRComponent() {
             didMoveToWindow()
         }
 
-        fun xtr_insertSubviewAtIndex(subview: Any?, atIndex: Int) {
+        fun xtr_insertSubviewAtIndex(subview: V8Object, atIndex: Int) {
             XTRUtils.toView(subview)?.let { subview ->
                 (subview as? XTRView.InnerObject)?.willMoveToSuperview(this)
                 (subview as? XTRView.InnerObject)?.willMoveToWindow(xtr_windowObject())
@@ -667,7 +769,7 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun xtr_addSubview(view: Any?) {
+        fun xtr_addSubview(view: V8Object) {
             XTRUtils.toView(view)?.let {
                 (it as? XTRView.InnerObject)?.willMoveToSuperview(this)
                 (it as? XTRView.InnerObject)?.willMoveToWindow(xtr_windowObject())
@@ -678,7 +780,16 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun xtr_insertSubviewBelow(view: Any?, siblingSubview: Any?) {
+        fun addSubview(view: XTRView.InnerObject) {
+            view.willMoveToSuperview(this)
+            view.willMoveToWindow(xtr_windowObject())
+            addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            didAddSubview(view)
+            view.didMoveToSuperview()
+            view.didMoveToWindow()
+        }
+
+        fun xtr_insertSubviewBelow(view: V8Object, siblingSubview: V8Object) {
             XTRUtils.toView(siblingSubview)?.let {
                 indexOfChild(it)?.let {
                     if (it >= 0) {
@@ -688,7 +799,7 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun xtr_insertSubviewAbove(view: Any?, siblingSubview: Any?) {
+        fun xtr_insertSubviewAbove(view: V8Object, siblingSubview: V8Object) {
             XTRUtils.toView(siblingSubview)?.let {
                 indexOfChild(it)?.let {
                     if (it >= 0){
@@ -698,13 +809,13 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun xtr_bringSubviewToFront(subview: Any?) {
+        fun xtr_bringSubviewToFront(subview: V8Object) {
             XTRUtils.toView(subview)?.let {
                 bringChildToFront(it)
             }
         }
 
-        fun xtr_sendSubviewToBack(subview: Any?) {
+        fun xtr_sendSubviewToBack(subview: V8Object) {
             XTRUtils.toView(subview)?.let {
                 removeView(it)
                 addView(it, 0, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -751,7 +862,7 @@ class XTRView: XTRComponent() {
             xtrContext.invokeMethod(scriptObject, "didMoveToWindow", arrayOf())
         }
 
-        fun xtr_isDescendantOfView(view: Any?): Boolean {
+        fun xtr_isDescendantOfView(view: V8Object): Boolean {
             XTRUtils.toView(view)?.let { view ->
                 var current: ViewParent? = this
                 while (current != null) {
@@ -802,7 +913,7 @@ class XTRView: XTRComponent() {
 
         // Mark: View LayoutConstraint
 
-        open fun xtr_intrinsicContentSize(width: Any?): XTRSize? {
+        open fun xtr_intrinsicContentSize(width: Double): XTRSize? {
             return null
         }
 
@@ -814,238 +925,14 @@ class XTRView: XTRComponent() {
             return this.userInteractionEnabled
         }
 
-        fun xtr_setUserInteractionEnabled(value: Any?) {
+        fun xtr_setUserInteractionEnabled(value: Boolean) {
             (value as? Boolean)?.let {
                 this.userInteractionEnabled = it
             }
         }
 
-        private var onTap: Any? = null
-        private var onDoubleTap: Any? = null
-        private var maybeDoubleTimer: Timer? = null
-        private var maybeDoubleTap = false
-        private var maybeDoubleTapTS: Long = 0
-        private var maybeLongPress = false
-        private var longPressTimer: Timer? = null
-        private var longPressDuration = 0.25
-        private var firstLongPressPoint = XTRPoint(0.0, 0.0)
-        private var onLongPress: Any? = null
-        private var longPressing = false
-        private var onPan: Any? = null
-        private var maybePan = false
-        private var firstPanPoint = XTRPoint(0.0, 0.0)
-        private var panning = false
-
-        fun xtr_longPressDuration(): Double {
-            return this.longPressDuration
-        }
-
-        fun xtr_setLongPressDuration(value: Any?) {
-            (value as? Double)?.let { this.longPressDuration = it }
-        }
-
-        fun xtr_setTap(value: Any?) {
-            if (value !is Function) {
-                this.onTap = null
-                return
-            }
-            this.isClickable = true
-            this.onTap = value
-            this.setOnClickListener(clickListener)
-        }
-
-        fun xtr_setDoubleTap(value: Any?) {
-            if (value !is Function) {
-                this.onDoubleTap = null
-                return
-            }
-            this.isClickable = true
-            this.onDoubleTap = value
-            this.setOnClickListener(clickListener)
-        }
-
-        private var clickListener = OnClickListener {
-            if (onDoubleTap == null) {
-                (onTap as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
-            }
-            else {
-                if (!maybeDoubleTap) {
-                    maybeDoubleTap = true
-                    maybeDoubleTapTS = System.currentTimeMillis()
-                    maybeDoubleTimer = Timer()
-                    maybeDoubleTimer?.schedule(object : TimerTask() {
-                        override fun run() {
-                            maybeDoubleTap = false
-                            maybeDoubleTapTS = 0
-                            (onTap as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
-                        }
-                    }, 300)
-                }
-                else if (maybeDoubleTap && System.currentTimeMillis() - maybeDoubleTapTS < 300) {
-                    maybeDoubleTap = false
-                    maybeDoubleTapTS = 0
-                    maybeDoubleTimer?.cancel()
-                    (onDoubleTap as? Function)?.let { xtrContext.callWithArguments(it, arrayOf()) }
-                }
-            }
-        }
-
-        fun xtr_setLongPress(value: Any?) {
-            if (value !is Function) {
-                this.onLongPress = null
-                return
-            }
-            onLongPress = value
-        }
-
-        fun xtr_setPan(value: Any?) {
-            if (value !is Function) {
-                this.onPan = null
-                return
-            }
-            onPan = value
-        }
-
         override fun onTouchEvent(event: MotionEvent?): Boolean {
             return false
-//            if (!transformMatrix.isIdentity()) {
-//                event?.transform(transformMatrix.toNativeMatrix(resources.displayMetrics.density))
-//            }
-//            var currentParent: XTRView.InnerObject? = parent as? XTRView.InnerObject
-//            var currentOffset = XTRPoint(frame?.x ?: 0.0 - scrollX / resources.displayMetrics.density, frame?.y ?: 0.0 - scrollY / resources.displayMetrics.density)
-//            while (currentParent != null) {
-//                if (currentParent.stealingTouch(event, currentOffset)) {
-//                    cancelTouches()
-//                    return true
-//                }
-//                currentOffset = XTRPoint(
-//                        currentOffset.x + (currentParent.frame?.x ?: 0.0) - currentParent.scrollX / resources.displayMetrics.density,
-//                        currentOffset.y + (currentParent.frame?.y ?: 0.0) - currentParent.scrollY / resources.displayMetrics.density
-//                )
-//                currentParent = currentParent.parent as? XTRView.InnerObject
-//            }
-//            handlePanEvents(event)
-//            handleLongPressEvents(event)
-//            return super.onTouchEvent(event)
-        }
-
-        open fun stealingTouch(event: MotionEvent?, offset: XTRPoint): Boolean {
-            return false
-        }
-
-        fun cancelTouches() {
-            longPressTimer?.cancel()
-            if (longPressing) {
-                (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(3)) }
-            }
-            if (panning) {
-                (onPan as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(3)) }
-            }
-        }
-
-        private fun handleLongPressEvents(event: MotionEvent?) {
-            if (onLongPress == null) {
-                return
-            }
-            if (onLongPress != null && event?.action == MotionEvent.ACTION_DOWN && !longPressing) {
-                maybeLongPress = true
-                firstLongPressPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                longPressTimer = Timer()
-                longPressTimer?.schedule(timerTask {
-                    android.os.Handler(xtrContext.appContext.mainLooper).post {
-                        if (maybeLongPress) {
-                            longPressing = true
-                            (onLongPress as? Function)?.let { xtrContext.callWithArguments(it, arrayOf(0)) }
-                        }
-                    }
-                }, (this.longPressDuration * 1000).toLong())
-            }
-            else if (onLongPress != null && event?.action == MotionEvent.ACTION_MOVE && !longPressing && maybeLongPress) {
-                val currentLongPressPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                if (Math.abs(currentLongPressPoint.x - firstLongPressPoint.x) > 16.0 || Math.abs(currentLongPressPoint.y - firstLongPressPoint.y) > 16.0) {
-                    maybeLongPress = false
-                    longPressTimer?.cancel()
-                }
-            }
-            else if (longPressing && event?.action == MotionEvent.ACTION_MOVE) {
-                (onLongPress as? Function)?.let {
-                    xtrContext.callWithArguments(
-                            it,
-                            arrayOf(
-                                    1,
-                                    XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
-                                    XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                            )
-                    ) }
-            }
-            else if (longPressing && event?.action == MotionEvent.ACTION_UP) {
-                longPressing = false
-                (onLongPress as? Function)?.let { xtrContext.callWithArguments(
-                        it,
-                        arrayOf(
-                                2,
-                                XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
-                                XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                        )
-                ) }
-            }
-            else if (event?.action == MotionEvent.ACTION_UP) {
-                maybeLongPress = false
-                longPressTimer?.cancel()
-            }
-        }
-
-        private fun handlePanEvents(event: MotionEvent?) {
-            if (onPan == null) {
-                return
-            }
-            if (onPan != null && event?.action == MotionEvent.ACTION_DOWN && !panning) {
-                maybePan = true
-                panning = false
-                firstPanPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-            }
-            else if (onPan != null && event?.action == MotionEvent.ACTION_MOVE && !panning && maybePan) {
-                val currentPanPoint = XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                if (Math.abs(currentPanPoint.x - firstLongPressPoint.x) > 8.0 || Math.abs(currentPanPoint.y - firstLongPressPoint.x) > 8.0) {
-                    maybeLongPress = false
-                    maybePan = false
-                    panning = true
-                    (onPan as? Function)?.let {
-                        xtrContext.callWithArguments(
-                                it,
-                                arrayOf(
-                                        0,
-                                        XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
-                                        XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                                )
-                        ) }
-                }
-            }
-            else if (panning && event?.action == MotionEvent.ACTION_MOVE) {
-                (onPan as? Function)?.let {
-                    xtrContext.callWithArguments(
-                            it,
-                            arrayOf(
-                                    1,
-                                    XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
-                                    XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                            )
-                    ) }
-            }
-            else if (panning && event?.action == MotionEvent.ACTION_UP) {
-                panning = false
-                (onPan as? Function)?.let { xtrContext.callWithArguments(
-                        it,
-                        arrayOf(
-                                2,
-                                XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble()),
-                                XTRPoint((event.rawX / resources.displayMetrics.density).toDouble(), (event.rawY / resources.displayMetrics.density).toDouble())
-                        )
-                ) }
-            }
-            else if (event?.action == MotionEvent.ACTION_UP) {
-                maybePan = false
-            }
         }
 
     }

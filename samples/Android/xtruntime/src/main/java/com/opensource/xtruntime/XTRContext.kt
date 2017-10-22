@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
+import com.eclipsesource.v8.*
 import com.opensource.xtpolyfill.XTPolyfill
 import org.mozilla.javascript.*
 import org.mozilla.javascript.Function
@@ -11,56 +12,89 @@ import org.mozilla.javascript.Function
 class XTRContext(private val thread: Thread, val appContext: android.content.Context) {
 
     var xtrBridge: XTRBridge? = null
-    var jsContext: Context = Context.enter()
-    val scope: ScriptableObject = jsContext.initStandardObjects()
+    val v8Runtime = V8.createV8Runtime()
     val handler = Handler()
 
     init {
-        jsContext.optimizationLevel = -1
-        jsContext.evaluateString(scope, "var window = {isAndroid: true}; var document = {}; var XTRAppRef = undefined", "define.js", 1, null)
-        XTPolyfill.addPolyfills(jsContext, scope)
+        XTPolyfill.addPolyfills(v8Runtime)
+//        XTPolyfill.exceptionHandler = {
+//            handleException(it)
+//        }
+    }
+
+    fun handleException(e: Exception) {
+
+    }
+
+    fun handleConsoleMessage(message: String) {
+
     }
 
     fun evaluateScript(script: String): Any? {
         return try {
-            jsContext.evaluateString(scope, script, "app.js", 1, null)
+            return v8Runtime.executeScript(script)
         } catch (e: Exception) {
-            e.printStackTrace()
+            handleException(e)
+            return null
         }
     }
 
-    fun invokeMethod(scriptObject: ScriptableObject?, method: String, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+    fun invokeMethod(scriptObject: V8Object?, method: String, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         if (scriptObject == null) {
             return Undefined.instance
         }
         try {
             if (Thread.currentThread() != thread) {
                 handler.post {
-                    val returnValue = ScriptableObject.callMethod(jsContext, scriptObject, method, arguments)
+                    val v8Args = V8Array(v8Runtime)
+                    arguments.forEach {
+                        //todo
+                    }
+                    val returnValue = (scriptObject?.get(method) as? V8Function)?.call(null, v8Args)
                     asyncResult?.invoke(returnValue)
+                    v8Args.release()
+                    (returnValue as? Releasable)?.release()
                 }
             }
             else {
-                return ScriptableObject.callMethod(jsContext, scriptObject, method, arguments)
+                val v8Args = V8Array(v8Runtime)
+                arguments.forEach {
+                    //todo
+                }
+                val returnValue = (scriptObject?.get(method) as? V8Function)?.call(null, v8Args)
+                asyncResult?.invoke(returnValue)
+                v8Args.release()
+                return returnValue
             }
         } catch (e: Exception) {}
-        return Undefined.instance
+        return null
     }
 
-    fun callWithArguments(func: Function, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+    fun callWithArguments(func: V8Function, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         return try {
             if (Thread.currentThread() != thread) {
                 handler.post {
-                    val returnValue = func.call(jsContext, func.parentScope ?: scope, func.parentScope ?: scope, arguments)
+                    val v8Args = V8Array(v8Runtime)
+                    arguments.forEach {
+                        //todo
+                    }
+                    val returnValue = func.call(null, v8Args)
+                    v8Args.release()
                     asyncResult?.invoke(returnValue)
                 }
-                Undefined.instance
+                null
             }
             else {
-                func.call(jsContext, func.parentScope ?: scope, func.parentScope ?: scope, arguments)
+                val v8Args = V8Array(v8Runtime)
+                arguments.forEach {
+                    //todo
+                }
+                val returnValue = func.call(null, v8Args)
+                v8Args.release()
+                returnValue
             }
         } catch (e: Exception) {
-            Undefined.instance
+            null
         }
     }
 

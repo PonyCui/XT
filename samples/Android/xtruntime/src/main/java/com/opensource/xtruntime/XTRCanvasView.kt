@@ -1,6 +1,8 @@
 package com.opensource.xtruntime
 
 import android.graphics.*
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.ScriptableObject
 
 /**
@@ -10,15 +12,18 @@ class XTRCanvasView: XTRComponent() {
 
     override val name: String = "XTRCanvasView"
 
-    fun createScriptObject(rect: Any, scriptObject: Any): InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            val view = InnerObject(it, xtrContext)
-            XTRUtils.toRect(rect)?.let {
-                view.frame = it
-            }
-            return view
+    override fun v8Object(): V8Object? {
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        return v8Object
+    }
+
+    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
+        val view = InnerObject(scriptObject, xtrContext)
+        XTRUtils.toRect(rect)?.let {
+            view.frame = it
         }
-        return null
+        return view.requestV8Object(xtrContext.v8Runtime)
     }
 
     class State(var globalAlpha: Double = 1.0,
@@ -34,7 +39,7 @@ class XTRCanvasView: XTRComponent() {
         }
     }
 
-    class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext) : XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
+    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext) : XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
         private var actions: List<(canvas: Canvas) -> Unit> = listOf()
         private var currentState = State()
@@ -45,29 +50,66 @@ class XTRCanvasView: XTRComponent() {
         private var currentPaint = Paint()
         private val scale = resources.displayMetrics.density
 
+
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_globalAlpha", "xtr_globalAlpha", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setGlobalAlpha", "xtr_setGlobalAlpha", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_fillStyle", "xtr_fillStyle", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setFillStyle", "xtr_setFillStyle", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_strokeStyle", "xtr_strokeStyle", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setStrokeStyle", "xtr_setStrokeStyle", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_lineCap", "xtr_lineCap", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLineCap", "xtr_setLineCap", arrayOf(String::class.java))
+            v8Object.registerJavaMethod(this, "xtr_lineJoin", "xtr_lineJoin", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLineJoin", "xtr_setLineJoin", arrayOf(String::class.java))
+            v8Object.registerJavaMethod(this, "xtr_lineWidth", "xtr_lineWidth", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLineWidth", "xtr_setLineWidth", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_miterLimit", "xtr_miterLimit", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setMiterLimit", "xtr_setMiterLimit", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_rect", "xtr_rect", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_fillRect", "xtr_fillRect", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_strokeRect", "xtr_strokeRect", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_fill", "xtr_fill", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_stroke", "xtr_stroke", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_beginPath", "xtr_beginPath", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_moveTo", "xtr_moveTo", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_closePath", "xtr_closePath", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_lineTo", "xtr_lineTo", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_quadraticCurveTo", "xtr_quadraticCurveTo", arrayOf(V8Object::class.java, V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_bezierCurveTo", "xtr_bezierCurveTo", arrayOf(V8Object::class.java, V8Object::class.java, V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_arc", "xtr_arc", arrayOf(V8Object::class.java, Double::class.java, Double::class.java, Double::class.java, Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_isPointInPath", "xtr_isPointInPath", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_postScale", "xtr_postScale", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_postRotate", "xtr_postRotate", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_postTranslate", "xtr_postTranslate", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_postTransform", "xtr_postTransform", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_setCanvasTransform", "xtr_setCanvasTransform", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_save", "xtr_save", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_restore", "xtr_restore", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_clear", "xtr_clear", arrayOf())
+            return v8Object
+        }
+
         fun xtr_globalAlpha(): Double {
             return fakeState.globalAlpha
         }
 
-        fun xtr_setGlobalAlpha(value: Any?) {
+        fun xtr_setGlobalAlpha(value: Double) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    (value as? Double)?.let {
-                        currentState.globalAlpha = it
-                    }
+                    currentState.globalAlpha = value
                 }
                 this.actions = actions.toList()
             }
-            (value as? Double)?.let {
-                fakeState.globalAlpha = it
-            }
+            fakeState.globalAlpha = value
         }
 
         fun xtr_fillStyle(): XTRColor? {
             return fakeState.fillStyle
         }
 
-        fun xtr_setFillStyle(value: Any?) {
+        fun xtr_setFillStyle(value: V8Object) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
                     currentState.fillStyle = XTRUtils.toColor(value)
@@ -81,7 +123,7 @@ class XTRCanvasView: XTRComponent() {
             return fakeState.strokeStyle
         }
 
-        fun xtr_setStrokeStyle(value: Any?) {
+        fun xtr_setStrokeStyle(value: V8Object) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
                     currentState.strokeStyle = XTRUtils.toColor(value)
@@ -95,67 +137,59 @@ class XTRCanvasView: XTRComponent() {
             return fakeState.lineCap
         }
 
-        fun xtr_setLineCap(value: Any?) {
+        fun xtr_setLineCap(value: String) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.lineCap = value as? String
+                    currentState.lineCap = value
                 }
                 this.actions = actions.toList()
             }
-            fakeState.lineCap = value as? String
+            fakeState.lineCap = value
         }
 
         fun xtr_lineJoin(): String? {
             return fakeState.lineJoin
         }
 
-        fun xtr_setLineJoin(value: Any?) {
+        fun xtr_setLineJoin(value: String) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.lineJoin = value as? String
+                    currentState.lineJoin = value
                 }
                 this.actions = actions.toList()
             }
-            fakeState.lineJoin = value as? String
+            fakeState.lineJoin = value
         }
 
         fun xtr_lineWidth(): Double {
             return fakeState.lineWidth
         }
 
-        fun xtr_setLineWidth(value: Any?) {
+        fun xtr_setLineWidth(value: Double) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    (value as? Double)?.let {
-                        currentState.lineWidth = it
-                    }
+                    currentState.lineWidth = value
                 }
                 this.actions = actions.toList()
             }
-            (value as? Double)?.let {
-                fakeState.lineWidth = it
-            }
+            fakeState.lineWidth = value
         }
 
         fun xtr_miterLimit(): Double {
             return fakeState.miterLimit
         }
 
-        fun xtr_setMiterLimit(value: Any?) {
+        fun xtr_setMiterLimit(value: Double) {
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    (value as? Double)?.let {
-                        currentState.miterLimit = it
-                    }
+                    currentState.miterLimit = value
                 }
                 this.actions = actions.toList()
             }
-            (value as? Double)?.let {
-                fakeState.miterLimit = it
-            }
+            fakeState.miterLimit = value
         }
 
-        fun xtr_rect(value: Any?) {
+        fun xtr_rect(value: V8Object) {
             XTRUtils.toRect(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
@@ -173,12 +207,12 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_fillRect(value: Any?) {
+        fun xtr_fillRect(value: V8Object) {
             xtr_rect(value)
             xtr_fill()
         }
 
-        fun xtr_strokeRect(value: Any?) {
+        fun xtr_strokeRect(value: V8Object) {
             xtr_rect(value)
             xtr_stroke()
         }
@@ -245,7 +279,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_moveTo(value: Any?) {
+        fun xtr_moveTo(value: V8Object) {
             XTRUtils.toPoint(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
@@ -265,7 +299,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_lineTo(value: Any?) {
+        fun xtr_lineTo(value: V8Object) {
             XTRUtils.toPoint(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
@@ -276,7 +310,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_quadraticCurveTo(argCpPoint: Any?, argXyPoint: Any?) {
+        fun xtr_quadraticCurveTo(argCpPoint: V8Object, argXyPoint: V8Object) {
             val cpPoint = XTRUtils.toPoint(argCpPoint) ?: return
             val xyPoint = XTRUtils.toPoint(argXyPoint) ?: return
             this.actions.toMutableList()?.let { actions ->
@@ -287,7 +321,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_bezierCurveTo(argCp1Point: Any?, argCp2Point: Any?, argXyPoint: Any?) {
+        fun xtr_bezierCurveTo(argCp1Point: V8Object, argCp2Point: V8Object, argXyPoint: V8Object) {
             val cp1Point = XTRUtils.toPoint(argCp1Point) ?: return
             val cp2Point = XTRUtils.toPoint(argCp2Point) ?: return
             val xyPoint = XTRUtils.toPoint(argXyPoint) ?: return
@@ -299,12 +333,8 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_arc(argPoint: Any?, argR: Any?, argSAngle: Any?, argEAngle: Any?, argCounterclockwise: Any?) {
+        fun xtr_arc(argPoint: V8Object, r: Double, sAngle: Double, eAngle: Double, counterclockwise: Boolean) {
             val point = XTRUtils.toPoint(argPoint) ?: return
-            val r = argR as? Double ?: return
-            val sAngle = argSAngle as? Double ?: return
-            val eAngle = argEAngle as? Double ?: return
-            val counterclockwise = argCounterclockwise as? Boolean ?: return
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
                     currentPath.addArc(
@@ -317,7 +347,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_isPointInPath(value: Any?): Boolean {
+        fun xtr_isPointInPath(value: V8Object): Boolean {
             XTRUtils.toPoint(value)?.let {
                 actions.forEach { it.invoke(Canvas()) }
                 val r = Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE)
@@ -335,7 +365,7 @@ class XTRCanvasView: XTRComponent() {
             return false
         }
 
-        fun xtr_postScale(value: Any?) {
+        fun xtr_postScale(value: V8Object) {
             XTRUtils.toPoint(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
@@ -346,19 +376,18 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_postRotate(value: Any?) {
-            (value as? Double)?.let {
+        fun xtr_postRotate(value: Double) {
+            value.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
                         currentState.currentTransform.postRotate(((it / (2 * Math.PI)) * 360f).toFloat())
                     }
                     this.actions = actions.toList()
                 }
-
             }
         }
 
-        fun xtr_postTranslate(value: Any?) {
+        fun xtr_postTranslate(value: V8Object) {
             XTRUtils.toPoint(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
@@ -370,7 +399,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_postTransform(value: Any?) {
+        fun xtr_postTransform(value: V8Object) {
             XTRUtils.toTransform(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
@@ -382,7 +411,7 @@ class XTRCanvasView: XTRComponent() {
             }
         }
 
-        fun xtr_setCanvasTransform(value: Any?) {
+        fun xtr_setCanvasTransform(value: V8Object) {
             XTRUtils.toTransform(value)?.let {
                 this.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->

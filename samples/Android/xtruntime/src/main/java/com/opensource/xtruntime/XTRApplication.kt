@@ -1,5 +1,7 @@
 package com.opensource.xtruntime
 
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
 
@@ -23,7 +25,13 @@ class XTRApplication: XTRComponent() {
 
         var delegate: XTRApplicationDelegate.InnerObject? = null
 
-        fun xtr_setDelegate(value: Any?) {
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_setDelegate", "xtr_setDelegate", arrayOf(V8Object::class.java))
+            return v8Object
+        }
+
+        fun xtr_setDelegate(value: V8Object) {
             XTRUtils.toApplicationDelegate(value)?.let {
                 this.delegate = it
             }

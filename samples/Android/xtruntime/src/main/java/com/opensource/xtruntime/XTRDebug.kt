@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Handler
 import android.os.StrictMode
 import android.widget.EditText
+import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8Function
+import com.eclipsesource.v8.V8Object
 import okhttp3.*
 import org.json.JSONObject
 import org.mozilla.javascript.Context
@@ -159,11 +162,14 @@ class XTRDebug {
 class XTRBreakpoint(val bridge: XTRBridge) {
 
     init {
-        ScriptableObject.putProperty(bridge.xtrContext.scope, "XTRBreakpointInstance", Context.javaToJS(this, bridge.xtrContext.scope))
-        bridge.xtrContext.jsContext.evaluateString(bridge.xtrContext.scope, "var XTRBreakpoint = function(id, eval) { XTRBreakpointInstance.breaking(id, eval) };", "XTRBreakpoint.js", 1, null)
+        val v8Object = V8Object(bridge.xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "breaking", "breaking", arrayOf(String::class.java, V8Function::class.java))
+        bridge.xtrContext.v8Runtime.add("XTRBreakpointInstance", v8Object)
+        bridge.xtrContext.evaluateScript("var XTRBreakpoint = function(id, eval) { XTRBreakpointInstance.breaking(id, eval) };")
+        v8Object.release()
     }
 
-    fun breaking(id: Any?, eval: Any?) {
+    fun breaking(id: String, eval: V8Function) {
         if (!XTRDebug.breakpointsEnabled) { return }
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
         val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(600, TimeUnit.SECONDS).build()
@@ -180,18 +186,17 @@ class XTRBreakpoint(val bridge: XTRBridge) {
                     break
                 }
                 else {
-                    (eval as? Function)?.let {
-                        var evalResult = Undefined.instance
-                        try {
-                            evalResult = it.call(bridge.xtrContext.jsContext, bridge.xtrContext.scope, it.parentScope, arrayOf(result ?: ""))
-                        } catch (e: Exception) { }
+                    val params = V8Array(bridge.xtrContext.v8Runtime)
+                    result?.let { params.push(it) }
+                    try {
+                        val evalResult = eval.call(null, params)
                         val request = Request.Builder()
                                 .cacheControl(CacheControl.Builder().noCache().build())
                                 .url(URI(bridge.xtrSourceURL).resolve("/evalresult/" + URLEncoder.encode(evalResult.toString())).toString())
                                 .get()
                                 .build()
                         client.newCall(request).execute()
-                    }
+                    } catch (e: Exception) { }
                 }
             } catch (e: Exception) {
                 break

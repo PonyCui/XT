@@ -2,10 +2,7 @@ package com.opensource.xtruntime
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -76,7 +73,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                     orientationChangeInvokeTimer = Timer()
                     orientationChangeInvokeTimer.schedule(timerTask {
                         runOnUiThread {
-                            bridge?.xtrApplication?.delegate?.window?.xtr_orientationChanged()
+                            bridge?.xtrApplication?.delegate?.window?.orientationChanged()
                         }
                     }, 500)
                 }
@@ -87,10 +84,10 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
         if (height > 0) {
-            bridge?.xtrApplication?.delegate?.window?.xtr_keyboardWillShow(height)
+            bridge?.xtrApplication?.delegate?.window?.keyboardWillShow(height)
         }
         else {
-            bridge?.xtrApplication?.delegate?.window?.xtr_keyboardWillHide()
+            bridge?.xtrApplication?.delegate?.window?.keyboardWillHide()
         }
     }
 

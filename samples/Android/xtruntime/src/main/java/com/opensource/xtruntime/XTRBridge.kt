@@ -78,7 +78,10 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         )
         components.forEach { component ->
             component.xtrContext = xtrContext
-            ScriptableObject.putProperty(xtrContext.scope, component.name, Context.javaToJS(component, xtrContext.scope))
+            component.v8Object()?.let {
+                xtrContext.v8Runtime.add(component.name, it)
+                it.release()
+            }
         }
     }
 
@@ -93,9 +96,10 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                             it.read(bytes)
                             it.close()
                             JSONObject(String(bytes))?.optString("main")?.let { clazzName ->
-                                val clazz = Class.forName(clazzName)
-                                val instance = clazz.getDeclaredConstructor(android.content.Context::class.java, Context::class.java, ScriptableObject::class.java).newInstance(appContext, xtrContext.jsContext, xtrContext.scope)
-                                pluginInstances.add(instance)
+                                //todo
+//                                val clazz = Class.forName(clazzName)
+//                                val instance = clazz.getDeclaredConstructor(android.content.Context::class.java, Context::class.java, ScriptableObject::class.java).newInstance(appContext, xtrContext.jsContext, xtrContext.scope)
+//                                pluginInstances.add(instance)
                             }
                         }
                     } catch (e: Exception) {
@@ -115,11 +119,9 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                     val req = Request.Builder().url(sourceURL).method("GET", null).build()
                     val res = OkHttpClient().newCall(req).execute()
                     val script = res.body()?.string() ?: return@Thread
-                    val childJSContext = Context.enter()
-                    childJSContext.optimizationLevel = -1
-                    childJSContext.evaluateString(xtrContext.scope, script, "app.js", 1, null)
-                    xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
                     handler.post {
+                        xtrContext.evaluateScript(script)
+                        xtrApplication = XTRUtils.toApplication(xtrContext.v8Runtime.get("XTRAppRef"))
                         completionBlock?.invoke()
                     }
                 } catch (e: Exception) { e.printStackTrace() }
@@ -127,18 +129,9 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
             return
         }
         (globalBridgeScript ?: bridgeScript)?.let { script ->
-            val handler = Handler()
-            Thread(Thread.currentThread().threadGroup, {
-                val childJSContext = Context.enter()
-                childJSContext.optimizationLevel = -1
-                System.out.println("xxx123")
-                childJSContext.evaluateString(xtrContext.scope, script, "app.js", 1, null)
-                System.out.println("xxx312")
-                xtrApplication = XTRUtils.toApplication(xtrContext.scope.get("XTRAppRef"))
-                handler.post {
-                    completionBlock?.invoke()
-                }
-            }, "XTREval", globalBridgeStackSize).start()
+            xtrContext.evaluateScript(script)
+            xtrApplication = XTRUtils.toApplication(xtrContext.v8Runtime.get("XTRAppRef"))
+            completionBlock?.invoke()
             return
         }
     }

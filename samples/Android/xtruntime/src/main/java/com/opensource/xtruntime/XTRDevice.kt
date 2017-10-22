@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.os.Build
+import com.eclipsesource.v8.V8Object
 
 /**
  * Created by cuiminghui on 2017/9/28.
@@ -17,17 +18,30 @@ enum class DeviceOrientation {
 
 class XTRDevice: XTRComponent() {
 
-    override val name: String = "XTRDevice"
-
     companion object {
         internal var current: InnerObject? = null
     }
 
-    fun xtr_current(): InnerObject {
+    override val name: String = "XTRDevice"
+
+    override fun v8Object(): V8Object? {
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "xtr_current", "xtr_current", arrayOf())
+        return v8Object
+    }
+
+    fun xtr_current(): V8Object {
         if (current == null) {
             current = InnerObject(xtrContext)
         }
-        return current ?: InnerObject(xtrContext)
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(current, "xtr_name", "xtr_name", arrayOf())
+        v8Object.registerJavaMethod(current, "xtr_systemName", "xtr_systemName", arrayOf())
+        v8Object.registerJavaMethod(current, "xtr_systemVersion", "xtr_systemVersion", arrayOf())
+        v8Object.registerJavaMethod(current, "xtr_xtRuntimeVersion", "xtr_xtRuntimeVersion", arrayOf())
+        v8Object.registerJavaMethod(current, "xtr_model", "xtr_model", arrayOf())
+        v8Object.registerJavaMethod(current, "xtr_orientation", "xtr_orientation", arrayOf())
+        return v8Object
     }
 
     class InnerObject(val xtrContext: XTRContext) {

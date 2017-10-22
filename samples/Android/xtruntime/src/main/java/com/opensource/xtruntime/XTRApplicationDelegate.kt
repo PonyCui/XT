@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.Undefined
 import java.util.*
@@ -15,14 +16,11 @@ class XTRApplicationDelegate: XTRComponent() {
 
     override val name: String = "XTRApplicationDelegate"
 
-    fun create(scriptObject: Any): InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            return InnerObject(it, xtrContext)
-        }
-        return null
+    fun create(scriptObject: V8Object): InnerObject {
+        return InnerObject(scriptObject, xtrContext)
     }
 
-    class InnerObject(private val scriptObject: ScriptableObject, private val xtrContext: XTRContext): XTRObject {
+    class InnerObject(private val scriptObject: V8Object, private val xtrContext: XTRContext): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
         var window: XTRWindow.InnerObject? = null
