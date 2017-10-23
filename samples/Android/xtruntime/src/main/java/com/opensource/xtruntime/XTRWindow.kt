@@ -1,15 +1,9 @@
 package com.opensource.xtruntime
 
-import android.content.Context
-import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.ScriptableObject
 import java.util.*
 
 /**
@@ -67,7 +61,7 @@ class XTRWindow: XTRComponent() {
                 field = value
                 field?.let {
                     it.view?.let {
-                        this.addSubview(it)
+                        this.xtr_addSubview(it)
                         it.frame = this.bounds
                     }
                 }

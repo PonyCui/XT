@@ -229,6 +229,47 @@ class XTRView: XTRComponent() {
         XTRView.animatingHandlers = animatingHandlers.toMap()
     }
 
+    fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: () -> Unit, completion: () -> Unit) {
+        val bounciness = bounciness as? Double ?: return
+        val speed = speed as? Double ?: return
+        animationEnabled = true
+        animations()
+        animationEnabled = false
+        var completed = false
+        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+        val springSystem = SpringSystem.create()
+        animationProps.values.forEach { aniProp ->
+            val spring = springSystem.createSpring()
+            spring.springConfig = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
+            (aniProp.fromValue as? Float)?.let {
+                spring.currentValue = (aniProp.fromValue as Float).toDouble()
+            }
+            spring.addListener(object : SimpleSpringListener() {
+                override fun onSpringUpdate(spring: Spring?) {
+                    spring?.currentValue?.toFloat()?.let {
+                        aniProp.onValue(it)
+                    }
+                }
+                override fun onSpringAtRest(spring: Spring?) {
+                    spring?.removeAllListeners()
+                    spring?.destroy()
+                    if (!completed) {
+                        completed = true
+                        completion()
+                    }
+                }
+
+            })
+            animatingHandlers[aniProp.aniKey] = {
+                spring.removeAllListeners()
+                spring.destroy()
+            }
+            spring.endValue = (aniProp.toValue as Float).toDouble()
+        }
+        animationProps = mapOf()
+        XTRView.animatingHandlers = animatingHandlers.toMap()
+    }
+
     @Suppress("CanBeParameter", "unused")
     open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
 
@@ -780,7 +821,7 @@ class XTRView: XTRComponent() {
             }
         }
 
-        fun addSubview(view: XTRView.InnerObject) {
+        fun xtr_addSubview(view: XTRView.InnerObject) {
             view.willMoveToSuperview(this)
             view.willMoveToWindow(xtr_windowObject())
             addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))

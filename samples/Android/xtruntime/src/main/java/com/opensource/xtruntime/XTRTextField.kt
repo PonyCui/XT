@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.Undefined
 
@@ -24,16 +26,24 @@ class XTRTextField: XTRComponent() {
 
     override val name: String = "XTRTextField"
 
-    fun createScriptObject(rect: Any, scriptObject: Any): XTRTextField.InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            return InnerObject(it, xtrContext)
+    override fun v8Object(): V8Object? {
+        XTRImage.runtime = xtrContext.v8Runtime
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        return v8Object
+    }
+
+    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
+        val view = InnerObject(scriptObject, xtrContext)
+        XTRUtils.toRect(rect)?.let {
+            view.frame = it
         }
-        return null
+        return view.requestV8Object(xtrContext.v8Runtime)
     }
 
     class Range(val location: Int, val length: Int)
 
-    class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
+    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
         val editText = EditText(xtrContext.appContext)
         val onFocusListener = OnFocusChangeListener { _, _ ->
@@ -113,6 +123,51 @@ class XTRTextField: XTRComponent() {
             addView(editText, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
 
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setText", "xtr_setText", arrayOf(String::class.java))
+            v8Object.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setFont", "xtr_setFont", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_textColor", "xtr_textColor", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setTextColor", "xtr_setTextColor", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_textAlignment", "xtr_textAlignment", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setTextAlignment", "xtr_setTextAlignment", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_placeholder", "xtr_placeholder", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setPlaceholder", "xtr_setPlaceholder", arrayOf(String::class.java))
+            v8Object.registerJavaMethod(this, "xtr_placeholderColor", "xtr_placeholderColor", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setPlaceholderColor", "xtr_setPlaceholderColor", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_clearsOnBeginEditing", "xtr_clearsOnBeginEditing", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setClearsOnBeginEditing", "xtr_setClearsOnBeginEditing", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_editing", "xtr_editing", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_clearButtonMode", "xtr_clearButtonMode", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setClearButtonMode", "xtr_setClearButtonMode", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_onClearButtonTap", "xtr_onClearButtonTap", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_leftView", "xtr_leftView", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLeftView", "xtr_setLeftView", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_leftViewMode", "xtr_leftViewMode", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLeftViewMode", "xtr_setLeftViewMode", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_rightView", "xtr_rightView", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setRightView", "xtr_setRightView", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_rightViewMode", "xtr_rightViewMode", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setRightViewMode", "xtr_setRightViewMode", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_allowAutocapitalization", "xtr_allowAutocapitalization", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setAllowAutocapitalization", "xtr_setAllowAutocapitalization", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_allowAutocorrection", "xtr_allowAutocorrection", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setAllowAutocorrection", "xtr_setAllowAutocorrection", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_allowSpellChecking", "xtr_allowSpellChecking", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setAllowSpellChecking", "xtr_setAllowSpellChecking", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_keyboardType", "xtr_keyboardType", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setKeyboardType", "xtr_setKeyboardType", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_returnKeyType", "xtr_returnKeyType", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setReturnKeyType", "xtr_setReturnKeyType", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_secureTextEntry", "xtr_secureTextEntry", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setSecureTextEntry", "xtr_setSecureTextEntry", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_focus", "xtr_focus", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_blur", "xtr_blur", arrayOf())
+            return v8Object
+        }
+
         override fun layoutSubviews() {
             super.layoutSubviews()
             leftView?.frame?.let {
@@ -148,12 +203,10 @@ class XTRTextField: XTRComponent() {
             return this.editText.text?.toString() ?: Undefined.instance
         }
 
-        fun xtr_setText(value: Any?) {
-            (value as? String)?.let { value ->
-                this.editText.editableText?.let {
-                    it.clear()
-                    it.append(value)
-                }
+        fun xtr_setText(value: String) {
+            this.editText.editableText?.let {
+                it.clear()
+                it.append(value)
             }
         }
 
@@ -178,7 +231,7 @@ class XTRTextField: XTRComponent() {
             return this.xtrFont
         }
 
-        fun xtr_setFont(value: Any?) {
+        fun xtr_setFont(value: V8Object) {
             XTRUtils.toFont(value)?.let {
                 xtrFont = it
             }
@@ -188,7 +241,7 @@ class XTRTextField: XTRComponent() {
             return XTRUtils.fromIntColor(editText.currentTextColor)
         }
 
-        fun xtr_setTextColor(value: Any?) {
+        fun xtr_setTextColor(value: V8Object) {
             XTRUtils.toColor(value)?.let {
                 editText.setTextColor(it.intColor())
             }
@@ -214,25 +267,23 @@ class XTRTextField: XTRComponent() {
             return xtrTextAlignment
         }
 
-        fun xtr_setTextAlignment(value: Any?) {
-            (value as? Double)?.let {
-                xtrTextAlignment = it.toInt()
-            }
+        fun xtr_setTextAlignment(value: Int) {
+            xtrTextAlignment = value
         }
 
         fun xtr_placeholder(): Any? {
             return this.editText.hint?.toString() ?: Undefined.instance
         }
 
-        fun xtr_setPlaceholder(value: Any?) {
-            this.editText.hint = value as? String
+        fun xtr_setPlaceholder(value: String) {
+            this.editText.hint = value
         }
 
         fun xtr_placeholderColor(): XTRColor {
             return XTRUtils.fromIntColor(editText.currentHintTextColor)
         }
 
-        fun xtr_setPlaceholderColor(value: Any?) {
+        fun xtr_setPlaceholderColor(value: V8Object) {
             XTRUtils.toColor(value)?.let {
                 editText.setHintTextColor(it.intColor())
             }
@@ -244,8 +295,8 @@ class XTRTextField: XTRComponent() {
             return this.clearsOnBeginEditing
         }
 
-        fun xtr_setClearsOnBeginEditing(value: Any?) {
-            this.clearsOnBeginEditing = value as? Boolean ?: false
+        fun xtr_setClearsOnBeginEditing(value: Boolean) {
+            this.clearsOnBeginEditing = value
         }
 
         fun xtr_editing(): Boolean {
@@ -274,8 +325,8 @@ class XTRTextField: XTRComponent() {
             return this.clearViewMode
         }
 
-        fun xtr_setClearButtonMode(value: Any?) {
-            this.clearViewMode = (value as? Double ?: 0.0).toInt()
+        fun xtr_setClearButtonMode(value: Int) {
+            this.clearViewMode = value
         }
 
         fun xtr_onClearButtonTap() {
@@ -297,7 +348,7 @@ class XTRTextField: XTRComponent() {
             return XTRUtils.fromObject(xtrContext, this.leftView)
         }
 
-        fun xtr_setLeftView(value: Any?) {
+        fun xtr_setLeftView(value: V8Object) {
             this.leftView = XTRUtils.toView(value) as? XTRView.InnerObject
         }
 
@@ -308,8 +359,8 @@ class XTRTextField: XTRComponent() {
             return this.leftViewMode
         }
 
-        fun xtr_setLeftViewMode(value: Any?) {
-            this.leftViewMode = (value as? Double ?: 0.0).toInt()
+        fun xtr_setLeftViewMode(value: Int) {
+            this.leftViewMode = value
         }
 
         private var rightView: XTRView.InnerObject? = null
@@ -324,7 +375,7 @@ class XTRTextField: XTRComponent() {
             return XTRUtils.fromObject(xtrContext, this.rightView)
         }
 
-        fun xtr_setRightView(value: Any?) {
+        fun xtr_setRightView(value: V8Object) {
             this.rightView = XTRUtils.toView(value) as? XTRView.InnerObject
         }
 
@@ -335,31 +386,29 @@ class XTRTextField: XTRComponent() {
             return this.rightViewMode
         }
 
-        fun xtr_setRightViewMode(value: Any?) {
-            this.rightViewMode = (value as? Double ?: 0.0).toInt()
+        fun xtr_setRightViewMode(value: Int) {
+            this.rightViewMode = value
         }
 
         fun xtr_allowAutocapitalization(): Boolean {
             return this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES > 0
         }
 
-        fun xtr_setAllowAutocapitalization(value: Any?) {
-            (value as? Boolean)?.let {
-                if (it) {
-                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES <= 0) {
-                        this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                    }
+        fun xtr_setAllowAutocapitalization(value: Boolean) {
+            if (value) {
+                if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES <= 0) {
+                    this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                 }
-                else {
-                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES > 0) {
-                        this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                    }
-                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS > 0) {
-                        this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
-                    }
-                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_WORDS > 0) {
-                        this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_WORDS
-                    }
+            }
+            else {
+                if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                }
+                if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+                }
+                if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_CAP_WORDS > 0) {
+                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_CAP_WORDS
                 }
             }
         }
@@ -368,16 +417,14 @@ class XTRTextField: XTRComponent() {
             return this.editText.inputType and InputType.TYPE_TEXT_FLAG_AUTO_CORRECT > 0
         }
 
-        fun xtr_setAllowAutocorrection(value: Any?) {
-            (value as? Boolean)?.let {
-                if (it) {
-                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_AUTO_CORRECT <= 0) {
-                        this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-                    }
+        fun xtr_setAllowAutocorrection(value: Boolean) {
+            if (value) {
+                if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_AUTO_CORRECT <= 0) {
+                    this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
                 }
-                else {
-                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-                }
+            }
+            else {
+                this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             }
         }
 
@@ -385,16 +432,14 @@ class XTRTextField: XTRComponent() {
             return this.editText.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS > 0
         }
 
-        fun xtr_setAllowSpellChecking(value: Any?) {
-            (value as? Boolean)?.let {
-                if (it) {
-                    if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS <= 0) {
-                        this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-                    }
+        fun xtr_setAllowSpellChecking(value: Boolean) {
+            if (value) {
+                if (this.editText.inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS <= 0) {
+                    this.editText.inputType = this.editText.inputType or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                 }
-                else {
-                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-                }
+            }
+            else {
+                this.editText.inputType = this.editText.inputType xor InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             }
         }
 
@@ -406,34 +451,32 @@ class XTRTextField: XTRComponent() {
             }
         }
 
-        fun xtr_setKeyboardType(value: Any?) {
-            (value as? Double)?.let {
-                if (this.editText.inputType and InputType.TYPE_CLASS_TEXT > 0) {
-                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_TEXT
+        fun xtr_setKeyboardType(value: Int) {
+            if (this.editText.inputType and InputType.TYPE_CLASS_TEXT > 0) {
+                this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_TEXT
+            }
+            if (this.editText.inputType and InputType.TYPE_CLASS_NUMBER > 0) {
+                this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_NUMBER
+            }
+            if (this.editText.inputType and InputType.TYPE_NUMBER_FLAG_DECIMAL > 0) {
+                this.editText.inputType = this.editText.inputType xor InputType.TYPE_NUMBER_FLAG_DECIMAL
+            }
+            if (this.editText.inputType and InputType.TYPE_NUMBER_FLAG_SIGNED > 0) {
+                this.editText.inputType = this.editText.inputType xor InputType.TYPE_NUMBER_FLAG_SIGNED
+            }
+            when (value) {
+                0 -> {
+                    this.editText.inputType = this.editText.inputType or InputType.TYPE_CLASS_TEXT
                 }
-                if (this.editText.inputType and InputType.TYPE_CLASS_NUMBER > 0) {
-                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_NUMBER
+                1 -> {
+                    this.editText.inputType = this.editText.inputType or InputType.TYPE_CLASS_TEXT
                 }
-                if (this.editText.inputType and InputType.TYPE_NUMBER_FLAG_DECIMAL > 0) {
-                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_NUMBER_FLAG_DECIMAL
-                }
-                if (this.editText.inputType and InputType.TYPE_NUMBER_FLAG_SIGNED > 0) {
-                    this.editText.inputType = this.editText.inputType xor InputType.TYPE_NUMBER_FLAG_SIGNED
-                }
-                when (it.toInt()) {
-                    0 -> {
-                        this.editText.inputType = this.editText.inputType or InputType.TYPE_CLASS_TEXT
-                    }
-                    1 -> {
-                        this.editText.inputType = this.editText.inputType or InputType.TYPE_CLASS_TEXT
-                    }
-                    2 -> {
-                        if (this.editText.inputType and InputType.TYPE_CLASS_NUMBER <= 0) {
-                            this.editText.inputType = this.editText.inputType or
-                                            InputType.TYPE_CLASS_NUMBER or
-                                            InputType.TYPE_NUMBER_FLAG_DECIMAL or
-                                            InputType.TYPE_NUMBER_FLAG_SIGNED
-                        }
+                2 -> {
+                    if (this.editText.inputType and InputType.TYPE_CLASS_NUMBER <= 0) {
+                        this.editText.inputType = this.editText.inputType or
+                                InputType.TYPE_CLASS_NUMBER or
+                                InputType.TYPE_NUMBER_FLAG_DECIMAL or
+                                InputType.TYPE_NUMBER_FLAG_SIGNED
                     }
                 }
             }
@@ -450,16 +493,14 @@ class XTRTextField: XTRComponent() {
             }
         }
 
-        fun xtr_setReturnKeyType(value: Any?) {
-            (value as? Double)?.let {
-                when (it.toInt()) {
-                    1 -> this.editText.imeOptions = EditorInfo.IME_ACTION_GO
-                    4 -> this.editText.imeOptions = EditorInfo.IME_ACTION_NEXT
-                    6 -> this.editText.imeOptions = EditorInfo.IME_ACTION_SEARCH
-                    7 -> this.editText.imeOptions = EditorInfo.IME_ACTION_SEND
-                    8 -> this.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-                    else -> this.editText.imeOptions = 0
-                }
+        fun xtr_setReturnKeyType(value: Int) {
+            when (value) {
+                1 -> this.editText.imeOptions = EditorInfo.IME_ACTION_GO
+                4 -> this.editText.imeOptions = EditorInfo.IME_ACTION_NEXT
+                6 -> this.editText.imeOptions = EditorInfo.IME_ACTION_SEARCH
+                7 -> this.editText.imeOptions = EditorInfo.IME_ACTION_SEND
+                8 -> this.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+                else -> this.editText.imeOptions = 0
             }
         }
 
@@ -467,11 +508,9 @@ class XTRTextField: XTRComponent() {
             return this.editText.transformationMethod is PasswordTransformationMethod
         }
 
-        fun xtr_setSecureTextEntry(value: Any?) {
-            (value as? Boolean)?.let {
-                if (it) this.editText.transformationMethod = PasswordTransformationMethod()
-                else this.editText.transformationMethod = null
-            }
+        fun xtr_setSecureTextEntry(value: Boolean) {
+            if (value) this.editText.transformationMethod = PasswordTransformationMethod()
+            else this.editText.transformationMethod = null
 
         }
 

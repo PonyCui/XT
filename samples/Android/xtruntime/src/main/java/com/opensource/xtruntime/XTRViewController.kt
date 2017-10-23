@@ -1,7 +1,8 @@
 package com.opensource.xtruntime
 
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.NativeArray
-import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.Undefined
 import java.util.*
 
@@ -12,16 +13,32 @@ open class XTRViewController: XTRComponent() {
 
     override val name: String = "XTRViewController"
 
-    fun createScriptObject(scriptObject: Any): XTRViewController.InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            return XTRViewController.InnerObject(it, xtrContext)
-        }
-        return null
+    override fun v8Object(): V8Object? {
+        XTRImage.runtime = xtrContext.v8Runtime
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        return v8Object
     }
 
-    open class InnerObject(val scriptObject: ScriptableObject, protected val xtrContext: XTRContext): XTRObject {
+    fun createScriptObject(scriptObject: V8Object): V8Object {
+        return InnerObject(scriptObject, xtrContext).requestV8Object(xtrContext.v8Runtime)
+    }
+
+    open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
+
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_view", "xtr_view", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setView", "xtr_setView", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_parentViewController", "xtr_parentViewController", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_childViewControllers", "xtr_childViewControllers", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_addChildViewController", "xtr_addChildViewController", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_removeFromParentViewController", "xtr_removeFromParentViewController", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf())
+            return v8Object
+        }
 
         var view: XTRView.InnerObject? = null
             set(value) {
@@ -41,7 +58,7 @@ open class XTRViewController: XTRComponent() {
             return Undefined.instance
         }
 
-        fun xtr_setView(value: Any) {
+        fun xtr_setView(value: V8Object) {
             (XTRUtils.toView(value) as? XTRView.InnerObject)?.let {
                 this.view = it
                 viewDidLoad()
@@ -62,7 +79,7 @@ open class XTRViewController: XTRComponent() {
             return NativeArray(childViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
         }
 
-        fun xtr_addChildViewController(childController: Any?) {
+        fun xtr_addChildViewController(childController: V8Object) {
             XTRUtils.toViewController(childController)?.let { childController ->
                 if (childController.parentViewController == null) {
                     childController.willMoveToParentViewController(this)
@@ -73,6 +90,18 @@ open class XTRViewController: XTRComponent() {
                     }
                     childController.didMoveToParentViewController(this)
                 }
+            }
+        }
+
+        fun xtr_addChildViewController(childController: XTRViewController.InnerObject) {
+            if (childController.parentViewController == null) {
+                childController.willMoveToParentViewController(this)
+                childViewControllers.toMutableList()?.let {
+                    it.add(childController)
+                    childController.parentViewController = this
+                    childViewControllers = it.toList()
+                }
+                childController.didMoveToParentViewController(this)
             }
         }
 

@@ -14,12 +14,12 @@ interface XTRObject {
         var tmpNativeObject: XTRObject? = null
 
         fun requestNativeObject(scriptObject: V8Object): XTRObject? {
-            try {
+            return try {
                 tmpNativeObject = null
                 scriptObject.executeVoidFunction("xtr_decodeObject", null)
-                return tmpNativeObject
+                tmpNativeObject
             } catch (e: Exception) {
-                return null
+                null
             }
         }
 

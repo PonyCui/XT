@@ -10,6 +10,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.ScriptableObject
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -21,18 +23,22 @@ class XTRLabel: XTRComponent() {
 
     override val name: String = "XTRLabel"
 
-    fun createScriptObject(rect: Any, scriptObject: Any): XTRLabel.InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            val view = InnerObject(it, xtrContext)
-            XTRUtils.toRect(rect)?.let {
-                view.frame = it
-            }
-            return view
-        }
-        return null
+    override fun v8Object(): V8Object? {
+        XTRImage.runtime = xtrContext.v8Runtime
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        return v8Object
     }
 
-    class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
+    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
+        val view = InnerObject(scriptObject, xtrContext)
+        XTRUtils.toRect(rect)?.let {
+            view.frame = it
+        }
+        return view.requestV8Object(xtrContext.v8Runtime)
+    }
+
+    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
         val textView: TextView = TextView(xtrContext.appContext)
         val listener: OnLayoutChangeListener = OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> resetTextViewPosition() }
@@ -44,6 +50,26 @@ class XTRLabel: XTRComponent() {
                 textView.maxLines = 1
             }
             addView(textView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        }
+
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setText", "xtr_setText", arrayOf(String::class.java))
+            v8Object.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setContentMode", "xtr_setFont", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_textColor", "xtr_textColor", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setContentMode", "xtr_setTextColor", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_numberOfLines", "xtr_numberOfLines", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setNumberOfLines", "xtr_setNumberOfLines", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_textAlignment", "xtr_textAlignment", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setTextAlignment", "xtr_setTextAlignment", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_lineSpace", "xtr_lineSpace", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLineSpace", "xtr_setLineSpace", arrayOf(Double::class.java))
+            v8Object.registerJavaMethod(this, "xtr_lineBreakMode", "xtr_lineBreakMode", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setLineBreakMode", "xtr_setLineBreakMode", arrayOf(Int::class.java))
+            v8Object.registerJavaMethod(this, "xtr_textRectForBounds", "xtr_textRectForBounds", arrayOf(V8Object::class.java))
+            return v8Object
         }
 
         override fun onDetachedFromWindow() {
@@ -120,11 +146,9 @@ class XTRLabel: XTRComponent() {
             return textView.text.substring(0)
         }
 
-        fun xtr_setText(value: Any?) {
-            (value as? String)?.let {
-                textView.text = it
-                resetTextLines()
-            }
+        fun xtr_setText(value: String) {
+            textView.text = value
+            resetTextLines()
         }
 
         private var xtrFont: XTRFont = XTRFont(14.0, null)
@@ -149,7 +173,7 @@ class XTRLabel: XTRComponent() {
             return this.xtrFont
         }
 
-        fun xtr_setFont(value: Any?) {
+        fun xtr_setFont(value: V8Object) {
             XTRUtils.toFont(value)?.let {
                 xtrFont = it
             }
@@ -159,7 +183,13 @@ class XTRLabel: XTRComponent() {
             return XTRUtils.fromIntColor(textView.currentTextColor)
         }
 
-        fun xtr_setTextColor(value: Any?) {
+        fun xtr_setTextColor(value: V8Object) {
+            XTRUtils.toColor(value)?.let {
+                textView.setTextColor(it.intColor())
+            }
+        }
+
+        fun xtr_setTextColor(value: XTRColor) {
             XTRUtils.toColor(value)?.let {
                 textView.setTextColor(it.intColor())
             }
@@ -175,10 +205,8 @@ class XTRLabel: XTRComponent() {
             return numberOfLines
         }
 
-        fun xtr_setNumberOfLines(value: Any?) {
-            (value as? Double)?.let {
-                numberOfLines = it.toInt()
-            }
+        fun xtr_setNumberOfLines(value: Int) {
+            numberOfLines = value
         }
 
         private var xtrTextAlignment = 0
@@ -203,10 +231,8 @@ class XTRLabel: XTRComponent() {
             return xtrTextAlignment
         }
 
-        fun xtr_setTextAlignment(value: Any?) {
-            (value as? Double)?.let {
-                xtrTextAlignment = it.toInt()
-            }
+        fun xtr_setTextAlignment(value: Int) {
+            xtrTextAlignment = value
         }
 
         private var lineSpace = 0.0
@@ -220,10 +246,8 @@ class XTRLabel: XTRComponent() {
             return lineSpace
         }
 
-        fun xtr_setLineSpace(value: Any?) {
-            (value as? Double)?.let {
-                lineSpace = it
-            }
+        fun xtr_setLineSpace(value: Double) {
+            lineSpace = value
         }
 
         private var lineBreakMode = 0
@@ -241,13 +265,11 @@ class XTRLabel: XTRComponent() {
             return lineBreakMode
         }
 
-        fun xtr_setLineBreakMode(value: Any?) {
-            (value as? Double)?.let {
-                lineBreakMode = it.toInt()
-            }
+        fun xtr_setLineBreakMode(value: Int) {
+            lineBreakMode = value
         }
 
-        fun xtr_textRectForBounds(value: Any?): XTRRect {
+        fun xtr_textRectForBounds(value: V8Object): XTRRect {
             XTRUtils.toRect(value)?.let {
                 textView.measure(
                         MeasureSpec.makeMeasureSpec((it.width * resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST),
@@ -257,8 +279,18 @@ class XTRLabel: XTRComponent() {
             return XTRRect(0.0, 0.0, textView.measuredWidth.toDouble() / resources.displayMetrics.density, textView.measuredHeight.toDouble() / resources.displayMetrics.density)
         }
 
-        override fun xtr_intrinsicContentSize(width: Any?): XTRSize? {
-            val textBounds = xtr_textRectForBounds(XTRRect(0.0, 0.0, (width as? Double) ?: 0.0, Double.MAX_VALUE))
+        fun xtr_textRectForBounds(value: XTRRect): XTRRect {
+            XTRUtils.toRect(value)?.let {
+                textView.measure(
+                        MeasureSpec.makeMeasureSpec((it.width * resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST),
+                        MeasureSpec.makeMeasureSpec((it.height * resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST)
+                )
+            }
+            return XTRRect(0.0, 0.0, textView.measuredWidth.toDouble() / resources.displayMetrics.density, textView.measuredHeight.toDouble() / resources.displayMetrics.density)
+        }
+
+        override fun xtr_intrinsicContentSize(width: Double): XTRSize {
+            val textBounds = xtr_textRectForBounds(XTRRect(0.0, 0.0, width, Double.MAX_VALUE))
             return XTRSize(Math.ceil(textBounds.width), Math.ceil(textBounds.height))
         }
 

@@ -1,6 +1,10 @@
 package com.opensource.xtruntime
 
 import android.graphics.*
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8Function
+import com.eclipsesource.v8.V8Object
 import org.mozilla.javascript.ScriptableObject
 
 /**
@@ -10,27 +14,40 @@ class XTRImageView: XTRComponent() {
 
     override val name: String = "XTRImageView"
 
-    fun createScriptObject(rect: Any, scriptObject: Any): XTRView.InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            val view = InnerObject(it, xtrContext)
-            XTRUtils.toRect(rect)?.let {
-                view.frame = it
-            }
-            return view
-        }
-        return null
+    override fun v8Object(): V8Object? {
+        XTRImage.runtime = xtrContext.v8Runtime
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        return v8Object
     }
 
-    class InnerObject(scriptObject: ScriptableObject, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
+    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
+        val view = InnerObject(scriptObject, xtrContext)
+        XTRUtils.toRect(rect)?.let {
+            view.frame = it
+        }
+        return view.requestV8Object(xtrContext.v8Runtime)
+    }
+
+    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
         var image: XTRImage.InnerObject? = null
             private set
+
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setImage", "xtr_setImage", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_contentMode", "xtr_contentMode", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setContentMode", "xtr_setContentMode", arrayOf(Int::class.java))
+            return v8Object
+        }
 
         fun xtr_image(): Any? {
             return XTRUtils.fromObject(xtrContext, this.image)
         }
 
-        fun xtr_setImage(image: Any?) {
+        fun xtr_setImage(image: V8Object) {
             this.image = XTRUtils.toImage(image)
             setWillNotDraw(this.image == null)
             invalidate()
@@ -43,8 +60,8 @@ class XTRImageView: XTRComponent() {
             return this.contentMode
         }
 
-        fun xtr_setContentMode(value: Any?) {
-            this.contentMode = (value as? Double ?: 0.0).toInt()
+        fun xtr_setContentMode(value: Int) {
+            this.contentMode = value
             invalidate()
         }
 
@@ -98,7 +115,7 @@ class XTRImageView: XTRComponent() {
             }
         }
 
-        override fun xtr_intrinsicContentSize(width: Any?): XTRSize? {
+        override fun xtr_intrinsicContentSize(width: Double): XTRSize? {
             image?.let {
                 return it.size
             }
