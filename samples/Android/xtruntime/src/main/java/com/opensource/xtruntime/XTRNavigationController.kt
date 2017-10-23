@@ -17,7 +17,7 @@ class XTRNavigationController: XTRComponent() {
     override fun v8Object(): V8Object? {
         XTRImage.runtime = xtrContext.v8Runtime
         val v8Object = V8Object(xtrContext.v8Runtime)
-        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
+        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java))
         return v8Object
     }
 
