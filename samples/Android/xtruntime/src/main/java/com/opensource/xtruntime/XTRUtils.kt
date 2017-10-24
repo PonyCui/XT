@@ -1,13 +1,8 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
-import android.graphics.Matrix
 import android.view.View
 import com.eclipsesource.v8.*
-import org.mozilla.javascript.Function
-import org.mozilla.javascript.ScriptableObject
-import org.mozilla.javascript.Undefined
-import java.nio.ByteBuffer
 
 /**
  * Created by cuiminghui on 2017/8/31.

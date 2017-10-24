@@ -1,10 +1,11 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
-import com.eclipsesource.v8.*
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8Function
+import com.eclipsesource.v8.V8Object
 import com.opensource.xtpolyfill.XTPolyfill
-import org.mozilla.javascript.*
-import org.mozilla.javascript.Function
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -41,7 +42,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     fun invokeMethod(scriptObject: V8Object?, method: String, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         if (scriptObject == null) {
-            return Undefined.instance
+            return V8.getUndefined()
         }
         try {
             if (Thread.currentThread() != thread) {

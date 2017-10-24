@@ -3,7 +3,6 @@ package com.opensource.xtruntime
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.Undefined
 import java.util.*
 
 /**
@@ -125,7 +124,7 @@ open class XTRViewController: XTRComponent() {
                 }
                 current = current.parentViewController
             }
-            return Undefined.instance
+            return V8.getUndefined()
         }
 
         fun willMoveToParentViewController(parent: XTRViewController.InnerObject?) {

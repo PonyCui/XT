@@ -1,10 +1,7 @@
 package com.opensource.xtruntime
 
-import android.view.MotionEvent
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.NativeArray
-import org.mozilla.javascript.ScriptableObject
 
 /**
  * Created by cuiminghui on 2017/9/8.

@@ -8,11 +8,11 @@ import android.os.Handler
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
+import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
 import android.widget.TextView
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.ScriptableObject
 import java.util.*
 import kotlin.concurrent.timerTask
 

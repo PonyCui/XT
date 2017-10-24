@@ -16,15 +16,15 @@ export class Image {
     static assetsPath = "assets/"
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromURL(url, success, failure)
+        XTRImage.xtr_fromURL(url, success, failure || function () { })
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        this.fromAssetsWithScales(named, [], success, failure)
+        this.fromAssetsWithScales(named, [], success, failure || function () { })
     }
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssets(named, this.assetsPath, scales, success, failure)
+        XTRImage.xtr_fromAssets(named, this.assetsPath, scales, success, failure || function () { })
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {

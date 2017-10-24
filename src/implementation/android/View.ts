@@ -403,15 +403,15 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithDuration(duration, animations, completion);
+        XTRView.animationWithDuration(duration, animations, completion || function() {});
     }
 
     static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithTensionAndFriction(tension, friction, animations, completion)
+        XTRView.animationWithTensionAndFriction(tension, friction, animations, completion || function() {})
     }
 
     static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion)
+        XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion || function() {})
     }
 
     static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only

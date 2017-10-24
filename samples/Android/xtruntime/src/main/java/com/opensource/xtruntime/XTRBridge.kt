@@ -1,12 +1,9 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
-import com.eclipsesource.v8.V8Object
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.ScriptableObject
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -62,20 +59,19 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                 XTRApplicationDelegate(),
                 XTRApplication(),
                 XTRWindow(),
-//                XTRTestComponent(),
                 XTRView(),
                 XTRViewController(),
-                XTRNavigationController()
-//                XTRImageView(),
-//                XTRImage(),
-//                XTRLabel(),
-//                XTRButton(),
-//                XTRScrollView(),
-//                XTRTextField(),
-//                XTRTextView(),
-//                XTRCanvasView(),
-//                XTRCustomView(),
-//                XTRDevice()
+                XTRNavigationController(),
+                XTRImageView(),
+                XTRImage(),
+                XTRLabel(),
+                XTRButton(),
+                XTRScrollView(),
+                XTRTextField(),
+                XTRTextView(),
+                XTRCanvasView(),
+                XTRCustomView(),
+                XTRDevice()
         )
         components.forEach { component ->
             component.xtrContext = xtrContext

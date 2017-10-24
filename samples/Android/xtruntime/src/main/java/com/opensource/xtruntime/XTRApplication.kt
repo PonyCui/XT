@@ -2,7 +2,6 @@ package com.opensource.xtruntime
 
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.ScriptableObject
 import java.util.*
 
 /**

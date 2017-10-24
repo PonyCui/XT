@@ -3,11 +3,6 @@ package com.opensource.xtruntime
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import org.mozilla.javascript.Function
-import org.mozilla.javascript.NativeArray
-import java.io.InputStream
-import java.net.URL
 import android.net.http.HttpResponseCache
 import android.util.Base64
 import com.eclipsesource.v8.V8
@@ -15,8 +10,9 @@ import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import java.io.File
-import java.io.IOException
+import java.io.InputStream
 import java.net.URI
+import java.net.URL
 import java.util.*
 
 

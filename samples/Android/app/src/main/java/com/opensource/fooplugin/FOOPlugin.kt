@@ -1,8 +1,5 @@
 package com.opensource.fooplugin
 
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.ScriptableObject
-
 /**
  * Created by cuiminghui on 2017/9/27.
  */

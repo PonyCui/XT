@@ -15,8 +15,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.ScriptableObject
-import org.mozilla.javascript.Undefined
 
 
 /**
@@ -79,9 +77,9 @@ class XTRTextField: XTRComponent() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (!onRevert && (p1 > 0 || p2 > 0 || p3 > 0)){
                     val replacementString: Any = if (p1 + p3 <= p0?.length ?: 0) {
-                        if (p3 > 0) p0?.substring(p1, p1 + p3) ?: Undefined.instance else Undefined.instance
+                        if (p3 > 0) p0?.substring(p1, p1 + p3) ?: V8.getUndefined() else V8.getUndefined()
                     } else {
-                        Undefined.instance
+                        V8.getUndefined()
                     }
                     (xtrContext.invokeMethod(scriptObject , "handleShouldChange", arrayOf(
                         Range(p1, if (p2 > p3) p3 else p2 - p3), replacementString
@@ -200,7 +198,7 @@ class XTRTextField: XTRComponent() {
         }
 
         fun xtr_text(): Any? {
-            return this.editText.text?.toString() ?: Undefined.instance
+            return this.editText.text?.toString() ?: V8.getUndefined()
         }
 
         fun xtr_setText(value: String) {
@@ -272,7 +270,7 @@ class XTRTextField: XTRComponent() {
         }
 
         fun xtr_placeholder(): Any? {
-            return this.editText.hint?.toString() ?: Undefined.instance
+            return this.editText.hint?.toString() ?: V8.getUndefined()
         }
 
         fun xtr_setPlaceholder(value: String) {

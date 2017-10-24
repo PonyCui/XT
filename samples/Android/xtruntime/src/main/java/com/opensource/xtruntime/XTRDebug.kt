@@ -13,10 +13,6 @@ import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import okhttp3.*
 import org.json.JSONObject
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.Function
-import org.mozilla.javascript.ScriptableObject
-import org.mozilla.javascript.Undefined
 import java.net.URI
 import java.net.URLEncoder
 import java.util.*

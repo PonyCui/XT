@@ -10,7 +10,6 @@ import android.widget.FrameLayout
 import android.widget.Switch
 import com.opensource.xtruntime.XTRCustomView
 import com.opensource.xtruntime.XTRCustomViewProtocol
-import org.mozilla.javascript.NativeObject
 
 /**
  * Created by cuiminghui on 2017/9/27.

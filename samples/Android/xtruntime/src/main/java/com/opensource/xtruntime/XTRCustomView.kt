@@ -1,14 +1,10 @@
 package com.opensource.xtruntime
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.view.View
 import android.view.ViewGroup
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.ScriptableObject
-import org.mozilla.javascript.Undefined
-import java.lang.reflect.Type
 
 interface XTRCustomViewProtocol {
     fun onMessage(message: V8Object, customView: XTRCustomView.InnerObject): Any?
@@ -83,11 +79,11 @@ class XTRCustomView: XTRComponent()  {
             (innerView as? XTRCustomViewProtocol)?.let {
                 return XTRUtils.fromObject(xtrContext, it.onMessage(message, this))
             }
-            return Undefined.instance
+            return V8.getUndefined()
         }
 
         fun emitMessage(message: Any?): Any? {
-            return xtrContext.invokeMethod(scriptObject, "handleMessage", arrayOf(XTRUtils.fromObject(xtrContext, message) ?: Undefined.instance))
+            return xtrContext.invokeMethod(scriptObject, "handleMessage", arrayOf(XTRUtils.fromObject(xtrContext, message) ?: V8.getUndefined()))
         }
 
     }

@@ -2,10 +2,7 @@ package com.opensource.xtruntime
 
 import android.graphics.*
 import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Array
-import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.ScriptableObject
 
 /**
  * Created by cuiminghui on 2017/9/6.
