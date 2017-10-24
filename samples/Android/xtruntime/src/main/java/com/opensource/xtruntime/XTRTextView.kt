@@ -34,7 +34,7 @@ class XTRTextView: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject, xtrContext)
+        val view = InnerObject(scriptObject.twin(), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }

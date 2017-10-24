@@ -26,7 +26,7 @@ class XTRWindow: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject, xtrContext)
+        val view = InnerObject(scriptObject.twin(), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -49,7 +49,6 @@ class XTRWindow: XTRComponent() {
             v8Object.registerJavaMethod(this, "xtr_makeKeyAndVisible", "xtr_makeKeyAndVisible", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setStatusBarHidden", "xtr_setStatusBarHidden", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_endEditing", "xtr_endEditing", arrayOf())
-
             return v8Object
         }
 
@@ -116,6 +115,13 @@ class XTRWindow: XTRComponent() {
         override fun layoutSubviews() {
             super.layoutSubviews()
             rootViewController?.view?.frame = this.bounds
+        }
+
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            if (frame?.width == 0.0 || frame?.height == 0.0) {
+                frame = null
+            }
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {

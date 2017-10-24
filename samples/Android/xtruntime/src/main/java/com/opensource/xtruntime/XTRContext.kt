@@ -50,10 +50,9 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                     arguments.forEach {
                         //todo
                     }
-                    val returnValue = (scriptObject?.get(method) as? V8Function)?.call(null, v8Args)
-                    asyncResult?.invoke(returnValue)
+                    val returnValue = scriptObject.executeFunction(method, v8Args)
                     v8Args.release()
-                    (returnValue as? Releasable)?.release()
+                    asyncResult?.invoke(returnValue)
                 }
             }
             else {
@@ -61,12 +60,14 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 arguments.forEach {
                     //todo
                 }
-                val returnValue = (scriptObject?.get(method) as? V8Function)?.call(null, v8Args)
+                val returnValue = scriptObject.executeFunction(method, v8Args)
                 asyncResult?.invoke(returnValue)
                 v8Args.release()
                 return returnValue
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         return null
     }
 

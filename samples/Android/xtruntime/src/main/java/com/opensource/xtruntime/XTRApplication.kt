@@ -12,14 +12,17 @@ class XTRApplication: XTRComponent() {
 
     override val name: String = "XTRApplication"
 
-    fun create(scriptObject: Any): InnerObject? {
-        (scriptObject as? ScriptableObject)?.let {
-            return InnerObject(it, xtrContext)
-        }
-        return null
+    override fun v8Object(): V8Object? {
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "create", "create", arrayOf(V8Object::class.java))
+        return v8Object
     }
 
-    class InnerObject(val scriptObject: ScriptableObject, val xtrContext: XTRContext): XTRObject {
+    fun create(scriptObject: V8Object): V8Object {
+        return InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
+    }
+
+    class InnerObject(val scriptObject: V8Object, val xtrContext: XTRContext): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
 

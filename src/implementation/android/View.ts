@@ -104,11 +104,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     public get alpha(): number {
-        return this.nativeObject.alpha;
+        return this.nativeObject.xtr_alpha();
     }
 
     public set alpha(value: number) {
-        this.nativeObject.alpha = value;
+        this.nativeObject.xtr_setAlpha(value);
     }
 
 

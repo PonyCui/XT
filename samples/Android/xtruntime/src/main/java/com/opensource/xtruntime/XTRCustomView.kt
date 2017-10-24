@@ -41,7 +41,7 @@ class XTRCustomView: XTRComponent()  {
     }
 
     fun createScriptObject(className: String, rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(className, scriptObject, xtrContext)
+        val view = InnerObject(className, scriptObject.twin(), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }

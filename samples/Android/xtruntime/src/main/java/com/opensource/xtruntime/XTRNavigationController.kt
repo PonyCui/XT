@@ -1,11 +1,8 @@
 package com.opensource.xtruntime
 
-import android.graphics.Color
-import android.view.View
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.NativeArray
-import org.mozilla.javascript.ScriptableObject
 
 /**
  * Created by cuiminghui on 2017/9/6.
@@ -22,7 +19,7 @@ class XTRNavigationController: XTRComponent() {
     }
 
     fun createScriptObject(scriptObject: V8Object): V8Object {
-        return XTRNavigationController.InnerObject(scriptObject, xtrContext).requestV8Object(xtrContext.v8Runtime)
+        return XTRNavigationController.InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     open class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRViewController.InnerObject(scriptObject, xtrContext) {
@@ -44,7 +41,7 @@ class XTRNavigationController: XTRComponent() {
                 it.xtr_removeFromParentViewController()
                 it.view?.xtr_removeFromSuperview()
             }
-            (viewControllers as? NativeArray)?.let { it ->
+            XTRUtils.fromArray(viewControllers)?.let { it ->
                 val vcs = it.mapNotNull { return@mapNotNull XTRUtils.toViewController(it) }
                 vcs.forEach {
                     if (it.parentViewController == null) {
@@ -110,13 +107,13 @@ class XTRNavigationController: XTRComponent() {
             }
         }
 
-        fun xtr_popToViewController(viewController: V8Object, animated: Boolean): NativeArray {
+        fun xtr_popToViewController(viewController: V8Object, animated: Boolean): V8Array? {
             if (isAnimating) {
-                return NativeArray(arrayOf())
+                return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
             }
             isAnimating = true
             val isAnimated = animated as? Boolean ?: true
-            val toViewController = XTRUtils.toViewController(viewController) ?: return NativeArray(arrayOf())
+            val toViewController = XTRUtils.toViewController(viewController) ?: return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
             val targetViewControllers: MutableList<XTRViewController.InnerObject> = mutableListOf()
             var found = false
             childViewControllers?.forEach {
@@ -152,16 +149,16 @@ class XTRNavigationController: XTRComponent() {
                 }
                 isAnimating = false
             }
-            return NativeArray(targetViewControllers.map { return@map XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
+            return XTRUtils.fromObject(xtrContext, targetViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) as? XTRViewController.InnerObject }) as? V8Array
         }
 
-        fun xtr_popToViewController(viewController: XTRViewController.InnerObject?, animated: Boolean): NativeArray {
+        fun xtr_popToViewController(viewController: XTRViewController.InnerObject?, animated: Boolean): V8Array? {
             if (isAnimating) {
-                return NativeArray(arrayOf())
+                return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
             }
             isAnimating = true
             val isAnimated = animated as? Boolean ?: true
-            val toViewController = XTRUtils.toViewController(viewController) ?: return NativeArray(arrayOf())
+            val toViewController = XTRUtils.toViewController(viewController) ?: return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
             val targetViewControllers: MutableList<XTRViewController.InnerObject> = mutableListOf()
             var found = false
             childViewControllers?.forEach {
@@ -197,10 +194,10 @@ class XTRNavigationController: XTRComponent() {
                 }
                 isAnimating = false
             }
-            return NativeArray(targetViewControllers.map { return@map XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
+            return XTRUtils.fromObject(xtrContext, targetViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) as? XTRViewController.InnerObject }) as? V8Array
         }
 
-        fun xtr_popToRootViewController(animated: Boolean): NativeArray {
+        fun xtr_popToRootViewController(animated: Boolean): V8Array? {
             return this.xtr_popToViewController(childViewControllers.firstOrNull(), animated)
         }
 

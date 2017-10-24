@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
+import com.eclipsesource.v8.V8Object
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -61,20 +62,20 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                 XTRApplicationDelegate(),
                 XTRApplication(),
                 XTRWindow(),
-                XTRTestComponent(),
+//                XTRTestComponent(),
                 XTRView(),
                 XTRViewController(),
-                XTRNavigationController(),
-                XTRImageView(),
-                XTRImage(),
-                XTRLabel(),
-                XTRButton(),
-                XTRScrollView(),
-                XTRTextField(),
-                XTRTextView(),
-                XTRCanvasView(),
-                XTRCustomView(),
-                XTRDevice()
+                XTRNavigationController()
+//                XTRImageView(),
+//                XTRImage(),
+//                XTRLabel(),
+//                XTRButton(),
+//                XTRScrollView(),
+//                XTRTextField(),
+//                XTRTextView(),
+//                XTRCanvasView(),
+//                XTRCustomView(),
+//                XTRDevice()
         )
         components.forEach { component ->
             component.xtrContext = xtrContext
@@ -112,8 +113,9 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     }
 
     fun loadScript() {
+        val handler = Handler()
+        xtrContext.evaluateScript("let XTRAppRef = undefined;")
         xtrSourceURL?.let { sourceURL ->
-            val handler = Handler()
             Thread(Thread.currentThread().threadGroup, {
                 try {
                     val req = Request.Builder().url(sourceURL).method("GET", null).build()
@@ -130,8 +132,10 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         }
         (globalBridgeScript ?: bridgeScript)?.let { script ->
             xtrContext.evaluateScript(script)
-            xtrApplication = XTRUtils.toApplication(xtrContext.v8Runtime.get("XTRAppRef"))
-            completionBlock?.invoke()
+            xtrApplication = XTRUtils.toApplication(xtrContext.evaluateScript("XTRAppRef"))
+            handler.post {
+                completionBlock?.invoke()
+            }
             return
         }
     }

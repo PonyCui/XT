@@ -55,7 +55,7 @@ class XTRView: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject, xtrContext)
+        val view = InnerObject(scriptObject.twin(), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -288,8 +288,8 @@ class XTRView: XTRComponent() {
             val v8Object = super.requestV8Object(runtime)
             v8Object.registerJavaMethod(this, "xtr_clipsToBounds", "xtr_clipsToBounds", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setClipsToBounds", "", arrayOf(Boolean::class.java))
-            v8Object.registerJavaMethod(this, "alpha", "alpha", arrayOf())
-            v8Object.registerJavaMethod(this, "setAlpha", "setAlpha", arrayOf(Float::class.java))
+            v8Object.registerJavaMethod(this, "xtr_alpha", "xtr_alpha", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setAlpha", "xtr_setAlpha", arrayOf(Double::class.java))
             v8Object.registerJavaMethod(this, "xtr_frame", "xtr_frame", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setFrame", "xtr_setFrame", arrayOf(V8Object::class.java))
             v8Object.registerJavaMethod(this, "xtr_bounds", "xtr_bounds", arrayOf())
@@ -361,14 +361,18 @@ class XTRView: XTRComponent() {
             }
         }
 
-        override fun setAlpha(alpha: Float) {
+        fun xtr_alpha(): Double {
+            return alpha.toDouble()
+        }
+
+        fun xtr_setAlpha(alpha: Double) {
             if (animationEnabled) {
-                addAnimation(AnimationProp("$objectUUID.alpha", this.alpha as Any, alpha as Any, {
-                    setAlpha(it as Float)
+                addAnimation(AnimationProp("$objectUUID.alpha", this.alpha as Any, alpha.toFloat() as Any, {
+                    this.alpha = it as Float
                 }))
                 return
             }
-            super.setAlpha(alpha)
+            this.alpha = alpha.toFloat()
         }
 
         var frame: XTRRect? = null

@@ -1,8 +1,8 @@
 package com.opensource.xtruntime
 
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
-import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.Undefined
 import java.util.*
 
@@ -21,7 +21,7 @@ open class XTRViewController: XTRComponent() {
     }
 
     fun createScriptObject(scriptObject: V8Object): V8Object {
-        return InnerObject(scriptObject, xtrContext).requestV8Object(xtrContext.v8Runtime)
+        return InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): XTRObject {
@@ -33,7 +33,7 @@ open class XTRViewController: XTRComponent() {
             v8Object.registerJavaMethod(this, "xtr_view", "xtr_view", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setView", "xtr_setView", arrayOf(V8Object::class.java))
             v8Object.registerJavaMethod(this, "xtr_parentViewController", "xtr_parentViewController", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_childViewControllers", "xtr_childViewControllers", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_childViewControllers", "xtr_childViewControllers", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_addChildViewController", "xtr_addChildViewController", arrayOf(V8Object::class.java))
             v8Object.registerJavaMethod(this, "xtr_removeFromParentViewController", "xtr_removeFromParentViewController", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf())
@@ -55,7 +55,7 @@ open class XTRViewController: XTRComponent() {
             view?.let {
                 return XTRUtils.fromObject(xtrContext, it)
             }
-            return Undefined.instance
+            return V8.getUndefined()
         }
 
         fun xtr_setView(value: V8Object) {
@@ -75,8 +75,8 @@ open class XTRViewController: XTRComponent() {
             return XTRUtils.fromObject(xtrContext, parentViewController)
         }
 
-        fun xtr_childViewControllers(): Any? {
-            return NativeArray(childViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) }.toTypedArray())
+        fun xtr_childViewControllers(): V8Array? {
+            return XTRUtils.fromObject(xtrContext, childViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) as? XTRViewController.InnerObject }) as? V8Array
         }
 
         fun xtr_addChildViewController(childController: V8Object) {

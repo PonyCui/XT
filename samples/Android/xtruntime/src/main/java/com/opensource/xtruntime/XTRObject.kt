@@ -16,7 +16,7 @@ interface XTRObject {
         fun requestNativeObject(scriptObject: V8Object): XTRObject? {
             return try {
                 tmpNativeObject = null
-                scriptObject.executeVoidFunction("xtr_decodeObject", null)
+                (scriptObject.get("nativeObject") as? V8Object)?.executeVoidFunction("xtr_decodeObject", null)
                 tmpNativeObject
             } catch (e: Exception) {
                 null

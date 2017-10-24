@@ -2,7 +2,9 @@ package com.opensource.xtruntime
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.Undefined
 import java.util.*
@@ -16,8 +18,14 @@ class XTRApplicationDelegate: XTRComponent() {
 
     override val name: String = "XTRApplicationDelegate"
 
-    fun create(scriptObject: V8Object): InnerObject {
-        return InnerObject(scriptObject, xtrContext)
+    override fun v8Object(): V8Object? {
+        val v8Object = V8Object(xtrContext.v8Runtime)
+        v8Object.registerJavaMethod(this, "create", "create", arrayOf(V8Object::class.java))
+        return v8Object
+    }
+
+    fun create(scriptObject: V8Object): V8Object {
+        return InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     class InnerObject(private val scriptObject: V8Object, private val xtrContext: XTRContext): XTRObject {
@@ -30,14 +38,21 @@ class XTRApplicationDelegate: XTRComponent() {
             xtrContext.invokeMethod(this.scriptObject, "applicationDidFinishLaunchingWithOptions", arrayOf("", ""))
         }
 
-        fun xtr_window(): Any? {
-            this.window?.let { window ->
-                return XTRUtils.fromObject(xtrContext, window)
-            }
-            return Undefined.instance
+        override fun requestV8Object(runtime: V8): V8Object {
+            val v8Object = super.requestV8Object(runtime)
+            v8Object.registerJavaMethod(this, "xtr_window", "xtr_window", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setWindow", "xtr_setWindow", arrayOf(V8Object::class.java))
+            return v8Object
         }
 
-        fun xtr_setWindow(value: Any) {
+        fun xtr_window(): V8Value {
+            this.window?.let { window ->
+                return XTRUtils.fromObject(xtrContext, window) as? V8Value ?: V8.getUndefined()
+            }
+            return V8.getUndefined()
+        }
+
+        fun xtr_setWindow(value: V8Object) {
             this.window = XTRUtils.toWindow(value)
             this.window?.appDelegate = this
         }
