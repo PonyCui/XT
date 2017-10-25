@@ -11,7 +11,7 @@ class View implements Touchable, CoordinateOwner, GestureOwner {
     frame: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 0, height: 0 }
     superview: View | undefined
     subviews: View[] = []
-    gestureRecongnizer: GestureRecongnizer[] = []
+    gestureRecongnizers: GestureRecongnizer[] = []
 
     hitTest(point: { x: number, y: number }): Touchable | undefined {
         let target = undefined;
@@ -145,7 +145,7 @@ export function touchRecozinerTests() {
     longPressGesture.fire = () => {
         console.log("longPressGesture fired.", longPressGesture.state)
     }
-    redView.gestureRecongnizer = [
+    redView.gestureRecongnizers = [
         tapGesture,
         // longPressGesture,
     ];

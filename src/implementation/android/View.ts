@@ -5,9 +5,10 @@ import { TransformMatrix } from '../../interface/TransformMatrix'
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
 import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
 import { CoordinateOwner, isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
-import { GestureOwner, GestureRecongnizer, GestureManager } from '../libraries/touch/GestureManager';
+import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerState } from '../libraries/touch/GestureManager';
 import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
 import { asArray } from "./utils"
+import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
@@ -322,7 +323,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     static InteractionState = InteractionState
     static SwipeDirection = SwipeDirection
 
-    gestureRecongnizer: GestureRecongnizer[] = []
+    gestureRecongnizers: GestureRecongnizer[] = []
 
     public get userInteractionEnabled(): boolean {
         return this.nativeObject.xtr_userInteractionEnabled();
@@ -333,7 +334,6 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
-        console.log(JSON.stringify(this.backgroundColor) + "xxx" + JSON.stringify(point))
         let target = undefined;
         if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
             target = this
@@ -381,18 +381,24 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         }
     }
 
+    private _longPressDuration = 0.5
+
     public get longPressDuration(): number {
-        return this.nativeObject.xtr_longPressDuration();
+        return this._longPressDuration;
     }
 
     public set longPressDuration(value: number) {
-        this.nativeObject.xtr_setLongPressDuration(value);
+        this._longPressDuration = value;
+        this.gestureRecongnizers.forEach(t => {
+            if (t instanceof LongPressGestureRecognizer) { t.minimumPressDuration = value }
+        });
     }
 
     public set onTap(value: (() => void) | undefined) {
         const tapGesture = new TapGestureRecognizer();
+        tapGesture.owner = this
         tapGesture.fire = value;
-        this.gestureRecongnizer.push(tapGesture);
+        this.gestureRecongnizers.push(tapGesture);
     }
 
     public set onDoubleTap(value: (() => void) | undefined) {
@@ -400,7 +406,28 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
-        this.nativeObject.xtr_setLongPress(value);
+        const longPressGesture = new LongPressGestureRecognizer();
+        longPressGesture.owner = this
+        longPressGesture.minimumPressDuration = this._longPressDuration
+        longPressGesture.fire = (state, viewLocation, absLocation) => {
+            let interactionState = InteractionState.Began;
+            switch (longPressGesture.state) {
+                case GestureRecognizerState.Began:
+                    interactionState = InteractionState.Began;
+                    break;
+                case GestureRecognizerState.Changed:
+                    interactionState = InteractionState.Changed;
+                    break;
+                case GestureRecognizerState.Ended:
+                    interactionState = InteractionState.Ended;
+                    break;
+                case GestureRecognizerState.Cancelled:
+                    interactionState = InteractionState.Cancelled;
+                    break;
+            }
+            value && value(interactionState, viewLocation, absLocation);
+        };
+        this.gestureRecongnizers.push(longPressGesture);
     }
 
     public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {

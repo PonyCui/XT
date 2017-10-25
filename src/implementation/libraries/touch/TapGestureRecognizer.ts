@@ -3,9 +3,10 @@ import { Touch, Event } from "./TouchManager"
 
 export class TapGestureRecognizer implements GestureRecongnizer {
 
+    owner?: GestureOwner
     enabled: boolean = true
     state: GestureRecognizerState = GestureRecognizerState.Possible
-    fire?: () => void
+    fire?: (state: GestureRecognizerState, viewLocation?: {x: number, y: number}, absLocation?: {x: number, y: number}) => void
 
     private touchStartPoint?: { x: number, y: number }[]
 
@@ -35,7 +36,7 @@ export class TapGestureRecognizer implements GestureRecongnizer {
             });
             if (invalidPoints.length == 0) {
                 this.state = GestureRecognizerState.Recognized
-                this.fire && this.fire()
+                this.fire && this.fire(this.state)
             }
             else {
                 this.state = GestureRecognizerState.Failed

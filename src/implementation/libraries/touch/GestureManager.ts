@@ -12,9 +12,10 @@ export enum GestureRecognizerState {
 
 export interface GestureRecongnizer {
 
+    owner?: GestureOwner
     enabled: boolean
     state: GestureRecognizerState
-    fire?: () => void
+    fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: {x: number, y: number}) => void
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
     touchesMoved(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
     touchesEnded(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
@@ -24,7 +25,7 @@ export interface GestureRecongnizer {
 
 export interface GestureOwner {
 
-    gestureRecongnizer: GestureRecongnizer[]
+    gestureRecongnizers: GestureRecongnizer[]
 
 }
 
@@ -47,11 +48,13 @@ export class GestureManager {
 
     static onTouchesBegan(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            this.activeGesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            if (this.activeGesture.owner == owner) {
+                this.activeGesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            }
             return;
         }
-        for (let index = 0; index < owner.gestureRecongnizer.length; index++) {
-            let gesture = owner.gestureRecongnizer[index];
+        for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
+            let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this))) {
                     this.activeGesture = gesture;
@@ -63,11 +66,13 @@ export class GestureManager {
 
     static onTouchesMoved(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            this.activeGesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            if (this.activeGesture.owner == owner) {
+                this.activeGesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            }
             return;
         }
-        for (let index = 0; index < owner.gestureRecongnizer.length; index++) {
-            let gesture = owner.gestureRecongnizer[index];
+        for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
+            let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this))) {
                     this.activeGesture = gesture;
@@ -79,11 +84,13 @@ export class GestureManager {
 
     static onTouchesEnded(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            if (this.activeGesture.owner == owner) {
+                this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            }
             return;
         }
-        for (let index = 0; index < owner.gestureRecongnizer.length; index++) {
-            let gesture = owner.gestureRecongnizer[index];
+        for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
+            let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this))) {
                     this.activeGesture = gesture;
@@ -95,11 +102,13 @@ export class GestureManager {
 
     static onTouchesCancelled(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            this.activeGesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            if (this.activeGesture.owner == owner) {
+                this.activeGesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            }
             return;
         }
-        for (let index = 0; index < owner.gestureRecongnizer.length; index++) {
-            let gesture = owner.gestureRecongnizer[index];
+        for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
+            let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this))) {
                     this.activeGesture = gesture;

@@ -14,6 +14,7 @@ export interface Touch {
     timestamp: number
     phase: TouchPhase
     tapCount: number
+    rawLocation: { x: number, y: number }
     locationInView(view: Touchable): { x: number, y: number }
 
 }
@@ -49,7 +50,11 @@ export class TouchManager {
         if (target) {
             this.target = target;
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Began, tapCount: 1, locationInView: (view: Touchable) => {
+                timestamp: timestamp,
+                phase: TouchPhase.Began,
+                tapCount: 1,
+                rawLocation: { x, y },
+                locationInView: (view: Touchable) => {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
@@ -60,7 +65,11 @@ export class TouchManager {
     handlePointerMove(pid: string, timestamp: number, x: number, y: number) {
         if (this.target) {
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Moved, tapCount: 1, locationInView: (view: Touchable) => {
+                timestamp: timestamp,
+                phase: TouchPhase.Moved,
+                tapCount: 1,
+                rawLocation: { x, y },
+                locationInView: (view: Touchable) => {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
@@ -71,7 +80,11 @@ export class TouchManager {
     handlePointerUp(pid: string, timestamp: number, x: number, y: number) {
         if (this.target) {
             this.touches[pid] = {
-                timestamp: timestamp, phase: TouchPhase.Ended, tapCount: 1, locationInView: (view: Touchable) => {
+                timestamp: timestamp,
+                phase: TouchPhase.Ended,
+                tapCount: 1,
+                rawLocation: { x, y },
+                locationInView: (view: Touchable) => {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }

@@ -17,12 +17,27 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
+        // this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
         const redView = new View(RectMake(0, 0, 44, 44))
         redView.backgroundColor = Color.redColor
         redView.userInteractionEnabled = true
+        redView.onLongPress = (state, viewLocation, absLocation) => {
+            if (state === InteractionState.Began) {
+                redView.backgroundColor = Color.blueColor
+            }
+            if (state === InteractionState.Changed) {
+                if (absLocation && absLocation.x > 200) {
+                    redView.backgroundColor = Color.greenColor
+                }
+            }
+            if (state === InteractionState.Ended) {
+                redView.backgroundColor = Color.redColor
+            }
+        }
         redView.onTap = () => {
-            redView.backgroundColor = Color.blueColor
+            View.animationWithDuration(0.50, () => {
+                redView.transform = new TransformMatrix()
+            })
         }
         this.view.backgroundColor = Color.yellowColor
         this.view.addSubview(redView)
@@ -30,7 +45,7 @@ class FirstViewController extends ViewController {
             View.animationWithDuration(0.50, () => {
                 redView.transform = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 100, 100)
             }, () => { redView.backgroundColor = Color.blackColor })
-        }, 2000)
+        }, 100)
     }
 
 }
