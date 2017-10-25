@@ -382,6 +382,9 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     private _longPressDuration = 0.5
+    private _existsSingleTap = false
+    private _existsDoubleTap = false
+    private _validDoubleTap = false
 
     public get longPressDuration(): number {
         return this._longPressDuration;
@@ -395,17 +398,36 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     public set onTap(value: (() => void) | undefined) {
+        this._existsSingleTap = true
         const tapGesture = new TapGestureRecognizer();
         tapGesture.owner = this
-        tapGesture.fire = value;
+        tapGesture.fire = () => {
+            if (this._existsDoubleTap) {
+                this._validDoubleTap = false
+                setTimeout(() => {
+                    if (!this._validDoubleTap) {
+                        value && value();
+                    }
+                }, 550)
+            }
+            else {
+                value && value();
+            }
+        };
         this.gestureRecongnizers.push(tapGesture);
     }
 
     public set onDoubleTap(value: (() => void) | undefined) {
+        this._existsDoubleTap = true
         const tapGesture = new TapGestureRecognizer();
         tapGesture.owner = this
         tapGesture.tapsRequired = 2
-        tapGesture.fire = value;
+        tapGesture.fire = () => {
+            if (this._existsSingleTap) {
+                this._validDoubleTap = true
+            }
+            value && value();
+        };
         this.gestureRecongnizers.push(tapGesture);
     }
 

@@ -41,6 +41,14 @@ export class Color {
     static yellowColor: Color = new Color(1.0, 1.0, 0.0)
     static greenColor: Color = new Color(0.0, 1.0, 0.0)
     static blueColor: Color = new Color(0.0, 0.0, 1.0)
+    static brownColor: Color = new Color(0.6, 0.4, 0.2)
+    static cyanColor: Color = new Color(0.0, 1.0, 1.0)
+    static darkGrayColor: Color = new Color(0.33, 0.33, 0.33)
+    static grayColor: Color = new Color(0.5, 0.5, 0.5)
+    static lightGrayColor: Color = new Color(0.66, 0.66, 0.66)
+    static magentaColor: Color = new Color(1.0, 0.0, 1.0)
+    static orangeColor: Color = new Color(1.0, 0.5, 0.0)
+    static purpleColor: Color = new Color(0.5, 0.0, 0.5)
 
     static colorWithWhite(white: number, alpha: number) {
         return new Color(white, white, white, alpha)

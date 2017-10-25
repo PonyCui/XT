@@ -88,7 +88,7 @@ export class TouchManager {
     handlePointerUp(pid: string, timestamp: number, x: number, y: number) {
         if (this.target) {
             if (this.touches[pid]._maybeTap) {
-                tapHistory = tapHistory.filter(t => timestamp - t.timestamp < 1000)
+                tapHistory = tapHistory.filter(t => timestamp - t.timestamp < 500)
                 tapHistory.push({ timestamp, x, y })
             }
             this.touches[pid] = {
