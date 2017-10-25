@@ -21,7 +21,7 @@ class XTRApplicationDelegate: XTRComponent() {
     }
 
     fun create(scriptObject: V8Object): V8Object {
-        return InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
+        return InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     class InnerObject(private val scriptObject: V8Object, private val xtrContext: XTRContext): XTRObject {
@@ -31,7 +31,7 @@ class XTRApplicationDelegate: XTRComponent() {
         var windowMakeKeyAndVisibleRunnable: (() -> Unit)? = null
 
         fun applicationDidFinishLaunchingWithOptions() {
-            xtrContext.invokeMethod(this.scriptObject, "applicationDidFinishLaunchingWithOptions", arrayOf("", ""))
+            xtrContext.invokeMethod(this.scriptObject, "applicationDidFinishLaunchingWithOptions", listOf("", ""))
         }
 
         override fun requestV8Object(runtime: V8): V8Object {

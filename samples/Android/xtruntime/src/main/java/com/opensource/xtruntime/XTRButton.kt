@@ -3,6 +3,7 @@ package com.opensource.xtruntime
 import android.view.MotionEvent
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 
 /**
  * Created by cuiminghui on 2017/9/8.
@@ -18,7 +19,7 @@ class XTRButton: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -66,8 +67,8 @@ class XTRButton: XTRComponent() {
             resetContents()
         }
 
-        fun xtr_font(): XTRFont {
-            return this.titleLabel.xtr_font()
+        fun xtr_font(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.titleLabel.xtr_font()) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setFont(value: V8Object) {
@@ -84,8 +85,8 @@ class XTRButton: XTRComponent() {
             resetContents()
         }
 
-        fun xtr_color(): XTRColor {
-            return this.xtr_tintColor()
+        fun xtr_color(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.xtr_tintColor()) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setColor(value: V8Object) {
@@ -116,7 +117,7 @@ class XTRButton: XTRComponent() {
 
         override fun tintColorDidChange() {
             super.tintColorDidChange()
-            this.titleLabel.xtr_setTextColor(this.xtr_tintColor())
+            this.titleLabel.xtr_setTextColor(this.xtr_tintColorXTRTypes())
         }
 
         override fun layoutSubviews() {
@@ -181,7 +182,7 @@ class XTRButton: XTRComponent() {
         private fun addTouches() {
             xtr_setUserInteractionEnabled(true)
             this.setOnClickListener({
-                xtrContext.invokeMethod(scriptObject, "handleTouchUpInside", arrayOf())
+                xtrContext.invokeMethod(scriptObject, "handleTouchUpInside", listOf())
             })
         }
 
@@ -201,7 +202,7 @@ class XTRButton: XTRComponent() {
                         titleLabel.alpha = 1.0f
                     }, {})
                 }
-                xtrContext.invokeMethod(scriptObject, "handleHighlighted", arrayOf(field))
+                xtrContext.invokeMethod(scriptObject, "handleHighlighted", listOf(field))
             }
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -223,7 +224,7 @@ class XTRButton: XTRComponent() {
                     val x = event?.x / scale
                     val y = event?.y / scale
                     if (!(x < -44 || x > this.bounds.width + 44 || y < -44 || y > this.bounds.height + 44)) {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchUpInside", arrayOf())
+                        xtrContext.invokeMethod(scriptObject, "handleTouchUpInside", listOf())
                     }
                     highlighted = false
                 }

@@ -1,6 +1,8 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
+import com.eclipsesource.v8.Releasable
+import com.eclipsesource.v8.V8Object
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -119,7 +121,10 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                     val script = res.body()?.string() ?: return@Thread
                     handler.post {
                         xtrContext.evaluateScript(script)
-                        xtrApplication = XTRUtils.toApplication(xtrContext.v8Runtime.get("XTRAppRef"))
+                        xtrContext.evaluateScript("XTRAppRef")?.let {
+                            xtrApplication = XTRUtils.toApplication(it)
+                            (it as? Releasable)?.release()
+                        }
                         completionBlock?.invoke()
                     }
                 } catch (e: Exception) { e.printStackTrace() }
@@ -128,7 +133,10 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         }
         (globalBridgeScript ?: bridgeScript)?.let { script ->
             xtrContext.evaluateScript(script)
-            xtrApplication = XTRUtils.toApplication(xtrContext.evaluateScript("XTRAppRef"))
+            xtrContext.evaluateScript("XTRAppRef")?.let {
+                xtrApplication = XTRUtils.toApplication(it)
+                (it as? Releasable)?.release()
+            }
             handler.post {
                 completionBlock?.invoke()
             }

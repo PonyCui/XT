@@ -7,6 +7,7 @@ class AppDelegate extends ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
         this.window = new Window();
+        // this.window.backgroundColor = Color.yellowColor
         this.window.rootViewController = new NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
     }
@@ -16,21 +17,19 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        // this.view.backgroundColor = Color.yellowColor
-        // this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
+        this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
         const redView = new View(RectMake(0, 0, 44, 44))
-        // redView.transform = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 100, 100)
         redView.backgroundColor = Color.redColor
         redView.userInteractionEnabled = true
-        // redView.onTap = () => {
-        //     redView.backgroundColor = Color.blueColor
-        // }
+        redView.onTap = () => {
+            redView.backgroundColor = Color.blueColor
+        }
         this.view.backgroundColor = Color.yellowColor
         this.view.addSubview(redView)
         setTimeout(() => {
             View.animationWithDuration(0.50, () => {
                 redView.transform = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 100, 100)
-            })
+            }, () => { redView.backgroundColor = Color.blackColor })
         }, 2000)
     }
 

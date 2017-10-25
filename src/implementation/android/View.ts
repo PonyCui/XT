@@ -339,7 +339,6 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
             let subviews = this.subviews.slice();
             subviews.reverse()
             subviews.forEach(subview => {
-                console.log("subview" + JSON.stringify(convertPointToChildView(point, this, subview)));
                 let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
                 if (subTarget) { target = subTarget; }
             })

@@ -19,7 +19,6 @@ export class Window extends View {
             this.nativeObject = XTRWindow.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
             this.init();
-            
         }
     }
 

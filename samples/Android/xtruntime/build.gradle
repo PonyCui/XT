@@ -34,7 +34,7 @@ dependencies {
     compile 'com.eclipsesource.j2v8:j2v8:4.5.0@aar'
     compile 'com.facebook.rebound:rebound:0.3.8'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
-    compile 'com.github.yyued:XT-Polyfill:49c432acfb'
+    compile 'com.github.yyued:XT-Polyfill:d94ed79521'
 }
 repositories {
     mavenCentral()

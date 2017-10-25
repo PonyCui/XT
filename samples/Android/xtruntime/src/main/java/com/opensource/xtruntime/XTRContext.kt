@@ -1,10 +1,7 @@
 package com.opensource.xtruntime
 
 import android.os.Handler
-import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Array
-import com.eclipsesource.v8.V8Function
-import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.*
 import com.opensource.xtpolyfill.XTPolyfill
 
 /**
@@ -13,25 +10,44 @@ import com.opensource.xtpolyfill.XTPolyfill
 class XTRContext(private val thread: Thread, val appContext: android.content.Context) {
 
     var xtrBridge: XTRBridge? = null
-    val v8Runtime = V8.createV8Runtime()
-    val handler = Handler()
+    val v8Runtime: V8 = V8.createV8Runtime()
+    private val handler = Handler()
+    private val v8Releasable: MutableList<Releasable> = mutableListOf()
 
     init {
         XTPolyfill.addPolyfills(v8Runtime)
-//        XTPolyfill.exceptionHandler = {
-//            handleException(it)
-//        }
+        XTPolyfill.exceptionHandler = {
+            handleException(it)
+        }
+        XTPolyfill.consoleMessageHandler = {
+            handleConsoleMessage(it)
+        }
     }
 
     fun handleException(e: Exception) {
-
+        e.printStackTrace()
     }
 
     fun handleConsoleMessage(message: String) {
+        System.out.println(message)
+    }
 
+    fun autoRelease(releasable: V8Object): V8Object {
+        v8Releasable.add(releasable)
+        return releasable
+    }
+
+    fun release() {
+        v8Releasable.forEach { it.release() }
+        try {
+            v8Runtime.release(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun evaluateScript(script: String): Any? {
+        if (v8Runtime.isReleased) { return null }
         return try {
             return v8Runtime.executeScript(script)
         } catch (e: Exception) {
@@ -40,30 +56,22 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         }
     }
 
-    fun invokeMethod(scriptObject: V8Object?, method: String, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+    fun invokeMethod(scriptObject: V8Object?, method: String, arguments: List<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+        if (v8Runtime.isReleased) { return null }
         if (scriptObject == null) {
             return V8.getUndefined()
         }
         try {
             if (Thread.currentThread() != thread) {
                 handler.post {
-                    val v8Args = V8Array(v8Runtime)
-                    arguments.forEach {
-                        //todo
-                    }
-                    val returnValue = scriptObject.executeFunction(method, v8Args)
-                    v8Args.release()
-                    asyncResult?.invoke(returnValue)
+                    invokeMethod(scriptObject, method, arguments, asyncResult)
                 }
             }
             else {
-                val v8Args = V8Array(v8Runtime)
-                arguments.forEach {
-                    //todo
-                }
-                val returnValue = scriptObject.executeFunction(method, v8Args)
+                val params = if (arguments.isEmpty()) null else XTRUtils.fromObject(this, arguments) as? V8Array
+                val returnValue = scriptObject.executeFunction(method, params)
+                params?.release()
                 asyncResult?.invoke(returnValue)
-                v8Args.release()
                 return returnValue
             }
         } catch (e: Exception) {
@@ -72,27 +80,20 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         return null
     }
 
-    fun callWithArguments(func: V8Function, arguments: Array<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+    fun callWithArguments(func: V8Function, arguments: List<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+        if (v8Runtime.isReleased) { return null }
         return try {
             if (Thread.currentThread() != thread) {
                 handler.post {
-                    val v8Args = V8Array(v8Runtime)
-                    arguments.forEach {
-                        //todo
-                    }
-                    val returnValue = func.call(null, v8Args)
-                    v8Args.release()
-                    asyncResult?.invoke(returnValue)
+                    callWithArguments(func, arguments, asyncResult)
                 }
                 null
             }
             else {
-                val v8Args = V8Array(v8Runtime)
-                arguments.forEach {
-                    //todo
-                }
-                val returnValue = func.call(null, v8Args)
-                v8Args.release()
+                val params = XTRUtils.fromObject(this, arguments) as? V8Array
+                val returnValue = func.call(null, params)
+                params?.release()
+                asyncResult?.invoke(returnValue)
                 returnValue
             }
         } catch (e: Exception) {

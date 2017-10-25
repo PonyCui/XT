@@ -1,7 +1,9 @@
 package com.opensource.xtruntime
 
+import com.eclipsesource.v8.Releasable
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.MemoryManager
 import java.util.*
 
 /**
@@ -16,7 +18,11 @@ interface XTRObject {
         fun requestNativeObject(scriptObject: V8Object): XTRObject? {
             return try {
                 tmpNativeObject = null
-                (scriptObject.get("nativeObject") as? V8Object)?.executeVoidFunction("xtr_decodeObject", null)
+                val nativeObject = scriptObject.get("nativeObject")
+                (nativeObject as? V8Object)?.let {
+                    it.executeJSFunction("xtr_decodeObject")
+                }
+                (nativeObject as? Releasable)?.release()
                 tmpNativeObject
             } catch (e: Exception) {
                 null

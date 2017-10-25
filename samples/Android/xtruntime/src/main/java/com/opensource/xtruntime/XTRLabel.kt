@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -31,7 +32,7 @@ class XTRLabel: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -169,8 +170,8 @@ class XTRLabel: XTRComponent() {
                 resetTextLines()
             }
 
-        fun xtr_font(): XTRFont {
-            return this.xtrFont
+        fun xtr_font(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.xtrFont) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setFont(value: V8Object) {
@@ -179,8 +180,8 @@ class XTRLabel: XTRComponent() {
             }
         }
 
-        fun xtr_textColor(): XTRColor {
-            return XTRUtils.fromIntColor(textView.currentTextColor)
+        fun xtr_textColor(): V8Value {
+            return XTRUtils.fromObject(xtrContext, XTRUtils.fromIntColor(textView.currentTextColor)) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setTextColor(value: V8Object) {
@@ -269,14 +270,14 @@ class XTRLabel: XTRComponent() {
             lineBreakMode = value
         }
 
-        fun xtr_textRectForBounds(value: V8Object): XTRRect {
+        fun xtr_textRectForBounds(value: V8Object): V8Value {
             XTRUtils.toRect(value)?.let {
                 textView.measure(
                         MeasureSpec.makeMeasureSpec((it.width * resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST),
                         MeasureSpec.makeMeasureSpec((it.height * resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST)
                 )
             }
-            return XTRRect(0.0, 0.0, textView.measuredWidth.toDouble() / resources.displayMetrics.density, textView.measuredHeight.toDouble() / resources.displayMetrics.density)
+            return XTRUtils.fromObject(xtrContext, XTRRect(0.0, 0.0, textView.measuredWidth.toDouble() / resources.displayMetrics.density, textView.measuredHeight.toDouble() / resources.displayMetrics.density)) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_textRectForBounds(value: XTRRect): XTRRect {
@@ -289,9 +290,9 @@ class XTRLabel: XTRComponent() {
             return XTRRect(0.0, 0.0, textView.measuredWidth.toDouble() / resources.displayMetrics.density, textView.measuredHeight.toDouble() / resources.displayMetrics.density)
         }
 
-        override fun xtr_intrinsicContentSize(width: Double): XTRSize {
+        override fun xtr_intrinsicContentSize(width: Double): V8Value {
             val textBounds = xtr_textRectForBounds(XTRRect(0.0, 0.0, width, Double.MAX_VALUE))
-            return XTRSize(Math.ceil(textBounds.width), Math.ceil(textBounds.height))
+            return XTRUtils.fromObject(xtrContext, XTRSize(Math.ceil(textBounds.width), Math.ceil(textBounds.height))) as? V8Object ?: V8.getUndefined()
         }
 
     }

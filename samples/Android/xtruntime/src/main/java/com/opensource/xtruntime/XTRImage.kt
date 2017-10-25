@@ -66,7 +66,7 @@ class XTRImage: XTRComponent() {
                     conn.connect()
                     inputStream = conn.getInputStream()
                     val bitmap = BitmapFactory.decodeStream(inputStream)
-                    xtrContext.callWithArguments(success, arrayOf(
+                    xtrContext.callWithArguments(success, listOf(
                             InnerObject(
                                     bitmap,
                                     1,
@@ -77,7 +77,7 @@ class XTRImage: XTRComponent() {
                     inputStream?.close()
                 }
             } catch (e: Exception) {
-                xtrContext.callWithArguments(failure, arrayOf())
+                xtrContext.callWithArguments(failure, listOf())
             } finally {
                 inputStream?.close()
             }
@@ -98,7 +98,7 @@ class XTRImage: XTRComponent() {
                     conn.connect()
                     inputStream = conn.getInputStream()
                     val bitmap = BitmapFactory.decodeStream(inputStream)
-                    xtrContext.callWithArguments(success, arrayOf(
+                    xtrContext.callWithArguments(success, listOf(
                             InnerObject(
                                     bitmap,
                                     scale,
@@ -109,7 +109,7 @@ class XTRImage: XTRComponent() {
                     inputStream?.close()
                 }
             } catch (e: Exception) {
-                xtrContext.callWithArguments(failure, arrayOf())
+                xtrContext.callWithArguments(failure, listOf())
             } finally {
                 inputStream?.close()
             }
@@ -137,7 +137,7 @@ class XTRImage: XTRComponent() {
         try {
             inputStream = xtrContext.appContext.assets.open(imgNamed)
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            xtrContext.callWithArguments(success, arrayOf(
+            xtrContext.callWithArguments(success, listOf(
                     InnerObject(
                             bitmap,
                             targetScale.toInt(),
@@ -147,7 +147,7 @@ class XTRImage: XTRComponent() {
             ))
             inputStream?.close()
         } catch (e: Exception) {
-            xtrContext.callWithArguments(failure, arrayOf())
+            xtrContext.callWithArguments(failure, listOf())
             inputStream?.close()
         }
     }
@@ -158,7 +158,7 @@ class XTRImage: XTRComponent() {
         try {
             val bytes = Base64.decode(value, 0)
             val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            xtrContext.callWithArguments(success, arrayOf(
+            xtrContext.callWithArguments(success, listOf(
                     InnerObject(
                             bitmap,
                             scale.toInt(),

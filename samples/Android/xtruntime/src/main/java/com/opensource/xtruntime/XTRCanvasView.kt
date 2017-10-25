@@ -3,6 +3,7 @@ package com.opensource.xtruntime
 import android.graphics.*
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 
 /**
  * Created by cuiminghui on 2017/9/22.
@@ -18,7 +19,7 @@ class XTRCanvasView: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -104,8 +105,8 @@ class XTRCanvasView: XTRComponent() {
             fakeState.globalAlpha = value
         }
 
-        fun xtr_fillStyle(): XTRColor? {
-            return fakeState.fillStyle
+        fun xtr_fillStyle(): V8Value {
+            return XTRUtils.fromObject(xtrContext, fakeState.fillStyle) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setFillStyle(value: V8Object) {
@@ -118,8 +119,8 @@ class XTRCanvasView: XTRComponent() {
             fakeState.fillStyle = XTRUtils.toColor(value)
         }
 
-        fun xtr_strokeStyle(): XTRColor? {
-            return fakeState.strokeStyle
+        fun xtr_strokeStyle(): V8Value {
+            return XTRUtils.fromObject(xtrContext, fakeState.strokeStyle) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setStrokeStyle(value: V8Object) {

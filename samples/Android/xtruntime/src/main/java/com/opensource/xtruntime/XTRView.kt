@@ -56,7 +56,7 @@ class XTRView: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -65,8 +65,10 @@ class XTRView: XTRComponent() {
 
     fun animationWithDuration(duration: Double, animations: V8Function, completion: V8Function) {
         val duration = duration as? Double ?: return
+        val animations = animations.twin()
+        val completion = completion.twin()
         animationEnabled = true
-        xtrContext.callWithArguments(animations, arrayOf())
+        xtrContext.callWithArguments(animations, listOf())
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -88,7 +90,11 @@ class XTRView: XTRComponent() {
                     animator?.removeAllUpdateListeners()
                     if (!completed) {
                         completed = true
-                        xtrContext.callWithArguments(completion, arrayOf())
+                        xtrContext.callWithArguments(completion, listOf())
+                    }
+                    if (!animations.runtime.isReleased) {
+                        animations.release()
+                        completion.release()
                     }
                 }
                 override fun onAnimationCancel(p0: Animator?) {}
@@ -152,8 +158,10 @@ class XTRView: XTRComponent() {
     fun animationWithTensionAndFriction(tension: Double, friction: Double, animations: V8Function, completion: V8Function) {
         val tension = tension as? Double ?: return
         val friction = friction as? Double ?: return
+        val animations = animations.twin()
+        val completion = completion.twin()
         animationEnabled = true
-        xtrContext.callWithArguments(animations, arrayOf())
+        xtrContext.callWithArguments(animations, listOf())
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -175,7 +183,11 @@ class XTRView: XTRComponent() {
                     spring?.destroy()
                     if (!completed) {
                         completed = true
-                        xtrContext.callWithArguments(completion, arrayOf())
+                        xtrContext.callWithArguments(completion, listOf())
+                    }
+                    if (!animations.runtime.isReleased) {
+                        animations.release()
+                        completion.release()
                     }
                 }
             })
@@ -192,8 +204,10 @@ class XTRView: XTRComponent() {
     fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: V8Function, completion: V8Function) {
         val bounciness = bounciness as? Double ?: return
         val speed = speed as? Double ?: return
+        val animations = animations.twin()
+        val completion = completion.twin()
         animationEnabled = true
-        xtrContext.callWithArguments(animations, arrayOf())
+        xtrContext.callWithArguments(animations, listOf())
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -215,7 +229,11 @@ class XTRView: XTRComponent() {
                     spring?.destroy()
                     if (!completed) {
                         completed = true
-                        xtrContext.callWithArguments(completion, arrayOf())
+                        xtrContext.callWithArguments(completion, listOf())
+                    }
+                    if (!animations.runtime.isReleased) {
+                        animations.release()
+                        completion.release()
                     }
                 }
 
@@ -394,8 +412,8 @@ class XTRView: XTRComponent() {
             super.requestLayout()
         }
 
-        fun xtr_frame(): XTRRect {
-            return this.frame ?: XTRRect(0.0, 0.0, (width / resources.displayMetrics.density).toDouble(), (height / resources.displayMetrics.density).toDouble())
+        fun xtr_frame(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.frame ?: XTRRect(0.0, 0.0, (width / resources.displayMetrics.density).toDouble(), (height / resources.displayMetrics.density).toDouble())) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setFrame(value: V8Object) {
@@ -463,8 +481,8 @@ class XTRView: XTRComponent() {
                 invalidate()
             }
 
-        fun xtr_bounds(): XTRRect {
-            return this.bounds
+        fun xtr_bounds(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.bounds) as? V8Object ?: V8.getUndefined()
         }
 
         var transformMatrix: XTRMatrix = XTRMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
@@ -477,8 +495,8 @@ class XTRView: XTRComponent() {
             return transformMatrix.toNativeMatrix(resources.displayMetrics.density)
         }
 
-        fun xtr_transform(): XTRMatrix {
-            return transformMatrix
+        fun xtr_transform(): V8Value {
+            return XTRUtils.fromObject(xtrContext, transformMatrix) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setTransform(value: V8Object) {
@@ -526,8 +544,8 @@ class XTRView: XTRComponent() {
                 invalidate()
             }
 
-        fun xtr_backgroundColor(): XTRColor? {
-            return this.backgroundColor
+        fun xtr_backgroundColor(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.backgroundColor) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setBackgroundColor(value: V8Object) {
@@ -588,8 +606,12 @@ class XTRView: XTRComponent() {
                 tintColorDidChange()
             }
 
-        fun xtr_tintColor(): XTRColor {
-            return this.tintColor ?: (parent as? XTRView.InnerObject)?.xtr_tintColor() ?: XTRColor(0.0, 122.0 / 255.0, 1.0, 1.0)
+        fun xtr_tintColor(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.tintColor ?: (parent as? XTRView.InnerObject)?.xtr_tintColor() ?: XTRColor(0.0, 122.0 / 255.0, 1.0, 1.0)) as? V8Object ?: V8.getUndefined()
+        }
+
+        fun xtr_tintColorXTRTypes(): XTRColor {
+            return this.tintColor ?: (parent as? XTRView.InnerObject)?.xtr_tintColorXTRTypes() ?: XTRColor(0.0, 122.0 / 255.0, 1.0, 1.0)
         }
 
         fun xtr_setTintColor(value: V8Object) {
@@ -599,7 +621,7 @@ class XTRView: XTRComponent() {
         }
 
         open fun tintColorDidChange() {
-            xtrContext.invokeMethod(scriptObject, "tintColorDidChange", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "tintColorDidChange", listOf())
             (0 until childCount).forEach {
                 (getChildAt(it) as? XTRView.InnerObject)?.let {
                     it.tintColorDidChange()
@@ -656,8 +678,8 @@ class XTRView: XTRComponent() {
                 invalidate()
             }
 
-        fun xtr_borderColor(): XTRColor? {
-            return this.borderColor
+        fun xtr_borderColor(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.borderColor) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setBorderColor(value: V8Object) {
@@ -748,14 +770,10 @@ class XTRView: XTRComponent() {
             return V8.getUndefined()
         }
 
-        fun xtr_subviews(): V8Array {
-            val v8Array = V8Array(xtrContext.v8Runtime)
-            (0 until childCount).forEach {
-                (getChildAt(it) as? XTRView.InnerObject)?.let {
-                    (XTRUtils.fromObject(xtrContext, it) as? V8Value)?.let { v8Array.push(it) }
-                }
-            }
-            return v8Array
+        fun xtr_subviews(): V8Array? {
+            return XTRUtils.fromObject(xtrContext, (0 until childCount).map {
+                return@map getChildAt(it)
+            }) as? V8Array
         }
 
         fun xtr_windowObject(): XTRWindow.InnerObject? {
@@ -827,12 +845,12 @@ class XTRView: XTRComponent() {
         }
 
         fun xtr_addSubview(view: XTRView.InnerObject) {
-            view.willMoveToSuperview(this)
-            view.willMoveToWindow(xtr_windowObject())
+//            view.willMoveToSuperview(this)
+//            view.willMoveToWindow(xtr_windowObject())
             addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             didAddSubview(view)
-            view.didMoveToSuperview()
-            view.didMoveToWindow()
+//            view.didMoveToSuperview()
+//            view.didMoveToWindow()
         }
 
         fun xtr_insertSubviewBelow(view: V8Object, siblingSubview: V8Object) {
@@ -869,43 +887,35 @@ class XTRView: XTRComponent() {
         }
 
         fun didAddSubview(subview: View) {
-            XTRUtils.fromObject(xtrContext, subview)?.let {
-                xtrContext.invokeMethod(scriptObject, "didAddSubview", arrayOf(it))
-            }
+            xtrContext.invokeMethod(scriptObject, "didAddSubview", listOf(subview))
         }
 
         fun willRemoveSubView(subview: View) {
-            XTRUtils.fromObject(xtrContext, subview)?.let {
-                xtrContext.invokeMethod(scriptObject, "willRemoveSubView", arrayOf(it))
-            }
+            xtrContext.invokeMethod(scriptObject, "willRemoveSubView", listOf(subview))
         }
 
         fun willMoveToSuperview(newSuperview: View?) {
             newSuperview?.let {
-                XTRUtils.fromObject(xtrContext, it)?.let {
-                    xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", arrayOf(it))
-                    return
-                }
+                xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", listOf(it))
+                return
             }
-            xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", listOf())
         }
 
         fun didMoveToSuperview() {
-            xtrContext.invokeMethod(scriptObject, "didMoveToSuperview", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "didMoveToSuperview", listOf())
         }
 
         fun willMoveToWindow(newWindow: XTRWindow.InnerObject?) {
             newWindow?.let {
-                XTRUtils.fromObject(xtrContext, it)?.let {
-                    xtrContext.invokeMethod(scriptObject, "willMoveToWindow", arrayOf(it))
-                    return
-                }
+                xtrContext.invokeMethod(scriptObject, "willMoveToWindow", listOf(it))
+                return
             }
-            xtrContext.invokeMethod(scriptObject, "willMoveToWindow", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "willMoveToWindow", listOf())
         }
 
         fun didMoveToWindow() {
-            xtrContext.invokeMethod(scriptObject, "didMoveToWindow", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "didMoveToWindow", listOf())
         }
 
         fun xtr_isDescendantOfView(view: V8Object): Boolean {
@@ -953,14 +963,14 @@ class XTRView: XTRComponent() {
 
         open fun layoutSubviews() {
             viewDelegate?.viewWillLayoutSubviews()
-            xtrContext.invokeMethod(scriptObject, "layoutSubviews", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "layoutSubviews", listOf())
             viewDelegate?.viewDidLayoutSubviews()
         }
 
         // Mark: View LayoutConstraint
 
-        open fun xtr_intrinsicContentSize(width: Double): XTRSize? {
-            return null
+        open fun xtr_intrinsicContentSize(width: Double): V8Value {
+            return V8.getUndefined()
         }
 
         // Mark: View Interactive

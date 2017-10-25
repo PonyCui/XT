@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import com.eclipsesource.v8.Releasable
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
@@ -19,7 +20,7 @@ class XTRNavigationController: XTRComponent() {
     }
 
     fun createScriptObject(scriptObject: V8Object): V8Object {
-        return XTRNavigationController.InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
+        return XTRNavigationController.InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     open class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRViewController.InnerObject(scriptObject, xtrContext) {
@@ -52,6 +53,7 @@ class XTRNavigationController: XTRComponent() {
                         it.view?.frame = this.view?.bounds
                     }
                 }
+                it.forEach { (it as? Releasable)?.release() }
             }
         }
 
@@ -149,7 +151,7 @@ class XTRNavigationController: XTRComponent() {
                 }
                 isAnimating = false
             }
-            return XTRUtils.fromObject(xtrContext, targetViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) as? XTRViewController.InnerObject }) as? V8Array
+            return XTRUtils.fromObject(xtrContext, targetViewControllers) as? V8Array
         }
 
         fun xtr_popToViewController(viewController: XTRViewController.InnerObject?, animated: Boolean): V8Array? {
@@ -194,7 +196,7 @@ class XTRNavigationController: XTRComponent() {
                 }
                 isAnimating = false
             }
-            return XTRUtils.fromObject(xtrContext, targetViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) as? XTRViewController.InnerObject }) as? V8Array
+            return XTRUtils.fromObject(xtrContext, targetViewControllers) as? V8Array
         }
 
         fun xtr_popToRootViewController(animated: Boolean): V8Array? {

@@ -37,7 +37,7 @@ class XTRCustomView: XTRComponent()  {
     }
 
     fun createScriptObject(className: String, rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(className, scriptObject.twin(), xtrContext)
+        val view = InnerObject(className, xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -83,7 +83,7 @@ class XTRCustomView: XTRComponent()  {
         }
 
         fun emitMessage(message: Any?): Any? {
-            return xtrContext.invokeMethod(scriptObject, "handleMessage", arrayOf(XTRUtils.fromObject(xtrContext, message) ?: V8.getUndefined()))
+            return xtrContext.invokeMethod(scriptObject, "handleMessage", listOf(message ?: V8.getUndefined()))
         }
 
     }

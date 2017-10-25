@@ -3,6 +3,7 @@ package com.opensource.xtruntime
 import android.graphics.*
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 
 /**
  * Created by cuiminghui on 2017/9/6.
@@ -19,7 +20,7 @@ class XTRImageView: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -72,7 +73,7 @@ class XTRImageView: XTRComponent() {
                     sharedImagePaint.isAntiAlias = true
                     sharedImagePaint.alpha = (alpha * 255).toInt()
                     if (image.renderingMode == 2) {
-                        sharedImagePaint.colorFilter = PorterDuffColorFilter(xtr_tintColor().intColor(), PorterDuff.Mode.SRC_IN)
+                        sharedImagePaint.colorFilter = PorterDuffColorFilter(xtr_tintColorXTRTypes().intColor(), PorterDuff.Mode.SRC_IN)
                     }
                     when (contentMode) {
                         0 -> {
@@ -112,9 +113,9 @@ class XTRImageView: XTRComponent() {
             }
         }
 
-        override fun xtr_intrinsicContentSize(width: Double): XTRSize? {
+        override fun xtr_intrinsicContentSize(width: Double): V8Value {
             image?.let {
-                return it.size
+                return XTRUtils.fromObject(xtrContext, it.size) as? V8Object ?: V8.getUndefined()
             }
             return super.xtr_intrinsicContentSize(width)
         }

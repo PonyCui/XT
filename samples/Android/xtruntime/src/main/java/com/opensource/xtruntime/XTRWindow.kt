@@ -26,7 +26,7 @@ class XTRWindow: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
@@ -81,14 +81,14 @@ class XTRWindow: XTRComponent() {
         }
 
         fun keyboardWillShow(height: Int) {
-            xtrContext.invokeMethod(scriptObject, "handleKeyboardShow", arrayOf(
+            xtrContext.invokeMethod(scriptObject, "handleKeyboardShow", listOf(
                     XTRRect(0.0, 0.0, this.bounds.width, height.toDouble() / resources.displayMetrics.density),
                     0.15
             ))
         }
 
         fun keyboardWillHide() {
-            xtrContext.invokeMethod(scriptObject, "handleKeyboardHide", arrayOf(
+            xtrContext.invokeMethod(scriptObject, "handleKeyboardHide", listOf(
                     0.0
             ))
             firstResponder?.let {
@@ -98,7 +98,7 @@ class XTRWindow: XTRComponent() {
         }
 
         fun orientationChanged() {
-            xtrContext.invokeMethod(scriptObject, "handleOrientationChange", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "handleOrientationChange", listOf())
         }
 
         fun xtr_setStatusBarHidden(hidden: Boolean) {
@@ -130,19 +130,19 @@ class XTRWindow: XTRComponent() {
                     val pid = event.getPointerId(0).toString()
                     val timestamp = System.nanoTime() / 1000000
                     val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", arrayOf(pid, timestamp, point))
+                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val pid = event.getPointerId(0).toString()
                     val timestamp = System.nanoTime() / 1000000
                     val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-                    xtrContext.invokeMethod(scriptObject, "handlePointerMove", arrayOf(pid, timestamp, point))
+                    xtrContext.invokeMethod(scriptObject, "handlePointerMove", listOf(pid, timestamp, point))
                 }
                 MotionEvent.ACTION_UP -> {
                     val pid = event.getPointerId(0).toString()
                     val timestamp = System.nanoTime() / 1000000
                     val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", arrayOf(pid, timestamp, point))
+                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
                 }
                 MotionEvent.ACTION_POINTER_DOWN -> {
 //                    val timestamp = System.nanoTime() / 1000000

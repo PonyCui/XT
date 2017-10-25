@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
+import android.os.Handler
 import android.view.View
 import com.eclipsesource.v8.*
 
@@ -197,6 +198,7 @@ class XTRUtils {
             if (target == null) {
                 return V8.getUndefined()
             }
+            (target as? V8Object)?.let { return it }
             (target as? ByteArray)?.let { return it }
             (target as? Boolean)?.let { return it }
             (target as? Short)?.let { return it.toInt() }
@@ -220,14 +222,27 @@ class XTRUtils {
                     (item as? Double)?.let { v8Array.push(it) }
                     (item as? String)?.let { v8Array.push(it) }
                     (item as? V8Value)?.let { v8Array.push(it) }
+                    (item as? Releasable)?.release()
                 }
                 return v8Array
             }
             (target as? XTRObject)?.let { target ->
-                (((context.v8Runtime.get("window") as? V8Object)?.get("XTRObjCreater") as? V8Object)?.get("create") as? V8Function)?.let {
-                    val params = V8Array(context.v8Runtime)
-                    params.push(target.requestV8Object(context.v8Runtime))
-                    (it.call(((context.v8Runtime.get("window") as? V8Object)?.get("XTRObjCreater") as? V8Object), params) as? V8Object)?.let { return it }
+                (context.v8Runtime.get("window") as? V8Object)?.let { window ->
+                    (window.get("XTRObjCreater") as? V8Object)?.let { creater ->
+                        (creater.get("create") as? V8Function)?.let { createFunc ->
+                            val params = V8Array(context.v8Runtime)
+                            val v8Object = target.requestV8Object(context.v8Runtime)
+                            params.push(v8Object)
+                            val result = (createFunc.call(creater, params) as? V8Object)
+                            v8Object.release()
+                            params.release()
+                            createFunc.release()
+                            creater.release()
+                            window.release()
+                            return result ?: V8.getUndefined()
+                        }
+
+                    }
                 }
             }
             return V8.getUndefined()

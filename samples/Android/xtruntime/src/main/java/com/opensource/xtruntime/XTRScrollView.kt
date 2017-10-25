@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 
 /**
  * Created by cuiminghui on 2017/9/8.
@@ -51,11 +52,11 @@ class XTRScrollView: XTRComponent() {
             return v8Object
         }
 
-        fun xtr_contentOffset(): XTRPoint {
-            return XTRPoint(
+        fun xtr_contentOffset(): V8Value {
+            return XTRUtils.fromObject(xtrContext, XTRPoint(
                     (this.innerView.scrollX.toFloat() / resources.displayMetrics.density).toDouble(),
                     (this.innerView.scrollY.toFloat() / resources.displayMetrics.density).toDouble()
-            )
+            )) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setContentOffset(value: V8Object) {

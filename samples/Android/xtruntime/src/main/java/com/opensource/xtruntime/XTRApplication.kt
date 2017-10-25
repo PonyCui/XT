@@ -18,7 +18,7 @@ class XTRApplication: XTRComponent() {
     }
 
     fun create(scriptObject: V8Object): V8Object {
-        return InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
+        return InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     class InnerObject(val scriptObject: V8Object, val xtrContext: XTRContext): XTRObject {

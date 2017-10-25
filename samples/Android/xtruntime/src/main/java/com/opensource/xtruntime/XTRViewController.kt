@@ -20,7 +20,7 @@ open class XTRViewController: XTRComponent() {
     }
 
     fun createScriptObject(scriptObject: V8Object): V8Object {
-        return InnerObject(scriptObject.twin(), xtrContext).requestV8Object(xtrContext.v8Runtime)
+        return InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
     open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): XTRObject {
@@ -75,7 +75,7 @@ open class XTRViewController: XTRComponent() {
         }
 
         fun xtr_childViewControllers(): V8Array? {
-            return XTRUtils.fromObject(xtrContext, childViewControllers.mapNotNull { return@mapNotNull XTRUtils.fromObject(xtrContext, it) as? XTRViewController.InnerObject }) as? V8Array
+            return XTRUtils.fromObject(xtrContext, childViewControllers) as? V8Array
         }
 
         fun xtr_addChildViewController(childController: V8Object) {
@@ -129,50 +129,46 @@ open class XTRViewController: XTRComponent() {
 
         fun willMoveToParentViewController(parent: XTRViewController.InnerObject?) {
             parent?.let {
-                XTRUtils.fromObject(xtrContext, it)?.let {
-                    xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", arrayOf(it))
-                    return
-                }
+                xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", listOf(it))
+                return
             }
-            xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", listOf())
         }
 
         fun didMoveToParentViewController(parent: XTRViewController.InnerObject?) {
             parent?.let {
-                XTRUtils.fromObject(xtrContext, it)?.let {
-                    xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", arrayOf(it))
-                    return
-                }
+                xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", listOf(it))
+                return
             }
-            xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", listOf())
         }
 
         open fun viewDidLoad() {
-            xtrContext.invokeMethod(scriptObject, "viewDidLoad", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidLoad", listOf())
         }
 
         open fun viewWillAppear() {
-            xtrContext.invokeMethod(scriptObject, "viewWillAppear", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewWillAppear", listOf())
         }
 
         open fun viewDidAppear() {
-            xtrContext.invokeMethod(scriptObject, "viewDidAppear", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidAppear", listOf())
         }
 
         open fun viewWillDisappear() {
-            xtrContext.invokeMethod(scriptObject, "viewWillDisappear", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewWillDisappear", listOf())
         }
 
         open fun viewDidDisappear() {
-            xtrContext.invokeMethod(scriptObject, "viewDidDisappear", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidDisappear", listOf())
         }
 
         open fun viewWillLayoutSubviews() {
-            xtrContext.invokeMethod(scriptObject, "viewWillLayoutSubviews", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewWillLayoutSubviews", listOf())
         }
 
         open fun viewDidLayoutSubviews() {
-            xtrContext.invokeMethod(scriptObject, "viewDidLayoutSubviews", arrayOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidLayoutSubviews", listOf())
         }
 
     }

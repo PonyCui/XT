@@ -29,6 +29,11 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
         }
     }
 
+    override fun onStop() {
+        bridge?.xtrContext?.release()
+        super.onStop()
+    }
+
     open fun onBridgeReady() {
         bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
             bridge?.xtrApplication?.delegate?.window?.let {

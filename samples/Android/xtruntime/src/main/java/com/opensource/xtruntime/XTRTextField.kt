@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 
 
 /**
@@ -32,14 +33,12 @@ class XTRTextField: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(scriptObject.twin(), xtrContext)
+        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
         return view.requestV8Object(xtrContext.v8Runtime)
     }
-
-    class Range(val location: Int, val length: Int)
 
     class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
 
@@ -47,7 +46,7 @@ class XTRTextField: XTRComponent() {
         val onFocusListener = OnFocusChangeListener { _, _ ->
             if (editText.isFocused) {
                 XTRWindow.firstResponder = this
-                (xtrContext.invokeMethod(scriptObject, "handleShouldBeginEditing", arrayOf()) as? Boolean)?.let {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldBeginEditing", listOf()) as? Boolean)?.let {
                     if (!it) {
                         this.xtr_blur()
                         return@OnFocusChangeListener
@@ -56,10 +55,10 @@ class XTRTextField: XTRComponent() {
                 if (clearsOnBeginEditing) {
                     editText.editableText?.clear()
                 }
-                xtrContext.invokeMethod(scriptObject, "handleDidBeginEditing", arrayOf())
+                xtrContext.invokeMethod(scriptObject, "handleDidBeginEditing", listOf())
             }
             else {
-                xtrContext.invokeMethod(scriptObject, "handleDidEndEditing", arrayOf())
+                xtrContext.invokeMethod(scriptObject, "handleDidEndEditing", listOf())
             }
             resetLayout()
         }
@@ -81,8 +80,11 @@ class XTRTextField: XTRComponent() {
                     } else {
                         V8.getUndefined()
                     }
-                    (xtrContext.invokeMethod(scriptObject , "handleShouldChange", arrayOf(
-                        Range(p1, if (p2 > p3) p3 else p2 - p3), replacementString
+                    val v8Object = V8Object(scriptObject.runtime)
+                    v8Object.add("location", p1)
+                    v8Object.add("length", if (p2 > p3) p3 else p2 - p3)
+                    (xtrContext.invokeMethod(scriptObject , "handleShouldChange", listOf(
+                        v8Object, replacementString
                     )) as? Boolean)?.let {
                         if (!it) {
                             onRevert = true
@@ -99,6 +101,7 @@ class XTRTextField: XTRComponent() {
                             lastCursorEnd = editText.selectionEnd
                         }
                     }
+                    v8Object.release()
                 }
             }
         }
@@ -112,7 +115,7 @@ class XTRTextField: XTRComponent() {
             editText.onFocusChangeListener = this.onFocusListener
             editText.addTextChangedListener(onTextChangeListener)
             editText.setOnEditorActionListener { _, _, _ ->
-                (xtrContext.invokeMethod(scriptObject, "handleShouldReturn", arrayOf()) as? Boolean)?.let {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldReturn", listOf()) as? Boolean)?.let {
                     return@setOnEditorActionListener it
                 }
                 return@setOnEditorActionListener false
@@ -225,8 +228,8 @@ class XTRTextField: XTRComponent() {
                 editText.typeface = Typeface.create(value.familyName, typefaceStyle)
             }
 
-        fun xtr_font(): XTRFont {
-            return this.xtrFont
+        fun xtr_font(): V8Value {
+            return XTRUtils.fromObject(xtrContext, this.xtrFont) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setFont(value: V8Object) {
@@ -235,8 +238,8 @@ class XTRTextField: XTRComponent() {
             }
         }
 
-        fun xtr_textColor(): XTRColor {
-            return XTRUtils.fromIntColor(editText.currentTextColor)
+        fun xtr_textColor(): V8Value {
+            return XTRUtils.fromObject(xtrContext, XTRUtils.fromIntColor(editText.currentTextColor)) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setTextColor(value: V8Object) {
@@ -277,8 +280,8 @@ class XTRTextField: XTRComponent() {
             this.editText.hint = value
         }
 
-        fun xtr_placeholderColor(): XTRColor {
-            return XTRUtils.fromIntColor(editText.currentHintTextColor)
+        fun xtr_placeholderColor(): V8Value {
+            return XTRUtils.fromObject(xtrContext, XTRUtils.fromIntColor(editText.currentHintTextColor)) as? V8Object ?: V8.getUndefined()
         }
 
         fun xtr_setPlaceholderColor(value: V8Object) {
@@ -310,7 +313,7 @@ class XTRTextField: XTRComponent() {
 
         private fun resetClearView() {
             if (clearView == null) {
-                (XTRUtils.toView(xtrContext.invokeMethod(scriptObject, "requestClearView", arrayOf())) as? XTRView.InnerObject)?.let {
+                (XTRUtils.toView(xtrContext.invokeMethod(scriptObject, "requestClearView", listOf())) as? XTRView.InnerObject)?.let {
                     clearView = it
                 }
             }
@@ -328,7 +331,7 @@ class XTRTextField: XTRComponent() {
         }
 
         fun xtr_onClearButtonTap() {
-            (xtrContext.invokeMethod(scriptObject, "handleShouldClear", arrayOf()) as? Boolean)?.let {
+            (xtrContext.invokeMethod(scriptObject, "handleShouldClear", listOf()) as? Boolean)?.let {
                 if (!it) { return }
             }
             this.editText.editableText?.clear()
@@ -518,7 +521,7 @@ class XTRTextField: XTRComponent() {
 
         fun xtr_blur() {
             if (this.editText.isFocused) {
-                (xtrContext.invokeMethod(scriptObject, "handleShouldEndEditing", arrayOf()) as? Boolean)?.let {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldEndEditing", listOf()) as? Boolean)?.let {
                     if (!it) {
                         return
                     }
