@@ -101,15 +101,11 @@ export class ViewController {
         if (this.supportOrientations.indexOf(Device.current.orientation) >= 0) {
             if (this.parentViewController && (this.parentViewController as any).className === "NavigationController") {
                 if (Device.current.orientation === DeviceOrientation.Portrait) {
+                    if (!this.parentViewController) { return; }
+                    const superViewFrame = this.parentViewController.view.frame;
+                    this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
+                    this.view.transform = new TransformMatrix()
                     sender.handleStatusBarHidden && sender.handleStatusBarHidden(false);
-                    setTimeout(() => {
-                        if (!this.parentViewController) { return; }
-                        const superViewFrame = this.parentViewController.view.frame;
-                        View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-                            this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
-                            this.view.transform = new TransformMatrix()
-                        })
-                    }, 500)
                 }
                 else if (Device.current.orientation === DeviceOrientation.LandscapeLeft) {
                     sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);

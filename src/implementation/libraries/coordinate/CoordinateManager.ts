@@ -19,6 +19,9 @@ export function convertPointToChildView(point: { x: number, y: number }, parent:
     while (current.superview) {
         stack.unshift(current.superview);
         current = current.superview
+        if (current == parent) {
+            break;
+        }
     }
     if (stack.indexOf(parent) < 0) {
         return point
@@ -30,19 +33,31 @@ export function convertPointToChildView(point: { x: number, y: number }, parent:
             const frame = nextView.frame;
             if (transform && !TransformMatrix.isIdentity(transform)) {
                 if (transform.a == 0.0 || transform.d == 0.0) {
-                    return { x: 0, y: 0 }
+                    let unmatrix = TransformMatrix.unmatrix(transform)
+                    let newMatrix = TransformMatrix.postTranslate(new TransformMatrix(), -frame.width / 2.0, -frame.height / 2.0)
+                    newMatrix = TransformMatrix.postRotate(newMatrix, unmatrix.degree * Math.PI / 180.0);
+                    newMatrix = TransformMatrix.postScale(newMatrix, unmatrix.scale.x, unmatrix.scale.y)
+                    newMatrix = TransformMatrix.postTranslate(newMatrix, unmatrix.translate.x, unmatrix.translate.y)
+                    newMatrix = TransformMatrix.postTranslate(newMatrix, frame.width / 2.0, frame.height / 2.0)
+                    let m = point.x - frame.x - newMatrix.tx;
+                    let n = point.y - frame.y - newMatrix.ty;
+                    let x = -((newMatrix.d * n / newMatrix.c) - m) / ((newMatrix.a * newMatrix.d / newMatrix.c) - newMatrix.b)
+                    let y = -(n - newMatrix.a * m / newMatrix.b) / (newMatrix.c - newMatrix.d * newMatrix.a / newMatrix.b)
+                    curPoint = { x: x, y: y }
                 }
-                let unmatrix = TransformMatrix.unmatrix(transform)
-                let newMatrix = TransformMatrix.postTranslate(new TransformMatrix(), -frame.width / 2.0, -frame.height / 2.0)
-                newMatrix = TransformMatrix.postRotate(newMatrix, unmatrix.degree * Math.PI / 180.0);
-                newMatrix = TransformMatrix.postScale(newMatrix, unmatrix.scale.x, unmatrix.scale.y)
-                newMatrix = TransformMatrix.postTranslate(newMatrix, unmatrix.translate.x, unmatrix.translate.y)
-                newMatrix = TransformMatrix.postTranslate(newMatrix, frame.width / 2.0, frame.height / 2.0)
-                let m = point.x - frame.x - newMatrix.tx;
-                let n = point.y - frame.y - newMatrix.ty;
-                let x = (n - m * newMatrix.c / newMatrix.d) / (newMatrix.a - newMatrix.b * newMatrix.c / newMatrix.a)
-                let y = -(m - n * newMatrix.b / newMatrix.a) / (newMatrix.d - newMatrix.c * newMatrix.b / newMatrix.d)
-                curPoint = { x: x, y: y }
+                else {
+                    let unmatrix = TransformMatrix.unmatrix(transform)
+                    let newMatrix = TransformMatrix.postTranslate(new TransformMatrix(), -frame.width / 2.0, -frame.height / 2.0)
+                    newMatrix = TransformMatrix.postRotate(newMatrix, unmatrix.degree * Math.PI / 180.0);
+                    newMatrix = TransformMatrix.postScale(newMatrix, unmatrix.scale.x, unmatrix.scale.y)
+                    newMatrix = TransformMatrix.postTranslate(newMatrix, unmatrix.translate.x, unmatrix.translate.y)
+                    newMatrix = TransformMatrix.postTranslate(newMatrix, frame.width / 2.0, frame.height / 2.0)
+                    let m = point.x - frame.x - newMatrix.tx;
+                    let n = point.y - frame.y - newMatrix.ty;
+                    let x = (n - m * newMatrix.c / newMatrix.d) / (newMatrix.a - newMatrix.b * newMatrix.c / newMatrix.a)
+                    let y = -(m - n * newMatrix.b / newMatrix.a) / (newMatrix.d - newMatrix.c * newMatrix.b / newMatrix.d)
+                    curPoint = { x: x, y: y }
+                }
             }
             else {
                 curPoint = { x: curPoint.x - frame.x, y: curPoint.y - frame.y }

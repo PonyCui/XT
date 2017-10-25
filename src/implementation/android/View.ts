@@ -333,15 +333,19 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
+        console.log(JSON.stringify(this.backgroundColor) + "xxx" + JSON.stringify(point))
         let target = undefined;
-        if (isPointInside(point, this)) {
+        if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
             target = this
-            let subviews = this.subviews.slice();
-            subviews.reverse()
-            subviews.forEach(subview => {
+            let subviews = this.subviews;
+            for (let index = subviews.length - 1; index >= 0; index--) {
+                let subview = subviews[index];
                 let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
-                if (subTarget) { target = subTarget; }
-            })
+                if (subTarget) {
+                    target = subTarget;
+                    break;
+                }
+            }
         }
         return target
     }
@@ -405,15 +409,15 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithDuration(duration, animations, completion || function() {});
+        XTRView.animationWithDuration(duration, animations, completion || function () { });
     }
 
     static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithTensionAndFriction(tension, friction, animations, completion || function() {})
+        XTRView.animationWithTensionAndFriction(tension, friction, animations, completion || function () { })
     }
 
     static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion || function() {})
+        XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion || function () { })
     }
 
     static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only
