@@ -346,31 +346,34 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         return target
     }
 
+    private touchingSuperview?: View = undefined
+
     touchesBegan(touches: Touch[], event: Event): void {
         GestureManager.onTouchesBegan(this, touches, event)
         if (this.superview) {
-            this.superview.touchesBegan(touches, event);
+            this.touchingSuperview = this.superview
+            this.touchingSuperview.touchesBegan(touches, event);
         }
     }
 
     touchesMoved(touches: Touch[], event: Event): void {
         GestureManager.onTouchesMoved(this, touches, event)
-        if (this.superview) {
-            this.superview.touchesMoved(touches, event);
+        if (this.touchingSuperview) {
+            this.touchingSuperview.touchesMoved(touches, event);
         }
     }
 
     touchesEnded(touches: Touch[], event: Event): void {
         GestureManager.onTouchesEnded(this, touches, event)
-        if (this.superview) {
-            this.superview.touchesEnded(touches, event);
+        if (this.touchingSuperview) {
+            this.touchingSuperview.touchesEnded(touches, event);
         }
     }
 
     touchesCancelled(touches: Touch[], event: Event): void {
         GestureManager.onTouchesCancelled(this, touches, event)
-        if (this.superview) {
-            this.superview.touchesCancelled(touches, event);
+        if (this.touchingSuperview) {
+            this.touchingSuperview.touchesCancelled(touches, event);
         }
     }
 
