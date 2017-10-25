@@ -6,7 +6,8 @@ export class TapGestureRecognizer implements GestureRecongnizer {
     owner?: GestureOwner
     enabled: boolean = true
     state: GestureRecognizerState = GestureRecognizerState.Possible
-    fire?: (state: GestureRecognizerState, viewLocation?: {x: number, y: number}, absLocation?: {x: number, y: number}) => void
+    tapsRequired = 1
+    fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: { x: number, y: number }) => void
 
     private touchStartPoint?: { x: number, y: number }[]
 
@@ -34,7 +35,7 @@ export class TapGestureRecognizer implements GestureRecongnizer {
             let invalidPoints = this.touchStartPoint.filter(pt => {
                 return touches.filter(t => Math.abs(pt.x - t.locationInView(owner as any).x) > 8.0 || Math.abs(pt.y - t.locationInView(owner as any).y) > 8.0).length > 0
             });
-            if (invalidPoints.length == 0) {
+            if (invalidPoints.length == 0 && touches[0].tapCount == this.tapsRequired) {
                 this.state = GestureRecognizerState.Recognized
                 this.fire && this.fire(this.state)
             }

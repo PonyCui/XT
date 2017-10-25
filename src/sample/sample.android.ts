@@ -34,9 +34,9 @@ class FirstViewController extends ViewController {
                 redView.backgroundColor = Color.redColor
             }
         }
-        redView.onTap = () => {
+        redView.onDoubleTap = () => {
             View.animationWithDuration(0.50, () => {
-                redView.transform = new TransformMatrix()
+                redView.backgroundColor = Color.whiteColor
             })
         }
         this.view.backgroundColor = Color.yellowColor

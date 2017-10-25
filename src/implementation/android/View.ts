@@ -402,7 +402,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     public set onDoubleTap(value: (() => void) | undefined) {
-        this.nativeObject.xtr_setDoubleTap(value);
+        const tapGesture = new TapGestureRecognizer();
+        tapGesture.owner = this
+        tapGesture.tapsRequired = 2
+        tapGesture.fire = value;
+        this.gestureRecongnizers.push(tapGesture);
     }
 
     public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
