@@ -9,6 +9,7 @@ import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerStat
 import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
 import { asArray } from "./utils"
 import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
+import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
@@ -408,7 +409,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
                     if (!this._validDoubleTap) {
                         value && value();
                     }
-                }, 550)
+                }, 400)
             }
             else {
                 value && value();
@@ -437,7 +438,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         longPressGesture.minimumPressDuration = this._longPressDuration
         longPressGesture.fire = (state, viewLocation, absLocation) => {
             let interactionState = InteractionState.Began;
-            switch (longPressGesture.state) {
+            switch (state) {
                 case GestureRecognizerState.Began:
                     interactionState = InteractionState.Began;
                     break;
@@ -457,7 +458,27 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
-        this.nativeObject.xtr_setPan(value);
+        const panGesture = new PanGestureRecognizer();
+        panGesture.owner = this
+        panGesture.fire = (state, viewLocation, absLocation) => {
+            let interactionState = InteractionState.Began;
+            switch (state) {
+                case GestureRecognizerState.Began:
+                    interactionState = InteractionState.Began;
+                    break;
+                case GestureRecognizerState.Changed:
+                    interactionState = InteractionState.Changed;
+                    break;
+                case GestureRecognizerState.Ended:
+                    interactionState = InteractionState.Ended;
+                    break;
+                case GestureRecognizerState.Cancelled:
+                    interactionState = InteractionState.Cancelled;
+                    break;
+            }
+            value && value(interactionState, viewLocation, absLocation);
+        };
+        this.gestureRecongnizers.push(panGesture);
     }
 
     // Mark: View Animation

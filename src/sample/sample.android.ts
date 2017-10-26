@@ -42,6 +42,19 @@ class FirstViewController extends ViewController {
                 redView.backgroundColor = Color.whiteColor
             })
         }
+        redView.onPan = (state, viewLocation, absLocation) => {
+            if (state === InteractionState.Began) {
+                redView.backgroundColor = Color.grayColor
+            }
+            if (state === InteractionState.Changed) {
+                if (viewLocation && viewLocation.x < 0) {
+                    redView.backgroundColor = Color.orangeColor
+                }
+            }
+            if (state === InteractionState.Ended) {
+                redView.backgroundColor = Color.redColor
+            }
+        }
         this.view.backgroundColor = Color.yellowColor
         this.view.addSubview(redView)
         setTimeout(() => {
