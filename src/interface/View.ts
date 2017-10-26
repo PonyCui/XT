@@ -99,7 +99,7 @@ export class View {
     onTap?: () => void
     onDoubleTap?: () => void
     onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
-    onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
+    onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }

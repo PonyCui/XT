@@ -457,7 +457,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         this.gestureRecongnizers.push(longPressGesture);
     }
 
-    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void) | undefined) {
         const panGesture = new PanGestureRecognizer();
         panGesture.owner = this
         panGesture.fire = (state, viewLocation, absLocation) => {
@@ -476,7 +476,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, viewLocation, absLocation);
+            value && value(interactionState, viewLocation, absLocation, panGesture.velocity);
         };
         this.gestureRecongnizers.push(panGesture);
     }

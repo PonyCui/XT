@@ -42,12 +42,12 @@ class FirstViewController extends ViewController {
                 redView.backgroundColor = Color.whiteColor
             })
         }
-        redView.onPan = (state, viewLocation, absLocation) => {
+        redView.onPan = (state, viewLocation, absLocation, velocity) => {
             if (state === InteractionState.Began) {
                 redView.backgroundColor = Color.grayColor
             }
             if (state === InteractionState.Changed) {
-                if (viewLocation && viewLocation.x < 0) {
+                if (velocity && velocity.x > 200.0) {
                     redView.backgroundColor = Color.orangeColor
                 }
             }
