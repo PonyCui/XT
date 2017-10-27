@@ -38,7 +38,6 @@ class XTRButton: XTRComponent() {
             (XTRUtils.toView(scriptObject.get("titleLabel")) as? XTRLabel.InnerObject)?.let {
                 titleLabel = it
             }
-            addTouches()
         }
 
         override fun requestV8Object(runtime: V8): V8Object {
@@ -176,58 +175,6 @@ class XTRButton: XTRComponent() {
                                 textHeight
                         )
                 )
-            }
-        }
-
-        private fun addTouches() {
-            xtr_setUserInteractionEnabled(true)
-            this.setOnClickListener({
-                xtrContext.invokeMethod(scriptObject, "handleTouchUpInside", listOf())
-            })
-        }
-
-        private var highlighted: Boolean = false
-            set(value) {
-                if (field == value) { return }
-                field = value
-                if (field) {
-                    XTRView().animationWithDuration(0.15, {
-                        imageView.alpha = 0.25f
-                        titleLabel.alpha = 0.25f
-                    }, {})
-                }
-                else {
-                    XTRView().animationWithDuration(0.15, {
-                        imageView.alpha = 1.0f
-                        titleLabel.alpha = 1.0f
-                    }, {})
-                }
-                xtrContext.invokeMethod(scriptObject, "handleHighlighted", listOf(field))
-            }
-
-        override fun onTouchEvent(event: MotionEvent?): Boolean {
-            handlePanEvents(event)
-            return super.onTouchEvent(event)
-        }
-
-        private fun handlePanEvents(event: MotionEvent?) {
-            when {
-                event?.action == MotionEvent.ACTION_DOWN -> highlighted = true
-                event?.action == MotionEvent.ACTION_MOVE -> {
-                    val scale = resources.displayMetrics.density
-                    val x = event?.x / scale
-                    val y = event?.y / scale
-                    highlighted = !(x < -44 || x > this.bounds.width + 44 || y < -44 || y > this.bounds.height + 44)
-                }
-                event?.action == MotionEvent.ACTION_UP -> {
-                    val scale = resources.displayMetrics.density
-                    val x = event?.x / scale
-                    val y = event?.y / scale
-                    if (!(x < -44 || x > this.bounds.width + 44 || y < -44 || y > this.bounds.height + 44)) {
-                        xtrContext.invokeMethod(scriptObject, "handleTouchUpInside", listOf())
-                    }
-                    highlighted = false
-                }
             }
         }
 

@@ -355,6 +355,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     touchesBegan(touches: Touch[], event: Event): void {
         GestureManager.onTouchesBegan(this, touches, event)
+        this.touchingSuperview = undefined;
         if (this.superview) {
             this.touchingSuperview = this.superview
             this.touchingSuperview.touchesBegan(touches, event);

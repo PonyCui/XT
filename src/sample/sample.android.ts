@@ -18,22 +18,13 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         // this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
-        const redView = new View(RectMake(0, 0, 44, 44))
-        redView.backgroundColor = Color.redColor
-        redView.userInteractionEnabled = true
-        redView.onTap = () => {
-            redView.backgroundColor = Color.grayColor
-            // this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        const fooView = new Button(RectMake(0, 100, 375, 44))
+        fooView.font = Font.systemFontOfSize(17)
+        fooView.title = "Hello, World!"
+        fooView.onTouchUpInside = () => {
+            fooView.title = "Testing..."
         }
-        this.view.addSubview(redView)
-    }
-
-}
-
-class SecondViewController extends ViewController {
-
-    viewDidLoad() {
-        this.view.backgroundColor = Color.grayColor
+        this.view.addSubview(fooView)
     }
 
 }

@@ -45,7 +45,7 @@ export class ViewController {
 
     loadView(): void {
         const view = new View();
-        view.backgroundColor = Color.yellowColor
+        view.backgroundColor = Color.whiteColor
         view.userInteractionEnabled = true;
         this.view = view;
     }
