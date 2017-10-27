@@ -17,13 +17,12 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const fooView = new ImageView(RectMake(0, 0, 300, 300))
-        fooView.cornerRadius = 150
-        fooView.clipsToBounds = true
-        Image.fromURL("http://img.hb.aicdn.com/0e4cde02c706dcdc4e62948d7c524d399ef40f28275c7b-T5LDsK_fw658", (it) => {
-            fooView.image = it
-        })
+        const fooView = new TextView(RectMake(100.0, 100.0, 200.0, 200.0))
+        fooView.backgroundColor = Color.grayColor
         this.view.addSubview(fooView)
+        this.view.onTap = () => {
+            fooView.blur()
+        }
     }
 
 }

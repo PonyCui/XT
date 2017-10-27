@@ -151,7 +151,7 @@ class XTRTextField: XTRComponent() {
             v8Object.registerJavaMethod(this, "xtr_rightView", "xtr_rightView", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setRightView", "xtr_setRightView", arrayOf(V8Object::class.java))
             v8Object.registerJavaMethod(this, "xtr_rightViewMode", "xtr_rightViewMode", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setRightViewMode", "xtr_setRightViewMode", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_setRightViewMode", "xtr_setRightViewMode", arrayOf(Int::class.java))
             v8Object.registerJavaMethod(this, "xtr_allowAutocapitalization", "xtr_allowAutocapitalization", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setAllowAutocapitalization", "xtr_setAllowAutocapitalization", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_allowAutocorrection", "xtr_allowAutocorrection", arrayOf())

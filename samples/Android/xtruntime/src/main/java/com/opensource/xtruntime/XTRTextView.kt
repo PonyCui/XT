@@ -144,7 +144,7 @@ class XTRTextView: XTRComponent() {
             v8Object.registerJavaMethod(this, "xtr_keyboardType", "xtr_keyboardType", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setKeyboardType", "xtr_setKeyboardType", arrayOf(Int::class.java))
             v8Object.registerJavaMethod(this, "xtr_returnKeyType", "xtr_returnKeyType", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setReturnKeyType", "xtr_setReturnKeyType", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_setReturnKeyType", "xtr_setReturnKeyType", arrayOf(Int::class.java))
             v8Object.registerJavaMethod(this, "xtr_secureTextEntry", "xtr_secureTextEntry", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setSecureTextEntry", "xtr_setSecureTextEntry", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_focus", "xtr_focus", arrayOf())
@@ -309,7 +309,7 @@ class XTRTextView: XTRComponent() {
             }
         }
 
-        fun xtr_setKeyboardType(value: Any?) {
+        fun xtr_setKeyboardType(value: Int) {
             if (this.editText.inputType and InputType.TYPE_CLASS_TEXT > 0) {
                 this.editText.inputType = this.editText.inputType xor InputType.TYPE_CLASS_TEXT
             }
