@@ -176,14 +176,15 @@ class XTRImage: XTRComponent() {
         return image
     }
 
-    class InnerObject(val bitmap: Bitmap, val scale: Int, val size: XTRSize, val renderingMode: Int): XTRObject {
+    class InnerObject(val bitmap: Bitmap, val scale: Int, val size: XTRSize, val renderingMode: Int, override var scriptObject: V8Object? = null): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
 
         override fun requestV8Object(runtime: V8): V8Object {
             val v8Object = super.requestV8Object(runtime)
             v8Object.registerJavaMethod(this, "imageWithImageRenderingMode", "imageWithImageRenderingMode", arrayOf(Int::class.java))
-            return v8Object;
+            scriptObject = v8Object
+            return v8Object
         }
 
         fun imageWithImageRenderingMode(renderingMode: Int): V8Object? {

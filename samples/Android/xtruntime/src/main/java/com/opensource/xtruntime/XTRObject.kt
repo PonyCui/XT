@@ -32,6 +32,7 @@ interface XTRObject {
     }
 
     val objectUUID: String
+    var scriptObject: V8Object?
 
     fun requestV8Object(runtime: V8): V8Object {
         val v8Object = V8Object(runtime)

@@ -23,7 +23,7 @@ open class XTRViewController: XTRComponent() {
         return InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
-    open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): XTRObject {
+    open class InnerObject(override var scriptObject: V8Object?, protected val xtrContext: XTRContext): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
 

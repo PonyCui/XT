@@ -21,47 +21,19 @@ class FirstViewController extends ViewController {
         const redView = new View(RectMake(0, 0, 44, 44))
         redView.backgroundColor = Color.redColor
         redView.userInteractionEnabled = true
-        redView.onLongPress = (state, viewLocation, absLocation) => {
-            if (state === InteractionState.Began) {
-                redView.backgroundColor = Color.blueColor
-            }
-            if (state === InteractionState.Changed) {
-                if (absLocation && absLocation.x > 200) {
-                    redView.backgroundColor = Color.greenColor
-                }
-            }
-            if (state === InteractionState.Ended) {
-                redView.backgroundColor = Color.redColor
-            }
-        }
         redView.onTap = () => {
-            redView.backgroundColor = Color.purpleColor
+            redView.backgroundColor = Color.grayColor
+            // this.navigationController && this.navigationController.pushViewController(new SecondViewController())
         }
-        redView.onDoubleTap = () => {
-            View.animationWithDuration(0.50, () => {
-                redView.backgroundColor = Color.whiteColor
-            })
-        }
-        redView.onPan = (state, viewLocation, absLocation, velocity) => {
-            if (state === InteractionState.Began) {
-                redView.backgroundColor = Color.grayColor
-            }
-            if (state === InteractionState.Changed) {
-                if (velocity && velocity.x > 200.0) {
-                    redView.backgroundColor = Color.orangeColor
-                }
-            }
-            if (state === InteractionState.Ended) {
-                redView.backgroundColor = Color.redColor
-            }
-        }
-        this.view.backgroundColor = Color.yellowColor
         this.view.addSubview(redView)
-        setTimeout(() => {
-            View.animationWithDuration(0.50, () => {
-                redView.transform = TransformMatrix.postTranslate(TransformMatrix.postRotate(new TransformMatrix(), 45 * Math.PI / 180), 100, 100)
-            }, () => { redView.backgroundColor = Color.blackColor })
-        }, 100)
+    }
+
+}
+
+class SecondViewController extends ViewController {
+
+    viewDidLoad() {
+        this.view.backgroundColor = Color.grayColor
     }
 
 }

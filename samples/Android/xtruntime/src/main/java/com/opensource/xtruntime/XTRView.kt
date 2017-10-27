@@ -290,7 +290,7 @@ class XTRView: XTRComponent() {
     }
 
     @Suppress("CanBeParameter", "unused")
-    open class InnerObject(val scriptObject: V8Object, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
+    open class InnerObject(override var scriptObject: V8Object?, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
 
         internal var viewDelegate: XTRViewController.InnerObject? = null
         override val objectUUID: String = UUID.randomUUID().toString()

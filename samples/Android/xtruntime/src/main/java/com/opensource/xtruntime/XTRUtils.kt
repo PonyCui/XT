@@ -227,6 +227,9 @@ class XTRUtils {
                 return v8Array
             }
             (target as? XTRObject)?.let { target ->
+                target?.scriptObject?.takeIf { !it.isReleased }?.let {
+                    return it.twin()
+                }
                 (context.v8Runtime.get("window") as? V8Object)?.let { window ->
                     (window.get("XTRObjCreater") as? V8Object)?.let { creater ->
                         (creater.get("create") as? V8Function)?.let { createFunc ->

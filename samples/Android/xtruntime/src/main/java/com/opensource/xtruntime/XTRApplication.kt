@@ -21,7 +21,7 @@ class XTRApplication: XTRComponent() {
         return InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
     }
 
-    class InnerObject(val scriptObject: V8Object, val xtrContext: XTRContext): XTRObject {
+    class InnerObject(override var scriptObject: V8Object?, val xtrContext: XTRContext): XTRObject {
 
         override val objectUUID: String = UUID.randomUUID().toString()
 
