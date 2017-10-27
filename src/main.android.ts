@@ -53,7 +53,8 @@ export const RectEqual = IRectEqual
 export const RectInside = IRectInside
 
 import { Screen as IScreen } from './interface/Screen'
-export class Screen extends IScreen {}
+import { Screen as MScreen } from './implementation/android/Screen'
+export class Screen extends MScreen {}
 
 import { ScrollView as IScrollView } from './interface/ScrollView'
 import { ScrollView as MScrollView } from './implementation/android/ScrollView'

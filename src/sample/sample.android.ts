@@ -17,12 +17,9 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const fooView = new TextView(RectMake(100.0, 100.0, 200.0, 200.0))
+        const fooView = new View(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, 300.0))
         fooView.backgroundColor = Color.grayColor
         this.view.addSubview(fooView)
-        this.view.onTap = () => {
-            fooView.blur()
-        }
     }
 
 }

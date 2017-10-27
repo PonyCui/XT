@@ -18,6 +18,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        XTRScreen.resetScreenInfo(this)
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         actionBar?.hide()
         setupKeyboardHeightProvider()
