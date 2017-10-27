@@ -354,6 +354,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     private touchingSuperview?: View = undefined
 
     touchesBegan(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesBegan(this, touches, event)
         this.touchingSuperview = undefined;
         if (this.superview) {
@@ -363,6 +364,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     touchesMoved(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesMoved(this, touches, event)
         if (this.touchingSuperview) {
             this.touchingSuperview.touchesMoved(touches, event);
@@ -370,6 +372,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     touchesEnded(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesEnded(this, touches, event)
         if (this.touchingSuperview) {
             this.touchingSuperview.touchesEnded(touches, event);
@@ -377,6 +380,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     touchesCancelled(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesCancelled(this, touches, event)
         if (this.touchingSuperview) {
             this.touchingSuperview.touchesCancelled(touches, event);
@@ -387,6 +391,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     private _existsSingleTap = false
     private _existsDoubleTap = false
     private _validDoubleTap = false
+    protected touchTimestamp: number = 0
 
     public get longPressDuration(): number {
         return this._longPressDuration;

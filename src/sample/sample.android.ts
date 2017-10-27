@@ -17,9 +17,17 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const fooView = new View(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, 300.0))
+        const fooView = new ScrollView(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, Screen.mainScreen().bounds().height))
         fooView.backgroundColor = Color.grayColor
+        fooView.contentSize = SizeMake(0, 3000)
         this.view.addSubview(fooView)
+        const redView = new View(RectMake(0, 0, 44, 44))
+        redView.userInteractionEnabled = true
+        redView.backgroundColor = Color.redColor
+        redView.onTap = () => {
+            redView.backgroundColor = Color.purpleColor
+        }
+        fooView.addSubview(redView)
     }
 
 }

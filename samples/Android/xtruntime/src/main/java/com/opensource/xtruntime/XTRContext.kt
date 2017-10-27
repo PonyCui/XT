@@ -75,7 +75,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 return returnValue
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            handleException(e)
         }
         return null
     }
@@ -97,6 +97,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 returnValue
             }
         } catch (e: Exception) {
+            handleException(e)
             null
         }
     }
