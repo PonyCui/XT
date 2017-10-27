@@ -17,11 +17,12 @@ class AppDelegate extends ApplicationDelegate {
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        // this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
-        const fooView = new CanvasView(RectMake(0, 0, 300, 300))
-        fooView.backgroundColor = Color.yellowColor
-        fooView.fillStyle = Color.redColor
-        fooView.fillRect(0,0,100,100)
+        const fooView = new ImageView(RectMake(0, 0, 300, 300))
+        fooView.cornerRadius = 150
+        fooView.clipsToBounds = true
+        Image.fromURL("http://img.hb.aicdn.com/0e4cde02c706dcdc4e62948d7c524d399ef40f28275c7b-T5LDsK_fw658", (it) => {
+            fooView.image = it
+        })
         this.view.addSubview(fooView)
     }
 

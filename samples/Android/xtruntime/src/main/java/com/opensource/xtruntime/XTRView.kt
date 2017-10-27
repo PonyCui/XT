@@ -306,7 +306,7 @@ class XTRView: XTRComponent() {
         override fun requestV8Object(runtime: V8): V8Object {
             val v8Object = super.requestV8Object(runtime)
             v8Object.registerJavaMethod(this, "xtr_clipsToBounds", "xtr_clipsToBounds", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setClipsToBounds", "", arrayOf(Boolean::class.java))
+            v8Object.registerJavaMethod(this, "xtr_setClipsToBounds", "xtr_setClipsToBounds", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_alpha", "xtr_alpha", arrayOf())
             v8Object.registerJavaMethod(this, "xtr_setAlpha", "xtr_setAlpha", arrayOf(Double::class.java))
             v8Object.registerJavaMethod(this, "xtr_frame", "xtr_frame", arrayOf())

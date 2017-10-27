@@ -14,6 +14,7 @@ import java.io.InputStream
 import java.net.URI
 import java.net.URL
 import java.util.*
+import java.util.logging.Handler
 
 
 /**
@@ -54,6 +55,9 @@ class XTRImage: XTRComponent() {
     }
 
     fun xtr_fromURL(url: String, success: V8Function, failure: V8Function) {
+        val handler = android.os.Handler()
+        val success = success.twin()
+        val failure = failure.twin()
         Thread({
             var inputStream: InputStream? = null
             installCache(xtrContext.appContext)
@@ -80,12 +84,21 @@ class XTRImage: XTRComponent() {
                 xtrContext.callWithArguments(failure, listOf())
             } finally {
                 inputStream?.close()
+                handler.post {
+                    if (!success.runtime.isReleased) {
+                        success.release()
+                        failure.release()
+                    }
+                }
             }
         }).start()
     }
 
     fun xtr_fromURLWithScale(url: String, scale: Int, success: V8Function, failure: V8Function) {
         val url = url as? String ?: return
+        val handler = android.os.Handler()
+        val success = success.twin()
+        val failure = failure.twin()
         Thread({
             var inputStream: InputStream? = null
             installCache(xtrContext.appContext)
@@ -112,6 +125,12 @@ class XTRImage: XTRComponent() {
                 xtrContext.callWithArguments(failure, listOf())
             } finally {
                 inputStream?.close()
+                handler.post {
+                    if (!success.runtime.isReleased) {
+                        success.release()
+                        failure.release()
+                    }
+                }
             }
         }).start()
     }
@@ -171,7 +190,7 @@ class XTRImage: XTRComponent() {
 
     fun xtr_imageWithImageRenderingMode(image: V8Object, renderingMode: Int): V8Object {
         XTRUtils.toImage(image)?.let {
-            XTRImage.InnerObject(it.bitmap, it.scale, it.size, renderingMode).requestV8Object(xtrContext.v8Runtime)
+            return XTRImage.InnerObject(it.bitmap, it.scale, it.size, renderingMode).requestV8Object(xtrContext.v8Runtime)
         }
         return image
     }
@@ -182,6 +201,7 @@ class XTRImage: XTRComponent() {
 
         override fun requestV8Object(runtime: V8): V8Object {
             val v8Object = super.requestV8Object(runtime)
+            v8Object.add("nativeObject", v8Object)
             v8Object.registerJavaMethod(this, "imageWithImageRenderingMode", "imageWithImageRenderingMode", arrayOf(Int::class.java))
             scriptObject = v8Object
             return v8Object
@@ -189,7 +209,7 @@ class XTRImage: XTRComponent() {
 
         fun imageWithImageRenderingMode(renderingMode: Int): V8Object? {
             XTRImage.runtime?.let {
-                XTRImage.InnerObject(this.bitmap, this.scale, this.size, renderingMode).requestV8Object(it)
+                return XTRImage.InnerObject(this.bitmap, this.scale, this.size, renderingMode).requestV8Object(it)
             }
             return null
         }
