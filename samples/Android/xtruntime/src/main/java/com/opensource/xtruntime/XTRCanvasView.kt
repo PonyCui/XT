@@ -110,13 +110,14 @@ class XTRCanvasView: XTRComponent() {
         }
 
         fun xtr_setFillStyle(value: V8Object) {
+            val fillStyle = XTRUtils.toColor(value) ?: return
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.fillStyle = XTRUtils.toColor(value)
+                    currentState.fillStyle = fillStyle
                 }
                 this.actions = actions.toList()
             }
-            fakeState.fillStyle = XTRUtils.toColor(value)
+            fakeState.fillStyle = fillStyle
         }
 
         fun xtr_strokeStyle(): V8Value {
@@ -124,13 +125,14 @@ class XTRCanvasView: XTRComponent() {
         }
 
         fun xtr_setStrokeStyle(value: V8Object) {
+            val strokeStyle = XTRUtils.toColor(value) ?: return
             this.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.strokeStyle = XTRUtils.toColor(value)
+                    currentState.strokeStyle = strokeStyle
                 }
                 this.actions = actions.toList()
             }
-            fakeState.strokeStyle = XTRUtils.toColor(value)
+            fakeState.strokeStyle = strokeStyle
         }
 
         fun xtr_lineCap(): String? {

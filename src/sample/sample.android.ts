@@ -18,12 +18,10 @@ class FirstViewController extends ViewController {
 
     viewDidLoad() {
         // this.supportOrientations = [DeviceOrientation.Portrait, DeviceOrientation.LandscapeLeft, DeviceOrientation.LandscapeRight]
-        const fooView = new Button(RectMake(0, 100, 375, 44))
-        fooView.font = Font.systemFontOfSize(17)
-        fooView.title = "Hello, World!"
-        fooView.onTouchUpInside = () => {
-            fooView.title = "Testing..."
-        }
+        const fooView = new CanvasView(RectMake(0, 0, 300, 300))
+        fooView.backgroundColor = Color.yellowColor
+        fooView.fillStyle = Color.redColor
+        fooView.fillRect(0,0,100,100)
         this.view.addSubview(fooView)
     }
 
