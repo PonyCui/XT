@@ -21,6 +21,9 @@ export class PanGestureRecognizer implements GestureRecongnizer {
         this.touchPreviousTimestamp = touches[0].timestamp
         this.recognized = false
         this.state = GestureRecognizerState.Possible
+        if (this.deceteMovement < 0) {
+            return this.touchesMoved(owner, touches, event, triggerBlock, releaseBlock)
+        }
         return false
     }
 

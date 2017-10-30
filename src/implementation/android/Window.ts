@@ -60,8 +60,8 @@ export class Window extends View {
         this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
     }
 
-    handlePointerMove(pid: string, timestamp: number, point: { x: number, y: number }) {
-        this.touchManager.handlePointerMove(pid, timestamp, point.x, point.y)
+    handlePointersMove(timestamp: number, points: { [key: string]: {x: number, y: number} }) {
+        this.touchManager.handlePointersMove(timestamp, points)
     }
 
     handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {

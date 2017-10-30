@@ -95,6 +95,7 @@ export class View {
     static InteractionState = InteractionState
     static SwipeDirection = SwipeDirection
     userInteractionEnabled: boolean;
+    multipleTouchEnabled: boolean;
     longPressDuration: number;
     onTap?: () => void
     onDoubleTap?: () => void

@@ -3,6 +3,8 @@ import { View } from "./View";
 import { Size, Point, Rect, RectZero, SizeZero, PointZero, RectMake } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { LayoutConstraint } from "./LayoutConstraint";
+import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
+import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
 declare function require(name: string): any;
 const Scroller = require('scroller');
 
@@ -78,7 +80,7 @@ export class ScrollView extends View {
             }
             else if (state === InteractionState.Ended) {
                 this._tracking = false;
-                this.nativeObject.xtr_markAsDecelarating(true)
+                this.decelarating = true;
                 clearTimeout(this._indicatorHidingTimer);
                 this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
                 this.scroller.doTouchEnd(this.touchTimestamp)
@@ -88,6 +90,30 @@ export class ScrollView extends View {
                 clearTimeout(this._indicatorHidingTimer);
                 this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
             }
+        }
+    }
+
+    private _decelarating: boolean = false
+
+    private get decelarating(): boolean {
+        return this._decelarating
+    }
+
+    private set decelarating(value: boolean) {
+        this._decelarating = value;
+        if (value) {
+            this.gestureRecongnizers.forEach(it => {
+                if (it instanceof PanGestureRecognizer) {
+                    it.deceteMovement = -1
+                }
+            })
+        }
+        else {
+            this.gestureRecongnizers.forEach(it => {
+                if (it instanceof PanGestureRecognizer) {
+                    it.deceteMovement = 10
+                }
+            })
         }
     }
 
@@ -208,8 +234,6 @@ export class ScrollView extends View {
         this.scroller.options.scrollingY = this.isScrollEnabled && (this.contentSize.height > this.bounds.height || this.alwaysBounceVertical);
         this.scroller.options.bouncing = this.bounces;
         this.scroller.options.locking = this.isDirectionalLockEnabled;
-        // this.scroller.options.penetrationDeceleration = 0.06
-        // this.scroller.options.penetrationAcceleration = 0.06
         this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
     }
 
@@ -219,7 +243,7 @@ export class ScrollView extends View {
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false); this.nativeObject.xtr_markAsDecelarating(false); }, 150);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false); this.decelarating = false; }, 150);
     }
 
     // Indicators

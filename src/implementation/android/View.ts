@@ -334,6 +334,8 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         this.nativeObject.xtr_setUserInteractionEnabled(value);
     }
 
+    multipleTouchEnabled: boolean = false
+
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
         let target = undefined;
         if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
@@ -351,40 +353,24 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         return target
     }
 
-    private touchingSuperview?: View = undefined
-
     touchesBegan(touches: Touch[], event: Event): void {
         this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesBegan(this, touches, event)
-        this.touchingSuperview = undefined;
-        if (this.superview) {
-            this.touchingSuperview = this.superview
-            this.touchingSuperview.touchesBegan(touches, event);
-        }
     }
 
     touchesMoved(touches: Touch[], event: Event): void {
         this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesMoved(this, touches, event)
-        if (this.touchingSuperview) {
-            this.touchingSuperview.touchesMoved(touches, event);
-        }
     }
 
     touchesEnded(touches: Touch[], event: Event): void {
         this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesEnded(this, touches, event)
-        if (this.touchingSuperview) {
-            this.touchingSuperview.touchesEnded(touches, event);
-        }
     }
 
     touchesCancelled(touches: Touch[], event: Event): void {
         this.touchTimestamp = touches[0].timestamp
         GestureManager.onTouchesCancelled(this, touches, event)
-        if (this.touchingSuperview) {
-            this.touchingSuperview.touchesCancelled(touches, event);
-        }
     }
 
     private _longPressDuration = 0.5

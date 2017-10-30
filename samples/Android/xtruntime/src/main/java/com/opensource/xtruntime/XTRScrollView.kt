@@ -9,11 +9,6 @@ import com.eclipsesource.v8.V8Value
  */
 class XTRScrollView: XTRComponent() {
 
-    companion object {
-        internal var trackingScrollView: XTRScrollView.InnerObject? = null
-        internal var deceleratingScrollView: XTRScrollView.InnerObject? = null
-    }
-
     override val name: String = "XTRScrollView"
 
     override fun v8Object(): V8Object? {
@@ -48,7 +43,6 @@ class XTRScrollView: XTRComponent() {
             v8Object.registerJavaMethod(this, "xtr_setAlwaysBounceVertical", "xtr_setAlwaysBounceVertical", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_setAlwaysBounceHorizontal", "xtr_setAlwaysBounceHorizontal", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_disableChildrenInteractive", "xtr_disableChildrenInteractive", arrayOf(Boolean::class.java))
-            v8Object.registerJavaMethod(this, "xtr_markAsDecelarating", "xtr_markAsDecelarating", arrayOf(Boolean::class.java))
             return v8Object
         }
 
@@ -93,11 +87,6 @@ class XTRScrollView: XTRComponent() {
 
         fun xtr_disableChildrenInteractive(value: Boolean) {
             this.innerView.xtr_setUserInteractionEnabled(!value)
-        }
-
-        fun xtr_markAsDecelarating(value: Boolean) {
-            if (value) { XTRScrollView.deceleratingScrollView = this }
-            else { XTRScrollView.deceleratingScrollView = null }
         }
 
 //        private var tracking = false

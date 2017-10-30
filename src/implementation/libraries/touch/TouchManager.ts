@@ -27,6 +27,8 @@ export interface Event {
 
 export interface Touchable {
 
+    superview: Touchable | undefined
+    multipleTouchEnabled: boolean
     transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
     frame: { x: number, y: number, width: number, height: number }
     hitTest(point: { x: number, y: number }): Touchable | undefined
@@ -64,24 +66,40 @@ export class TouchManager {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
-            target.touchesBegan([this.touches[pid]], {})
+            this.invokeTouchesBeganRecursive(target, [this.touches[pid]], {})
         }
     }
 
-    handlePointerMove(pid: string, timestamp: number, x: number, y: number) {
+    invokeTouchesBeganRecursive(target: Touchable, touches: Touch[], event: Event) {
+        target.touchesBegan(touches, {})
+        if (target.superview) {
+            this.invokeTouchesBeganRecursive(target.superview, touches, event)
+        }
+    }
+
+    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }) {
         if (this.target) {
-            this.touches[pid] = {
-                _maybeTap: this.touches[pid]._maybeTap === true && (Math.abs(this.touches[pid]._startPoint.x - x) < 8 || Math.abs(this.touches[pid]._startPoint.y - y) < 8),
-                _startPoint: this.touches[pid]._startPoint,
-                timestamp: timestamp,
-                phase: TouchPhase.Moved,
-                tapCount: 1,
-                rawLocation: { x, y },
-                locationInView: (view: Touchable) => {
-                    return convertPointToChildView({ x, y }, this.root as any, view as any)
+            for (const pid in points) {
+                this.touches[pid] = {
+                    _maybeTap: this.touches[pid]._maybeTap === true && (Math.abs(this.touches[pid]._startPoint.x - points[pid].x) < 8 || Math.abs(this.touches[pid]._startPoint.y - points[pid].y) < 8),
+                    _startPoint: this.touches[pid]._startPoint,
+                    timestamp: timestamp,
+                    phase: TouchPhase.Moved,
+                    tapCount: 1,
+                    rawLocation: { x: points[pid].x, y: points[pid].y },
+                    locationInView: (view: Touchable) => {
+                        return convertPointToChildView({ x: points[pid].x, y: points[pid].y }, this.root as any, view as any)
+                    }
                 }
             }
-            this.target.touchesMoved([this.touches[pid]], {})
+            this.invokeTouchesMovedRecursive(this.target, Object.keys(this.touches).map(t => this.touches[t]), {})
+        }
+    }
+
+    invokeTouchesMovedRecursive(target: Touchable, touches: Touch[], event: Event) {
+        target.touchesMoved(touches, {})
+        if (target.superview) {
+            this.invokeTouchesMovedRecursive(target.superview, touches, event)
         }
     }
 
@@ -102,11 +120,18 @@ export class TouchManager {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
             }
-            this.target.touchesEnded([this.touches[pid]], {})
+            this.invokeTouchesEndedRecursive(this.target, [this.touches[pid]], {})
         }
         delete this.touches[pid]
         if (Object.keys(this.touches).length == 0) {
             this.target = undefined
+        }
+    }
+
+    invokeTouchesEndedRecursive(target: Touchable, touches: Touch[], event: Event) {
+        target.touchesEnded(touches, {})
+        if (target.superview) {
+            this.invokeTouchesEndedRecursive(target.superview, touches, event)
         }
     }
 
@@ -118,9 +143,16 @@ export class TouchManager {
             touches.push(this.touches[pointerID]);
         }
         if (this.target) {
-            this.target.touchesCancelled(touches, {})
+            this.invokeTouchesCancelledRecursive(this.target, touches, {})
             this.target = undefined
             this.touches = {}
+        }
+    }
+
+    invokeTouchesCancelledRecursive(target: Touchable, touches: Touch[], event: Event) {
+        target.touchesCancelled(touches, {})
+        if (target.superview) {
+            this.invokeTouchesCancelledRecursive(target.superview, touches, event)
         }
     }
 

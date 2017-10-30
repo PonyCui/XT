@@ -7,6 +7,7 @@ import { LongPressGestureRecognizer } from './LongPressGestureRecognizer';
 
 class View implements Touchable, CoordinateOwner, GestureOwner {
 
+    multipleTouchEnabled: boolean = false
     transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
     frame: { x: number, y: number, width: number, height: number } = { x: 0, y: 0, width: 0, height: 0 }
     superview: View | undefined
@@ -65,8 +66,8 @@ class View implements Touchable, CoordinateOwner, GestureOwner {
         this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
     }
 
-    handlePointerMove(pid: string, timestamp: number, point: { x: number, y: number }) {
-        this.touchManager.handlePointerMove(pid, timestamp, point.x, point.y)
+    handlePointersMove(timestamp: number, points: { [key: string]: {x: number, y: number} }) {
+        this.touchManager.handlePointersMove(timestamp, points)
     }
 
     handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {
