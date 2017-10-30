@@ -134,9 +134,6 @@ export class ListView extends ScrollView {
     private reloadVisibleRows() {
         let contentOffset = this.contentOffset;
         let bounds = this.bounds;
-        if (contentOffset.y < 0 || (contentOffset.y + bounds.height > this.contentSize.height && this.contentSize.height > bounds.height)) {
-            return;
-        }
         if (this._nextSetted === true &&
             (this._nextReloadMinY !== undefined && contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
             (this._nextReloadMaxY !== undefined && contentOffset.y < (this._nextReloadMaxY || Infinity))) {

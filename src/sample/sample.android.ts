@@ -46,8 +46,11 @@ class FirstItem implements ListItem {
 
 class FirstViewController extends ViewController {
 
+    private fooView: ListView;
+
     viewDidLoad() {
-        const fooView = new ListView(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, Screen.mainScreen().bounds().height))
+        const fooView = new ListView(RectMake(0.0, 0.0, 0.0, 0.0))
+        this.fooView = fooView
         fooView.register(FirstListCell, "Cell")
         fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
             cell.myLabel.text = item.name
@@ -60,6 +63,11 @@ class FirstViewController extends ViewController {
         fooView.reloadData()
         fooView.backgroundColor = Color.yellowColor
         this.view.addSubview(fooView);
+    }
+
+    viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews();
+        this.fooView.frame = this.view.bounds
     }
 
 }

@@ -853,12 +853,12 @@ class XTRView: XTRComponent() {
         }
 
         fun xtr_addSubview(view: XTRView.InnerObject) {
-//            view.willMoveToSuperview(this)
-//            view.willMoveToWindow(xtr_windowObject())
+            view.willMoveToSuperview(this)
+            view.willMoveToWindow(xtr_windowObject())
             addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             didAddSubview(view)
-//            view.didMoveToSuperview()
-//            view.didMoveToWindow()
+            view.didMoveToSuperview()
+            view.didMoveToWindow()
         }
 
         fun xtr_insertSubviewBelow(view: V8Object, siblingSubview: V8Object) {
