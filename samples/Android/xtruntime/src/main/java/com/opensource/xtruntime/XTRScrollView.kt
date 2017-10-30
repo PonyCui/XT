@@ -19,10 +19,12 @@ class XTRScrollView: XTRComponent() {
     }
 
     fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(XTRUtils.toView(scriptObject.get("innerView")) as XTRView.InnerObject, scriptObject.twin(), xtrContext)
+        val innerViewObject = scriptObject.get("innerView") as V8Object
+        val view = InnerObject(XTRUtils.toView(innerViewObject) as XTRView.InnerObject, xtrContext.autoRelease(scriptObject.twin()), xtrContext)
         XTRUtils.toRect(rect)?.let {
             view.frame = it
         }
+        innerViewObject.release()
         return view.requestV8Object(xtrContext.v8Runtime)
     }
 

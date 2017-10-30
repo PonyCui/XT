@@ -227,14 +227,16 @@ export class ScrollView extends View {
     // Touches
 
     private resetScroller() {
+        const contentSize = this.contentSize
+        const bounds = this.bounds
         if (this.scroller === undefined) {
             this.scroller = new Scroller(this.handleScroll.bind(this))
         }
-        this.scroller.options.scrollingX = this.isScrollEnabled && (this.contentSize.width > this.bounds.width || this.alwaysBounceHorizontal);
-        this.scroller.options.scrollingY = this.isScrollEnabled && (this.contentSize.height > this.bounds.height || this.alwaysBounceVertical);
+        this.scroller.options.scrollingX = this.isScrollEnabled && (contentSize.width > bounds.width || this.alwaysBounceHorizontal);
+        this.scroller.options.scrollingY = this.isScrollEnabled && (contentSize.height > bounds.height || this.alwaysBounceVertical);
         this.scroller.options.bouncing = this.bounces;
         this.scroller.options.locking = this.isDirectionalLockEnabled;
-        this.scroller.setDimensions(this.bounds.width, this.bounds.height, this.contentSize.width, this.contentSize.height);
+        this.scroller.setDimensions(bounds.width, bounds.height, contentSize.width, contentSize.height);
     }
 
     protected handleScroll(x: number, y: number) {
@@ -254,24 +256,26 @@ export class ScrollView extends View {
     private _indicatorShowed = false;
 
     private resetIndicator() {
-        if (this.contentSize.height > this.bounds.height) {
-            const yProgress = this.contentOffset.y / (this.contentSize.height - this.bounds.height);
-            const yHeight = this.bounds.height / (this.contentSize.height / this.bounds.height)
-            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: yProgress * (this.bounds.height - yHeight), width: 2, height: yHeight }
+        const contentOffset = this.contentOffset
+        const contentSize = this.contentSize
+        const bounds = this.bounds
+        if (contentSize.height > bounds.height) {
+            const yProgress = contentOffset.y / (contentSize.height - bounds.height);
+            const yHeight = bounds.height / (contentSize.height / bounds.height)
+            this.verticalScrollIndicator.frame = { x: bounds.width - 4, y: yProgress * (bounds.height - yHeight), width: 2, height: yHeight }
         }
         else {
-            this.verticalScrollIndicator.frame = { x: this.bounds.width - 4, y: 0, width: 2, height: 0 }
+            this.verticalScrollIndicator.frame = { x: bounds.width - 4, y: 0, width: 2, height: 0 }
         }
-        if (this.contentSize.width > this.bounds.width) {
-            const xProgress = this.contentOffset.x / (this.contentSize.width - this.bounds.width);
-            const xWidth = this.bounds.width / (this.contentSize.width / this.bounds.width)
-            this.horizonalScrollIndicator.frame = { x: xProgress * (this.bounds.width - xWidth), y: this.bounds.height - 4, width: xWidth, height: 2 }
+        if (contentSize.width > bounds.width) {
+            const xProgress = contentOffset.x / (contentSize.width - bounds.width);
+            const xWidth = bounds.width / (contentSize.width / bounds.width)
+            this.horizonalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }
         }
         else {
-            this.horizonalScrollIndicator.frame = { x: 0, y: this.bounds.height - 4, width: 0, height: 2 }
+            this.horizonalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
         }
     }
-
     private hideIndicator() {
         if (this._tracking) { return; }
         View.animationWithDuration(0.15, () => {

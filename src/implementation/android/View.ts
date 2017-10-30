@@ -52,6 +52,8 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     // Mark: View Geometry
 
+    _cachingFrame?: Rect
+
     public get frame(): Rect {
         return this.nativeObject.xtr_frame();
     }

@@ -25,30 +25,30 @@ export class ListCell extends View {
         this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
         this.userInteractionEnabled = true
-        this.longPressDuration = 0.05
-        this.onTap = () => {
-            this.highligted = true
-            this.onSelected && this.onSelected();
-            this.didSelected();
-            View.animationWithDuration(0.15, () => {
-                this.highligted = false
-            })
-        }
-        this.onLongPress = (state: InteractionState) => {
-            if (state == InteractionState.Began) {
-                this.highligted = true
-            }
-            else if (state == InteractionState.Ended) {
-                this.onSelected && this.onSelected();
-                this.didSelected();
-                View.animationWithDuration(0.15, () => {
-                    this.highligted = false
-                })
-            }
-            else if (state == InteractionState.Cancelled) {
-                this.highligted = false
-            }
-        }
+        // this.longPressDuration = 0.05
+        // this.onTap = () => {
+        //     this.highligted = true
+        //     this.onSelected && this.onSelected();
+        //     this.didSelected();
+        //     View.animationWithDuration(0.15, () => {
+        //         this.highligted = false
+        //     })
+        // }
+        // this.onLongPress = (state: InteractionState) => {
+        //     if (state == InteractionState.Began) {
+        //         this.highligted = true
+        //     }
+        //     else if (state == InteractionState.Ended) {
+        //         this.onSelected && this.onSelected();
+        //         this.didSelected();
+        //         View.animationWithDuration(0.15, () => {
+        //             this.highligted = false
+        //         })
+        //     }
+        //     else if (state == InteractionState.Cancelled) {
+        //         this.highligted = false
+        //     }
+        // }
     }
 
     layoutSubviews() {
@@ -134,12 +134,12 @@ export class ListView extends ScrollView {
     private reloadVisibleRows() {
         let contentOffset = this.contentOffset;
         let bounds = this.bounds;
-        if (contentOffset.y < 0 || contentOffset.y + bounds.height > this.contentSize.height) {
+        if (contentOffset.y < 0 || (contentOffset.y + bounds.height > this.contentSize.height && this.contentSize.height > bounds.height)) {
             return;
         }
         if (this._nextSetted === true &&
-            (this._nextReloadMinY !== undefined && this.contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
-            (this._nextReloadMaxY !== undefined && this.contentOffset.y < (this._nextReloadMaxY || Infinity))) {
+            (this._nextReloadMinY !== undefined && contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
+            (this._nextReloadMaxY !== undefined && contentOffset.y < (this._nextReloadMaxY || Infinity))) {
             return;
         }
         this.markInvisibleCellNoBusy();
@@ -176,13 +176,13 @@ export class ListView extends ScrollView {
         }
         for (let index = startIndex; index < this._cacheRows.length; index++) {
             const item = this._cacheRows[index];
-            if (this._nextReloadMaxY === undefined && item.minY >= this.contentOffset.y + this.bounds.height) {
-                this._nextReloadMaxY = item.minY - this.bounds.height;
+            if (this._nextReloadMaxY === undefined && item.minY >= contentOffset.y + bounds.height) {
+                this._nextReloadMaxY = item.minY - bounds.height;
             }
-            if (item.maxY > this.contentOffset.y && item.minY < this.contentOffset.y + this.bounds.height) {
+            if (item.maxY > contentOffset.y && item.minY < contentOffset.y + bounds.height) {
                 visibleRows.push(item)
             }
-            else if (item.minY > this.contentOffset.y + this.bounds.height) {
+            else if (item.minY > contentOffset.y + bounds.height) {
                 break;
             }
         }
@@ -193,7 +193,7 @@ export class ListView extends ScrollView {
                 (this.reuseMapping[row.item.reuseIdentifier] !== undefined ? new this.reuseMapping[row.item.reuseIdentifier]() : undefined) ||
                 new ListCell()
             cell.reuseIdentifier = row.item.reuseIdentifier
-            cell.frame = { x: 0, y: row.minY, width: this.bounds.width, height: row.maxY - row.minY }
+            cell._cachingFrame = cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
             cell._isBusy = true;
             cell.currentItem = row.item;
             this.renderItem && this.renderItem(cell, row.item);
@@ -212,8 +212,14 @@ export class ListView extends ScrollView {
     }
 
     private markInvisibleCellNoBusy() {
+        let contentOffset = this.contentOffset;
+        let bounds = this.bounds;
         this._reusingCells.filter(cell => {
-            return cell._isBusy && (cell.frame.y + cell.frame.height < this.contentOffset.y || cell.frame.y > this.contentOffset.y + this.bounds.height)
+            if (cell._isBusy) {
+                const cellFrame = cell._cachingFrame || cell.frame;
+                return cellFrame.y + cellFrame.height < contentOffset.y || cellFrame.y > contentOffset.y + bounds.height
+            }
+            return false
         }).forEach(cell => {
             cell._isBusy = false;
         });

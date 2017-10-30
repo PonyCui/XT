@@ -65,10 +65,12 @@ class XTRView: XTRComponent() {
 
     fun animationWithDuration(duration: Double, animations: V8Function, completion: V8Function) {
         val duration = duration as? Double ?: return
-        val animations = animations.twin()
         val completion = completion.twin()
         animationEnabled = true
         xtrContext.callWithArguments(animations, listOf())
+        if (animationProps.values.isEmpty()) {
+            completion.release()
+        }
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -92,12 +94,15 @@ class XTRView: XTRComponent() {
                         completed = true
                         xtrContext.callWithArguments(completion, listOf())
                     }
-                    if (!animations.runtime.isReleased) {
-                        animations.release()
+                    if (!completion.runtime.isReleased) {
                         completion.release()
                     }
                 }
-                override fun onAnimationCancel(p0: Animator?) {}
+                override fun onAnimationCancel(p0: Animator?) {
+                    if (!completion.runtime.isReleased) {
+                        completion.release()
+                    }
+                }
                 override fun onAnimationStart(p0: Animator?) {}
             })
             animatingHandlers[aniProp.aniKey] = {
@@ -158,10 +163,12 @@ class XTRView: XTRComponent() {
     fun animationWithTensionAndFriction(tension: Double, friction: Double, animations: V8Function, completion: V8Function) {
         val tension = tension as? Double ?: return
         val friction = friction as? Double ?: return
-        val animations = animations.twin()
         val completion = completion.twin()
         animationEnabled = true
         xtrContext.callWithArguments(animations, listOf())
+        if (animationProps.values.isEmpty()) {
+            completion.release()
+        }
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()
@@ -204,10 +211,12 @@ class XTRView: XTRComponent() {
     fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: V8Function, completion: V8Function) {
         val bounciness = bounciness as? Double ?: return
         val speed = speed as? Double ?: return
-        val animations = animations.twin()
         val completion = completion.twin()
         animationEnabled = true
         xtrContext.callWithArguments(animations, listOf())
+        if (animationProps.values.isEmpty()) {
+            completion.release()
+        }
         animationEnabled = false
         var completed = false
         val animatingHandlers = mutableMapOf<String, () -> Unit> ()

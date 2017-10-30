@@ -2,6 +2,7 @@ declare const XTRTest: any
 declare const FOOPlugin: any
 
 import { DeviceOrientation, InteractionState, View, Application, ApplicationDelegate, Window, Screen, Color, ViewController, RectMake, NavigationController, Image, ImageView, ContentMode, Label, TextAlignment, LineBreakMode, LayoutConstraint, Button, ImageRenderingMode, Font, ScrollView, ListView, ListCell, PointMake, LayoutAttribute, LayoutRelation, SizeMake, TextField, TextFieldViewMode, KeyboardType, ReturnKeyType, TextView, CanvasView, CustomView, Device, TransformMatrix } from '../main.android'
+import { ListItem } from '../interface/ListView';
 
 class AppDelegate extends ApplicationDelegate {
 
@@ -14,20 +15,51 @@ class AppDelegate extends ApplicationDelegate {
 
 }
 
+class FirstListCell extends ListCell {
+
+    myLabel: Label
+
+    init() {
+        super.init();
+        const label = new Label(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, 44))
+        label.text = "Hello, World"
+        this.contentView.addSubview(label)
+        this.myLabel = label
+    }
+
+}
+
+class FirstItem implements ListItem {
+
+    [key: string]: any;
+    reuseIdentifier: string = "Cell"
+    rowHeight: (width: number) => number = () => {
+        return 44
+    }
+    name: string = "Pony"
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+}
+
 class FirstViewController extends ViewController {
 
     viewDidLoad() {
-        const fooView = new ScrollView(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, Screen.mainScreen().bounds().height))
-        fooView.backgroundColor = Color.whiteColor
-        fooView.contentSize = SizeMake(0, 3000)
-        this.view.addSubview(fooView)
-        const redView = new View(RectMake(0, 0, 44, 44))
-        redView.userInteractionEnabled = true
-        redView.backgroundColor = Color.redColor
-        redView.onTap = () => {
-            redView.backgroundColor = Color.purpleColor
+        const fooView = new ListView(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, Screen.mainScreen().bounds().height))
+        fooView.register(FirstListCell, "Cell")
+        fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
+            cell.myLabel.text = item.name
         }
-        fooView.addSubview(redView)
+        let items = []
+        for (var index = 0; index < 100; index++) {
+            items.push(new FirstItem("Index >>> " + index))
+        }
+        fooView.items = items
+        fooView.reloadData()
+        fooView.backgroundColor = Color.yellowColor
+        this.view.addSubview(fooView);
     }
 
 }
