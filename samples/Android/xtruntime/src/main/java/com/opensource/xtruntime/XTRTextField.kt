@@ -46,7 +46,7 @@ class XTRTextField: XTRComponent() {
         val onFocusListener = OnFocusChangeListener { _, _ ->
             if (editText.isFocused) {
                 XTRWindow.firstResponder = this
-                (xtrContext.invokeMethod(scriptObject, "handleShouldBeginEditing", listOf()) as? Boolean)?.let {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldBeginEditing", null) as? Boolean)?.let {
                     if (!it) {
                         this.xtr_blur()
                         return@OnFocusChangeListener
@@ -55,10 +55,10 @@ class XTRTextField: XTRComponent() {
                 if (clearsOnBeginEditing) {
                     editText.editableText?.clear()
                 }
-                xtrContext.invokeMethod(scriptObject, "handleDidBeginEditing", listOf())
+                xtrContext.invokeMethod(scriptObject, "handleDidBeginEditing", null)
             }
             else {
-                xtrContext.invokeMethod(scriptObject, "handleDidEndEditing", listOf())
+                xtrContext.invokeMethod(scriptObject, "handleDidEndEditing", null)
             }
             resetLayout()
         }
@@ -115,7 +115,7 @@ class XTRTextField: XTRComponent() {
             editText.onFocusChangeListener = this.onFocusListener
             editText.addTextChangedListener(onTextChangeListener)
             editText.setOnEditorActionListener { _, _, _ ->
-                (xtrContext.invokeMethod(scriptObject, "handleShouldReturn", listOf()) as? Boolean)?.let {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldReturn", null) as? Boolean)?.let {
                     return@setOnEditorActionListener it
                 }
                 return@setOnEditorActionListener false
@@ -313,7 +313,7 @@ class XTRTextField: XTRComponent() {
 
         private fun resetClearView() {
             if (clearView == null) {
-                (XTRUtils.toView(xtrContext.invokeMethod(scriptObject, "requestClearView", listOf())) as? XTRView.InnerObject)?.let {
+                (XTRUtils.toView(xtrContext.invokeMethod(scriptObject, "requestClearView", null)) as? XTRView.InnerObject)?.let {
                     clearView = it
                 }
             }
@@ -331,7 +331,7 @@ class XTRTextField: XTRComponent() {
         }
 
         fun xtr_onClearButtonTap() {
-            (xtrContext.invokeMethod(scriptObject, "handleShouldClear", listOf()) as? Boolean)?.let {
+            (xtrContext.invokeMethod(scriptObject, "handleShouldClear", null) as? Boolean)?.let {
                 if (!it) { return }
             }
             this.editText.editableText?.clear()
@@ -521,7 +521,7 @@ class XTRTextField: XTRComponent() {
 
         fun xtr_blur() {
             if (this.editText.isFocused) {
-                (xtrContext.invokeMethod(scriptObject, "handleShouldEndEditing", listOf()) as? Boolean)?.let {
+                (xtrContext.invokeMethod(scriptObject, "handleShouldEndEditing", null) as? Boolean)?.let {
                     if (!it) {
                         return
                     }

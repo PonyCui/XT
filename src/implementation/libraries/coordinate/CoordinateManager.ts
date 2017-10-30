@@ -10,7 +10,8 @@ export interface CoordinateOwner {
 }
 
 export function isPointInside(point: { x: number, y: number }, owner: CoordinateOwner) {
-    return point.x >= 0.0 && point.x <= owner.frame.width && point.y >= 0.0 && point.y <= owner.frame.height
+    const frame = owner.frame;
+    return point.x >= 0.0 && point.x <= frame.width && point.y >= 0.0 && point.y <= frame.height
 }
 
 export function convertPointToChildView(point: { x: number, y: number }, parent: CoordinateOwner, child: CoordinateOwner): { x: number, y: number } {

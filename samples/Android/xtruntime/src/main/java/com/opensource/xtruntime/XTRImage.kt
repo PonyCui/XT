@@ -81,7 +81,7 @@ class XTRImage: XTRComponent() {
                     inputStream?.close()
                 }
             } catch (e: Exception) {
-                xtrContext.callWithArguments(failure, listOf())
+                xtrContext.callWithArguments(failure, null)
             } finally {
                 inputStream?.close()
                 handler.post {
@@ -122,7 +122,7 @@ class XTRImage: XTRComponent() {
                     inputStream?.close()
                 }
             } catch (e: Exception) {
-                xtrContext.callWithArguments(failure, listOf())
+                xtrContext.callWithArguments(failure, null)
             } finally {
                 inputStream?.close()
                 handler.post {
@@ -166,7 +166,7 @@ class XTRImage: XTRComponent() {
             ))
             inputStream?.close()
         } catch (e: Exception) {
-            xtrContext.callWithArguments(failure, listOf())
+            xtrContext.callWithArguments(failure, null)
             inputStream?.close()
         }
     }

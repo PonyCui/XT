@@ -132,7 +132,7 @@ open class XTRViewController: XTRComponent() {
                 xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", listOf(it))
                 return
             }
-            xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", listOf())
+            xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", null)
         }
 
         fun didMoveToParentViewController(parent: XTRViewController.InnerObject?) {
@@ -140,35 +140,35 @@ open class XTRViewController: XTRComponent() {
                 xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", listOf(it))
                 return
             }
-            xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", listOf())
+            xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", null)
         }
 
         open fun viewDidLoad() {
-            xtrContext.invokeMethod(scriptObject, "viewDidLoad", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidLoad", null)
         }
 
         open fun viewWillAppear() {
-            xtrContext.invokeMethod(scriptObject, "viewWillAppear", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewWillAppear", null)
         }
 
         open fun viewDidAppear() {
-            xtrContext.invokeMethod(scriptObject, "viewDidAppear", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidAppear", null)
         }
 
         open fun viewWillDisappear() {
-            xtrContext.invokeMethod(scriptObject, "viewWillDisappear", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewWillDisappear", null)
         }
 
         open fun viewDidDisappear() {
-            xtrContext.invokeMethod(scriptObject, "viewDidDisappear", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidDisappear", null)
         }
 
         open fun viewWillLayoutSubviews() {
-            xtrContext.invokeMethod(scriptObject, "viewWillLayoutSubviews", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewWillLayoutSubviews", null)
         }
 
         open fun viewDidLayoutSubviews() {
-            xtrContext.invokeMethod(scriptObject, "viewDidLayoutSubviews", listOf())
+            xtrContext.invokeMethod(scriptObject, "viewDidLayoutSubviews", null)
         }
 
     }

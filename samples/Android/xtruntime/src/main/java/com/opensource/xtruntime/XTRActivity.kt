@@ -53,7 +53,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
 
     private var orientationListener: OrientationEventListener? = null
     private var orientationLastValue = 0
-    private var orientationChangeInvokeTimer: Timer = Timer()
+    private var orientationChangeInvokeTimerTask: TimerTask? = null
 
     private fun setupOrientations() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -75,13 +75,11 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                 }
                 if (newOrientation != XTRDevice.current?.orientation) {
                     XTRDevice.current?.orientation = newOrientation
-                    orientationChangeInvokeTimer.cancel()
-                    orientationChangeInvokeTimer = Timer()
-                    orientationChangeInvokeTimer.schedule(timerTask {
-                        runOnUiThread {
-                            bridge?.xtrApplication?.delegate?.window?.orientationChanged()
-                        }
-                    }, 500)
+                    orientationChangeInvokeTimerTask?.cancel()
+                    orientationChangeInvokeTimerTask = timerTask {
+                        bridge?.xtrApplication?.delegate?.window?.orientationChanged()
+                    }
+                    bridge?.xtrContext?.sharedTimer?.schedule(orientationChangeInvokeTimerTask , 500)
                 }
             }
         }

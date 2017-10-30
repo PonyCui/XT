@@ -110,7 +110,7 @@ class XTRLabel: XTRComponent() {
                         if (r.bottom > this.height) {
                             textView.visibility = View.GONE
                             val handler = Handler()
-                            Timer().schedule(timerTask {
+                            xtrContext.sharedTimer.schedule(timerTask {
                                 handler.post {
                                     textView.maxLines = it
                                     textView.visibility = View.VISIBLE

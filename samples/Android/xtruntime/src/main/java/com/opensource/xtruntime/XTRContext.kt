@@ -3,6 +3,7 @@ package com.opensource.xtruntime
 import android.os.Handler
 import com.eclipsesource.v8.*
 import com.opensource.xtpolyfill.XTPolyfill
+import java.util.*
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -11,6 +12,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     var xtrBridge: XTRBridge? = null
     val v8Runtime: V8 = V8.createV8Runtime()
+    val sharedTimer = Timer()
     private val handler = Handler()
     private val v8Releasable: MutableList<Releasable> = mutableListOf()
 
@@ -56,7 +58,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         }
     }
 
-    fun invokeMethod(scriptObject: V8Object?, method: String, arguments: List<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+    fun invokeMethod(scriptObject: V8Object?, method: String, arguments: List<Any>?, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         if (v8Runtime.isReleased) { return null }
         if (scriptObject == null) {
             return V8.getUndefined()
@@ -68,7 +70,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 }
             }
             else {
-                val params = if (arguments.isEmpty()) null else XTRUtils.fromObject(this, arguments) as? V8Array
+                val params = if (arguments == null || arguments.isEmpty()) null else XTRUtils.fromObject(this, arguments) as? V8Array
                 val returnValue = scriptObject.executeFunction(method, params)
                 params?.release()
                 asyncResult?.invoke(returnValue)
@@ -80,7 +82,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         return null
     }
 
-    fun callWithArguments(func: V8Function, arguments: List<Any>, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
+    fun callWithArguments(func: V8Function, arguments: List<Any>?, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
         if (v8Runtime.isReleased) { return null }
         return try {
             if (Thread.currentThread() != thread) {
@@ -90,7 +92,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 null
             }
             else {
-                val params = XTRUtils.fromObject(this, arguments) as? V8Array
+                val params = if (arguments == null || arguments.isEmpty()) null else XTRUtils.fromObject(this, arguments) as? V8Array
                 val returnValue = func.call(null, params)
                 params?.release()
                 asyncResult?.invoke(returnValue)

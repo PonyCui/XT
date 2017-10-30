@@ -99,7 +99,7 @@ class XTRWindow: XTRComponent() {
         }
 
         fun orientationChanged() {
-            xtrContext.invokeMethod(scriptObject, "handleOrientationChange", listOf())
+            xtrContext.invokeMethod(scriptObject, "handleOrientationChange", null)
         }
 
         fun xtr_setStatusBarHidden(hidden: Boolean) {

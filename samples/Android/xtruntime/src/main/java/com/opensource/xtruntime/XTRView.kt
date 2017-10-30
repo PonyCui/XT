@@ -24,7 +24,6 @@ class XTRView: XTRComponent() {
 
     companion object {
 
-        val sharedLayoutTimer = Timer()
         var sharedHandler: android.os.Handler? = null
         var animationEnabled = false
         var animationProps: Map<String, AnimationProp<Any>> = mapOf()
@@ -67,7 +66,7 @@ class XTRView: XTRComponent() {
         val duration = duration as? Double ?: return
         val completion = completion.twin()
         animationEnabled = true
-        xtrContext.callWithArguments(animations, listOf())
+        xtrContext.callWithArguments(animations, null)
         if (animationProps.values.isEmpty()) {
             completion.release()
         }
@@ -92,7 +91,7 @@ class XTRView: XTRComponent() {
                     animator?.removeAllUpdateListeners()
                     if (!completed) {
                         completed = true
-                        xtrContext.callWithArguments(completion, listOf())
+                        xtrContext.callWithArguments(completion, null)
                     }
                     if (!completion.runtime.isReleased) {
                         completion.release()
@@ -165,7 +164,7 @@ class XTRView: XTRComponent() {
         val friction = friction as? Double ?: return
         val completion = completion.twin()
         animationEnabled = true
-        xtrContext.callWithArguments(animations, listOf())
+        xtrContext.callWithArguments(animations, null)
         if (animationProps.values.isEmpty()) {
             completion.release()
         }
@@ -190,7 +189,7 @@ class XTRView: XTRComponent() {
                     spring?.destroy()
                     if (!completed) {
                         completed = true
-                        xtrContext.callWithArguments(completion, listOf())
+                        xtrContext.callWithArguments(completion, null)
                     }
                     if (!animations.runtime.isReleased) {
                         animations.release()
@@ -213,7 +212,7 @@ class XTRView: XTRComponent() {
         val speed = speed as? Double ?: return
         val completion = completion.twin()
         animationEnabled = true
-        xtrContext.callWithArguments(animations, listOf())
+        xtrContext.callWithArguments(animations, null)
         if (animationProps.values.isEmpty()) {
             completion.release()
         }
@@ -238,7 +237,7 @@ class XTRView: XTRComponent() {
                     spring?.destroy()
                     if (!completed) {
                         completed = true
-                        xtrContext.callWithArguments(completion, listOf())
+                        xtrContext.callWithArguments(completion, null)
                     }
                     if (!animations.runtime.isReleased) {
                         animations.release()
@@ -411,7 +410,7 @@ class XTRView: XTRComponent() {
 
         override fun requestLayout() {
             if (isLayoutRequested) {
-                sharedLayoutTimer.schedule(timerTask {
+                xtrContext.sharedTimer.schedule(timerTask {
                     sharedHandler?.post {
                         super.requestLayout()
                     }
@@ -630,7 +629,7 @@ class XTRView: XTRComponent() {
         }
 
         open fun tintColorDidChange() {
-            xtrContext.invokeMethod(scriptObject, "tintColorDidChange", listOf())
+            xtrContext.invokeMethod(scriptObject, "tintColorDidChange", null)
             (0 until childCount).forEach {
                 (getChildAt(it) as? XTRView.InnerObject)?.let {
                     it.tintColorDidChange()
@@ -908,11 +907,11 @@ class XTRView: XTRComponent() {
                 xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", listOf(it))
                 return
             }
-            xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", listOf())
+            xtrContext.invokeMethod(scriptObject, "willMoveToSuperview", null)
         }
 
         fun didMoveToSuperview() {
-            xtrContext.invokeMethod(scriptObject, "didMoveToSuperview", listOf())
+            xtrContext.invokeMethod(scriptObject, "didMoveToSuperview", null)
         }
 
         fun willMoveToWindow(newWindow: XTRWindow.InnerObject?) {
@@ -920,11 +919,11 @@ class XTRView: XTRComponent() {
                 xtrContext.invokeMethod(scriptObject, "willMoveToWindow", listOf(it))
                 return
             }
-            xtrContext.invokeMethod(scriptObject, "willMoveToWindow", listOf())
+            xtrContext.invokeMethod(scriptObject, "willMoveToWindow", null)
         }
 
         fun didMoveToWindow() {
-            xtrContext.invokeMethod(scriptObject, "didMoveToWindow", listOf())
+            xtrContext.invokeMethod(scriptObject, "didMoveToWindow", null)
         }
 
         fun xtr_isDescendantOfView(view: V8Object): Boolean {
@@ -972,7 +971,7 @@ class XTRView: XTRComponent() {
 
         open fun layoutSubviews() {
             viewDelegate?.viewWillLayoutSubviews()
-            xtrContext.invokeMethod(scriptObject, "layoutSubviews", listOf())
+            xtrContext.invokeMethod(scriptObject, "layoutSubviews", null)
             viewDelegate?.viewDidLayoutSubviews()
         }
 
