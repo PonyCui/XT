@@ -152,20 +152,20 @@ class XTRWindow: XTRComponent() {
                     val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
                     xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
                 }
-                MotionEvent.ACTION_POINTER_DOWN -> {
-                    val pointerID = event.actionIndex
-                    val pid = event.getPointerId(pointerID).toString()
-                    val timestamp = System.nanoTime() / 1000000
-                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
-                }
-                MotionEvent.ACTION_POINTER_UP -> {
-                    val pointerID = event.actionIndex
-                    val pid = event.getPointerId(pointerID).toString()
-                    val timestamp = System.nanoTime() / 1000000
-                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
-                }
+//                MotionEvent.ACTION_POINTER_DOWN -> {
+//                    val pointerID = event.actionIndex
+//                    val pid = event.getPointerId(pointerID).toString()
+//                    val timestamp = System.nanoTime() / 1000000
+//                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
+//                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
+//                }
+//                MotionEvent.ACTION_POINTER_UP -> {
+//                    val pointerID = event.actionIndex
+//                    val pid = event.getPointerId(pointerID).toString()
+//                    val timestamp = System.nanoTime() / 1000000
+//                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
+//                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
+//                }
             }
             return true
         }
