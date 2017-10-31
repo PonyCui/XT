@@ -30,12 +30,13 @@ export function convertPointToChildView(point: { x: number, y: number }, parent:
     }
     else {
         let curPoint = { x: point.x, y: point.y }
-        let originOffset = { x: 0, y: 0 }
+        let originOffset = stack[0]._originOffset || { x: 0, y: 0 }
+        stack.shift();
         stack.forEach(nextView => {
-            curPoint.x += originOffset.x;
-            curPoint.y += originOffset.y;
             const transform = nextView.transform;
             const frame = nextView.frame;
+            curPoint.x += originOffset.x;
+            curPoint.y += originOffset.y;
             if (transform && !TransformMatrix.isIdentity(transform)) {
                 if (transform.a == 0.0 || transform.d == 0.0) {
                     let unmatrix = TransformMatrix.unmatrix(transform)

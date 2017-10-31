@@ -25,10 +25,13 @@ class FirstListCell extends ListCell {
         super.init();
         this.contentView.addSubview(this.myLabel)
         this.myFoo.userInteractionEnabled = true
-        // this.myFoo.onTap = () => {
-        //     this.myFoo.emitMessage({on: true})
-        // }
+        this.myFoo.onTap = () => {
+            this.myFoo.props = {
+                on: !this.myFoo.props.on
+            }
+        }
         this.contentView.addSubview(this.myFoo)
+        this.contentView.userInteractionEnabled = true
     }
 
     didSelected() {
@@ -87,7 +90,6 @@ class SecondViewController extends ViewController {
     viewDidLoad() {
         const fooView = new CustomView("FOOView", RectMake(44, 44, 200, 88))
         fooView.userInteractionEnabled = true;
-        (fooView as any).isOn = false;
         fooView.onTap = () => {
             fooView.props = {
                 on: !fooView.props.on

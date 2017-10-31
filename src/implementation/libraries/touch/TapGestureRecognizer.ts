@@ -39,6 +39,9 @@ export class TapGestureRecognizer implements GestureRecongnizer {
             if (invalidPoints.length == 0 && touches[0].tapCount == this.tapsRequired) {
                 this.state = GestureRecognizerState.Recognized
                 this.fire && this.fire(this.state)
+                this.touchStartPoint = undefined;
+                releaseBlock && setImmediate(() => { releaseBlock() })
+                return true
             }
             else {
                 this.state = GestureRecognizerState.Failed
