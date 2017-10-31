@@ -22,7 +22,7 @@ export class TextField extends View {
         else {
             this.nativeObject = XTRTextField.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); })
         }
     }
 

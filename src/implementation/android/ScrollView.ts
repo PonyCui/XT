@@ -13,9 +13,9 @@ export class ScrollView extends View {
     onScroll?: (scrollView: ScrollView) => void
 
     nativeObject: any;
-    private readonly innerView: View;
-    private readonly horizonalScrollIndicator: View;
-    private readonly verticalScrollIndicator: View;
+    private readonly innerView: View = new View();;
+    private readonly horizonalScrollIndicator: View = new View();;
+    private readonly verticalScrollIndicator: View = new View();;
     private scroller: any;
 
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
@@ -26,26 +26,23 @@ export class ScrollView extends View {
             (window as any).XTRObjCreater.store(this);
         }
         else {
-            this.innerView = new View();
             this.nativeObject = XTRScrollView.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.horizonalScrollIndicator = new View();
-            this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
-            this.horizonalScrollIndicator.cornerRadius = 1.0;
-            this.horizonalScrollIndicator.alpha = 0.0;
-            super.addSubview(this.horizonalScrollIndicator);
-            this.verticalScrollIndicator = new View();
-            this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
-            this.verticalScrollIndicator.cornerRadius = 1.0;
-            this.verticalScrollIndicator.alpha = 0.0;
-            super.addSubview(this.verticalScrollIndicator);
-            this.resetScroller();
-            this.init();
+            setImmediate(() => { this.init(); })
         }
     }
 
     init() {
         super.init();
+        this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
+        this.horizonalScrollIndicator.cornerRadius = 1.0;
+        this.horizonalScrollIndicator.alpha = 0.0;
+        super.addSubview(this.horizonalScrollIndicator);
+        this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
+        this.verticalScrollIndicator.cornerRadius = 1.0;
+        this.verticalScrollIndicator.alpha = 0.0;
+        super.addSubview(this.verticalScrollIndicator);
+        this.resetScroller();
         this.setupTouches();
     }
 
@@ -57,6 +54,8 @@ export class ScrollView extends View {
                 this._indicatorShowed = false;
                 clearTimeout(this._indicatorHidingTimer);
                 this._tracking = true;
+                this.decelarating = false;
+                this.innerView.userInteractionEnabled = false;
                 let touches = [{
                     pageX: viewLocation.x,
                     pageY: viewLocation.y,
@@ -246,7 +245,7 @@ export class ScrollView extends View {
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.nativeObject.xtr_disableChildrenInteractive(false); this.decelarating = false; }, 150);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 150);
     }
 
     // Indicators
@@ -262,7 +261,7 @@ export class ScrollView extends View {
         const bounds = this.bounds
         if (contentSize.height > bounds.height) {
             const yProgress = contentOffset.y / (contentSize.height - bounds.height);
-            const yHeight = bounds.height / (contentSize.height / bounds.height)
+            const yHeight = Math.max(36.0, bounds.height / (contentSize.height / bounds.height))
             this.verticalScrollIndicator.frame = { x: bounds.width - 4, y: yProgress * (bounds.height - yHeight), width: 2, height: yHeight }
         }
         else {
@@ -270,7 +269,7 @@ export class ScrollView extends View {
         }
         if (contentSize.width > bounds.width) {
             const xProgress = contentOffset.x / (contentSize.width - bounds.width);
-            const xWidth = bounds.width / (contentSize.width / bounds.width)
+            const xWidth = Math.max(36.0, bounds.width / (contentSize.width / bounds.width))
             this.horizonalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }
         }
         else {

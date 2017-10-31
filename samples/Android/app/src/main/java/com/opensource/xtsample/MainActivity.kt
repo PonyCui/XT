@@ -14,7 +14,7 @@ class MainActivity : XTRActivity() {
     }
 
     fun registerViews() {
-//        XTRCustomView.registerClass(FOOView::class.java.name, "FOOView")
+        XTRCustomView.registerClass(FOOView::class.java.name, "FOOView")
     }
 
     fun loadRemote() {

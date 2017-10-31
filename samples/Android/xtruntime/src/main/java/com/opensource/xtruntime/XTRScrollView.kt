@@ -44,7 +44,6 @@ class XTRScrollView: XTRComponent() {
             v8Object.registerJavaMethod(this, "xtr_setBounce", "xtr_setBounce", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_setAlwaysBounceVertical", "xtr_setAlwaysBounceVertical", arrayOf(Boolean::class.java))
             v8Object.registerJavaMethod(this, "xtr_setAlwaysBounceHorizontal", "xtr_setAlwaysBounceHorizontal", arrayOf(Boolean::class.java))
-            v8Object.registerJavaMethod(this, "xtr_disableChildrenInteractive", "xtr_disableChildrenInteractive", arrayOf(Boolean::class.java))
             return v8Object
         }
 
@@ -85,10 +84,6 @@ class XTRScrollView: XTRComponent() {
 
         fun xtr_setAlwaysBounceHorizontal(value: Boolean) {
             alwaysBounceHorizontal = value
-        }
-
-        fun xtr_disableChildrenInteractive(value: Boolean) {
-            this.innerView.xtr_setUserInteractionEnabled(!value)
         }
 
     }

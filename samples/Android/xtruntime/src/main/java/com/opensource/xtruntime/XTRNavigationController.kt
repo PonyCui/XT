@@ -96,7 +96,7 @@ class XTRNavigationController: XTRComponent() {
             childViewControllers?.takeIf { it.size > 1 }?.lastOrNull()?.let { fromViewController ->
                 val toViewController = childViewControllers?.takeIf { it.size > 1 }?.get(childViewControllers.size - 2)
                 if (isAnimated) {
-                    XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, {
+                    XTRView().animationWithDuration(0.25, {
                         toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                         fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                             return@let XTRRect(it.width, it.y, it.width, it.height)
@@ -140,7 +140,7 @@ class XTRNavigationController: XTRComponent() {
                     it.view?.xtr_removeFromSuperview()
                 }
                 targetViewControllers.lastOrNull()?.let { fromViewController ->
-                    XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, {
+                    XTRView().animationWithDuration(0.25, {
                         toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                         fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                             return@let XTRRect(it.width, it.y, it.width, it.height)

@@ -899,7 +899,7 @@ class XTRView: XTRComponent() {
         }
 
         fun willRemoveSubView(subview: View) {
-            xtrContext.invokeMethod(scriptObject, "willRemoveSubView", listOf(subview))
+            xtrContext.invokeMethod(scriptObject, "willRemoveSubview", listOf(subview))
         }
 
         fun willMoveToSuperview(newSuperview: View?) {

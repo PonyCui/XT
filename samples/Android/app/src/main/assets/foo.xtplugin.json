@@ -1,8 +1,0 @@
-{
-  "name": "FOO",
-  "version": "0.0.1",
-  "description": "Hello, FOO!",
-  "main": "com.opensource.fooplugin.FOOPlugin",
-  "author": "Pony",
-  "license": "MIT"
-}

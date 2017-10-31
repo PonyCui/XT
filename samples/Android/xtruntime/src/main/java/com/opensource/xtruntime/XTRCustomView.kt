@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.eclipsesource.v8.V8
@@ -84,6 +85,13 @@ class XTRCustomView: XTRComponent()  {
 
         fun emitMessage(message: Any?): Any? {
             return xtrContext.invokeMethod(scriptObject, "handleMessage", listOf(message ?: V8.getUndefined()))
+        }
+
+        override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+            if (userInteractionEnabled) {
+                return super.dispatchTouchEvent(ev)
+            }
+            return false
         }
 
     }

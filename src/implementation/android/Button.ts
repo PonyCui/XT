@@ -10,8 +10,8 @@ import { Font } from "../../interface/Font";
 export class Button extends View {
 
     nativeObject: any;
-    imageView = new ImageView()
-    titleLabel = new Label()
+    readonly imageView = new ImageView()
+    readonly titleLabel = new Label()
 
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
         super(undefined, undefined, true);
@@ -22,15 +22,15 @@ export class Button extends View {
         }
         else {
             this.nativeObject = XTRButton.createScriptObject(rect || RectZero, this);
-            this.addSubview(this.imageView);
-            this.addSubview(this.titleLabel);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); })
         }
     }
 
     init() {
         super.init();
+        this.addSubview(this.imageView);
+        this.addSubview(this.titleLabel);
         this.setupTouches();
     }
 

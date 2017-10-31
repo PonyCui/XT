@@ -7,7 +7,6 @@ import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
 import { CoordinateOwner, isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
 import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerState } from '../libraries/touch/GestureManager';
 import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
-import { asArray } from "./utils"
 import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
 declare function require(name: string): any;
@@ -44,7 +43,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         else {
             this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
             (window as any).XTRObjCreater.store(this);
-            this.init();
+            setImmediate(() => { this.init(); })
         }
     }
 
@@ -194,7 +193,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     public get subviews(): View[] {
-        return asArray(this.nativeObject.xtr_subviews())
+        return this.nativeObject.xtr_subviews()
     }
 
     public get window(): Window | undefined {
@@ -345,10 +344,12 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
             let subviews = this.subviews;
             for (let index = subviews.length - 1; index >= 0; index--) {
                 let subview = subviews[index];
-                let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
-                if (subTarget) {
-                    target = subTarget;
-                    break;
+                if (subview instanceof View) {
+                    let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
+                    if (subTarget) {
+                        target = subTarget;
+                        break;
+                    }
                 }
             }
         }

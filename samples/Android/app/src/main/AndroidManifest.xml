@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data android:name="XTPlugin.FOOPlugin" android:value="com.opensource.fooplugin.FOOPlugin" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

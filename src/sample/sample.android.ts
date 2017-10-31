@@ -7,8 +7,8 @@ import { ListItem } from '../interface/ListView';
 class AppDelegate extends ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
+        console.log(FOOPlugin.sayHello())
         this.window = new Window();
-        // this.window.backgroundColor = Color.yellowColor
         this.window.rootViewController = new NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
     }
@@ -18,14 +18,17 @@ class AppDelegate extends ApplicationDelegate {
 class FirstListCell extends ListCell {
 
     owner?: FirstViewController
-    myLabel: Label
+    myLabel: Label = new Label(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, 44))
+    myFoo: CustomView = new CustomView("FOOView", RectMake(300, 0, 75, 44))
 
     init() {
         super.init();
-        const label = new Label(RectMake(0.0, 0.0, Screen.mainScreen().bounds().width, 44))
-        label.text = "Hello, World"
-        this.contentView.addSubview(label)
-        this.myLabel = label
+        this.contentView.addSubview(this.myLabel)
+        this.myFoo.userInteractionEnabled = true
+        this.myFoo.onTap = () => {
+            this.myFoo.emitMessage({on: true})
+        }
+        this.contentView.addSubview(this.myFoo)
     }
 
     didSelected() {
@@ -82,7 +85,22 @@ class FirstViewController extends ViewController {
 class SecondViewController extends ViewController {
 
     viewDidLoad() {
-        this.view.backgroundColor = Color.grayColor
+        const fooView = new CustomView("FOOView", RectMake(44, 44, 200, 88))
+        fooView.userInteractionEnabled = true;
+        (fooView as any).isOn = false;
+        fooView.onTap = () => {
+            (fooView as any).isOn = !(fooView as any).isOn
+            fooView.emitMessage({on: (fooView as any).isOn});
+        }
+        this.view.addSubview(fooView)
+        const redView = new View(RectMake(88, 44, 88, 88))
+        redView.alpha = 0.5
+        redView.userInteractionEnabled = true
+        redView.backgroundColor = Color.redColor
+        redView.onTap = () => {
+            redView.alpha = 0.0
+        }
+        this.view.addSubview(redView)
     }
 
 }

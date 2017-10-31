@@ -2,7 +2,7 @@ import { ScrollView } from "./ScrollView";
 import { View } from "./View";
 import { ListItem, ListSelectionStyle } from "../../interface/ListView";
 import { Color } from "../../interface/Color";
-import { Rect } from "../../interface/Rect";
+import { Rect, Point } from "../../interface/Rect";
 import { InteractionState } from "../../interface/View";
 import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
 
@@ -13,18 +13,17 @@ export class ListCell extends View {
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     onSelected?: () => void
     onRender?: () => void
-    selectionView: View
-    contentView: View
+    selectionView: View = new View();
+    contentView: View = new View();
     _isBusy = false
 
     init() {
         super.init();
-        this.selectionView = new View();
-        this.contentView = new View();
         this.selectionView.backgroundColor = new Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
         this.selectionView.alpha = 0.0;
         this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
+        this.contentView.userInteractionEnabled = true
         this.userInteractionEnabled = true
         this.longPressDuration = 0.05
         this.onTap = () => {
@@ -147,7 +146,7 @@ export class ListView extends ScrollView {
             (this._nextReloadMaxY !== undefined && contentOffset.y < (this._nextReloadMaxY || Infinity))) {
             return;
         }
-        this.markInvisibleCellNoBusy();
+        this.markInvisibleCellNoBusy(contentOffset, bounds);
         this._nextSetted = true;
         this._nextReloadMinY = undefined;
         this._nextReloadMaxY = undefined;
@@ -216,9 +215,14 @@ export class ListView extends ScrollView {
         });
     }
 
-    private markInvisibleCellNoBusy() {
-        let contentOffset = this.contentOffset;
-        let bounds = this.bounds;
+    private markInvisibleCellNoBusy(contentOffset: Point, bounds: Rect) {
+        let contentSize = this.contentSize;
+        if (contentOffset.y < 0.0) {
+            return;
+        }
+        if (contentOffset.y > contentSize.height - bounds.height) {
+            return;
+        }
         this._reusingCells.filter(cell => {
             if (cell._isBusy) {
                 const cellFrame = cell._cachingFrame || cell.frame;

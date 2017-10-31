@@ -27,6 +27,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     }
 
     fun handleException(e: Exception) {
+        System.out.println("XT,ERROR >>> " + e.message)
         e.printStackTrace()
     }
 

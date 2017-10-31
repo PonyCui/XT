@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import android.content.pm.PackageManager
 import android.os.Handler
 import com.eclipsesource.v8.Releasable
 import com.eclipsesource.v8.V8Object
@@ -46,7 +47,6 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
             field = value
             loadScript()
         }
-    var xtrPluginInstances: List<Any> = listOf()
 
     init {
         xtrContext.xtrBridge = this
@@ -86,29 +86,17 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     }
 
     private fun loadPlugins() {
-        val pluginInstances: MutableList<Any> = mutableListOf()
-        try {
-            appContext.assets.list("").forEach {
-                if (it.endsWith(".xtplugin.json")) {
+        val applicationInfo = appContext.packageManager.getApplicationInfo(appContext.packageName, PackageManager.GET_META_DATA)
+        applicationInfo.metaData.keySet().forEach { pluginName ->
+            if (pluginName.startsWith("XTPlugin.")) {
+                applicationInfo.metaData.getString(pluginName)?.let {
                     try {
-                        appContext.assets.open(it)?.let {
-                            val bytes = ByteArray(it.available())
-                            it.read(bytes)
-                            it.close()
-                            JSONObject(String(bytes))?.optString("main")?.let { clazzName ->
-                                //todo
-//                                val clazz = Class.forName(clazzName)
-//                                val instance = clazz.getDeclaredConstructor(android.content.Context::class.java, Context::class.java, ScriptableObject::class.java).newInstance(appContext, xtrContext.jsContext, xtrContext.scope)
-//                                pluginInstances.add(instance)
-                            }
-                        }
-                    } catch (e: Exception) {
-                        System.out.println("Load Plugin Failure >>> " + it)
-                    }
+                        val clazz = Class.forName(it)
+                        clazz.getDeclaredConstructor(XTRContext::class.java).newInstance(xtrContext)
+                    } catch (e: Exception) {}
                 }
             }
-        } catch (e: Exception) {}
-        this.xtrPluginInstances = pluginInstances.toList()
+        }
     }
 
     fun loadScript() {
