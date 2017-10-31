@@ -19,8 +19,16 @@ export class CustomView extends View {
         }
     }
 
+    public get props(): any {
+        return this.nativeObject.xtr_props() || {};
+    }
+
+    public set props(value: any) {
+        this.nativeObject.xtr_setProps(value);
+    }
+
     emitMessage(message: any): any {
-        return this.nativeObject.handleMessage(message);
+        return this.nativeObject.xtr_handleMessage(message);
     }
 
     handleMessage(message: any): any {

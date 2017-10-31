@@ -25,9 +25,9 @@ class FirstListCell extends ListCell {
         super.init();
         this.contentView.addSubview(this.myLabel)
         this.myFoo.userInteractionEnabled = true
-        this.myFoo.onTap = () => {
-            this.myFoo.emitMessage({on: true})
-        }
+        // this.myFoo.onTap = () => {
+        //     this.myFoo.emitMessage({on: true})
+        // }
         this.contentView.addSubview(this.myFoo)
     }
 
@@ -89,8 +89,9 @@ class SecondViewController extends ViewController {
         fooView.userInteractionEnabled = true;
         (fooView as any).isOn = false;
         fooView.onTap = () => {
-            (fooView as any).isOn = !(fooView as any).isOn
-            fooView.emitMessage({on: (fooView as any).isOn});
+            fooView.props = {
+                on: !fooView.props.on
+            }
         }
         this.view.addSubview(fooView)
         const redView = new View(RectMake(88, 44, 88, 88))

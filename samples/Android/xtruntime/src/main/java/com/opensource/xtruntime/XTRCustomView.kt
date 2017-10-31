@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 
 interface XTRCustomViewProtocol {
+    fun getProps(): Map<String, Any>
+    fun setProps(value: Map<String, Any>)
     fun onMessage(message: V8Object, customView: XTRCustomView.InnerObject): Any?
 }
 
@@ -63,7 +66,9 @@ class XTRCustomView: XTRComponent()  {
 
         override fun requestV8Object(runtime: V8): V8Object {
             val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
-            v8Object.registerJavaMethod(this, "handleMessage", "handleMessage", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_handleMessage", "xtr_handleMessage", arrayOf(V8Object::class.java))
+            v8Object.registerJavaMethod(this, "xtr_props", "xtr_props", arrayOf())
+            v8Object.registerJavaMethod(this, "xtr_setProps", "xtr_setProps", arrayOf(V8Object::class.java))
             return v8Object
         }
 
@@ -76,7 +81,7 @@ class XTRCustomView: XTRComponent()  {
             }
         }
 
-        fun handleMessage(message: V8Object): Any? {
+        fun xtr_handleMessage(message: V8Object): Any? {
             (innerView as? XTRCustomViewProtocol)?.let {
                 return XTRUtils.fromObject(xtrContext, it.onMessage(message, this))
             }
@@ -85,6 +90,23 @@ class XTRCustomView: XTRComponent()  {
 
         fun emitMessage(message: Any?): Any? {
             return xtrContext.invokeMethod(scriptObject, "handleMessage", listOf(message ?: V8.getUndefined()))
+        }
+
+        fun xtr_props(): V8Value {
+            (innerView as? XTRCustomViewProtocol)?.let {
+                it.getProps()?.let {
+                    return XTRUtils.fromObject(xtrContext, it) as? V8Value ?: V8.getUndefined()
+                }
+            }
+            return V8.getUndefined()
+        }
+
+        fun xtr_setProps(props: V8Object) {
+            (innerView as? XTRCustomViewProtocol)?.let { innerView ->
+                XTRUtils.toMap(props)?.let {
+                    innerView.setProps(it)
+                }
+            }
         }
 
         override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

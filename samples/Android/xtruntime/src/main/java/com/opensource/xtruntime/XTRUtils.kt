@@ -194,6 +194,17 @@ class XTRUtils {
             return null
         }
 
+        fun toMap(target: Any?): Map<String, Any>? {
+            (target as? V8Object)?.let {
+                val map = HashMap<String, Any>()
+                it.keys.forEach { key ->
+                    map.put(key, it[key])
+                }
+                return map.toMap()
+            }
+            return null
+        }
+
         fun fromObject(context: XTRContext, target: Any?): Any? {
             if (target == null) {
                 return V8.getUndefined()
@@ -225,6 +236,19 @@ class XTRUtils {
                     (item as? Releasable)?.release()
                 }
                 return v8Array
+            }
+            (target as? Map<String, Any>)?.let {
+                val v8Object = V8Object(context.v8Runtime)
+                it.entries.forEach { entry ->
+                    val item = fromObject(context, entry.value)
+                    (item as? Boolean)?.let { v8Object.add(entry.key, it) }
+                    (item as? Int)?.let { v8Object.add(entry.key, it) }
+                    (item as? Double)?.let { v8Object.add(entry.key, it) }
+                    (item as? String)?.let { v8Object.add(entry.key, it) }
+                    (item as? V8Value)?.let { v8Object.add(entry.key, it) }
+                    (item as? Releasable)?.release()
+                }
+                return v8Object
             }
             (target as? XTRObject)?.let { target ->
                 target?.scriptObject?.takeIf { !it.isReleased }?.let {
