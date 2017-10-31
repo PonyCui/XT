@@ -17,6 +17,7 @@ class AppDelegate extends ApplicationDelegate {
 
 class FirstListCell extends ListCell {
 
+    owner?: FirstViewController
     myLabel: Label
 
     init() {
@@ -25,6 +26,12 @@ class FirstListCell extends ListCell {
         label.text = "Hello, World"
         this.contentView.addSubview(label)
         this.myLabel = label
+    }
+
+    didSelected() {
+        if (this.owner && this.owner.navigationController) {
+            this.owner.navigationController.pushViewController(new SecondViewController())
+        }
     }
 
 }
@@ -53,6 +60,7 @@ class FirstViewController extends ViewController {
         this.fooView = fooView
         fooView.register(FirstListCell, "Cell")
         fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
+            cell.owner = this
             cell.myLabel.text = item.name
         }
         let items = []
@@ -61,13 +69,20 @@ class FirstViewController extends ViewController {
         }
         fooView.items = items
         fooView.reloadData()
-        fooView.backgroundColor = Color.yellowColor
         this.view.addSubview(fooView);
     }
 
     viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews();
         this.fooView.frame = this.view.bounds
+    }
+
+}
+
+class SecondViewController extends ViewController {
+
+    viewDidLoad() {
+        this.view.backgroundColor = Color.grayColor
     }
 
 }

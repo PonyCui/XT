@@ -63,16 +63,20 @@ class XTRNavigationController: XTRComponent() {
             }
             isAnimating = true
             val isAnimated = animated as? Boolean ?: true
+            val fromViewController = this.childViewControllers.lastOrNull()
             val toViewController = XTRUtils.toViewController(viewController) ?: return
             xtr_addChildViewController(toViewController)
             toViewController.view?.let { this.view?.xtr_addSubview(it) }
-
             toViewController.view?.frame = this.view?.bounds
             if (isAnimated) {
+                fromViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                 toViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                     return@let XTRRect(it.width, it.y, it.width, it.height)
                 } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                 XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, {
+                    fromViewController?.view?.xtr_setFrame(this.view?.bounds?.let {
+                        return@let XTRRect(-it.width * 0.25, it.y, it.width, it.height)
+                    } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                     toViewController.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                 }, {
                     isAnimating = false
@@ -90,8 +94,10 @@ class XTRNavigationController: XTRComponent() {
             isAnimating = true
             val isAnimated = animated as? Boolean ?: true
             childViewControllers?.takeIf { it.size > 1 }?.lastOrNull()?.let { fromViewController ->
+                val toViewController = childViewControllers?.takeIf { it.size > 1 }?.get(childViewControllers.size - 2)
                 if (isAnimated) {
-                    XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, { -> Unit
+                    XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, {
+                        toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                         fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                             return@let XTRRect(it.width, it.y, it.width, it.height)
                         } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
@@ -102,6 +108,7 @@ class XTRNavigationController: XTRComponent() {
                     })
                 }
                 else {
+                    toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                     fromViewController.xtr_removeFromParentViewController()
                     fromViewController.view?.xtr_removeFromSuperview()
                     isAnimating = false
@@ -133,7 +140,8 @@ class XTRNavigationController: XTRComponent() {
                     it.view?.xtr_removeFromSuperview()
                 }
                 targetViewControllers.lastOrNull()?.let { fromViewController ->
-                    XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, { -> Unit
+                    XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, {
+                        toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                         fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                             return@let XTRRect(it.width, it.y, it.width, it.height)
                         } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
@@ -149,6 +157,7 @@ class XTRNavigationController: XTRComponent() {
                     it.xtr_removeFromParentViewController()
                     it.view?.xtr_removeFromSuperview()
                 }
+                toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                 isAnimating = false
             }
             return XTRUtils.fromObject(xtrContext, targetViewControllers) as? V8Array
@@ -179,6 +188,7 @@ class XTRNavigationController: XTRComponent() {
                 }
                 targetViewControllers.lastOrNull()?.let { fromViewController ->
                     XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, { -> Unit
+                        toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                         fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
                             return@let XTRRect(it.width, it.y, it.width, it.height)
                         } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
@@ -194,6 +204,7 @@ class XTRNavigationController: XTRComponent() {
                     it.xtr_removeFromParentViewController()
                     it.view?.xtr_removeFromSuperview()
                 }
+                toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
                 isAnimating = false
             }
             return XTRUtils.fromObject(xtrContext, targetViewControllers) as? V8Array

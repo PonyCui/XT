@@ -31,9 +31,11 @@ export class ListCell extends View {
             this.highligted = true
             this.onSelected && this.onSelected();
             this.didSelected();
-            View.animationWithDuration(0.15, () => {
-                this.highligted = false
-            })
+            setTimeout(() => {
+                View.animationWithDuration(0.15, () => {
+                    this.highligted = false
+                })
+            }, 250)
         }
         this.onLongPress = (state: InteractionState) => {
             if (state == InteractionState.Began) {
