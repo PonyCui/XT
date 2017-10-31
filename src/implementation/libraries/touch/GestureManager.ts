@@ -14,8 +14,9 @@ export interface GestureRecongnizer {
 
     owner?: GestureOwner
     enabled: boolean
+    cancellable: boolean
     state: GestureRecognizerState
-    fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: {x: number, y: number}) => void
+    fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: { x: number, y: number }) => void
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
     touchesMoved(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
     touchesEnded(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean;
@@ -35,7 +36,12 @@ export class GestureManager {
     static touchCalled = false;
 
     static onTrigger(gestureRecongnizer: GestureRecongnizer): boolean {
-        if (this.activeGesture) { return false }
+        if (this.activeGesture && !this.activeGesture.cancellable) {
+            return false
+        }
+        if (this.activeGesture && this.activeGesture.cancellable) {
+            this.activeGesture.touchesCancelled(this.activeGesture.owner as any, [], {}, undefined, undefined)
+        }
         this.activeGesture = gestureRecongnizer;
         return true;
     }
@@ -51,12 +57,17 @@ export class GestureManager {
             if (this.activeGesture.owner == owner) {
                 this.activeGesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
-            return;
+            if (!this.activeGesture.cancellable) {
+                return;
+            }
         }
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
             let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this))) {
+                    if (this.activeGesture && this.activeGesture.cancellable) {
+                        this.activeGesture.touchesCancelled(this.activeGesture.owner as any, [], {}, undefined, undefined)
+                    }
                     this.activeGesture = gesture;
                     break;
                 }
@@ -69,12 +80,17 @@ export class GestureManager {
             if (this.activeGesture.owner == owner) {
                 this.activeGesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
-            return;
+            if (!this.activeGesture.cancellable) {
+                return;
+            }
         }
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
             let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this))) {
+                    if (this.activeGesture && this.activeGesture.cancellable) {
+                        this.activeGesture.touchesCancelled(this.activeGesture.owner as any, [], {}, undefined, undefined)
+                    }
                     this.activeGesture = gesture;
                     break;
                 }
@@ -87,12 +103,17 @@ export class GestureManager {
             if (this.activeGesture.owner == owner) {
                 this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
-            return;
+            if (!this.activeGesture.cancellable) {
+                return;
+            }
         }
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
             let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this))) {
+                    if (this.activeGesture && this.activeGesture.cancellable) {
+                        this.activeGesture.touchesCancelled(this.activeGesture.owner as any, [], {}, undefined, undefined)
+                    }
                     this.activeGesture = gesture;
                     break;
                 }
@@ -110,10 +131,7 @@ export class GestureManager {
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
             let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
-                if (gesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this))) {
-                    this.activeGesture = gesture;
-                    break;
-                }
+                gesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this))
             }
         }
     }

@@ -4,6 +4,7 @@ export interface CoordinateOwner {
 
     transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
     frame: { x: number, y: number, width: number, height: number }
+    _originOffset?: { x: number, y: number }
     superview: CoordinateOwner | undefined
     subviews: CoordinateOwner[]
 
@@ -11,7 +12,7 @@ export interface CoordinateOwner {
 
 export function isPointInside(point: { x: number, y: number }, owner: CoordinateOwner) {
     const frame = owner.frame;
-    return point.x >= 0.0 && point.x <= frame.width && point.y >= 0.0 && point.y <= frame.height
+    return point.x >= 0.0 && point.x <= frame.width && point.y >= 0.0 && point.y <= frame.height;
 }
 
 export function convertPointToChildView(point: { x: number, y: number }, parent: CoordinateOwner, child: CoordinateOwner): { x: number, y: number } {
@@ -29,7 +30,10 @@ export function convertPointToChildView(point: { x: number, y: number }, parent:
     }
     else {
         let curPoint = { x: point.x, y: point.y }
+        let originOffset = { x: 0, y: 0 }
         stack.forEach(nextView => {
+            curPoint.x += originOffset.x;
+            curPoint.y += originOffset.y;
             const transform = nextView.transform;
             const frame = nextView.frame;
             if (transform && !TransformMatrix.isIdentity(transform)) {
@@ -63,6 +67,7 @@ export function convertPointToChildView(point: { x: number, y: number }, parent:
             else {
                 curPoint = { x: curPoint.x - frame.x, y: curPoint.y - frame.y }
             }
+            originOffset = nextView._originOffset || { x: 0, y: 0 }
         })
         return curPoint
     }

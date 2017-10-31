@@ -5,6 +5,7 @@ export class LongPressGestureRecognizer implements GestureRecongnizer {
 
     owner?: GestureOwner
     enabled: boolean = true
+    cancellable: boolean = false
     state: GestureRecognizerState = GestureRecognizerState.Possible
     minimumPressDuration = 0.5;
     allowableMovement = 10;
@@ -73,6 +74,7 @@ export class LongPressGestureRecognizer implements GestureRecongnizer {
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.state = GestureRecognizerState.Cancelled
+        this.fire && this.fire(this.state, undefined, undefined)
         this.touchStartPoint = undefined;
         return false
     }

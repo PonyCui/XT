@@ -5,6 +5,7 @@ export class PanGestureRecognizer implements GestureRecongnizer {
 
     owner?: GestureOwner
     enabled: boolean = true
+    cancellable: boolean = false
     state: GestureRecognizerState = GestureRecognizerState.Possible
     deceteMovement = 10;
     velocity: { x: number, y: number } = { x: 0, y: 0 }
@@ -81,6 +82,7 @@ export class PanGestureRecognizer implements GestureRecongnizer {
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.state = GestureRecognizerState.Cancelled
+        this.fire && this.fire(this.state, undefined, undefined)
         this.touchStartPoint = undefined;
         return false
     }

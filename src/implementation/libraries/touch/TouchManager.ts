@@ -29,8 +29,6 @@ export interface Touchable {
 
     superview: Touchable | undefined
     multipleTouchEnabled: boolean
-    transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
-    frame: { x: number, y: number, width: number, height: number }
     hitTest(point: { x: number, y: number }): Touchable | undefined
     touchesBegan(touches: Touch[], event: Event): void;
     touchesMoved(touches: Touch[], event: Event): void;

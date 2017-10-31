@@ -4,6 +4,7 @@ import { ListItem, ListSelectionStyle } from "../../interface/ListView";
 import { Color } from "../../interface/Color";
 import { Rect } from "../../interface/Rect";
 import { InteractionState } from "../../interface/View";
+import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
 
 export class ListCell extends View {
 
@@ -25,30 +26,35 @@ export class ListCell extends View {
         this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
         this.userInteractionEnabled = true
-        // this.longPressDuration = 0.05
-        // this.onTap = () => {
-        //     this.highligted = true
-        //     this.onSelected && this.onSelected();
-        //     this.didSelected();
-        //     View.animationWithDuration(0.15, () => {
-        //         this.highligted = false
-        //     })
-        // }
-        // this.onLongPress = (state: InteractionState) => {
-        //     if (state == InteractionState.Began) {
-        //         this.highligted = true
-        //     }
-        //     else if (state == InteractionState.Ended) {
-        //         this.onSelected && this.onSelected();
-        //         this.didSelected();
-        //         View.animationWithDuration(0.15, () => {
-        //             this.highligted = false
-        //         })
-        //     }
-        //     else if (state == InteractionState.Cancelled) {
-        //         this.highligted = false
-        //     }
-        // }
+        this.longPressDuration = 0.05
+        this.onTap = () => {
+            this.highligted = true
+            this.onSelected && this.onSelected();
+            this.didSelected();
+            View.animationWithDuration(0.15, () => {
+                this.highligted = false
+            })
+        }
+        this.onLongPress = (state: InteractionState) => {
+            if (state == InteractionState.Began) {
+                this.highligted = true
+            }
+            else if (state == InteractionState.Ended) {
+                this.onSelected && this.onSelected();
+                this.didSelected();
+                View.animationWithDuration(0.15, () => {
+                    this.highligted = false
+                })
+            }
+            else if (state == InteractionState.Cancelled) {
+                this.highligted = false
+            }
+        }
+        this.gestureRecongnizers.forEach(t => {
+            if (t instanceof LongPressGestureRecognizer) {
+                t.cancellable = true
+            }
+        })
     }
 
     layoutSubviews() {

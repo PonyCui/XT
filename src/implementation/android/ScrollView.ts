@@ -135,6 +135,7 @@ export class ScrollView extends View {
 
     public set contentOffset(value: Point) {
         this.nativeObject.xtr_setContentOffset(value);
+        (this.innerView as any)._originOffset = value;
         this.resetIndicator();
     }
 

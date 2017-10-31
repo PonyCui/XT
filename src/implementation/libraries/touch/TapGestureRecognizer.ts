@@ -5,6 +5,7 @@ export class TapGestureRecognizer implements GestureRecongnizer {
 
     owner?: GestureOwner
     enabled: boolean = true
+    cancellable: boolean = false
     state: GestureRecognizerState = GestureRecognizerState.Possible
     tapsRequired = 1
     fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: { x: number, y: number }) => void
@@ -49,6 +50,7 @@ export class TapGestureRecognizer implements GestureRecongnizer {
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.state = GestureRecognizerState.Cancelled
+        this.fire && this.fire(this.state, undefined, undefined)
         this.touchStartPoint = undefined;
         return false
     }

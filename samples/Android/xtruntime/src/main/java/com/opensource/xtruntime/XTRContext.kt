@@ -40,6 +40,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     }
 
     fun release() {
+        sharedTimer.cancel()
         v8Releasable.forEach { it.release() }
         try {
             v8Runtime.release(true)
