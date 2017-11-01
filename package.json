@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack -w && http-server",
-    "br": "webpack --env.br -w",
+    "dev.android": "webpack --env.devandroid -w",
+    "dev.ios": "webpack --env.devios -w",
     "debug": "node service/index.js",
     "test": "webpack --env.test && node dist/tests.js"
   },

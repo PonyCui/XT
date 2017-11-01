@@ -1,7 +1,7 @@
-export as namespace XT;
-
 // declare const XTRDebugger: any
 // declare const XTRBreakpoint: any
+
+export as namespace XT;
 
 export enum InteractionState {
     Began,

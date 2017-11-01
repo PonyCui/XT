@@ -75,6 +75,7 @@ static NSString *globalBridgeScript;
         [XTRBreakpoint attachBreakpoint:_context];
         [XTPolyfill addPolyfills:_context];
         [self loadComponents];
+        [self loadRuntime];
         [self loadPlugins];
         if (_sourceURL != nil) {
             [self loadViaSourceURL];
@@ -127,6 +128,15 @@ static NSString *globalBridgeScript;
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;
         }
+    }
+}
+
+- (void)loadRuntime {
+    [self.context evaluateScript:@"var XT = {}"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.ios.min" ofType:@"js"];
+    if (path) {
+        NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+        [self.context evaluateScript:script];
     }
 }
 
