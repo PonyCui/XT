@@ -52,6 +52,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         xtrContext.xtrBridge = this
         xtrBreakpoint = XTRBreakpoint(this)
         loadComponents()
+        loadRuntime()
         loadPlugins()
         loadScript()
     }
@@ -96,6 +97,16 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                     } catch (e: Exception) {}
                 }
             }
+        }
+    }
+
+    private fun loadRuntime() {
+        xtrContext.evaluateScript("let XT = {};")
+        xtrContext.appContext.assets.open("xt.android.min.js")?.let {
+            val byteArray = ByteArray(it.available())
+            it.read(byteArray)
+            String(byteArray)?.let { xtrContext.evaluateScript(it) }
+            it.close()
         }
     }
 

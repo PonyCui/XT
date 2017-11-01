@@ -24,7 +24,7 @@ export class Image {
     static fromBase64(value: string, scale: number, success: (image: Image) => void) { }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        throw "TODO"
+        throw "Not Implemented."
     }
 
 }

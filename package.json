@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack -w && http-server",
+    "br": "webpack --env.br -w",
     "debug": "node service/index.js",
     "test": "webpack --env.test && node dist/tests.js"
   },

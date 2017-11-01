@@ -104,3 +104,9 @@ import { Device as IDevice, DeviceOrientation as IDeviceOrientation } from './in
 import { Device as MDevice } from './implementation/android/Device'
 export const DeviceOrientation = IDeviceOrientation
 export class Device extends MDevice { }
+
+declare var module: any;
+declare var XT: any;
+if (typeof XT === "object") {
+    XT = module.exports
+}

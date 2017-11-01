@@ -50,7 +50,7 @@ export class Color {
     static orangeColor: Color = new Color(1.0, 0.5, 0.0)
     static purpleColor: Color = new Color(0.5, 0.0, 0.5)
 
-    static colorWithWhite(white: number, alpha: number) {
+    static colorWithWhite(white: number, alpha: number): Color {
         return new Color(white, white, white, alpha)
     }
 

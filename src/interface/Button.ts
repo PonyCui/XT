@@ -6,6 +6,9 @@ import { Font } from "./Font";
 
 export class Button extends View {
 
+    readonly imageView: ImageView;
+    readonly titleLabel: Label
+
     vertical: boolean;
     inset: number;
     title?: string;

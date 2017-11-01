@@ -21,9 +21,6 @@ export enum LayoutRelation {
 
 export class LayoutConstraint {
 
-    static LayoutAttribute = LayoutAttribute;
-    static LayoutRelation = LayoutRelation;
-
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;
     readonly relation: LayoutRelation = LayoutRelation.Equal;

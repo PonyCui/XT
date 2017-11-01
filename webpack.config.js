@@ -40,8 +40,21 @@ module.exports = function (env) {
             ]),
         ],
     }
+    if (env && env.br) {
+        setting.entry = { "xt.android.min": "./src/main.android.ts", };
+        setting.plugins = [
+            new webpack.optimize.UglifyJsPlugin({
+                include: /\.min\.js$/,
+                minimize: true,
+                output: { comments: false },
+            }),
+            new WebpackShellPlugin({
+                onBuildExit: ['cp dist/xt.android.min.js samples/Android/xtruntime/src/main/assets/xt.android.min.js']
+            }),
+        ];
+    }
     if (env && env.test) {
-        setting.entry = {"tests": "./src/tests.ts"};
+        setting.entry = { "tests": "./src/tests.ts" };
         setting.plugins = undefined;
     }
     return setting;
