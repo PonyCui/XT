@@ -6,7 +6,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = function (env) {
     var setting = {
         entry: {
-            "sample.min": "./src/sample/sample.ts",
+            "sample.min": "./sample/index.ts",
         },
         output: {
             filename: "[name].js",
@@ -34,7 +34,7 @@ module.exports = function (env) {
                 onBuildExit: ['cp dist/sample.min.js android/app/src/main/assets/sample.min.js']
             }),
             new CopyWebpackPlugin([
-                { from: 'src/sample/assets', to: 'assets' }
+                { from: 'sample/assets', to: 'assets' }
             ]),
         ],
     }
@@ -64,19 +64,19 @@ module.exports = function (env) {
             }),
         ];
     }
-    // if (env && env.devPixi) {
-    //     setting.entry = { "xt.android.min": "./src/main.android.ts", };
-    //     setting.plugins = [
-    //         new webpack.optimize.UglifyJsPlugin({
-    //             include: /\.min\.js$/,
-    //             minimize: true,
-    //             output: { comments: false },
-    //         }),
-    //         new WebpackShellPlugin({
-    //             onBuildExit: ['cp dist/xt.android.min.js samples/Android/xtruntime/src/main/assets/xt.android.min.js']
-    //         }),
-    //     ];
-    // }
+    if (env && env.devweb) {
+        setting.entry = { "xt.web.min": "./src/main.web.ts", };
+        setting.plugins = [
+            new webpack.optimize.UglifyJsPlugin({
+                include: /\.min\.js$/,
+                minimize: true,
+                output: { comments: false },
+            }),
+            new WebpackShellPlugin({
+                onBuildExit: ['cp dist/xt.web.min.js web/runtime/xt.web.min.js']
+            }),
+        ];
+    }
     if (env && env.test) {
         setting.entry = { "tests": "./src/tests.ts" };
         setting.plugins = undefined;

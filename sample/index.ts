@@ -1,4 +1,4 @@
-/// <reference path="../xt.d.ts" />
+/// <reference path="../src/xt.d.ts" />
 
 declare const FOOPlugin: any
 
