@@ -49,7 +49,7 @@ export class Application {
         this.delegate = delegate;
     }
 
-    static sharedApplication?(): Application | undefined {
+    static sharedApplication(): Application | undefined {
         return sharedApplication;
     }
 

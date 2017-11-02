@@ -9,5 +9,5 @@ export class Application {
     constructor(t: any, delegate: ApplicationDelegate) { }
     delegate: ApplicationDelegate
     keyWindow?: Window
-    static sharedApplication?(): Application { throw "NOT IMPLEMENT!" }
+    static sharedApplication(): Application { throw "NOT IMPLEMENT!" }
 }

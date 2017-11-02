@@ -1,109 +1,127 @@
 /// <reference path="../src/xt.d.ts" />
 
-declare const FOOPlugin: any
+// declare const FOOPlugin: any
 
 class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
-        console.log(FOOPlugin.sayHello())
+        // console.log(FOOPlugin.sayHello())
         this.window = new XT.Window();
-        this.window.rootViewController = new XT.NavigationController(new FirstViewController());
+        this.window.backgroundColor = XT.Color.yellowColor
+        // this.window.hidden = true
+        // this.window.rootViewController = new XT.NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
-    }
-
-}
-
-class FirstListCell extends XT.ListCell {
-
-    owner?: FirstViewController
-    myLabel: XT.Label = new XT.Label(XT.RectMake(0.0, 0.0, XT.Screen.mainScreen().bounds().width, 44))
-    myFoo: XT.CustomView = new XT.CustomView("FOOView", XT.RectMake(300, 0, 75, 44))
-
-    init() {
-        super.init();
-        this.contentView.addSubview(this.myLabel)
-        this.myFoo.userInteractionEnabled = true
-        this.myFoo.onTap = () => {
-            this.myFoo.props = {
-                on: !this.myFoo.props.on
-            }
-        }
-        this.contentView.addSubview(this.myFoo)
-        this.contentView.userInteractionEnabled = true
-    }
-
-    didSelected() {
-        if (this.owner && this.owner.navigationController) {
-            this.owner.navigationController.pushViewController(new SecondViewController())
-        }
-    }
-
-}
-
-class FirstItem implements XT.ListItem {
-
-    [key: string]: any;
-    reuseIdentifier: string = "Cell"
-    rowHeight: (width: number) => number = () => {
-        return 44
-    }
-    name: string = "Pony"
-
-    constructor(name: string) {
-        this.name = name;
-    }
-
-}
-
-class FirstViewController extends XT.ViewController {
-
-    private fooView: XT.ListView;
-
-    viewDidLoad() {
-        const fooView = new XT.ListView(XT.RectMake(0.0, 0.0, 0.0, 0.0))
-        this.fooView = fooView
-        fooView.register(FirstListCell, "Cell")
-        fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
-            cell.owner = this
-            cell.myLabel.text = item.name
-        }
-        let items = []
-        for (var index = 0; index < 100; index++) {
-            items.push(new FirstItem("Index >>> " + index))
-        }
-        fooView.items = items
-        fooView.reloadData()
-        this.view.addSubview(fooView);
-    }
-
-    viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews();
-        this.fooView.frame = this.view.bounds
-    }
-
-}
-
-class SecondViewController extends XT.ViewController {
-
-    viewDidLoad() {
-        const fooView = new XT.CustomView("FOOView", XT.RectMake(44, 44, 200, 88))
-        fooView.userInteractionEnabled = true;
-        fooView.onTap = () => {
-            fooView.props = {
-                on: !fooView.props.on
-            }
-        }
-        this.view.addSubview(fooView)
-        const redView = new XT.View(XT.RectMake(88, 44, 88, 88))
-        redView.alpha = 0.5
-        redView.userInteractionEnabled = true
+        const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         redView.backgroundColor = XT.Color.redColor
-        redView.onTap = () => {
-            redView.alpha = 0.0
-        }
-        this.view.addSubview(redView)
+        this.window.addSubview(redView)
+        const blueView = new XT.View(XT.RectMake(66, 66, 44, 44))
+        blueView.backgroundColor = XT.Color.blueColor
+        this.window.addSubview(blueView)
+        const orangeView = new XT.View(XT.RectMake(55, 55, 44, 44))
+        orangeView.backgroundColor = XT.Color.orangeColor
+        this.window.insertSubviewBelow(orangeView, blueView)
+        // this.window.sendSubviewToBack(blueView)
+        // this.window.subviews[0].removeFromSuperview()
+        setTimeout(() => {
+            if (this.window) {
+                this.window.exchangeSubviewAtIndex(0, 2)
+            }
+        }, 1000)
     }
 
 }
+
+// class FirstListCell extends XT.ListCell {
+
+//     owner?: FirstViewController
+//     myLabel: XT.Label = new XT.Label(XT.RectMake(0.0, 0.0, XT.Screen.mainScreen().bounds().width, 44))
+//     myFoo: XT.CustomView = new XT.CustomView("FOOView", XT.RectMake(300, 0, 75, 44))
+
+//     init() {
+//         super.init();
+//         this.contentView.addSubview(this.myLabel)
+//         this.myFoo.userInteractionEnabled = true
+//         this.myFoo.onTap = () => {
+//             this.myFoo.props = {
+//                 on: !this.myFoo.props.on
+//             }
+//         }
+//         this.contentView.addSubview(this.myFoo)
+//         this.contentView.userInteractionEnabled = true
+//     }
+
+//     didSelected() {
+//         if (this.owner && this.owner.navigationController) {
+//             this.owner.navigationController.pushViewController(new SecondViewController())
+//         }
+//     }
+
+// }
+
+// class FirstItem implements XT.ListItem {
+
+//     [key: string]: any;
+//     reuseIdentifier: string = "Cell"
+//     rowHeight: (width: number) => number = () => {
+//         return 44
+//     }
+//     name: string = "Pony"
+
+//     constructor(name: string) {
+//         this.name = name;
+//     }
+
+// }
+
+// class FirstViewController extends XT.ViewController {
+
+//     private fooView: XT.ListView;
+
+//     viewDidLoad() {
+//         const fooView = new XT.ListView(XT.RectMake(0.0, 0.0, 0.0, 0.0))
+//         this.fooView = fooView
+//         fooView.register(FirstListCell, "Cell")
+//         fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
+//             cell.owner = this
+//             cell.myLabel.text = item.name
+//         }
+//         let items = []
+//         for (var index = 0; index < 100; index++) {
+//             items.push(new FirstItem("Index >>> " + index))
+//         }
+//         fooView.items = items
+//         fooView.reloadData()
+//         this.view.addSubview(fooView);
+//     }
+
+//     viewWillLayoutSubviews() {
+//         super.viewWillLayoutSubviews();
+//         this.fooView.frame = this.view.bounds
+//     }
+
+// }
+
+// class SecondViewController extends XT.ViewController {
+
+//     viewDidLoad() {
+//         const fooView = new XT.CustomView("FOOView", XT.RectMake(44, 44, 200, 88))
+//         fooView.userInteractionEnabled = true;
+//         fooView.onTap = () => {
+//             fooView.props = {
+//                 on: !fooView.props.on
+//             }
+//         }
+//         this.view.addSubview(fooView)
+//         const redView = new XT.View(XT.RectMake(88, 44, 88, 88))
+//         redView.alpha = 0.5
+//         redView.userInteractionEnabled = true
+//         redView.backgroundColor = XT.Color.redColor
+//         redView.onTap = () => {
+//             redView.alpha = 0.0
+//         }
+//         this.view.addSubview(redView)
+//     }
+
+// }
 
 const application = new XT.Application('app', new AppDelegate());
