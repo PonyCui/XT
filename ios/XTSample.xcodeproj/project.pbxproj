@@ -40,7 +40,7 @@
 		90689F3B1FA99FE4007EF1D3 /* XTRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F1E1FA99FE4007EF1D3 /* XTRView.m */; };
 		90689F3C1FA99FE4007EF1D3 /* XTRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F201FA99FE4007EF1D3 /* XTRViewController.m */; };
 		90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F221FA99FE4007EF1D3 /* XTRWindow.m */; };
-		90689F3F1FA9A186007EF1D3 /* sample.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689F3E1FA9A186007EF1D3 /* sample.min.js */; };
+		90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689F401FAAB1FF007EF1D3 /* sample.min.js */; };
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
 		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
@@ -113,7 +113,7 @@
 		90689F201FA99FE4007EF1D3 /* XTRViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRViewController.m; sourceTree = "<group>"; };
 		90689F211FA99FE4007EF1D3 /* XTRWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRWindow.h; sourceTree = "<group>"; };
 		90689F221FA99FE4007EF1D3 /* XTRWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRWindow.m; sourceTree = "<group>"; };
-		90689F3E1FA9A186007EF1D3 /* sample.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = sample.min.js; path = ../../../dist/sample.min.js; sourceTree = "<group>"; };
+		90689F401FAAB1FF007EF1D3 /* sample.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = sample.min.js; path = ../../dist/sample.min.js; sourceTree = "<group>"; };
 		90A76FE51F7A647000CB3EA5 /* FOOView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOView.h; sourceTree = "<group>"; };
 		90A76FE61F7A647000CB3EA5 /* FOOView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOView.m; sourceTree = "<group>"; };
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
@@ -166,7 +166,7 @@
 		905708031F4EB2AF00D5EC05 /* XTSample */ = {
 			isa = PBXGroup;
 			children = (
-				90689F3E1FA9A186007EF1D3 /* sample.min.js */,
+				90689F401FAAB1FF007EF1D3 /* sample.min.js */,
 				905708071F4EB2AF00D5EC05 /* AppDelegate.h */,
 				905708081F4EB2AF00D5EC05 /* AppDelegate.m */,
 				9057080A1F4EB2AF00D5EC05 /* ViewController.h */,
@@ -337,7 +337,7 @@
 				90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */,
 				90689F231FA99FE4007EF1D3 /* xt.ios.min.js in Resources */,
 				905708111F4EB2AF00D5EC05 /* Assets.xcassets in Resources */,
-				90689F3F1FA9A186007EF1D3 /* sample.min.js in Resources */,
+				90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */,
 				9057080F1F4EB2AF00D5EC05 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

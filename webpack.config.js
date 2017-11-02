@@ -31,7 +31,7 @@ module.exports = function (env) {
                 output: { comments: false },
             }),
             new WebpackShellPlugin({
-                onBuildExit: ['cp dist/sample.min.js samples/Android/app/src/main/assets/sample.min.js']
+                onBuildExit: ['cp dist/sample.min.js android/app/src/main/assets/sample.min.js']
             }),
             new CopyWebpackPlugin([
                 { from: 'src/sample/assets', to: 'assets' }
@@ -47,7 +47,7 @@ module.exports = function (env) {
                 output: { comments: false },
             }),
             new WebpackShellPlugin({
-                onBuildExit: ['cp dist/xt.android.min.js samples/Android/xtruntime/src/main/assets/xt.android.min.js']
+                onBuildExit: ['cp dist/xt.android.min.js android/xtruntime/src/main/assets/xt.android.min.js']
             }),
         ];
     }
@@ -60,7 +60,7 @@ module.exports = function (env) {
                 output: { comments: false },
             }),
             new WebpackShellPlugin({
-                onBuildExit: ['cp dist/xt.ios.min.js samples/iOS/runtime/xt.ios.min.js']
+                onBuildExit: ['cp dist/xt.ios.min.js ios/runtime/xt.ios.min.js']
             }),
         ];
     }
