@@ -1,5 +1,5 @@
 import { BaseElement } from './Element'
-import { Rect, RectEqual, Point, RectMake } from '../../../interface/Rect';
+import { Rect, RectEqual, Point, RectMake, Size } from '../../../interface/Rect';
 import { TransformMatrix } from '../../../interface/TransformMatrix';
 import { Color } from '../../../interface/Color';
 
@@ -9,6 +9,7 @@ export class ViewElement extends BaseElement {
     backgroundObject = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     containerObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
     maskObject?: SVGMaskElement = undefined
+    filterObject?: SVGFilterElement = undefined
 
     constructor(frame: Rect, scriptObject: any) {
         super(scriptObject);
@@ -206,6 +207,82 @@ export class ViewElement extends BaseElement {
         this.borderColor = value;
         if (this.borderColor !== undefined) {
             this.backgroundObject.setAttribute('stroke', 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')')
+        }
+    }
+
+    private shadowColor?: Color;
+
+    public xtr_shadowColor(): Color | undefined {
+        return this.shadowColor
+    }
+
+    public xtr_setShadowColor(value: Color | undefined) {
+        this.shadowColor = value;
+        this.resetFilter();
+    }
+
+    private shadowOpacity = 0.0
+
+    public xtr_shadowOpacity(): number {
+        return this.shadowOpacity;
+    }
+
+    public xtr_setShadowOpacity(value: number) {
+        if (this.shadowOpacity != value) {
+            this.shadowOpacity = value;
+            this.resetFilter()
+        }
+    }
+
+    private shadowOffset: Size = { width: 0, height: -3 }
+
+    public xtr_shadowOffset(): Size {
+        return this.shadowOffset;
+    }
+
+    public xtr_setShadowOffset(value: Size) {
+        if (this.shadowOffset != value) {
+            this.shadowOffset = value;
+            this.resetFilter()
+        }
+    }
+
+    private shadowRadius = 3.0
+
+    public xtr_shadowRadius(): number {
+        return this.shadowRadius;
+    }
+
+    public xtr_setShadowRadius(value: number) {
+        if (this.shadowRadius != value) {
+            this.shadowRadius = value;
+            this.resetFilter()
+        }
+    }
+
+    private resetFilter() {
+        if (this.shadowOpacity > 0.0) {
+            const filterObject = this.filterObject || document.createElementNS("http://www.w3.org/2000/svg", "filter");
+            filterObject.setAttribute('id', this.objectUUID + ".filter");
+            filterObject.innerHTML = '';
+            if (this.shadowColor !== undefined) {
+                const shadowObject = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
+                shadowObject.setAttribute("dx", this.shadowOffset.width.toString());
+                shadowObject.setAttribute("dy", this.shadowOffset.height.toString());
+                shadowObject.setAttribute("stdDeviation", this.shadowRadius.toString());
+                shadowObject.setAttribute("flood-color", 'rgba(' + (this.shadowColor.r * 255).toFixed(0) + ', ' + (this.shadowColor.g * 255).toFixed(0) + ', ' + (this.shadowColor.b * 255).toFixed(0) + ', ' + this.shadowColor.a.toString() + ')')
+                shadowObject.setAttribute("flood-opacity", this.shadowOpacity.toString());
+                filterObject.appendChild(shadowObject);
+            }
+            this.filterObject = filterObject;
+            const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
+            if (!defs.contains(filterObject)) {
+                defs.appendChild(filterObject)
+            }
+            this.nativeObject.style.filter = 'url(#' + (this.objectUUID + ".filter") + ')'
+        }
+        else {
+            this.nativeObject.style.filter = '';
         }
     }
 

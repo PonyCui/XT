@@ -10,13 +10,17 @@ class AppDelegate extends XT.ApplicationDelegate {
         this.window.makeKeyAndVisible();
         const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         redView.backgroundColor = XT.Color.redColor
-        // redView.borderColor = XT.Color.blackColor
         this.window.addSubview(redView)
         redView.userInteractionEnabled = true
-        redView.onTap = () => {
-            XT.View.animationWithBouncinessAndSpeed(20, 1.0, () => {
-                redView.frame = XT.RectMake(44, 44, redView.frame.width * 2, redView.frame.height * 2)
-            })
+        redView.shadowColor = XT.Color.blackColor
+        // redView.shadowOpacity = 0.75
+        redView.shadowOffset = XT.SizeMake(3, 3)
+        redView.onLongPress = (state) => {
+            if (state == XT.InteractionState.Began) {
+                XT.View.animationWithBouncinessAndSpeed(20, 1.0, () => {
+                    redView.frame = XT.RectMake(44, 44, redView.frame.width * 2, redView.frame.height * 2)
+                })
+            }
         }
 
         // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-20-[redView]-20-|", {redView}))

@@ -98,11 +98,11 @@ export class View {
      */
     shadowOpacity: number;
     /**
-     * defaults to PointZero;
+     * defaults to {width:0, height: -3};
      */
-    shadowOffset?: Point;
+    shadowOffset?: Size;
     /**
-     * defaults to 0;
+     * defaults to 3;
      */
     shadowRadius: number;
     // Mark: View Hierarchy

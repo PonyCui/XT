@@ -292,49 +292,37 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
         }
     }
 
-    // private _shadowColor: Color | undefined;
+    public get shadowColor(): Color | undefined {
+        return this.nativeObject.xtr_shadowColor()
+    }
 
-    // public get shadowColor(): Color | undefined {
-    //     const value = this.nativeObject.xtr_shadowColor();
-    //     if (value instanceof Object) {
-    //         return new Color(value.r, value.g, value.b, value.a)
-    //     }
-    //     return undefined;
-    // }
+    public set shadowColor(value: Color | undefined) {
+        this.nativeObject.xtr_setShadowColor(value);
+    }
 
-    // public set shadowColor(value: Color | undefined) {
-    //     this.nativeObject.xtr_setShadowColor(value);
-    // }
+    public get shadowOpacity(): number {
+        return this.nativeObject.xtr_shadowOpacity();
+    }
 
-    // private _shadowOpacity: number;
+    public set shadowOpacity(value: number) {
+        this.nativeObject.xtr_setShadowOpacity(value);
+    }
 
-    // public get shadowOpacity(): number {
-    //     return this.nativeObject.xtr_shadowOpacity();
-    // }
+    public get shadowOffset(): Size | undefined {
+        return this.nativeObject.xtr_shadowOffset();
+    }
 
-    // public set shadowOpacity(value: number) {
-    //     this.nativeObject.xtr_setShadowOpacity(value);
-    // }
+    public set shadowOffset(value: Size | undefined) {
+        this.nativeObject.xtr_setShadowOffset(value);
+    }
 
-    // private _shadowOffset: Size | undefined;
+    public get shadowRadius(): number {
+        return this.nativeObject.xtr_shadowRadius();
+    }
 
-    // public get shadowOffset(): Size | undefined {
-    //     return this.nativeObject.xtr_shadowOffset();
-    // }
-
-    // public set shadowOffset(value: Size | undefined) {
-    //     this.nativeObject.xtr_setShadowOffset(value);
-    // }
-
-    // private _shadowRadius: number;
-
-    // public get shadowRadius(): number {
-    //     return this.nativeObject.xtr_shadowRadius();
-    // }
-
-    // public set shadowRadius(value: number) {
-    //     this.nativeObject.xtr_setShadowRadius(value);
-    // }
+    public set shadowRadius(value: number) {
+        this.nativeObject.xtr_setShadowRadius(value);
+    }
 
     // Mark: View Hierarchy
 
