@@ -524,7 +524,7 @@ export class ViewController {
 }
 
 export class NavigationController extends ViewController {
-    constructor(rootViewController: ViewController)
+    constructor(rootViewController?: ViewController)
     pushViewController(viewController: ViewController, animated?: boolean): void
     popViewController(animated?: boolean): ViewController | undefined
     popToViewController(viewController: ViewController, animated?: boolean): ViewController[]

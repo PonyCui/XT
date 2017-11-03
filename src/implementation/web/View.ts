@@ -19,6 +19,7 @@ const AutoLayout = require("autolayout");
 export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     nativeObject: any;
+    viewDelegate: any;
 
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
         if (_isChild) { return; }
@@ -59,6 +60,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
             return;
         }
         this.nativeObject.xtr_setFrame(value);
+        this.layoutSubviews();
     }
 
     public get bounds(): Rect {
@@ -442,10 +444,13 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     }
 
     setNeedsLayout() { this.layoutSubviews() }
-    
+
     layoutIfNeeded() { this.layoutSubviews() }
 
     layoutSubviews() {
+        if (this.viewDelegate && this.viewDelegate.viewWillLayoutSubviews) {
+            this.viewDelegate.viewWillLayoutSubviews()
+        }
         if (this._constraints.length > 0) {
             let viewMapping: { [key: string]: View } = {}
             this._constraints.forEach(item => {
@@ -479,6 +484,9 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
                     }
                 }
             }
+        }
+        if (this.viewDelegate && this.viewDelegate.viewDidLayoutSubviews) {
+            this.viewDelegate.viewDidLayoutSubviews()
         }
     }
 

@@ -11,6 +11,7 @@ interface NavigationControllerInterface extends ViewController {
 
 export class ViewController {
 
+    title?: string
     readonly view: View
     loadView(): void { }
     viewDidLoad(): void { }

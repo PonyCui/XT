@@ -38,5 +38,13 @@ import { Window as IWindow } from './interface/Window'
 import { Window as MWindow } from './implementation/web/Window'
 export class Window extends MWindow { }
 
+import { ViewController as IViewController } from './interface/ViewController'
+import { ViewController as MViewController } from './implementation/web/ViewController'
+export class ViewController extends MViewController {}
+
+import { NavigationController as INavigationController } from './interface/NavigationController'
+import { NavigationController as MNavigationController } from './implementation/web/NavigationController'
+export class NavigationController extends MNavigationController {}
+
 declare var module: any;
 (window as any).XT = module.exports;

@@ -4,7 +4,7 @@ import { Rect, RectZero } from "../../interface/Rect";
 import { Application } from './Application';
 import { TouchManager } from "../libraries/touch/TouchManager";
 import { WindowElement } from './element/Window';
-// import { ViewController } from "./ViewController";
+import { ViewController } from "./ViewController";
 
 export class Window extends View {
 
@@ -20,14 +20,29 @@ export class Window extends View {
         setImmediate(() => { this.init(); });
     }
 
-    // public get rootViewController(): ViewController | undefined {
-    //     return this.nativeObject.xtr_rootViewController();
-    // }
+    private _rootViewController?: ViewController
 
-    // public set rootViewController(value: ViewController | undefined) {
-    //     this.nativeObject.xtr_setRootViewController(value);
-    //     (this as any).rootViewControllerRef = value;
-    // }
+    public get rootViewController(): ViewController | undefined {
+        return this._rootViewController;
+    }
+
+    public set rootViewController(value: ViewController | undefined) {
+        if (this._rootViewController) {
+            this._rootViewController.view.removeFromSuperview();
+        }
+        this._rootViewController = value
+        if (value) {
+            this.addSubview(value.view)
+            value.view.frame = this.bounds
+        }
+    }
+
+    layoutSubviews() {
+        super.layoutSubviews()
+        if (this._rootViewController) {
+            this._rootViewController.view.frame = this.bounds
+        }
+    }
 
     makeKeyAndVisible(): void {
         const application = Application.sharedApplication();

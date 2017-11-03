@@ -6,26 +6,8 @@ class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
         this.window = new XT.Window();
-        this.window.backgroundColor = XT.Color.yellowColor
+        this.window.rootViewController = new XT.NavigationController(new TestViewController())
         this.window.makeKeyAndVisible();
-        const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
-        redView.backgroundColor = XT.Color.redColor
-        this.window.addSubview(redView)
-        redView.userInteractionEnabled = true
-        redView.shadowColor = XT.Color.blackColor
-        // redView.shadowOpacity = 0.75
-        redView.shadowOffset = XT.SizeMake(3, 3)
-        redView.onLongPress = (state) => {
-            if (state == XT.InteractionState.Began) {
-                XT.View.animationWithBouncinessAndSpeed(20, 1.0, () => {
-                    redView.frame = XT.RectMake(44, 44, redView.frame.width * 2, redView.frame.height * 2)
-                })
-            }
-        }
-
-        // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-20-[redView]-20-|", {redView}))
-        // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-80-[redView]-20-|", {redView}))
-        // this.window.layoutIfNeeded();
     }
 
 }
@@ -71,6 +53,40 @@ class AppDelegate extends XT.ApplicationDelegate {
 //     }
 
 // }
+
+class TestViewController extends XT.ViewController {
+
+    title = "Test"
+
+    viewDidLoad() {
+        super.viewDidLoad();
+        const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
+        redView.backgroundColor = XT.Color.redColor
+        redView.userInteractionEnabled = true
+        redView.onTap = () => {
+            this.navigationController && this.navigationController.pushViewController(new Test2ViewController(), true)
+            // XT.View.animationWithBouncinessAndSpeed(20, 1.0, () => {
+            //     redView.frame = XT.RectMake(44, 44, redView.frame.width * 2, redView.frame.height * 2)
+            // })
+        }
+        this.view.addSubview(redView)
+    }
+
+}
+
+class Test2ViewController extends XT.ViewController {
+
+    title = "Test2"
+
+    viewDidLoad() {
+        super.viewDidLoad();
+        this.view.backgroundColor = XT.Color.grayColor
+        this.view.onTap = () => {
+            this.navigationController && this.navigationController.popToRootViewController();
+        }
+    }
+
+}
 
 // class FirstViewController extends XT.ViewController {
 
