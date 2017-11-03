@@ -1,8 +1,9 @@
 /// <reference path="xtr.d.ts" />
 import { View } from './View'
 import { Rect, RectZero } from "../../interface/Rect";
-import { ViewElement } from './element/View';
 import { Application } from './Application';
+import { TouchManager } from "../libraries/touch/TouchManager";
+import { WindowElement } from './element/Window';
 // import { ViewController } from "./ViewController";
 
 export class Window extends View {
@@ -14,7 +15,8 @@ export class Window extends View {
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
         super(undefined, undefined, true)
         if (_isChild) { return; }
-        this.nativeObject = new ViewElement(rect || RectZero, this);
+        this.nativeObject = new WindowElement(rect || RectZero, this);
+        this.userInteractionEnabled = true
         setImmediate(() => { this.init(); });
     }
 
@@ -32,6 +34,20 @@ export class Window extends View {
         if (application) {
             application.keyWindow = this;
         }
+    }
+
+    touchManager = new TouchManager(this)
+
+    handlePointerDown(pid: string, timestamp: number, point: { x: number, y: number }) {
+        this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
+    }
+
+    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }) {
+        this.touchManager.handlePointersMove(timestamp, points)
+    }
+
+    handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {
+        this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y)
     }
 
     // handleKeyboardShow(frame: Rect, duration: number) {

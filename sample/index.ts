@@ -12,11 +12,12 @@ class AppDelegate extends XT.ApplicationDelegate {
         redView.backgroundColor = XT.Color.redColor
         // redView.borderColor = XT.Color.blackColor
         this.window.addSubview(redView)
-        setTimeout(() => {
+        redView.userInteractionEnabled = true
+        redView.onTap = () => {
             XT.View.animationWithBouncinessAndSpeed(20, 1.0, () => {
-                redView.frame = XT.RectMake(44, 44, 122, 122)
+                redView.frame = XT.RectMake(44, 44, redView.frame.width * 2, redView.frame.height * 2)
             })
-        }, 1000)
+        }
 
         // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-20-[redView]-20-|", {redView}))
         // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-80-[redView]-20-|", {redView}))

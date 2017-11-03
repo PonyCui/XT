@@ -1,9 +1,9 @@
-import { Element } from './Element'
+import { BaseElement } from './Element'
 import { Rect, RectEqual, Point, RectMake } from '../../../interface/Rect';
 import { TransformMatrix } from '../../../interface/TransformMatrix';
 import { Color } from '../../../interface/Color';
 
-export class ViewElement extends Element {
+export class ViewElement extends BaseElement {
 
     nativeObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
     backgroundObject = document.createElementNS("http://www.w3.org/2000/svg", "rect");

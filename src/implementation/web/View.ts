@@ -6,11 +6,17 @@ import { Rect, Point, Size, RectZero } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
+import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
+import { CoordinateOwner, isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
+import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerState } from '../libraries/touch/GestureManager';
+import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
+import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
+import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
 import { ViewElement } from './element/View';
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
-export class View {
+export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     nativeObject: any;
 
@@ -520,102 +526,151 @@ export class View {
     }
 
     // Mark: View Interactive
-    // static InteractionState = InteractionState
-    // static SwipeDirection = SwipeDirection
+    static InteractionState = InteractionState
+    static SwipeDirection = SwipeDirection
 
-    // public get userInteractionEnabled(): boolean {
-    //     return this.nativeObject.xtr_userInteractionEnabled();
-    // }
+    gestureRecongnizers: GestureRecongnizer[] = []
+    userInteractionEnabled: boolean = false
+    multipleTouchEnabled: boolean = false
 
-    // public set userInteractionEnabled(value: boolean) {
-    //     this.nativeObject.xtr_setUserInteractionEnabled(value);
-    // }
+    hitTest(point: { x: number; y: number; }): Touchable | undefined {
+        let target = undefined;
+        if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
+            target = this
+            let subviews = this.subviews;
+            for (let index = subviews.length - 1; index >= 0; index--) {
+                let subview = subviews[index];
+                if (subview instanceof View) {
+                    let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
+                    if (subTarget) {
+                        target = subTarget;
+                        break;
+                    }
+                }
+            }
+        }
+        return target
+    }
 
+    touchesBegan(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
+        GestureManager.onTouchesBegan(this, touches, event)
+    }
 
-    // public get longPressDuration(): number {
-    //     return this.nativeObject.xtr_longPressDuration();
-    // }
+    touchesMoved(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
+        GestureManager.onTouchesMoved(this, touches, event)
+    }
 
-    // public set longPressDuration(value: number) {
-    //     this.nativeObject.xtr_setLongPressDuration(value);
-    //     this.nativeObject.xtr_activeLongPress();
-    // }
+    touchesEnded(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
+        GestureManager.onTouchesEnded(this, touches, event)
+    }
 
-    // private _onTap?: () => void
+    touchesCancelled(touches: Touch[], event: Event): void {
+        this.touchTimestamp = touches[0].timestamp
+        GestureManager.onTouchesCancelled(this, touches, event)
+    }
 
-    // public get onTap() {
-    //     return this._onTap;
-    // }
+    private _longPressDuration = 0.5
+    private _existsSingleTap = false
+    private _existsDoubleTap = false
+    private _validDoubleTap = false
+    protected touchTimestamp: number = 0
 
-    // public set onTap(value: (() => void) | undefined) {
-    //     this._onTap = value;
-    //     this.nativeObject.xtr_activeTap();
-    // }
+    public get longPressDuration(): number {
+        return this._longPressDuration;
+    }
 
-    // handleTap() {
-    //     this.onTap && this.onTap();
-    // }
+    public set longPressDuration(value: number) {
+        this._longPressDuration = value;
+        this.gestureRecongnizers.forEach(t => {
+            if (t instanceof LongPressGestureRecognizer) { t.minimumPressDuration = value }
+        });
+    }
 
-    // private _onDoubleTap?: () => void
+    public set onTap(value: (() => void) | undefined) {
+        this._existsSingleTap = true
+        const tapGesture = new TapGestureRecognizer();
+        tapGesture.owner = this
+        tapGesture.fire = () => {
+            if (this._existsDoubleTap) {
+                this._validDoubleTap = false
+                setTimeout(() => {
+                    if (!this._validDoubleTap) {
+                        value && value();
+                    }
+                }, 400)
+            }
+            else {
+                value && value();
+            }
+        };
+        this.gestureRecongnizers.push(tapGesture);
+    }
 
-    // public get onDoubleTap() {
-    //     return this._onDoubleTap;
-    // }
+    public set onDoubleTap(value: (() => void) | undefined) {
+        this._existsDoubleTap = true
+        const tapGesture = new TapGestureRecognizer();
+        tapGesture.owner = this
+        tapGesture.tapsRequired = 2
+        tapGesture.fire = () => {
+            if (this._existsSingleTap) {
+                this._validDoubleTap = true
+            }
+            value && value();
+        };
+        this.gestureRecongnizers.push(tapGesture);
+    }
 
-    // public set onDoubleTap(value: (() => void) | undefined) {
-    //     this._onDoubleTap = value;
-    //     this.nativeObject.xtr_activeDoubleTap();
-    // }
+    public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+        const longPressGesture = new LongPressGestureRecognizer();
+        longPressGesture.owner = this
+        longPressGesture.minimumPressDuration = this._longPressDuration
+        longPressGesture.fire = (state, viewLocation, absLocation) => {
+            let interactionState = InteractionState.Began;
+            switch (state) {
+                case GestureRecognizerState.Began:
+                    interactionState = InteractionState.Began;
+                    break;
+                case GestureRecognizerState.Changed:
+                    interactionState = InteractionState.Changed;
+                    break;
+                case GestureRecognizerState.Ended:
+                    interactionState = InteractionState.Ended;
+                    break;
+                case GestureRecognizerState.Cancelled:
+                    interactionState = InteractionState.Cancelled;
+                    break;
+            }
+            value && value(interactionState, viewLocation, absLocation);
+        };
+        this.gestureRecongnizers.push(longPressGesture);
+    }
 
-    // handleDoubleTap() {
-    //     this.onDoubleTap && this.onDoubleTap();
-    // }
-
-    // private _onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
-
-    // public get onLongPress() {
-    //     return this._onLongPress;
-    // }
-
-    // public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
-    //     this._onLongPress = value;
-    //     this.nativeObject.xtr_activeLongPress();
-    // }
-
-    // handleLongPress(state: number, viewLocation: Point, absLocation: Point) {
-    //     if (state === 1) {
-    //         this.onLongPress && this.onLongPress(InteractionState.Began, viewLocation, absLocation);
-    //     }
-    //     else if (state === 2) {
-    //         this.onLongPress && this.onLongPress(InteractionState.Changed, viewLocation, absLocation);
-    //     }
-    //     else if (state === 3 || state === 4 || state === 5) {
-    //         this.onLongPress && this.onLongPress(InteractionState.Ended, viewLocation, absLocation);
-    //     }
-    // }
-
-    // private _onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
-
-    // public get onPan() {
-    //     return this._onPan;
-    // }
-
-    // public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
-    //     this._onPan = value;
-    //     this.nativeObject.xtr_activePan();
-    // }
-
-    // handlePan(state: number, viewLocation: Point, absLocation: Point) {
-    //     if (state === 1) {
-    //         this.onPan && this.onPan(InteractionState.Began, viewLocation, absLocation);
-    //     }
-    //     else if (state === 2) {
-    //         this.onPan && this.onPan(InteractionState.Changed, viewLocation, absLocation);
-    //     }
-    //     else if (state === 3 || state === 4 || state === 5) {
-    //         this.onPan && this.onPan(InteractionState.Ended, viewLocation, absLocation);
-    //     }
-    // }
+    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void) | undefined) {
+        const panGesture = new PanGestureRecognizer();
+        panGesture.owner = this
+        panGesture.fire = (state, viewLocation, absLocation) => {
+            let interactionState = InteractionState.Began;
+            switch (state) {
+                case GestureRecognizerState.Began:
+                    interactionState = InteractionState.Began;
+                    break;
+                case GestureRecognizerState.Changed:
+                    interactionState = InteractionState.Changed;
+                    break;
+                case GestureRecognizerState.Ended:
+                    interactionState = InteractionState.Ended;
+                    break;
+                case GestureRecognizerState.Cancelled:
+                    interactionState = InteractionState.Cancelled;
+                    break;
+            }
+            value && value(interactionState, viewLocation, absLocation, panGesture.velocity);
+        };
+        this.gestureRecongnizers.push(panGesture);
+    }
 
     // Mark: View Animation
     static _animationEnabled = false;

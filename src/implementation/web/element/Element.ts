@@ -1,4 +1,4 @@
-export class Element {
+export class BaseElement {
 
     objectUUID = performance.now().toString() + "-" + Math.random()
     nativeObject: SVGGElement
