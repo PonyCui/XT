@@ -10,10 +10,17 @@ class AppDelegate extends XT.ApplicationDelegate {
         this.window.makeKeyAndVisible();
         const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         redView.backgroundColor = XT.Color.redColor
+        // redView.borderColor = XT.Color.blackColor
         this.window.addSubview(redView)
-        this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-20-[redView]-20-|", {redView}))
-        this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-80-[redView]-20-|", {redView}))
-        this.window.layoutIfNeeded();
+        setTimeout(() => {
+            XT.View.animationWithBouncinessAndSpeed(20, 1.0, () => {
+                redView.frame = XT.RectMake(44, 44, 122, 122)
+            })
+        }, 1000)
+
+        // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-20-[redView]-20-|", {redView}))
+        // this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-80-[redView]-20-|", {redView}))
+        // this.window.layoutIfNeeded();
     }
 
 }

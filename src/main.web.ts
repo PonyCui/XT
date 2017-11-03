@@ -25,6 +25,9 @@ export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
 export class LayoutConstraint extends MLayoutConstraint {}
 
+import { TransformMatrix as ITransformMatrix } from './interface/TransformMatrix';
+export class TransformMatrix extends ITransformMatrix {}
+
 import { View as IView, InteractionState as IInteractionState, SwipeDirection as ISwipeDirection } from './interface/View'
 import { View as MView } from './implementation/web/View'
 export class View extends MView { }

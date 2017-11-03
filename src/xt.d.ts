@@ -486,7 +486,7 @@ export class TransformMatrix {
     readonly d: number;
     readonly tx: number;
     readonly ty: number;
-    constructor(a: number, b: number, c: number, d: number, tx: number, ty: number)
+    constructor(a?: number, b?: number, c?: number, d?: number, tx?: number, ty?: number)
     static unmatrix(matrix: TransformMatrix): { scale: { x: number, y: number }, degree: number, translate: { x: number, y: number } }
     static isIdentity(matrix: TransformMatrix): boolean
     static postScale(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix

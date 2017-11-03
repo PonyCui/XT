@@ -53,11 +53,11 @@ export class ViewElement extends Element {
 
     private transform: TransformMatrix = new TransformMatrix();
 
-    public get xtr_transform(): TransformMatrix {
+    public xtr_transform(): TransformMatrix {
         return this.transform;
     }
 
-    public set xtr_setTransform(value: TransformMatrix) {
+    public xtr_setTransform(value: TransformMatrix) {
         if (this.transform.a !== value.a || this.transform.b !== value.b || this.transform.c !== value.c || this.transform.d !== value.d || this.transform.tx !== value.tx || this.transform.ty !== value.ty) {
             this.transform = value;
             this.resetTransform();

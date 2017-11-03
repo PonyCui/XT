@@ -1,4 +1,5 @@
 /// <reference path="xtr.d.ts" />
+import * as Rebound from 'rebound'
 import { SwipeDirection, InteractionState } from '../../interface/View';
 import { Window } from '../../interface/Window'
 import { Rect, Point, Size, RectZero } from "../../interface/Rect";
@@ -22,17 +23,37 @@ export class View {
     init() { }
 
     // Mark: View Geometry
-    private _frame: Rect;
+
+    private set frameX(value: number) {
+        this.frame = { ...this.frame, x: value };
+    }
+
+    private set frameY(value: number) {
+        this.frame = { ...this.frame, y: value };
+    }
+
+    private set frameWidth(value: number) {
+        this.frame = { ...this.frame, width: value };
+    }
+
+    private set frameHeight(value: number) {
+        this.frame = { ...this.frame, height: value };
+    }
 
     public get frame(): Rect {
         return this.nativeObject.xtr_frame();
     }
 
     public set frame(value: Rect) {
+        if (View._animationEnabled) {
+            if (this.frame.x != value.x) { View.addAnimation(this, "frameX", this.frame.x, value.x); }
+            if (this.frame.y != value.y) { View.addAnimation(this, "frameY", this.frame.y, value.y); }
+            if (this.frame.width != value.width) { View.addAnimation(this, "frameWidth", this.frame.width, value.width); }
+            if (this.frame.height != value.height) { View.addAnimation(this, "frameHeight", this.frame.height, value.height); }
+            return;
+        }
         this.nativeObject.xtr_setFrame(value);
     }
-
-    private _bounds: Rect;
 
     public get bounds(): Rect {
         return this.nativeObject.xtr_bounds();
@@ -41,8 +62,6 @@ export class View {
     public set bounds(value: Rect) {
         this.nativeObject.xtr_setBounds(value);
     }
-
-    private _center: Point;
 
     public get center(): Point {
         return this.nativeObject.xtr_center();
@@ -57,7 +76,37 @@ export class View {
     }
 
     public set transform(value: TransformMatrix) {
+        if (View._animationEnabled) {
+            const oldValue = TransformMatrix.unmatrix(this.transform)
+            const newValue = TransformMatrix.unmatrix(value)
+            if (oldValue.scale.x != newValue.scale.x) { View.addAnimation(this, "transformScaleX", oldValue.scale.x, newValue.scale.x); }
+            if (oldValue.scale.y != newValue.scale.y) { View.addAnimation(this, "transformScaleY", oldValue.scale.y, newValue.scale.y); }
+            if (oldValue.degree != newValue.degree) { View.addAnimation(this, "transformDegree", oldValue.degree, newValue.degree); }
+            if (oldValue.translate.x != newValue.translate.x) { View.addAnimation(this, "transformTranslateX", oldValue.translate.x, newValue.translate.x); }
+            if (oldValue.translate.y != newValue.translate.y) { View.addAnimation(this, "transformTranslateY", oldValue.translate.y, newValue.translate.y); }
+            return;
+        }
         this.nativeObject.xtr_setTransform(value);
+    }
+
+    private set transformScaleX(value: number) {
+        this.transform = TransformMatrix.setScale(this.transform, value, undefined)
+    }
+
+    private set transformScaleY(value: number) {
+        this.transform = TransformMatrix.setScale(this.transform, undefined, value)
+    }
+
+    private set transformDegree(value: number) {
+        this.transform = TransformMatrix.setRotate(this.transform, value * Math.PI / 180)
+    }
+
+    private set transformTranslateX(value: number) {
+        this.transform = TransformMatrix.setTranslate(this.transform, value, undefined)
+    }
+
+    private set transformTranslateY(value: number) {
+        this.transform = TransformMatrix.setTranslate(this.transform, undefined, value)
     }
 
     // Mark: View Rendering
@@ -75,7 +124,38 @@ export class View {
     }
 
     public set backgroundColor(value: Color | undefined) {
+        if (View._animationEnabled && this.backgroundColor && value) {
+            if (this.backgroundColor.a != value.a) { View.addAnimation(this, "backgroundColorA", this.backgroundColor.a, value.a); }
+            if (this.backgroundColor.r != value.r) { View.addAnimation(this, "backgroundColorR", this.backgroundColor.r, value.r); }
+            if (this.backgroundColor.g != value.g) { View.addAnimation(this, "backgroundColorG", this.backgroundColor.g, value.g); }
+            if (this.backgroundColor.b != value.b) { View.addAnimation(this, "backgroundColorB", this.backgroundColor.b, value.b); }
+            return;
+        }
         this.nativeObject.xtr_setBackgroundColor(value);
+    }
+
+    private set backgroundColorA(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new Color(this.backgroundColor.r, this.backgroundColor.g, this.backgroundColor.b, value);
+        }
+    }
+
+    private set backgroundColorR(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new Color(value, this.backgroundColor.g, this.backgroundColor.b, this.backgroundColor.a);
+        }
+    }
+
+    private set backgroundColorG(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new Color(this.backgroundColor.r, value, this.backgroundColor.b, this.backgroundColor.a);
+        }
+    }
+
+    private set backgroundColorB(value: number) {
+        if (this.backgroundColor) {
+            this.backgroundColor = new Color(this.backgroundColor.r, this.backgroundColor.g, value, this.backgroundColor.a);
+        }
     }
 
     public get alpha(): number {
@@ -83,6 +163,10 @@ export class View {
     }
 
     public set alpha(value: number) {
+        if (View._animationEnabled) {
+            View.addAnimation(this, "alpha", this.nativeObject.alpha, value);
+            return;
+        }
         this.nativeObject.xtr_setAlpha(value);
     }
 
@@ -144,6 +228,10 @@ export class View {
     }
 
     public set cornerRadius(value: number) {
+        if (View._animationEnabled) {
+            View.addAnimation(this, "cornerRadius", this.cornerRadius, value);
+            return;
+        }
         this.nativeObject.xtr_setCornerRadius(value);
     }
 
@@ -152,6 +240,10 @@ export class View {
     }
 
     public set borderWidth(value: number) {
+        if (View._animationEnabled) {
+            View.addAnimation(this, "borderWidth", this.borderWidth, value);
+            return;
+        }
         this.nativeObject.xtr_setBorderWidth(value);
     }
 
@@ -160,7 +252,38 @@ export class View {
     }
 
     public set borderColor(value: Color | undefined) {
+        if (View._animationEnabled && this.borderColor && value) {
+            if (this.borderColor.a != value.a) { View.addAnimation(this, "borderColorA", this.borderColor.a, value.a); }
+            if (this.borderColor.r != value.r) { View.addAnimation(this, "borderColorR", this.borderColor.r, value.r); }
+            if (this.borderColor.g != value.g) { View.addAnimation(this, "borderColorG", this.borderColor.g, value.g); }
+            if (this.borderColor.b != value.b) { View.addAnimation(this, "borderColorB", this.borderColor.b, value.b); }
+            return;
+        }
         this.nativeObject.xtr_setBorderColor(value);
+    }
+
+    private set borderColorA(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
+        }
+    }
+
+    private set borderColorR(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
+        }
+    }
+
+    private set borderColorG(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
+        }
+    }
+
+    private set borderColorB(value: number) {
+        if (this.borderColor) {
+            this.borderColor = new Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
+        }
     }
 
     // private _shadowColor: Color | undefined;
@@ -495,14 +618,101 @@ export class View {
     // }
 
     // Mark: View Animation
-    // static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
-    //     XTRView.xtr_animationWithDurationAnimationCompletion(duration, animations, completion);
-    // }
+    static _animationEnabled = false;
+    private static _animationViews: View[] = [];
+    private _animationProps: { [key: string]: { from: number, to: number } } = {};
 
-    // static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+    private static commonAnimation(animations: () => void, runAnimation: (startTime: number, animationViewProps: { view: View, propName: string, from: number, to: number }[]) => void) {
+        View._animationEnabled = true;
+        animations();
+        let animationViewProps: { view: View, propName: string, from: number, to: number }[] = [];
+        View._animationViews.forEach(view => {
+            for (var propName in view._animationProps) {
+                var element = view._animationProps[propName];
+                animationViewProps.push({ view, propName, from: element.from, to: element.to });
+            }
+            view._animationProps = {};
+        })
+        const startTime = performance.now();
+        const runnable = () => {
+            if (!runAnimation(startTime, animationViewProps)) {
+                requestAnimationFrame(runnable);
+            }
+        }
+        runnable();
+        View._animationViews = [];
+        View._animationEnabled = false;
+    }
 
-    // static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) {
-    //     XTRView.xtr_animationWithBouncinessAndSpeedDampingVelocityAnimationCompletion(duration, damping, velocity, animations, completion);
-    // }
+    static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
+        this.commonAnimation(animations, (startTime, animationViewProps) => {
+            const currentTime = performance.now();
+            const delta = currentTime - startTime;
+            animationViewProps.forEach(item => {
+                const currentValue = (item.to - item.from) * Math.min(1.0, delta / (duration * 1000));
+                (item.view as any)[item.propName] = item.from + currentValue;
+            })
+            if (delta < (duration * 1000)) {
+                return false;
+            }
+            else {
+                completion && completion();
+                return true;
+            }
+        })
+    }
+
+    static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void) {
+        const springSystem = new Rebound.SpringSystem();
+        let rested = false;
+        this.commonAnimation(animations, (startTime, animationViewProps) => {
+            animationViewProps.forEach(item => {
+                const spring = springSystem.createSpring(tension, friction);
+                spring.addListener({
+                    onSpringUpdate: (spring) => {
+                        (item.view as any)[item.propName] = spring.getCurrentValue();
+                    },
+                    onSpringAtRest: () => {
+                        if (!rested) {
+                            rested = true;
+                            completion && completion();
+                        }
+                    }
+                });
+                spring.setCurrentValue(item.from);
+                spring.setEndValue(item.to);
+            })
+            return true;
+        })
+    }
+
+    static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
+        const springSystem = new Rebound.SpringSystem();
+        let rested = false;
+        this.commonAnimation(animations, (startTime, animationViewProps) => {
+            animationViewProps.forEach(item => {
+                const spring = springSystem.createSpringWithBouncinessAndSpeed(bounciness, speed);
+                spring.addListener({
+                    onSpringUpdate: (spring) => {
+                        (item.view as any)[item.propName] = spring.getCurrentValue();
+                    },
+                    onSpringAtRest: () => {
+                        if (!rested) {
+                            rested = true;
+                            completion && completion();
+                        }
+                    }
+                });
+                spring.setCurrentValue(item.from);
+                spring.setEndValue(item.to);
+            })
+            return true;
+        })
+    }
+
+    static addAnimation(view: View, propName: string, from: number, to: number) {
+        if (View._animationViews.indexOf(view) < 0) { View._animationViews.push(view); }
+        view._animationProps[propName] = { from, to }
+    }
 
 }
