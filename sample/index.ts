@@ -5,28 +5,15 @@
 class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
-        // console.log(FOOPlugin.sayHello())
         this.window = new XT.Window();
         this.window.backgroundColor = XT.Color.yellowColor
-        // this.window.hidden = true
-        // this.window.rootViewController = new XT.NavigationController(new FirstViewController());
         this.window.makeKeyAndVisible();
         const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         redView.backgroundColor = XT.Color.redColor
         this.window.addSubview(redView)
-        const blueView = new XT.View(XT.RectMake(66, 66, 44, 44))
-        blueView.backgroundColor = XT.Color.blueColor
-        this.window.addSubview(blueView)
-        const orangeView = new XT.View(XT.RectMake(55, 55, 44, 44))
-        orangeView.backgroundColor = XT.Color.orangeColor
-        this.window.insertSubviewBelow(orangeView, blueView)
-        // this.window.sendSubviewToBack(blueView)
-        // this.window.subviews[0].removeFromSuperview()
-        setTimeout(() => {
-            if (this.window) {
-                this.window.exchangeSubviewAtIndex(0, 2)
-            }
-        }, 1000)
+        this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-20-[redView]-20-|", {redView}))
+        this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-80-[redView]-20-|", {redView}))
+        this.window.layoutIfNeeded();
     }
 
 }

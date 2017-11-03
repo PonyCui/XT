@@ -7,6 +7,8 @@ import { Application } from './Application';
 
 export class Window extends View {
 
+    className = "XTRWindow"
+
     nativeObject: any;
 
     constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {

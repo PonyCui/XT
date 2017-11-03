@@ -37,13 +37,16 @@ export class Application {
                 const element = document.querySelector(t)
                 if (element instanceof SVGElement) {
                     this._rootElement = element
+                    this._rootElement.innerHTML = "<defs></defs>"
                 }
             }
-            else if (typeof t === "object" && t.tagName === "svg") {
+            else if (t instanceof SVGElement) {
                 this._rootElement = t
+                this._rootElement.innerHTML = "<defs></defs>"
             }
             if (this._rootElement === undefined || this._rootElement === null) {
                 this._rootElement = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+                this._rootElement.innerHTML = "<defs></defs>"
                 this._rootElement.setAttribute('width', '100%')
                 this._rootElement.setAttribute('height', '100%')
                 document.body.appendChild(this._rootElement)

@@ -19,6 +19,12 @@ export const RectZero = IRectZero
 export const RectEqual = IRectEqual
 export const RectInside = IRectInside
 
+import { LayoutAttribute as ILayoutAttribute, LayoutRelation as ILayoutRelation, LayoutConstraint as ILayoutConstraint } from './interface/LayoutConstraint'
+import { LayoutConstraint as MLayoutConstraint } from './implementation/web/LayoutConstraint'
+export const LayoutAttribute = ILayoutAttribute
+export const LayoutRelation = ILayoutRelation
+export class LayoutConstraint extends MLayoutConstraint {}
+
 import { View as IView, InteractionState as IInteractionState, SwipeDirection as ISwipeDirection } from './interface/View'
 import { View as MView } from './implementation/web/View'
 export class View extends MView { }

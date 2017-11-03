@@ -8,6 +8,7 @@ export class ViewElement extends Element {
     nativeObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
     backgroundObject = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     containerObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    maskObject?: SVGMaskElement = undefined
 
     constructor(frame: Rect, scriptObject: any) {
         super(scriptObject);
@@ -69,6 +70,49 @@ export class ViewElement extends Element {
         this.backgroundObject.setAttribute('height', this.frame.height.toString())
     }
 
+    private clipsToBounds = false
+
+    public xtr_clipsToBounds(): boolean {
+        return this.clipsToBounds;
+    }
+
+    public xtr_setClipsToBounds(value: boolean) {
+        if (this.clipsToBounds != value) {
+            this.clipsToBounds = value;
+            this.resetMaskElement();
+        }
+    }
+
+    private resetMaskElement() {
+        if (this.clipsToBounds) {
+            const maskObject = this.maskObject || document.createElementNS("http://www.w3.org/2000/svg", "mask");
+            maskObject.setAttribute('id', this.objectUUID + ".mask");
+            maskObject.innerHTML = '';
+            maskObject.appendChild(this.createMaskPath())
+            this.maskObject = maskObject;
+            const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
+            if (!defs.contains(maskObject)) {
+                defs.appendChild(maskObject)
+            }
+            this.nativeObject.style.mask = 'url(#' + (this.objectUUID + ".mask") + ')'
+        }
+        else {
+            this.nativeObject.style.mask = ''
+        }
+    }
+
+    private createMaskPath(): SVGElement {
+        const maskPath = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        maskPath.setAttribute("width", this.frame.width.toString());
+        maskPath.setAttribute("height", this.frame.height.toString());
+        if (this.cornerRadius > 0) {
+            maskPath.setAttribute("rx", this.cornerRadius.toString())
+            maskPath.setAttribute("ry", this.cornerRadius.toString())
+        }
+        maskPath.style.fill = "white";
+        return maskPath
+    }
+
     private backgroundColor?: Color;
 
     public xtr_backgroundColor(): Color | undefined {
@@ -112,6 +156,59 @@ export class ViewElement extends Element {
         }
     }
 
+    private contentMode: number = 0
+
+    public xtr_contentMode(): number {
+        return this.contentMode
+    }
+
+    public xtr_setContentMode(value: number) {
+        if (this.contentMode !== value) {
+            this.contentMode = value
+        }
+    }
+
+    private cornerRadius = 0.0
+
+    public xtr_cornerRadius(): number {
+        return this.cornerRadius;
+    }
+
+    public xtr_setCornerRadius(value: number) {
+        if (this.cornerRadius != value) {
+            this.cornerRadius = value;
+            this.backgroundObject.setAttribute("rx", value.toString())
+            this.backgroundObject.setAttribute("ry", value.toString())
+            this.resetMaskElement();
+        }
+    }
+
+    private borderWidth = 0.0
+
+    public xtr_borderWidth(): number {
+        return this.borderWidth;
+    }
+
+    public xtr_setBorderWidth(value: number) {
+        if (this.borderWidth != value) {
+            this.borderWidth = value;
+            this.backgroundObject.setAttribute("stroke-width", value.toString())
+        }
+    }
+
+    private borderColor?: Color;
+
+    public xtr_borderColor(): Color | undefined {
+        return this.borderColor
+    }
+
+    public xtr_setBorderColor(value: Color | undefined) {
+        this.borderColor = value;
+        if (this.borderColor !== undefined) {
+            this.backgroundObject.setAttribute('stroke', 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')')
+        }
+    }
+
     private superview: ViewElement | undefined
     private subviews: ViewElement[] = []
 
@@ -142,6 +239,7 @@ export class ViewElement extends Element {
     }
 
     public xtr_insertSubviewAtIndexAtIndex(subview: ViewElement, atIndex: number) {
+        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
         if (atIndex < this.subviews.length) {
             subview.superview = this
             this.containerObject.insertBefore(subview.nativeObject, this.subviews[atIndex].nativeObject)
@@ -172,18 +270,21 @@ export class ViewElement extends Element {
     }
 
     public xtr_addSubview(subview: ViewElement) {
+        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
         subview.superview = this
         this.containerObject.appendChild(subview.nativeObject)
         this.subviews.push(subview)
     }
 
     public xtr_insertSubviewBelowSiblingSubview(subview: ViewElement, siblingSubview: ViewElement) {
+        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
         subview.superview = this
         this.subviews.splice(this.subviews.indexOf(siblingSubview), 0, subview);
         this.containerObject.insertBefore(subview.nativeObject, siblingSubview.nativeObject)
     }
 
     public xtr_insertSubviewAboveSiblingSubview(subview: ViewElement, siblingSubview: ViewElement) {
+        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
         if (this.subviews.indexOf(siblingSubview) == this.subviews.length - 1) {
             this.xtr_addSubview(subview);
         }
@@ -210,6 +311,17 @@ export class ViewElement extends Element {
             this.subviews = this.subviews.filter(t => t != subview)
             this.subviews.unshift(subview)
         }
+    }
+
+    public xtr_isDescendantOfView(view: ViewElement): boolean {
+        let current: any = this
+        while (current != undefined) {
+            if (current == view) {
+                return true
+            }
+            current = current.superview
+        }
+        return false
     }
 
     public xtr_viewWithTag(tag: number): ViewElement | undefined {
