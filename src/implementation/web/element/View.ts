@@ -7,6 +7,7 @@ export class ViewElement extends BaseElement {
 
     nativeObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
     backgroundObject = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    contentObject: SVGElement | undefined = undefined
     containerObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
     maskObject?: SVGMaskElement = undefined
     filterObject?: SVGFilterElement = undefined
@@ -16,9 +17,13 @@ export class ViewElement extends BaseElement {
         this.nativeObject.setAttribute('id', this.objectUUID);
         this.backgroundObject.setAttribute('visibility', 'hidden');
         this.nativeObject.appendChild(this.backgroundObject);
+        this.loadContent();
+        if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }
         this.nativeObject.appendChild(this.containerObject);
         this.xtr_setFrame(frame)
     }
+
+    protected loadContent() { }
 
     private frame: Rect = RectMake(0, 0, 0, 0);
 

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -w && http-server",
+    "start": "webpack -w & http-server",
     "dev.android": "webpack --env.devandroid -w",
     "dev.ios": "webpack --env.devios -w",
     "dev.web": "webpack --env.devweb -w",

@@ -7,6 +7,9 @@ export class Application extends MApplication { }
 import { Color as IColor } from './interface/Color'
 export class Color extends IColor { }
 
+import { Font as IFont } from './interface/Font';
+export class Font extends IFont {}
+
 import { PointMake as IPointMake, PointEqual as IPointEqual, PointZero as IPointZero, SizeMake as ISizeMake, SizeEqual as ISizeEqual, SizeZero as ISizeZero, RectMake as IRectMake, RectZero as IRectZero, RectEqual as IRectEqual, RectInside as IRectInside, InsetsMake as IInsetsMake } from './interface/Rect'
 export const PointMake = IPointMake
 export const PointEqual = IPointEqual
@@ -18,6 +21,13 @@ export const RectMake = IRectMake
 export const RectZero = IRectZero
 export const RectEqual = IRectEqual
 export const RectInside = IRectInside
+
+import { TextAlignment as ITextAlignment, TextVerticalAlignment as ITextVerticalAlignment, LineBreakMode as ILineBreakMode, Label as ILabel } from './interface/Label'
+import { Label as MLabel } from './implementation/web/Label'
+export const TextAlignment = ITextAlignment
+export const TextVerticalAlignment = ITextVerticalAlignment
+export const LineBreakMode = ILineBreakMode
+export class Label extends MLabel {}
 
 import { LayoutAttribute as ILayoutAttribute, LayoutRelation as ILayoutRelation, LayoutConstraint as ILayoutConstraint } from './interface/LayoutConstraint'
 import { LayoutConstraint as MLayoutConstraint } from './implementation/web/LayoutConstraint'

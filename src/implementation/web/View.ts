@@ -21,7 +21,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
     nativeObject: any;
     viewDelegate: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
+    constructor(rect?: Rect, _isChild: boolean = false) {
         if (_isChild) { return; }
         this.nativeObject = new ViewElement(rect || RectZero, this);
         setImmediate(() => { this.init(); });

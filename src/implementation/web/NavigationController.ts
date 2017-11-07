@@ -23,7 +23,7 @@ export class NavigationController extends ViewController {
                 let element = this.childViewControllers[index];
                 if (element.vcID === window.location.hash.replace('#', '')) {
                     if (this.isAnimating) {
-                        this.runAfterAnimated = () => { this.popToViewController(element, false) }
+                        this.runAfterAnimated = () => { this.popToViewController(element, false); this.runAfterAnimated = undefined; }
                     }
                     else {
                         this.popToViewController(element, false)
@@ -67,7 +67,7 @@ export class NavigationController extends ViewController {
             toViewController.view.frame = this.view.bounds;
         }
         document.title = viewController.title || ""
-        window.location.href = window.location.href.split('#')[0] + "#" + viewController.vcID;
+        window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
     }
 
     popViewController(animated: boolean = true): ViewController | undefined {

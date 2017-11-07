@@ -421,6 +421,7 @@ export class Label extends View {
     textAlignment: TextAlignment
     numberOfLines: number
     lineBreakMode: LineBreakMode
+    letterSpace: number
     lineSpace: number
     textRectForBounds(bounds: Rect): Rect
 }
