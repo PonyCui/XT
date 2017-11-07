@@ -9,22 +9,21 @@ import { Color } from "../../interface/Color";
 
 export class Button extends View {
 
-    private imageView: ImageView
-    private titleLabel: Label
+    private imageView: ImageView = new ImageView();
+    private titleLabel: Label = new Label();
 
     init() {
         super.init();
-        this.imageView = new ImageView();
-        this.titleLabel = new Label();
         this.titleLabel.numberOfLines = 1;
         this.titleLabel.textAlignment = TextAlignment.Center
         this.titleLabel.lineBreakMode = LineBreakMode.TruncatingTail
         this.titleLabel.textColor = this.tintColor
         this.titleLabel.font = new Font(17)
-        this.longPressDuration = 150;
+        this.longPressDuration = 0.15;
         this.addSubview(this.imageView);
         this.addSubview(this.titleLabel);
         this.addTouches();
+        this.resetContentLayout();
     }
 
     tintColorDidChange() {
@@ -74,6 +73,14 @@ export class Button extends View {
                     this.onTouchUpInside && this.onTouchUpInside()
                 }
             }
+            else if (state == InteractionState.Cancelled) {
+                this.highlighted = false
+                View.animationWithDuration(0.15, () => {
+                    this.titleLabel.alpha = 1.0
+                    this.imageView.alpha = 1.0;
+                });
+                this.onHighlighted && this.onHighlighted(false)
+            }
         }
     }
 
@@ -104,7 +111,7 @@ export class Button extends View {
     }
 
     public set title(value: string | undefined) {
-        this.titleLabel.text = value
+        this.titleLabel.text = value || ""
         this.resetContentLayout();
     }
 
@@ -155,7 +162,7 @@ export class Button extends View {
             if (textSize) {
                 this.titleLabel.frame = {
                     x: (this.bounds.width - textSize.width) / 2,
-                    y: (this.bounds.height - textSize.height) / 2,
+                    y: (this.bounds.height - textSize.height) / 2 + 2,
                     width: textSize.width,
                     height: textSize.height
                 }; 

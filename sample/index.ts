@@ -61,12 +61,13 @@ class TestViewController extends XT.ViewController {
     viewDidLoad() {
         super.viewDidLoad();
 
-        const imageView = new XT.ImageView(XT.RectMake(0, 0, 78, 78))
-        this.view.addSubview(imageView)
-
-        XT.Image.fromAssetsWithScales("success", 2, (it) => {
-            imageView.image = it.imageWithImageRenderingMode(XT.ImageRenderingMode.Template)
-        })
+        const button = new XT.Button(XT.RectMake(0, 0, 120, 44))
+        button.backgroundColor = XT.Color.yellowColor
+        button.title = "测试按钮"
+        button.onTouchUpInside = () => {
+            button.title = "你点到我了"
+        }
+        this.view.addSubview(button)
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         // redView.backgroundColor = XT.Color.redColor

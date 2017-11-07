@@ -26,7 +26,7 @@ export class StaticTextLayout {
     readonly bounds: Rect = RectZero
     readonly padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }
 
-    constructor(numberOfLines: number, letterSpace: number, lineSpace: number, text: string, font: Font, bounds: Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
+    constructor(readonly numberOfLines: number, letterSpace: number, lineSpace: number, text: string, font: Font, bounds: Rect, padding: Padding = { top: 0, left: 0, bottom: 0, right: 0 }) {
         this.text = text;
         this.font = font;
         this.bounds = bounds;

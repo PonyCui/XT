@@ -33,6 +33,7 @@ export interface GestureOwner {
 export class GestureManager {
 
     static activeGesture: GestureRecongnizer | undefined
+    static activeTimerHanders: number[] = []
     static touchCalled = false;
 
     static onTrigger(gestureRecongnizer: GestureRecongnizer): boolean {
@@ -99,6 +100,8 @@ export class GestureManager {
     }
 
     static onTouchesEnded(owner: GestureOwner, touches: Touch[], event: Event): void {
+        GestureManager.activeTimerHanders.forEach(t => clearTimeout(t));
+        GestureManager.activeTimerHanders = [];
         if (this.activeGesture !== undefined) {
             if (this.activeGesture.owner == owner) {
                 this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));

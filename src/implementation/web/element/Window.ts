@@ -14,7 +14,9 @@ export class WindowElement extends ViewElement {
             e.preventDefault()
         })
         document.addEventListener("touchmove", (e) => {
-            this.scriptObject.handlePointersMove(e.which.toString(), e.timeStamp, {x: e.changedTouches[e.which].clientX, y: e.changedTouches[e.which].clientY})
+            const points: any = {};
+            points[e.which.toString()] = {x: e.changedTouches[e.which].clientX, y: e.changedTouches[e.which].clientY};
+            this.scriptObject.handlePointersMove(e.timeStamp, points)
             e.preventDefault()
         })
         document.addEventListener("touchend", (e) => {

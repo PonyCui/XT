@@ -4,12 +4,50 @@ import { Font } from "../../../interface/Font";
 import { Color } from "../../../interface/Color";
 import { TextAlignment, LineBreakMode, TextVerticalAlignment } from "../../../interface/Label";
 import { StaticTextLayout } from "./TextLayout";
+import { Rect } from "../../../interface/Rect";
+
+// polyfill
+if (typeof (Object as any).assign != 'function') {
+    // Must be writable: true, enumerable: false, configurable: true
+    Object.defineProperty(Object, "assign", {
+        value: function assign(target: any, varArgs: any) { // .length of function is 2
+            'use strict';
+            if (target == null) { // TypeError if undefined or null
+                throw new TypeError('Cannot convert undefined or null to object');
+            }
+
+            var to = Object(target);
+
+            for (var index = 1; index < arguments.length; index++) {
+                var nextSource = arguments[index];
+
+                if (nextSource != null) { // Skip over if undefined or null
+                    for (var nextKey in nextSource) {
+                        // Avoid bugs when hasOwnProperty is shadowed
+                        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                            to[nextKey] = nextSource[nextKey];
+                        }
+                    }
+                }
+            }
+            return to;
+        },
+        writable: true,
+        configurable: true
+    });
+}
 
 export class LabelElement extends ViewElement {
 
     loadContent() {
         super.loadContent();
         this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        this.containerObject.setAttribute("sss", "ggg")
+    }
+
+    public xtr_setFrame(value: Rect) {
+        super.xtr_setFrame(value);
+        this.resetTextContent();
     }
 
     private text: string
@@ -112,6 +150,7 @@ export class LabelElement extends ViewElement {
             textObject.style.fontFamily = this.font.familyName || null;
             textObject.style.fontWeight = this.font.fontWeight;
             textObject.style.fontStyle = this.font.fontStyle;
+            textObject.style.fill = 'rgba(' + (this.textColor.r * 255).toFixed(0) + ', ' + (this.textColor.g * 255).toFixed(0) + ', ' + (this.textColor.b * 255).toFixed(0) + ', ' + this.textColor.a.toString() + ')'
             textObject.setAttribute('x', line.elements.map((element: any) => {
                 return Math.ceil((element.x + line.x)).toString()
             }).join(","))
@@ -119,7 +158,6 @@ export class LabelElement extends ViewElement {
             textObject.innerHTML = line.text;
             contentObject.appendChild(textObject);
         })
-
     }
 
 }

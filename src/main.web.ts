@@ -4,6 +4,10 @@ import { ApplicationDelegate as MApplicationDelegate, Application as MApplicatio
 export class ApplicationDelegate extends MApplicationDelegate { }
 export class Application extends MApplication { }
 
+import { Button as IButton } from './interface/Button'
+import { Button as MButton } from './implementation/web/Button'
+export class Button extends MButton { }
+
 import { Color as IColor } from './interface/Color'
 export class Color extends IColor { }
 
