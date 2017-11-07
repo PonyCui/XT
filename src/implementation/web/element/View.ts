@@ -149,6 +149,8 @@ export class ViewElement extends BaseElement {
         }
     }
 
+    public xtr_tintColorDidChange() { }
+
     private hidden = false
 
     public xtr_hidden(): boolean {

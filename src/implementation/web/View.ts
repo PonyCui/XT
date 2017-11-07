@@ -225,6 +225,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner {
 
     tintColorDidChange() {
         this.subviews.forEach(t => t.tintColorDidChange())
+        this.nativeObject.xtr_tintColorDidChange();
     }
 
     setNeedsDisplay() { }

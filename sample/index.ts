@@ -61,16 +61,12 @@ class TestViewController extends XT.ViewController {
     viewDidLoad() {
         super.viewDidLoad();
 
-        const label = new XT.Label(XT.RectMake(44, 44, 200, 100))
-        label.text = '比較特別的是，這些屬性的設定，都可以視為一個單行陣列的形式呈現，例如除了寫x="10"之外，也可以寫成x="10,20,30,40"，裏頭的數值分別代表了文字的每個字，如果只寫了一個值，就是設定第一個字的屬性，因為沒有其他值，因此從第二個字開始就會接續第一個字。';
-        // label.font = XT.Font.italicSystemFontOfSize(14)
-        // label.letterSpace = 10
-        // label.text = "你好，世界!";
-        label.textAlignment = XT.TextAlignment.Center
-        // label.backgroundColor = XT.Color.yellowColor
-        label.numberOfLines = 0
-        // label.lineSpace = 20;
-        this.view.addSubview(label);
+        const imageView = new XT.ImageView(XT.RectMake(0, 0, 78, 78))
+        this.view.addSubview(imageView)
+
+        XT.Image.fromAssetsWithScales("success", 2, (it) => {
+            imageView.image = it.imageWithImageRenderingMode(XT.ImageRenderingMode.Template)
+        })
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         // redView.backgroundColor = XT.Color.redColor

@@ -22,6 +22,13 @@ export const RectZero = IRectZero
 export const RectEqual = IRectEqual
 export const RectInside = IRectInside
 
+import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from "./interface/ImageView";
+import { Image as MImage, ImageView as MImageView } from "./implementation/web/ImageView";
+export const ImageRenderingMode = IImageRenderingMode
+export class Image extends MImage {}
+export const ContentMode = IContentMode
+export class ImageView extends MImageView {}
+
 import { TextAlignment as ITextAlignment, TextVerticalAlignment as ITextVerticalAlignment, LineBreakMode as ILineBreakMode, Label as ILabel } from './interface/Label'
 import { Label as MLabel } from './implementation/web/Label'
 export const TextAlignment = ITextAlignment
