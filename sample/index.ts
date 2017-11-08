@@ -64,9 +64,14 @@ class TestViewController extends XT.ViewController {
         const button = new XT.Button(XT.RectMake(0, 0, 120, 44))
         button.backgroundColor = XT.Color.yellowColor
         button.title = "测试按钮"
+        button.font = XT.Font.systemFontOfSize(14)
+        button.vertical = false
         button.onTouchUpInside = () => {
             button.title = "你点到我了"
         }
+        XT.Image.fromAssets('location', (it) => {
+            button.image = it
+        })
         this.view.addSubview(button)
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))

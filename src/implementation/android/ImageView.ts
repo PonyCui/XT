@@ -77,6 +77,13 @@ export class ImageView extends View {
     public set contentMode(value: ContentMode) {
         this.nativeObject.xtr_setContentMode(value);
     }
+    
+    public intrinsicContentSize(width?: number): Size | undefined {
+        if (this.image) {
+            return this.image.size
+        }
+        return super.intrinsicContentSize(width)
+    }
 
 }
 

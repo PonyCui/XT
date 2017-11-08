@@ -2,7 +2,7 @@ import { InteractionState } from '../../interface/View';
 import { View } from "./View";
 import { Label } from "./Label";
 import { ImageView, Image } from "./ImageView";
-import { Rect, RectZero } from "../../interface/Rect";
+import { Rect, RectZero, SizeMake } from "../../interface/Rect";
 import { TextAlignment, LineBreakMode } from "../../interface/Label";
 import { Font } from "../../interface/Font";
 import { Color } from "../../interface/Color";
@@ -12,8 +12,8 @@ export class Button extends View {
     private imageView: ImageView = new ImageView();
     private titleLabel: Label = new Label();
 
-    init() {
-        super.init();
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(rect, _isChild)
         this.titleLabel.numberOfLines = 1;
         this.titleLabel.textAlignment = TextAlignment.Center
         this.titleLabel.lineBreakMode = LineBreakMode.TruncatingTail
@@ -173,46 +173,46 @@ export class Button extends View {
             this.imageView.frame = RectZero;
         }
         else {
+            const textSize = this.titleLabel.intrinsicContentSize(this.bounds.width);
+            const imageSize = this.imageView.intrinsicContentSize(this.bounds.width) || SizeMake(0, 0);
             if (this.vertical) {
-                const textSize = this.titleLabel.intrinsicContentSize(this.bounds.width);
                 if (textSize && textSize.height > 0) {
-                    const contentHeight = this.imageView.image.size.height + textSize.height + this.inset;
+                    const contentHeight = imageSize.height + textSize.height + this.inset;
                     this.imageView.frame = {
-                        x: (this.bounds.width - this.imageView.image.size.width) / 2,
+                        x: (this.bounds.width - imageSize.width) / 2,
                         y: (this.bounds.height - contentHeight) / 2,
-                        width: this.imageView.image.size.width,
-                        height: this.imageView.image.size.height
+                        width: imageSize.width,
+                        height: imageSize.height
                     };
                     this.titleLabel.frame = {
                         x: (this.bounds.width - textSize.width) / 2,
-                        y: (this.bounds.height - contentHeight) / 2 + this.imageView.image.size.height + this.inset,
+                        y: (this.bounds.height - contentHeight) / 2 + imageSize.height + this.inset,
                         width: textSize.width,
                         height: textSize.height
                     }; 
                 }
                 else {
-                    this.imageView.frame = { x: (this.bounds.width - this.imageView.image.size.width) / 2, y: (this.bounds.height - this.imageView.image.size.height) / 2, width: this.imageView.image.size.width, height: this.imageView.image.size.height }
+                    this.imageView.frame = { x: (this.bounds.width - imageSize.width) / 2, y: (this.bounds.height - imageSize.height) / 2, width: imageSize.width, height: imageSize.height }
                 }
             }
             else {
-                const textSize = this.titleLabel.intrinsicContentSize(this.bounds.width);
                 if (textSize && textSize.width > 0) {
-                    const contentWidth = this.imageView.image.size.width + textSize.width + this.inset;
+                    const contentWidth = imageSize.width + textSize.width + this.inset;
                     this.imageView.frame = {
                         x: (this.bounds.width - contentWidth) / 2,
-                        y: (this.bounds.height - this.imageView.image.size.height) / 2,
-                        width: this.imageView.image.size.width,
-                        height: this.imageView.image.size.height
+                        y: (this.bounds.height - imageSize.height) / 2,
+                        width: imageSize.width,
+                        height: imageSize.height
                     };
                     this.titleLabel.frame = {
-                        x: (this.bounds.width - contentWidth) / 2 + this.imageView.image.size.width + this.inset,
+                        x: (this.bounds.width - contentWidth) / 2 + imageSize.width + this.inset,
                         y: (this.bounds.height - textSize.height) / 2,
                         width: textSize.width,
                         height: textSize.height
                     };
                 }
                 else {
-                    this.imageView.frame = { x: (this.bounds.width - this.imageView.image.size.width) / 2, y: (this.bounds.height - this.imageView.image.size.height) / 2, width: this.imageView.image.size.width, height: this.imageView.image.size.height }
+                    this.imageView.frame = { x: (this.bounds.width - imageSize.width) / 2, y: (this.bounds.height - imageSize.height) / 2, width: imageSize.width, height: imageSize.height }
                 }
             }
         }
