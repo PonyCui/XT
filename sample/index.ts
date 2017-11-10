@@ -60,19 +60,15 @@ class TestViewController extends XT.ViewController {
 
     viewDidLoad() {
         super.viewDidLoad();
-
-        const button = new XT.Button(XT.RectMake(0, 0, 120, 44))
-        button.backgroundColor = XT.Color.yellowColor
-        button.title = "测试按钮"
-        button.font = XT.Font.systemFontOfSize(14)
-        button.vertical = false
-        button.onTouchUpInside = () => {
-            button.title = "你点到我了"
+        const textField = new XT.TextField(XT.RectMake(44, 44, 200, 44))
+        textField.font = XT.Font.boldSystemFontOfSize(17);
+        // textField.textColor = XT.Color.redColor
+        textField.onTap = () => {
+            alert("123")
         }
-        XT.Image.fromAssets('location', (it) => {
-            button.image = it
-        })
-        this.view.addSubview(button)
+        // textField.transform = XT.TransformMatrix.postRotate(new XT.TransformMatrix(), 90.0 * Math.PI / 180.0)
+        textField.backgroundColor = XT.Color.yellowColor
+        this.view.addSubview(textField);
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         // redView.backgroundColor = XT.Color.redColor

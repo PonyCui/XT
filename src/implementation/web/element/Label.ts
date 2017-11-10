@@ -42,7 +42,6 @@ export class LabelElement extends ViewElement {
     loadContent() {
         super.loadContent();
         this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        this.containerObject.setAttribute("sss", "ggg")
     }
 
     public xtr_setFrame(value: Rect) {

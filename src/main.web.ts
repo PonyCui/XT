@@ -67,5 +67,12 @@ import { NavigationController as INavigationController } from './interface/Navig
 import { NavigationController as MNavigationController } from './implementation/web/NavigationController'
 export class NavigationController extends MNavigationController {}
 
+import { TextField as ITextField, TextFieldViewMode as ITextFieldViewMode, ReturnKeyType as IReturnKeyType, KeyboardType as IKeyboardType } from './interface/TextField'
+import { TextField as MTextField } from './implementation/web/TextField'
+export class TextField extends MTextField {}
+export const TextFieldViewMode = ITextFieldViewMode
+export const ReturnKeyType = IReturnKeyType
+export const KeyboardType = IKeyboardType
+
 declare var module: any;
 (window as any).XT = module.exports;
