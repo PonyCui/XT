@@ -61,8 +61,10 @@ class TestViewController extends XT.ViewController {
     viewDidLoad() {
         super.viewDidLoad();
         const textField = new XT.TextField(XT.RectMake(44, 44, 200, 44))
-        textField.font = XT.Font.boldSystemFontOfSize(17);
+        textField.font = XT.Font.systemFontOfSize(17);
         textField.textAlignment = XT.TextAlignment.Center
+        textField.placeholder = "请输入用户名"
+        // textField.textAlignment = XT.TextAlignment.Center
         // textField.text = "123123fgdskjfgalskhdflahdsfklajhkjdsafh"
         // setTimeout(() => {
         //     textField.font = XT.Font.boldSystemFontOfSize(24);

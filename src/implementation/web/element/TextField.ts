@@ -9,6 +9,7 @@ let measureSpan: HTMLSpanElement = document.createElement("span")
 export class TextFieldElement extends ViewElement {
 
     inputObject: HTMLInputElement
+    placeholderObject: SVGTextElement
     private focusing = false
 
     loadContent() {
@@ -24,6 +25,12 @@ export class TextFieldElement extends ViewElement {
         if (this.shouldSetupChromePatcher()) {
             this.setupChromePatcher();
         }
+        this.placeholderObject = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        this.placeholderObject.style.fill = "#a0a0a0"
+        this.placeholderObject.innerHTML = "123123"
+        this.placeholderObject.style.fontSize = "14px"
+        this.placeholderObject.setAttribute("alignment-baseline", "central")
+        setTimeout(() => { if (this.contentObject) this.nativeObject.insertBefore(this.placeholderObject, this.contentObject); }, 0)
     }
 
     public xtr_setFrame(value: Rect) {
@@ -38,6 +45,7 @@ export class TextFieldElement extends ViewElement {
                 this.inputObject.style.width = value.width.toString() + "px";
             }
             this.inputObject.style.height = value.height.toString() + "px";
+            this.resetPlaceholderPosition();
         }
     }
 
@@ -47,6 +55,7 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_setText(value: string) {
         this.inputObject.value = value
+        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
     }
 
     private font: Font = Font.systemFontOfSize(14.0)
@@ -61,7 +70,11 @@ export class TextFieldElement extends ViewElement {
         this.inputObject.style.fontFamily = this.font.familyName || "Arial";
         this.inputObject.style.fontWeight = this.font.fontWeight;
         this.inputObject.style.fontStyle = this.font.fontStyle;
-        this.inputObject.dispatchEvent(new Event("settting"));
+        this.placeholderObject.style.fontSize = this.font.pointSize.toString()
+        this.placeholderObject.style.fontFamily = this.font.familyName || "Arial";
+        this.placeholderObject.style.fontWeight = this.font.fontWeight;
+        this.placeholderObject.style.fontStyle = this.font.fontStyle;
+        this.inputObject.dispatchEvent(new Event("setting"));
     }
 
     private textColor: Color = Color.blackColor
@@ -83,7 +96,8 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_setTextAlignment(value: TextAlignment) {
         this.textAlignment = value;
-        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("settting")); return; }
+        this.resetPlaceholderPosition();
+        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); return; }
         switch (value) {
             case TextAlignment.Left:
                 this.inputObject.style.textAlign = "left";
@@ -95,22 +109,75 @@ export class TextFieldElement extends ViewElement {
                 this.inputObject.style.textAlign = "right";
                 break;
         }
-        this.inputObject.dispatchEvent(new Event("input"));
+        this.inputObject.dispatchEvent(new Event("setting"));
+    }
+
+    public xtr_placeholder(): string {
+        return this.placeholderObject.innerHTML
+    }
+
+    public xtr_setPlaceholder(value: string) {
+        this.placeholderObject.innerHTML = value;
+    }
+
+    private placeholderColor: Color = Color.blackColor
+
+    public xtr_placeholderColor(): Color {
+        return this.placeholderColor
+    }
+
+    public xtr_setPlaceholderColor(value: Color) {
+        this.placeholderColor = value;
+        this.placeholderObject.style.fill = 'rgba(' + (this.placeholderColor.r * 255).toFixed(0) + ', ' + (this.placeholderColor.g * 255).toFixed(0) + ', ' + (this.placeholderColor.b * 255).toFixed(0) + ', ' + this.placeholderColor.a.toString() + ')'
+    }
+
+    private resetPlaceholderPosition() {
+        switch (this.textAlignment) {
+            case TextAlignment.Left:
+                this.placeholderObject.style.textAnchor = "start"
+                this.placeholderObject.setAttribute("x", "0")
+                break;
+            case TextAlignment.Center:
+                this.placeholderObject.style.textAnchor = "middle"
+                this.placeholderObject.setAttribute("x", (this.xtr_frame().width / 2.0).toString())
+                break;
+            case TextAlignment.Right:
+                this.placeholderObject.style.textAnchor = "end"
+                this.placeholderObject.setAttribute("x", (this.xtr_frame().width - 8).toString())
+                break;
+        }
+        this.placeholderObject.setAttribute("y", (this.xtr_frame().height / 2).toString())
+    }
+
+    private clearsOnBeginEditing: Boolean = false
+
+    public xtr_clearsOnBeginEditing(): Boolean {
+        return this.clearsOnBeginEditing
+    }
+
+    public xtr_setClearsOnBeginEditing(value: Boolean) {
+        this.clearsOnBeginEditing = value;
+    }
+
+    public xtr_editing(): Boolean {
+        return this.focusing
     }
 
     public xtr_focus() {
         this.focusing = true;
         this.inputObject.focus();
+        if (this.clearsOnBeginEditing) {
+            this.inputObject.value = "";
+        }
         setTimeout(() => {
-            if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("settting")); }
+            if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
         }, 250)
-        
     }
 
     public xtr_blur() {
         this.inputObject.blur();
         this.focusing = false;
-        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("settting")); }
+        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
     }
 
     private shouldSetupChromePatcher(): boolean {
@@ -168,9 +235,10 @@ export class TextFieldElement extends ViewElement {
                     this.inputObject.style.marginLeft = null
                 }
             }
+            this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0")
         }
         this.inputObject.addEventListener('input', patcher)
-        this.inputObject.addEventListener('settting', patcher)
+        this.inputObject.addEventListener('setting', patcher)
     }
 
 }
