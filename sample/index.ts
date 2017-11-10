@@ -62,13 +62,23 @@ class TestViewController extends XT.ViewController {
         super.viewDidLoad();
         const textField = new XT.TextField(XT.RectMake(44, 44, 200, 44))
         textField.font = XT.Font.boldSystemFontOfSize(17);
+        textField.textAlignment = XT.TextAlignment.Center
+        // textField.text = "123123fgdskjfgalskhdflahdsfklajhkjdsafh"
+        // setTimeout(() => {
+        //     textField.font = XT.Font.boldSystemFontOfSize(24);
+        //     // console.log(typeof textField.text)
+        // }, 4000)
         // textField.textColor = XT.Color.redColor
-        textField.onTap = () => {
-            alert("123")
-        }
+        // textField.onTap = () => {
+        //     console.log(textField.text)
+        //     alert("123")
+        // }
         // textField.transform = XT.TransformMatrix.postRotate(new XT.TransformMatrix(), 90.0 * Math.PI / 180.0)
         textField.backgroundColor = XT.Color.yellowColor
         this.view.addSubview(textField);
+        this.view.onTap = () => {
+            textField.blur()
+        }
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         // redView.backgroundColor = XT.Color.redColor
