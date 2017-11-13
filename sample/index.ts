@@ -64,7 +64,11 @@ class TestViewController extends XT.ViewController {
         textField.font = XT.Font.systemFontOfSize(17);
         textField.textAlignment = XT.TextAlignment.Left
         textField.placeholder = "请输入用户名"
-        textField.keyboardType = XT.KeyboardType.NumbersAndPunctuation
+        // textField.shouldReturn = () => {
+        //     textField.blur()
+        //     return true
+        // }
+        // textField.keyboardType = XT.KeyboardType.NumbersAndPunctuation
         // textField.clearButtonMode = XT.TextFieldViewMode.WhileEditing
         // const leftView = new XT.View(XT.RectMake(0, 0, 44, 44))
         // leftView.backgroundColor = new XT.Color(1.0, 0.0, 1.0, 0.5)

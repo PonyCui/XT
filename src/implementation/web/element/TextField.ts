@@ -49,6 +49,8 @@ export class TextFieldElement extends ViewElement {
         this.inputGroup.appendChild(this.placeholderObject);
         this.inputGroup.appendChild(this.foreignObject)
         this.contentObject.appendChild(this.inputGroup);
+        this.setupReturnKeyListenner();
+        this.setupShouldChangeListenner();
     }
 
     private _editing = false
@@ -434,21 +436,36 @@ export class TextFieldElement extends ViewElement {
     }
 
     public xtr_onClearButtonTap() {
+        if (this.scriptObject.shouldClear) {
+            if (!this.scriptObject.shouldClear()) { return; }
+        }
         this.inputObject.value = ""
     }
 
     public xtr_focus() {
+        if (this.scriptObject.shouldBeginEditing) {
+            if (!this.scriptObject.shouldBeginEditing()) { return; }
+        }
         this.editing = true;
         this.inputObject.focus();
         setTimeout(() => {
             if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
         }, 250)
+        if (this.scriptObject.didBeginEditing) {
+            this.scriptObject.didBeginEditing()
+        }
     }
 
     public xtr_blur() {
+        if (this.scriptObject.shouldEndEditing) {
+            if (!this.scriptObject.shouldEndEditing()) { return; }
+        }
         this.inputObject.blur();
         this.editing = false;
         if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
+        if (this.scriptObject.didEndEditing) {
+            this.scriptObject.didEndEditing()
+        }
     }
 
     private secureTextEntry: Boolean = false
@@ -466,6 +483,18 @@ export class TextFieldElement extends ViewElement {
             this.inputObject.setAttribute("type", "normal")
         }
     }
+
+    private setupReturnKeyListenner() {
+        this.inputObject.addEventListener("keyup", (e) => {
+            if (e.keyCode === 13) {
+                if (this.scriptObject.shouldReturn) {
+                    this.scriptObject.shouldReturn()
+                }
+            }
+        })
+    }
+
+    private setupShouldChangeListenner() { }
 
     private shouldSetupChromePatcher(): boolean {
         return navigator.vendor === "Google Inc."
@@ -488,7 +517,7 @@ export class TextFieldElement extends ViewElement {
             document.body.appendChild(measureSpan);
         }
         const patcher = () => {
-            const groupWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
+            const groupWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth - 8)
             const currentText = this.inputObject.value;
             measureSpan.style.fontSize = this.inputObject.style.fontSize
             measureSpan.style.fontFamily = this.inputObject.style.fontFamily || "Arial"

@@ -29,26 +29,32 @@ export class TextField extends View {
 
     touchesBegan(touches: Touch[], event: Event): void {
         super.touchesBegan(touches, event);
-        WindowElement._allowDefault = true;
+        if (this.editing) {
+            WindowElement._allowDefault = true;
+        }
     }
 
     touchesMoved(touches: Touch[], event: Event): void {
         super.touchesMoved(touches, event);
-        if (this._touchingClearView) {
-            WindowElement._allowDefault = false;
-        }
-        else {
-            WindowElement._allowDefault = true;
+        if (this.editing) {
+            if (this._touchingClearView) {
+                WindowElement._allowDefault = false;
+            }
+            else {
+                WindowElement._allowDefault = true;
+            }
         }
     }
 
     touchesEnded(touches: Touch[], event: Event): void {
         super.touchesEnded(touches, event);
-        if (this._touchedClearView) {
-            WindowElement._allowDefault = false;
-        }
-        else {
-            WindowElement._allowDefault = true; 
+        if (this.editing) {
+            if (this._touchedClearView) {
+                WindowElement._allowDefault = false;
+            }
+            else {
+                WindowElement._allowDefault = true; 
+            }
         }
     }
 
@@ -263,49 +269,6 @@ export class TextField extends View {
     shouldChange?: (inRange: { location: number, length: number }, replacementString: string) => Boolean = undefined
     shouldClear?: () => Boolean = undefined
     shouldReturn?: () => Boolean = undefined
-
-    handleShouldBeginEditing(): Boolean {
-        if (this.shouldBeginEditing) {
-            return this.shouldBeginEditing()
-        }
-        return true
-    }
-
-    handleDidBeginEditing() {
-        this.didBeginEditing && this.didBeginEditing()
-    }
-
-    handleShouldEndEditing(): Boolean {
-        if (this.shouldEndEditing) {
-            return this.shouldEndEditing()
-        }
-        return true
-    }
-
-    handleDidEndEditing() {
-        this.didEndEditing && this.didEndEditing()
-    }
-
-    handleShouldChange(inRange: { location: number, length: number }, replacementString: string): Boolean {
-        if (this.shouldChange) {
-            return this.shouldChange(inRange, replacementString)
-        }
-        return true
-    }
-
-    handleShouldClear(): Boolean {
-        if (this.shouldClear) {
-            return this.shouldClear()
-        }
-        return true
-    }
-
-    handleShouldReturn(): Boolean {
-        if (this.shouldReturn) {
-            return this.shouldReturn()
-        }
-        return true
-    }
 
     focus(): void {
         this.nativeObject.xtr_focus();
