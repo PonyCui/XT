@@ -60,10 +60,17 @@ class TestViewController extends XT.ViewController {
 
     viewDidLoad() {
         super.viewDidLoad();
-        const textField = new XT.TextField(XT.RectMake(44, 44, 200, 44))
-        textField.font = XT.Font.systemFontOfSize(17);
-        textField.textAlignment = XT.TextAlignment.Left
-        textField.placeholder = "请输入用户名"
+        const textView = new XT.TextView(XT.RectMake(44, 44, 200, 200))
+        textView.font = XT.Font.systemFontOfSize(17);
+        // textView.allowAutocapitalization = false
+        // textView.allowAutocorrection = false
+        // textView.allowSpellChecking = false
+        // textView.keyboardType = XT.KeyboardType.NumbersAndPunctuation
+
+        // textView.textAlignment = XT.TextAlignment.Right
+        // textView.textColor = XT.Color.redColor
+        // textField.textAlignment = XT.TextAlignment.Left
+        // textField.placeholder = "请输入用户名"
         // textField.shouldReturn = () => {
         //     textField.blur()
         //     return true
@@ -93,10 +100,10 @@ class TestViewController extends XT.ViewController {
         //     alert("123")
         // }
         // textField.transform = XT.TransformMatrix.postRotate(new XT.TransformMatrix(), 90.0 * Math.PI / 180.0)
-        textField.backgroundColor = XT.Color.yellowColor
-        this.view.addSubview(textField);
+        textView.backgroundColor = XT.Color.yellowColor
+        this.view.addSubview(textView);
         this.view.onTap = () => {
-            textField.blur()
+            textView.blur()
         }
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
