@@ -35,6 +35,7 @@ export class ViewElement extends BaseElement {
         if (!RectEqual(this.frame, value)) {
             this.frame = value;
             this.resetTransform();
+            this.resetMaskElement();
         }
     }
 

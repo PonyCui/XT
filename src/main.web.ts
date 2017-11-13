@@ -55,6 +55,10 @@ export class View extends MView { }
 export const InteractionState = IInteractionState
 export const SwipeDirection = ISwipeDirection
 
+import { ScrollView as IScrollView } from './interface/ScrollView'
+import { ScrollView as MScrollView } from './implementation/web/ScrollView'
+export class ScrollView extends MScrollView {}
+
 import { Window as IWindow } from './interface/Window'
 import { Window as MWindow } from './implementation/web/Window'
 export class Window extends MWindow { }

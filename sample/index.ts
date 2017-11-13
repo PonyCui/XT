@@ -57,54 +57,26 @@ class AppDelegate extends XT.ApplicationDelegate {
 class TestViewController extends XT.ViewController {
 
     title = "Test"
+    scrollView: XT.ScrollView
 
     viewDidLoad() {
         super.viewDidLoad();
-        const textView = new XT.TextView(XT.RectMake(44, 44, 200, 200))
-        textView.font = XT.Font.systemFontOfSize(17);
-        // textView.allowAutocapitalization = false
-        // textView.allowAutocorrection = false
-        // textView.allowSpellChecking = false
-        // textView.keyboardType = XT.KeyboardType.NumbersAndPunctuation
+        const scrollView = new XT.ScrollView(XT.RectMake(0, 0, 0, 0))
+        this.scrollView = scrollView
+        // scrollView.alwaysBounceVertical = true
+        scrollView.contentSize = XT.SizeMake(0, 1000)
+        scrollView.backgroundColor = XT.Color.yellowColor
 
-        // textView.textAlignment = XT.TextAlignment.Right
-        // textView.textColor = XT.Color.redColor
-        // textField.textAlignment = XT.TextAlignment.Left
-        // textField.placeholder = "请输入用户名"
-        // textField.shouldReturn = () => {
-        //     textField.blur()
-        //     return true
-        // }
-        // textField.keyboardType = XT.KeyboardType.NumbersAndPunctuation
-        // textField.clearButtonMode = XT.TextFieldViewMode.WhileEditing
-        // const leftView = new XT.View(XT.RectMake(0, 0, 44, 44))
-        // leftView.backgroundColor = new XT.Color(1.0, 0.0, 1.0, 0.5)
-        // textField.leftView = leftView
-        // textField.leftViewMode = XT.TextFieldViewMode.WhileEditing
+        const redView = new XT.View(XT.RectMake(0, 200, 44, 44))
+        redView.backgroundColor = XT.Color.redColor
+        scrollView.addSubview(redView)
+        this.view.addSubview(scrollView);
 
-        // const rightView = new XT.View(XT.RectMake(0, 0, 44, 22))
-        // rightView.backgroundColor = XT.Color.redColor
-        // textField.rightView = rightView
-        // textField.rightViewMode = XT.TextFieldViewMode.WhileEditing
-
-        // textField.secureTextEntry = true;
-        // textField.textAlignment = XT.TextAlignment.Center
-        // textField.text = "123123fgdskjfgalskhdflahdsfklajhkjdsafh"
-        // setTimeout(() => {
-        //     textField.font = XT.Font.boldSystemFontOfSize(24);
-        //     // console.log(typeof textField.text)
-        // }, 4000)
-        // textField.textColor = XT.Color.redColor
-        // textField.onTap = () => {
-        //     console.log(textField.text)
-        //     alert("123")
-        // }
-        // textField.transform = XT.TransformMatrix.postRotate(new XT.TransformMatrix(), 90.0 * Math.PI / 180.0)
-        textView.backgroundColor = XT.Color.yellowColor
-        this.view.addSubview(textView);
-        this.view.onTap = () => {
-            textView.blur()
-        }
+        setTimeout(() => {
+            XT.View.animationWithDuration(0.3, () => {
+                scrollView.contentOffset = XT.PointMake(0, 200)
+            })
+        }, 1000)
 
         // const redView = new XT.View(XT.RectMake(44, 44, 44, 44))
         // redView.backgroundColor = XT.Color.redColor
@@ -116,6 +88,11 @@ class TestViewController extends XT.ViewController {
         //     // })
         // }
         // this.view.addSubview(redView)
+    }
+
+    viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews();
+        this.scrollView.frame = this.view.bounds
     }
 
 }

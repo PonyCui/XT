@@ -1,16 +1,15 @@
-import { InteractionState } from '../../main.android';
+import { InteractionState } from '../../main.web';
 import { View } from "./View";
-import { Size, Point, Rect, RectZero, SizeZero, PointZero, RectMake } from "../../interface/Rect";
-import { Color } from "../../interface/Color";
-import { LayoutConstraint } from "./LayoutConstraint";
+import { Size, Point, Rect, RectZero, SizeZero } from "../../interface/Rect";
+import { ScrollViewElement } from "./element/ScrollView";
 import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
+import { Color } from '../../interface/Color';
+import { LayoutConstraint } from './LayoutConstraint';
 declare function require(name: string): any;
 const Scroller = require('scroller');
 
 export class ScrollView extends View {
-
-    onScroll?: (scrollView: ScrollView) => void
 
     nativeObject: any;
     private readonly innerView: View = new View();
@@ -18,22 +17,18 @@ export class ScrollView extends View {
     private readonly verticalScrollIndicator: View = new View();;
     private scroller: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true)
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRScrollView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); })
-        }
+        this.nativeObject = new ScrollViewElement(rect || RectZero, this);
+        this.userInteractionEnabled = true
+        this.clipsToBounds = true
+        setImmediate(() => { this.init(); });
     }
 
     init() {
         super.init();
+        super.addSubview(this.innerView);
         this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.horizonalScrollIndicator.cornerRadius = 1.0;
         this.horizonalScrollIndicator.alpha = 0.0;
@@ -116,6 +111,15 @@ export class ScrollView extends View {
         }
     }
 
+    public get contentOffset() {
+        return this.nativeObject.xtr_contentOffset();
+    }
+
+    public set contentOffset(value: Point) {
+        this.nativeObject.xtr_setContentOffset(value);
+        this.resetIndicator();
+    }
+
     private _contentSize: Size = SizeZero
 
     public get contentSize() {
@@ -124,18 +128,20 @@ export class ScrollView extends View {
 
     public set contentSize(value: Size) {
         this._contentSize = value;
-        this.nativeObject.xtr_setContentSize(value)
+        const oldFrame = this.innerView.frame
+        this.innerView.frame = { x: oldFrame.x, y: oldFrame.y, width: Math.max(this.frame.width, value.width), height: Math.max(this.frame.height, value.height) }
         this.resetScroller();
     }
 
-    public get contentOffset() {
-        return this.nativeObject.xtr_contentOffset();
+    private _isDirectionalLockEnabled: boolean = true
+
+    public get isDirectionalLockEnabled() {
+        return this._isDirectionalLockEnabled;
     }
 
-    public set contentOffset(value: Point) {
-        this.nativeObject.xtr_setContentOffset(value);
-        (this.innerView as any)._originOffset = value;
-        this.resetIndicator();
+    public set isDirectionalLockEnabled(value: boolean) {
+        this._isDirectionalLockEnabled = value;
+        this.resetScroller();
     }
 
     private _isScrollEnabled: boolean = true
@@ -157,42 +163,11 @@ export class ScrollView extends View {
 
     public set bounces(value: boolean) {
         this._bounces = value;
-        this.nativeObject.xtr_setBounce(value)
         this.resetScroller();
     }
 
-    private _isDirectionalLockEnabled: boolean = true
-
-    public get isDirectionalLockEnabled() {
-        return this._isDirectionalLockEnabled;
-    }
-
-    public set isDirectionalLockEnabled(value: boolean) {
-        this._isDirectionalLockEnabled = value;
-        this.resetScroller();
-    }
-
-    private _showsHorizontalScrollIndicator: boolean = true
-
-    public get showsHorizontalScrollIndicator() {
-        return this._showsHorizontalScrollIndicator;
-    }
-
-    public set showsHorizontalScrollIndicator(value: boolean) {
-        this._showsHorizontalScrollIndicator = value;
-        this.horizonalScrollIndicator.hidden = !value;
-    }
-
-    private _showsVerticalScrollIndicator: boolean = true
-
-    public get showsVerticalScrollIndicator() {
-        return this._showsVerticalScrollIndicator;
-    }
-
-    public set showsVerticalScrollIndicator(value: boolean) {
-        this._showsVerticalScrollIndicator = value;
-        this.verticalScrollIndicator.hidden = !value;
-    }
+    showsHorizontalScrollIndicator: boolean = true
+    showsVerticalScrollIndicator: boolean = true
 
     private _alwaysBounceVertical: boolean = false
 
@@ -202,7 +177,6 @@ export class ScrollView extends View {
 
     public set alwaysBounceVertical(value: boolean) {
         this._alwaysBounceVertical = value;
-        this.nativeObject.xtr_setAlwaysBounceVertical(value)
         this.resetScroller();
     }
 
@@ -214,15 +188,15 @@ export class ScrollView extends View {
 
     public set alwaysBounceHorizontal(value: boolean) {
         this._alwaysBounceHorizontal = value;
-        this.nativeObject.xtr_setAlwaysBounceHorizontal(value)
         this.resetScroller();
     }
 
     layoutSubviews() {
         super.layoutSubviews();
-        this.innerView.frame = this.bounds;
         this.resetScroller();
     }
+
+    onScroll?: (scrollView: ScrollView) => void
 
     // Touches
 
@@ -335,13 +309,3 @@ export class ScrollView extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.toString().indexOf("com.opensource.xtruntime.XTRScrollView$InnerObject") === 0) {
-        return new ScrollView(undefined, view);
-    }
-    return undefined;
-})
