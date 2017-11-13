@@ -62,8 +62,21 @@ class TestViewController extends XT.ViewController {
         super.viewDidLoad();
         const textField = new XT.TextField(XT.RectMake(44, 44, 200, 44))
         textField.font = XT.Font.systemFontOfSize(17);
-        textField.textAlignment = XT.TextAlignment.Center
+        textField.textAlignment = XT.TextAlignment.Left
         textField.placeholder = "请输入用户名"
+        textField.keyboardType = XT.KeyboardType.NumbersAndPunctuation
+        // textField.clearButtonMode = XT.TextFieldViewMode.WhileEditing
+        // const leftView = new XT.View(XT.RectMake(0, 0, 44, 44))
+        // leftView.backgroundColor = new XT.Color(1.0, 0.0, 1.0, 0.5)
+        // textField.leftView = leftView
+        // textField.leftViewMode = XT.TextFieldViewMode.WhileEditing
+
+        // const rightView = new XT.View(XT.RectMake(0, 0, 44, 22))
+        // rightView.backgroundColor = XT.Color.redColor
+        // textField.rightView = rightView
+        // textField.rightViewMode = XT.TextFieldViewMode.WhileEditing
+
+        // textField.secureTextEntry = true;
         // textField.textAlignment = XT.TextAlignment.Center
         // textField.text = "123123fgdskjfgalskhdflahdsfklajhkjdsafh"
         // setTimeout(() => {

@@ -3,49 +3,337 @@ import { Rect } from "../../../interface/Rect";
 import { Font } from "../../../interface/Font";
 import { Color } from "../../../interface/Color";
 import { TextAlignment } from "../../../interface/Label";
+import { TextFieldViewMode, KeyboardType } from "../../../interface/TextField";
 
 let measureSpan: HTMLSpanElement = document.createElement("span")
 
 export class TextFieldElement extends ViewElement {
 
-    inputObject: HTMLInputElement
-    placeholderObject: SVGTextElement
-    private focusing = false
+    private inputGroup: SVGGElement
+    private inputGroupMask: SVGMaskElement
+    private foreignObject: SVGForeignObjectElement
+    private inputObject: HTMLInputElement
+    private placeholderObject: SVGTextElement
 
     loadContent() {
         super.loadContent();
-        this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+        this.leftViewWidth = 0;
+        this.rightViewWidth = 0;
+        this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        this.inputGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        this.inputGroupMask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
+        this.inputGroupMask.setAttribute('id', this.objectUUID + ".inputGroup.mask");
+        this.inputGroupMask.innerHTML = '';
+        const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
+        if (!defs.contains(this.inputGroupMask)) {
+            defs.appendChild(this.inputGroupMask)
+        }
+        this.inputGroup.style.mask = 'url(#' + (this.objectUUID + ".inputGroup.mask") + ')'
+        this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
         this.inputObject = document.createElement("input");
         this.inputObject.style.backgroundColor = "transparent"
         this.inputObject.style.border = "none"
         this.inputObject.style.outline = "none"
         this.inputObject.style.color = "black"
         this.inputObject.style.fontSize = "14px"
-        this.contentObject.appendChild(this.inputObject);
+        this.foreignObject.appendChild(this.inputObject);
         if (this.shouldSetupChromePatcher()) {
             this.setupChromePatcher();
         }
+        this.setupInputChangeListener()
         this.placeholderObject = document.createElementNS("http://www.w3.org/2000/svg", "text");
         this.placeholderObject.style.fill = "#a0a0a0"
-        this.placeholderObject.innerHTML = "123123"
         this.placeholderObject.style.fontSize = "14px"
         this.placeholderObject.setAttribute("alignment-baseline", "central")
-        setTimeout(() => { if (this.contentObject) this.nativeObject.insertBefore(this.placeholderObject, this.contentObject); }, 0)
+        this.placeholderObject.setAttribute("x", this.shouldSetupIOSPatcher() ? "8" : "0")
+        this.inputGroup.appendChild(this.placeholderObject);
+        this.inputGroup.appendChild(this.foreignObject)
+        this.contentObject.appendChild(this.inputGroup);
+    }
+
+    private _editing = false
+
+    private get editing(): boolean {
+        return this._editing;
+    }
+
+    private set editing(value: boolean) {
+        this._editing = value;
+        if (value) {
+            if (this.clearsOnBeginEditing) {
+                this.inputObject.value = "";
+            }
+        }
+        else {
+
+        }
+        this.resetContentRects()
+        this.resetFieldViewOpacity()
+    }
+
+    private leftViewWidth: number = 0
+
+    public xtr_setLeftViewWidth(value: number) {
+        this.leftViewWidth = value;
+        this.resetContentRects();
+        this.resetFieldViewOpacity();
+    }
+
+    private get activeLeftViewWidth(): number {
+        switch (this.leftViewMode) {
+            case TextFieldViewMode.Never:
+                return 0.0;
+            case TextFieldViewMode.Always:
+                return this.leftViewWidth;
+            case TextFieldViewMode.WhileEditing:
+                return this.editing ? this.leftViewWidth : 0.0
+            case TextFieldViewMode.UnlessEditing:
+                return this.editing ? 0.0 : this.leftViewWidth
+            default:
+                return 0.0
+        }
+    }
+
+    private leftViewMode: TextFieldViewMode = TextFieldViewMode.Never
+
+    public xtr_leftViewMode(): TextFieldViewMode {
+        return this.leftViewMode
+    }
+
+    public xtr_setLeftViewMode(value: TextFieldViewMode) {
+        this.leftViewMode = value
+        this.resetContentRects();
+        this.resetFieldViewOpacity();
+    }
+
+    private rightViewWidth: number = 0
+
+    public xtr_setRightViewWidth(value: number) {
+        this.rightViewWidth = value;
+        this.resetContentRects();
+        this.resetFieldViewOpacity();
+    }
+
+    private get activeRightViewWidth(): number {
+        if (this.rightViewWidth === 0.0) {
+            switch (this.clearButtonMode) {
+                case TextFieldViewMode.Never:
+                    return 0.0;
+                case TextFieldViewMode.Always:
+                    return 36.0;
+                case TextFieldViewMode.WhileEditing:
+                    return this.editing ? 36.0 : 0.0
+                case TextFieldViewMode.UnlessEditing:
+                    return this.editing ? 0.0 : 36.0;
+                default:
+                    return 0.0
+            }
+        }
+        switch (this.rightViewMode) {
+            case TextFieldViewMode.Never:
+                return 0.0;
+            case TextFieldViewMode.Always:
+                return this.rightViewWidth;
+            case TextFieldViewMode.WhileEditing:
+                return this.editing ? this.rightViewWidth : 0.0
+            case TextFieldViewMode.UnlessEditing:
+                return this.editing ? 0.0 : this.rightViewWidth
+            default:
+                return 0.0
+        }
+    }
+
+    private rightViewMode: TextFieldViewMode = TextFieldViewMode.Never
+
+    public xtr_rightViewMode(): TextFieldViewMode {
+        return this.rightViewMode
+    }
+
+    public xtr_setRightViewMode(value: TextFieldViewMode) {
+        this.rightViewMode = value
+        this.resetContentRects();
+        this.resetFieldViewOpacity();
+    }
+
+    private clearButtonMode: TextFieldViewMode = TextFieldViewMode.Never
+
+    public xtr_clearButtonMode(): TextFieldViewMode {
+        return this.clearButtonMode
+    }
+
+    public xtr_setClearButtonMode(value: TextFieldViewMode) {
+        this.clearButtonMode = value
+        this.resetContentRects();
+        this.resetFieldViewOpacity();
     }
 
     public xtr_setFrame(value: Rect) {
         super.xtr_setFrame(value);
-        if (this.contentObject) {
-            this.contentObject.setAttribute('width', value.width.toString())
-            this.contentObject.setAttribute('height', value.height.toString())
-            if (this.shouldSetupChromePatcher()) {
-                this.inputObject.style.width = "1000px";
+        this.resetContentRects();
+    }
+
+    public xtr_allowAutocapitalization(): Boolean {
+        return this.inputObject.getAttribute("autocapitalize") === "off"
+    }
+
+    public xtr_setAllowAutocapitalization(value: Boolean) {
+        this.inputObject.setAttribute("autocapitalize", value ? "on" : "off")
+    }
+
+    public xtr_allowAutocorrection(): Boolean {
+        return this.inputObject.getAttribute("autocorrect") === "off"
+    }
+
+    public xtr_setAllowAutocorrection(value: Boolean) {
+        this.inputObject.setAttribute("autocorrect", value ? "on" : "off")
+    }
+
+    public xtr_allowSpellChecking(): Boolean {
+        return this.inputObject.getAttribute("spellcheck") === "true"
+    }
+
+    public xtr_setAllowSpellChecking(value: Boolean) {
+        this.inputObject.setAttribute("spellcheck", value ? "true" : "false")
+    }
+
+    private keyboardType: KeyboardType = KeyboardType.Default
+
+    public xtr_keyboardType(): KeyboardType {
+        return this.keyboardType
+    }
+
+    public xtr_setKeyboardType(value: KeyboardType) {
+        this.keyboardType = value;
+        switch (this.keyboardType) {
+            case KeyboardType.Default:
+                this.inputObject.setAttribute("type", "text");
+                break;
+            case KeyboardType.ASCIICapable:
+                this.inputObject.setAttribute("type", "email");
+                break;
+            case KeyboardType.NumbersAndPunctuation:
+                this.inputObject.setAttribute("type", "number");
+                break;
+        }
+    }
+
+    public get xtr_returnKeyType() {
+        return 0
+    }
+
+    public set xtr_setReturnKeyType(value: any) { }
+
+    private resetContentRects() {
+        const inputWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
+        const inputHeight = this.xtr_frame().height
+        this.inputGroup.setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, " + (this.activeLeftViewWidth + (this.shouldSetupIOSPatcher() ? 0.0 : 8.0)).toString() + ", 0.0)");
+        this.foreignObject.setAttribute('width', inputWidth.toString())
+        this.foreignObject.setAttribute('height', inputHeight.toString())
+        if (this.scriptObject.leftView) {
+            this.scriptObject.leftView.frame = { x: 0, y: (inputHeight - this.scriptObject.leftView.frame.height) / 2.0, width: this.scriptObject.leftView.frame.width, height: this.scriptObject.leftView.frame.height };
+        }
+        if (this.scriptObject.rightView) {
+            this.scriptObject.rightView.frame = { x: this.xtr_frame().width - this.rightViewWidth, y: (inputHeight - this.scriptObject.rightView.frame.height) / 2.0, width: this.scriptObject.rightView.frame.width, height: this.scriptObject.rightView.frame.height };
+        }
+        if (this.scriptObject._clearView) {
+            this.scriptObject._clearView.frame = { x: this.xtr_frame().width - 36, y: 0, width: 36, height: inputHeight };
+        }
+        if (this.shouldSetupChromePatcher()) {
+            this.inputObject.style.width = this.inputObject.style.width || "1000px";
+        }
+        else {
+            this.inputObject.style.width = inputWidth + "px";
+        }
+        this.inputObject.style.height = inputHeight + "px";
+        switch (this.textAlignment) {
+            case TextAlignment.Left:
+                this.placeholderObject.style.textAnchor = "start"
+                this.placeholderObject.setAttribute("x", this.shouldSetupIOSPatcher() ? "8" : "0")
+                break;
+            case TextAlignment.Center:
+                this.placeholderObject.style.textAnchor = "middle"
+                this.placeholderObject.setAttribute("x", (inputWidth / 2.0).toString())
+                break;
+            case TextAlignment.Right:
+                this.placeholderObject.style.textAnchor = "end"
+                this.placeholderObject.setAttribute("x", (inputWidth - 8).toString())
+                break;
+        }
+        this.placeholderObject.setAttribute("y", (inputHeight / 2).toString())
+        this.resetInputGroupMaskPath();
+    }
+
+    private resetInputGroupMaskPath() {
+        const inputWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
+        const inputHeight = this.xtr_frame().height
+        const maskPath = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        maskPath.setAttribute("width", inputWidth.toString());
+        maskPath.setAttribute("height", inputHeight.toString());
+        maskPath.style.fill = "white";
+        this.inputGroupMask.innerHTML = '';
+        this.inputGroupMask.appendChild(maskPath);
+    }
+
+    private resetFieldViewOpacity() {
+        if (this.scriptObject.leftView) {
+            switch (this.leftViewMode) {
+                case TextFieldViewMode.Never:
+                    this.scriptObject.leftView.hidden = true;
+                    break;
+                case TextFieldViewMode.Always:
+                    this.scriptObject.leftView.hidden = false;
+                    break;
+                case TextFieldViewMode.WhileEditing:
+                    this.scriptObject.leftView.hidden = !this.editing;
+                    break;
+                case TextFieldViewMode.UnlessEditing:
+                    this.scriptObject.leftView.hidden = this.editing;
+                    break;
+                default:
+                    this.scriptObject.leftView.hidden = false;
+                    break;
             }
-            else {
-                this.inputObject.style.width = value.width.toString() + "px";
+        }
+        if (this.scriptObject.rightView) {
+            switch (this.rightViewMode) {
+                case TextFieldViewMode.Never:
+                    this.scriptObject.rightView.hidden = true;
+                    break;
+                case TextFieldViewMode.Always:
+                    this.scriptObject.rightView.hidden = false;
+                    break;
+                case TextFieldViewMode.WhileEditing:
+                    this.scriptObject.rightView.hidden = !this.editing;
+                    break;
+                case TextFieldViewMode.UnlessEditing:
+                    this.scriptObject.rightView.hidden = this.editing;
+                    break;
+                default:
+                    this.scriptObject.rightView.hidden = false;
+                    break;
             }
-            this.inputObject.style.height = value.height.toString() + "px";
-            this.resetPlaceholderPosition();
+        }
+        if (this.scriptObject.rightView === undefined && this.scriptObject._clearView) {
+            switch (this.clearButtonMode) {
+                case TextFieldViewMode.Never:
+                    this.scriptObject._clearView.hidden = true;
+                    break;
+                case TextFieldViewMode.Always:
+                    this.scriptObject._clearView.hidden = false;
+                    break;
+                case TextFieldViewMode.WhileEditing:
+                    this.scriptObject._clearView.hidden = !this.editing;
+                    break;
+                case TextFieldViewMode.UnlessEditing:
+                    this.scriptObject._clearView.hidden = this.editing;
+                    break;
+                default:
+                    this.scriptObject._clearView.hidden = false;
+                    break;
+            }
+        }
+        else if (this.scriptObject._clearView) {
+            this.scriptObject._clearView.hidden = true;
         }
     }
 
@@ -96,7 +384,7 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_setTextAlignment(value: TextAlignment) {
         this.textAlignment = value;
-        this.resetPlaceholderPosition();
+        this.resetContentRects();
         if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); return; }
         switch (value) {
             case TextAlignment.Left:
@@ -131,24 +419,6 @@ export class TextFieldElement extends ViewElement {
         this.placeholderObject.style.fill = 'rgba(' + (this.placeholderColor.r * 255).toFixed(0) + ', ' + (this.placeholderColor.g * 255).toFixed(0) + ', ' + (this.placeholderColor.b * 255).toFixed(0) + ', ' + this.placeholderColor.a.toString() + ')'
     }
 
-    private resetPlaceholderPosition() {
-        switch (this.textAlignment) {
-            case TextAlignment.Left:
-                this.placeholderObject.style.textAnchor = "start"
-                this.placeholderObject.setAttribute("x", "0")
-                break;
-            case TextAlignment.Center:
-                this.placeholderObject.style.textAnchor = "middle"
-                this.placeholderObject.setAttribute("x", (this.xtr_frame().width / 2.0).toString())
-                break;
-            case TextAlignment.Right:
-                this.placeholderObject.style.textAnchor = "end"
-                this.placeholderObject.setAttribute("x", (this.xtr_frame().width - 8).toString())
-                break;
-        }
-        this.placeholderObject.setAttribute("y", (this.xtr_frame().height / 2).toString())
-    }
-
     private clearsOnBeginEditing: Boolean = false
 
     public xtr_clearsOnBeginEditing(): Boolean {
@@ -160,15 +430,16 @@ export class TextFieldElement extends ViewElement {
     }
 
     public xtr_editing(): Boolean {
-        return this.focusing
+        return this.editing
+    }
+
+    public xtr_onClearButtonTap() {
+        this.inputObject.value = ""
     }
 
     public xtr_focus() {
-        this.focusing = true;
+        this.editing = true;
         this.inputObject.focus();
-        if (this.clearsOnBeginEditing) {
-            this.inputObject.value = "";
-        }
         setTimeout(() => {
             if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
         }, 250)
@@ -176,12 +447,32 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_blur() {
         this.inputObject.blur();
-        this.focusing = false;
+        this.editing = false;
         if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
+    }
+
+    private secureTextEntry: Boolean = false
+
+    public xtr_secureTextEntry(): Boolean {
+        return this.secureTextEntry
+    }
+
+    public xtr_setSecureTextEntry(value: Boolean) {
+        this.secureTextEntry = value;
+        if (value) {
+            this.inputObject.setAttribute("type", "password")
+        }
+        else {
+            this.inputObject.setAttribute("type", "normal")
+        }
     }
 
     private shouldSetupChromePatcher(): boolean {
         return navigator.vendor === "Google Inc."
+    }
+
+    private shouldSetupIOSPatcher(): boolean {
+        return navigator.vendor === "Apple Computer, Inc." && (navigator.userAgent.indexOf("iPhone OS") >= 0 || navigator.userAgent.indexOf("iPad OS") >= 0)
     }
 
     private setupChromePatcher() {
@@ -192,53 +483,73 @@ export class TextFieldElement extends ViewElement {
             measureSpan.style.whiteSpace = "nowrap"
             measureSpan.style.left = "-10000000px"
             measureSpan.style.top = "-10000000px"
+            // measureSpan.style.left = "44px"
+            // measureSpan.style.top = "20px"
             document.body.appendChild(measureSpan);
         }
         const patcher = () => {
+            const groupWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
             const currentText = this.inputObject.value;
             measureSpan.style.fontSize = this.inputObject.style.fontSize
             measureSpan.style.fontFamily = this.inputObject.style.fontFamily || "Arial"
             measureSpan.style.fontWeight = this.inputObject.style.fontWeight
             measureSpan.style.fontStyle = this.inputObject.style.fontStyle
-            measureSpan.innerText = currentText;
-            const textWidth = measureSpan.offsetWidth;
+            let textWidth: number;
+            if (this.secureTextEntry) {
+                let str = "";
+                for (let index = 0; index < currentText.length; index++) {
+                    str += ")";
+                }
+                measureSpan.innerText = str;
+                textWidth = measureSpan.offsetWidth * 1.05;
+            }
+            else {
+                measureSpan.innerText = currentText;
+                textWidth = measureSpan.offsetWidth;
+            }
             let inputWidth = parseInt((this.inputObject.style.width || "1000").replace("px", ""))
             if (textWidth > inputWidth / 2) {
                 inputWidth *= 2;
                 this.inputObject.style.width = inputWidth.toString() + 'px';
             }
             if (this.textAlignment === TextAlignment.Right) {
-                if (textWidth < this.xtr_frame().width) {
-                    this.inputObject.style.paddingLeft = (this.xtr_frame().width - textWidth - 8).toString() + "px";
+                if (textWidth < groupWidth) {
+                    this.inputObject.style.paddingLeft = (groupWidth - textWidth - 8).toString() + "px";
                     this.inputObject.style.marginLeft = null;
                 }
                 else {
                     this.inputObject.style.paddingLeft = null;
-                    this.inputObject.style.marginLeft = (this.xtr_frame().width - textWidth - 8).toString() + "px";
+                    this.inputObject.style.marginLeft = (groupWidth - textWidth - 8).toString() + "px";
                 }
             }
             if (this.textAlignment === TextAlignment.Center) {
-                if (textWidth < this.xtr_frame().width) {
-                    this.inputObject.style.paddingLeft = ((this.xtr_frame().width - textWidth) / 2.0).toString() + "px";
+                if (textWidth < groupWidth) {
+                    this.inputObject.style.paddingLeft = ((groupWidth - textWidth) / 2.0).toString() + "px";
                     this.inputObject.style.marginLeft = null;
                 }
                 else {
                     this.inputObject.style.paddingLeft = null;
-                    this.inputObject.style.marginLeft = (this.xtr_frame().width - textWidth - 8).toString() + "px";
+                    this.inputObject.style.marginLeft = (groupWidth - textWidth - 8).toString() + "px";
                 }
             }
             else {
-                if (textWidth > this.xtr_frame().width) {
-                    this.inputObject.style.marginLeft = (this.xtr_frame().width - textWidth - 8).toString() + "px";
+                if (textWidth > groupWidth) {
+                    this.inputObject.style.marginLeft = (groupWidth - textWidth - 8).toString() + "px";
                 }
                 else {
                     this.inputObject.style.marginLeft = null
                 }
             }
-            this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0")
         }
         this.inputObject.addEventListener('input', patcher)
         this.inputObject.addEventListener('setting', patcher)
+    }
+
+    private setupInputChangeListener() {
+        this.inputObject.addEventListener('input', () => {
+            const currentText = this.inputObject.value;
+            this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0");
+        })
     }
 
 }

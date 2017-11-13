@@ -8,7 +8,7 @@ import { TextFieldViewMode, KeyboardType, ReturnKeyType } from '../../interface/
 import { Button } from './Button';
 import { Image } from './ImageView';
 import { TextFieldElement } from './element/TextField';
-import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
+import { Touchable, Touch, Event, TouchManager } from '../libraries/touch/TouchManager';
 import { WindowElement } from './element/Window';
 
 export class TextField extends View {
@@ -34,12 +34,22 @@ export class TextField extends View {
 
     touchesMoved(touches: Touch[], event: Event): void {
         super.touchesMoved(touches, event);
-        WindowElement._allowDefault = true;
+        if (this._touchingClearView) {
+            WindowElement._allowDefault = false;
+        }
+        else {
+            WindowElement._allowDefault = true;
+        }
     }
 
     touchesEnded(touches: Touch[], event: Event): void {
         super.touchesEnded(touches, event);
-        WindowElement._allowDefault = true;
+        if (this._touchedClearView) {
+            WindowElement._allowDefault = false;
+        }
+        else {
+            WindowElement._allowDefault = true; 
+        }
     }
 
     public get text(): string {
@@ -102,15 +112,29 @@ export class TextField extends View {
         return this.nativeObject.xtr_editing();
     }
 
-    requestClearView(): View {
-        const view = new Button(RectMake(0, 0, 36, 0))
-        Image.fromBase64('iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAMAAADyHTlpAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABjUExURUdwTKqqqo+OlZGRto+OlZOTmY+OlY+OlJCQlpCQlZGOlpGRnZCQmY+OlJCOlJCOlI+OlI+OlJCOlI+OlJCOlI+OlI+PlI+OlI+OlI+OlI+PlI+OlP///4+OlI+PlY+PlI+OlI/lPb8AAAAgdFJOUwAG4AfzLcP7VS5mFR7Zob+l/Y/eiPd89vXum/AB+HuJvx1C8wAAASxJREFUOMuVlUeigzAMRAWYXkMnEKL7n/LzaRaOKZoVwm+hMpYBjrLHLI2FiNNstOFCdl4gUZGf0VHyQkWvJNKARvlBjarSUMnQwRM54ZH0TTyV6R9IgRcShA1NvJS552A4eCNnq+2LtyrXflb3aLX0N5F/mp6ed638TuZpyhm9rSFwt8ANwHrLuf3PON/D1ppCb2VdbwqsZj/Mp1A6pJvzWdiZhEEmVEzdJ8kFO7uQEJBDH2oSrYDn7h/ksIYMNayGxAxS1LAaElOI8YRVSIxB9dTGqiQKDspIgFEWo1mPRzA+H6xN7dL/2AU6ahdiwubXhO3BhAdrA7X2oFqbXpi2ozX3jXJhIPo8voaMy81ZGYxFxFlvnKXJWcWcBc95NliP0VJfvT1xtVIN/AEiR40jdo0zSQAAAABJRU5ErkJggg==', 3.0, (it) => {
-            view.image = it
-        })
-        view.onTap = () => {
-            this.nativeObject.xtr_onClearButtonTap()
+    private _clearView: View | undefined;
+    private _touchingClearView = false;
+    private _touchedClearView = false;
+
+    private addClearView() {
+        if (this._clearView === undefined) {
+            const view = new Button(RectMake(0, 0, 36, 0))
+            Image.fromBase64('iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAMAAADyHTlpAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABjUExURUdwTKqqqo+OlZGRto+OlZOTmY+OlY+OlJCQlpCQlZGOlpGRnZCQmY+OlJCOlJCOlI+OlI+OlJCOlI+OlJCOlI+OlI+PlI+OlI+OlI+OlI+PlI+OlP///4+OlI+PlY+PlI+OlI/lPb8AAAAgdFJOUwAG4AfzLcP7VS5mFR7Zob+l/Y/eiPd89vXum/AB+HuJvx1C8wAAASxJREFUOMuVlUeigzAMRAWYXkMnEKL7n/LzaRaOKZoVwm+hMpYBjrLHLI2FiNNstOFCdl4gUZGf0VHyQkWvJNKARvlBjarSUMnQwRM54ZH0TTyV6R9IgRcShA1NvJS552A4eCNnq+2LtyrXflb3aLX0N5F/mp6ed638TuZpyhm9rSFwt8ANwHrLuf3PON/D1ppCb2VdbwqsZj/Mp1A6pJvzWdiZhEEmVEzdJ8kFO7uQEJBDH2oSrYDn7h/ksIYMNayGxAxS1LAaElOI8YRVSIxB9dTGqiQKDspIgFEWo1mPRzA+H6xN7dL/2AU6ahdiwubXhO3BhAdrA7X2oFqbXpi2ozX3jXJhIPo8voaMy81ZGYxFxFlvnKXJWcWcBc95NliP0VJfvT1xtVIN/AEiR40jdo0zSQAAAABJRU5ErkJggg==', 3.0, (it) => {
+                view.image = it
+            })
+            view.onHighlighted = (highlighted) => {
+                this._touchingClearView = highlighted
+            }
+            view.onTouchUpInside = () => {
+                this._touchedClearView = true;
+                setTimeout(() => { this._touchedClearView = false }, 500)
+                this.nativeObject.xtr_onClearButtonTap()
+            }
+            this.addSubview(view)
+            this._clearView = view;
+            this.nativeObject.resetContentRects();
+            this.nativeObject.resetFieldViewOpacity();
         }
-        return view
     }
 
     public get clearButtonMode(): TextFieldViewMode {
@@ -119,14 +143,27 @@ export class TextField extends View {
 
     public set clearButtonMode(value: TextFieldViewMode) {
         this.nativeObject.xtr_setClearButtonMode(value);
+        this.addClearView();
     }
 
-    public get leftView(): View {
-        return this.nativeObject.xtr_leftView();
+    private _leftView: View | undefined;
+
+    public get leftView(): View | undefined {
+        return this._leftView;
     }
 
-    public set leftView(view: View) {
-        this.nativeObject.xtr_setLeftView(view);
+    public set leftView(view: View | undefined) {
+        if (this._leftView) {
+            this._leftView.removeFromSuperview();
+        }
+        this._leftView = view;
+        if (this._leftView) {
+            this.addSubview(this._leftView);
+            this.nativeObject.xtr_setLeftViewWidth(this._leftView.frame.width);
+        }
+        else {
+            this.nativeObject.xtr_setLeftViewWidth(0);
+        }
     }
 
     public get leftViewMode(): TextFieldViewMode {
@@ -137,12 +174,24 @@ export class TextField extends View {
         this.nativeObject.xtr_setLeftViewMode(value);
     }
 
-    public get rightView(): View {
-        return this.nativeObject.xtr_rightView();
+    private _rightView: View | undefined;
+
+    public get rightView(): View | undefined {
+        return this._rightView;
     }
 
-    public set rightView(view: View) {
-        this.nativeObject.xtr_setRightView(view);
+    public set rightView(view: View | undefined) {
+        if (this._rightView) {
+            this._rightView.removeFromSuperview();
+        }
+        this._rightView = view;
+        if (this._rightView) {
+            this.addSubview(this._rightView);
+            this.nativeObject.xtr_setRightViewWidth(this._rightView.frame.width);
+        }
+        else {
+            this.nativeObject.xtr_setRightViewWidth(0);
+        }
     }
 
     public get rightViewMode(): TextFieldViewMode {
@@ -204,11 +253,6 @@ export class TextField extends View {
     }
 
     public set secureTextEntry(value: Boolean) {
-        if (value) {
-            this.allowAutocapitalization = false
-            this.allowAutocorrection = false
-            this.allowSpellChecking = false
-        }
         this.nativeObject.xtr_setSecureTextEntry(value);
     }
 
