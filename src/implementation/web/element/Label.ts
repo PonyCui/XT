@@ -2,7 +2,6 @@ import { ViewElement } from "./View";
 import { Font } from "../../../interface/Font";
 import { Color } from "../../../interface/Color";
 import { TextAlignment, LineBreakMode, TextVerticalAlignment } from "../../../interface/Label";
-import { StaticTextLayout } from "./TextLayout";
 import { Rect } from "../../../interface/Rect";
 
 export class LabelElement extends ViewElement {

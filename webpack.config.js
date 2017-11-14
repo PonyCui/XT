@@ -19,7 +19,6 @@ module.exports = function (env) {
         module: {
             rules: [
                 { test: /\.ts?$/, loader: "awesome-typescript-loader" },
-                { test: /\.js?$/, include: [path.resolve(__dirname, "node_modules/huozi"),], loader: "babel-loader" },
             ],
         },
         externals: {

@@ -5,7 +5,6 @@ import { Color } from "../../interface/Color";
 import { Rect, RectZero, Size } from "../../interface/Rect";
 import { Font } from "../../interface/Font";
 import { LabelElement } from "./element/Label";
-import { StaticTextLayout } from "./element/TextLayout";
 
 export enum TextAlignment {
     Left,
@@ -111,18 +110,18 @@ export class Label extends View {
     }
 
     public textRectForBounds(bounds: Rect): Rect {
-        if (this.text) {
-            const textLayout = new StaticTextLayout(this.numberOfLines, this.letterSpace, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
-            return textLayout.bounds
-        }
+        // if (this.text) {
+        //     const textLayout = new StaticTextLayout(this.numberOfLines, this.letterSpace, this.lineSpace, this.text, this.font, this.bounds, { left: 0, top: 0, bottom: 0, right: 0 });
+        //     return textLayout.bounds
+        // }
         return RectZero
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {
-        if (this.text) {
-            const textLayout = new StaticTextLayout(this.numberOfLines, this.letterSpace, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
-            return { width: textLayout.textRect.width, height: textLayout.textRect.height }
-        }
+        // if (this.text) {
+        //     const textLayout = new StaticTextLayout(this.numberOfLines, this.letterSpace, this.lineSpace, this.text, this.font, { x: 0, y: 0, width: width || this.preferredMaxLayoutWidth, height: Infinity }, { left: 0, top: 0, bottom: 0, right: 0 });
+        //     return { width: textLayout.textRect.width, height: textLayout.textRect.height }
+        // }
         return undefined;
     }
 
