@@ -15,15 +15,18 @@ class AppDelegate extends XT.ApplicationDelegate {
 class FirstListCell extends XT.ListCell {
 
     owner?: FirstViewController
-    myLabel: XT.Label = new XT.Label(XT.RectMake(0.0, 0.0, 300, 44))
+    myLabel: XT.Label = new XT.Label(XT.RectMake(0.0, 0.0, 300, 200))
     // myFoo: XT.CustomView = new XT.CustomView("FOOView", XT.RectMake(300, 0, 75, 44))
 
     init() {
         super.init();
         this.myLabel.lineBreakMode = XT.LineBreakMode.TruncatingTail
+        this.myLabel.numberOfLines = 0
+        this.myLabel.lineSpace = 10
+        // this.myLabel.font = XT.Font.systemFontOfSize(24)
         // this.myLabel.letterSpace = 5
         // this.myLabel.textAlignment = XT.TextAlignment.Right
-        
+
         // const redView = new XT.View(XT.RectMake(0, 0, 22, 22))
         // redView.backgroundColor = XT.Color.redColor
         // redView.alpha = Math.random()
@@ -52,7 +55,7 @@ class FirstItem implements XT.ListItem {
     [key: string]: any;
     reuseIdentifier: string = "Cell"
     rowHeight: (width: number) => number = () => {
-        return 44
+        return 200
     }
     name: string = "Pony"
 

@@ -7,23 +7,33 @@ import { Rect } from "../../../interface/Rect";
 export class LabelElement extends ViewElement {
 
     private foreignObject: SVGForeignObjectElement
+    private wrapperObject: HTMLDivElement
     private spanObject: HTMLSpanElement
 
     loadContent() {
         super.loadContent();
         this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+        this.wrapperObject = document.createElement("div");
+        this.wrapperObject.style.display = "flex";
+        this.wrapperObject.style.alignItems = "center";
+        this.wrapperObject.style.justifyContent = "center";
         this.spanObject = document.createElement("span");
-        this.foreignObject.appendChild(this.spanObject);
+        this.wrapperObject.appendChild(this.spanObject);
+        this.foreignObject.appendChild(this.wrapperObject);
         this.contentObject = this.foreignObject;
         this.numberOfLines = 1;
         this.adjustTextAlignment();
+        this.xtr_setFont(Font.systemFontOfSize(14.0))
     }
 
     public xtr_setFrame(value: Rect) {
         super.xtr_setFrame(value);
         this.foreignObject.setAttribute("width", value.width.toString())
         this.foreignObject.setAttribute("height", value.height.toString())
+        this.wrapperObject.style.width = "100%"
+        this.wrapperObject.style.height = "100%"
         this.spanObject.style.width = value.width.toString() + "px";
+        this.spanObject.style.maxHeight = value.height.toString() + "px";
         this.adjustTextAlignment();
     }
 
@@ -50,6 +60,7 @@ export class LabelElement extends ViewElement {
         this.spanObject.style.fontFamily = this.font.familyName || "Arial";
         this.spanObject.style.fontWeight = this.font.fontWeight;
         this.spanObject.style.fontStyle = this.font.fontStyle;
+        this.adjustTextAlignment()
     }
 
     private textColor: Color = Color.blackColor
@@ -125,7 +136,7 @@ export class LabelElement extends ViewElement {
 
     public xtr_setLineSpace(value: number) {
         this.lineSpace = value
-
+        this.adjustTextAlignment();
     }
 
     private adjustTextAlignment() {
@@ -135,6 +146,14 @@ export class LabelElement extends ViewElement {
             this.spanObject.style.display = "inline-block";
             this.spanObject.style.overflow = "hidden";
             this.spanObject.style.whiteSpace = "nowrap";
+        }
+        else {
+            this.spanObject.style.lineHeight = this.lineSpace > 0 ? (this.font.pointSize + this.lineSpace * 2).toString() + "px" : null;
+            this.spanObject.style.textOverflow = this.lineBreakMode === LineBreakMode.TruncatingTail ? "ellipsis" : null;
+            this.spanObject.style.display = "block";
+            this.spanObject.style.verticalAlign = "middle";
+            this.spanObject.style.overflow = "hidden";
+            this.spanObject.style.whiteSpace = null;
         }
     }
 
