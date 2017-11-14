@@ -65,6 +65,10 @@ export class Window extends View {
         this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y)
     }
 
+    handlePointerCancel(timestamp: number) {
+        this.touchManager.handlePointerCancelEvent(timestamp)
+    }
+
     // handleKeyboardShow(frame: Rect, duration: number) {
     //     this.rootViewController && this.rootViewController.keyboardWillShow(frame, duration)
     // }

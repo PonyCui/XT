@@ -63,18 +63,22 @@ class TestViewController extends XT.ViewController {
         super.viewDidLoad();
         const scrollView = new XT.ScrollView(XT.RectMake(0, 0, 0, 0))
         this.scrollView = scrollView
-        // scrollView.alwaysBounceVertical = true
-        scrollView.contentSize = XT.SizeMake(0, 1000)
-        scrollView.backgroundColor = XT.Color.yellowColor
+        scrollView.alwaysBounceVertical = true
+        scrollView.contentSize = XT.SizeMake(0, 2000)
+        // scrollView.backgroundColor = XT.Color.yellowColor
 
         const redView = new XT.View(XT.RectMake(0, 200, 44, 44))
         redView.backgroundColor = XT.Color.redColor
         scrollView.addSubview(redView)
         this.view.addSubview(scrollView);
 
+        const blueView = new XT.View(XT.RectMake(0, 800, 44, 44))
+        blueView.backgroundColor = XT.Color.blueColor
+        scrollView.addSubview(blueView)
+
         setTimeout(() => {
             XT.View.animationWithDuration(0.3, () => {
-                scrollView.contentOffset = XT.PointMake(0, 200)
+                // scrollView.contentOffset = XT.PointMake(0, 200)
             })
         }, 1000)
 
@@ -92,7 +96,7 @@ class TestViewController extends XT.ViewController {
 
     viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews();
-        this.scrollView.frame = this.view.bounds
+        this.scrollView.frame = {...this.view.bounds}
     }
 
 }

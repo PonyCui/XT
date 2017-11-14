@@ -6,17 +6,15 @@
 </head>
 
 
-<body style="margin: 0; ">
+<body style="margin: 0; overflow-y: hidden; ">
 </body>
 
 <script src="runtime/xt.web.min.js"></script>
 
 <script>
-
     var child = document.createElement("script")
-    child.src = "/dist/sample.min.js?" + new Date().toString()
+    child.src = "/dist/sample.min.js?t=" + new Date().toString()
     document.body.appendChild(child);
-
 </script>
 
 </html>

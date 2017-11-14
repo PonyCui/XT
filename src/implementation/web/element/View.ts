@@ -9,14 +9,13 @@ export class ViewElement extends BaseElement {
     backgroundObject = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     contentObject: SVGElement | undefined = undefined
     containerObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    maskObject?: SVGMaskElement = undefined
+    clipPathObject?: SVGClipPathElement = undefined
     filterObject?: SVGFilterElement = undefined
 
     constructor(frame: Rect, scriptObject: any) {
         super(scriptObject);
         this.nativeObject.setAttribute('id', this.objectUUID);
         this.backgroundObject.setAttribute('visibility', 'hidden');
-        this.nativeObject.appendChild(this.backgroundObject);
         this.loadContent();
         if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }
         this.nativeObject.appendChild(this.containerObject);
@@ -90,21 +89,28 @@ export class ViewElement extends BaseElement {
         }
     }
 
+    private previousMaskParams: { width?: number, height?: number, cornerRadius?: number } = {};
+
     private resetMaskElement() {
+        if (this.previousMaskParams.width === this.frame.width && this.previousMaskParams.height === this.frame.height && this.previousMaskParams.cornerRadius === this.cornerRadius) { return; }
+        this.previousMaskParams.width = this.frame.width
+        this.previousMaskParams.height = this.frame.height
+        this.previousMaskParams.cornerRadius = this.cornerRadius
         if (this.clipsToBounds) {
-            const maskObject = this.maskObject || document.createElementNS("http://www.w3.org/2000/svg", "mask");
-            maskObject.setAttribute('id', this.objectUUID + ".mask");
-            maskObject.innerHTML = '';
-            maskObject.appendChild(this.createMaskPath())
-            this.maskObject = maskObject;
+
+            const clipPathObject = this.clipPathObject || document.createElementNS("http://www.w3.org/2000/svg", "clipPath")
+            clipPathObject.setAttribute('id', this.objectUUID + ".clipPath");
+            clipPathObject.innerHTML = '';
+            clipPathObject.appendChild(this.createMaskPath())
+            this.clipPathObject = clipPathObject;
             const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
-            if (!defs.contains(maskObject)) {
-                defs.appendChild(maskObject)
+            if (!defs.contains(clipPathObject)) {
+                defs.appendChild(clipPathObject)
             }
-            this.nativeObject.style.mask = 'url(#' + (this.objectUUID + ".mask") + ')'
+            this.nativeObject.style.clipPath = 'url(#' + (this.objectUUID + ".clipPath") + ')'
         }
         else {
-            this.nativeObject.style.mask = ''
+            this.nativeObject.style.clipPath = null
         }
     }
 
@@ -116,7 +122,6 @@ export class ViewElement extends BaseElement {
             maskPath.setAttribute("rx", this.cornerRadius.toString())
             maskPath.setAttribute("ry", this.cornerRadius.toString())
         }
-        maskPath.style.fill = "white";
         return maskPath
     }
 
@@ -131,9 +136,13 @@ export class ViewElement extends BaseElement {
         if (this.backgroundColor !== undefined) {
             this.backgroundObject.setAttribute('visibility', 'inherit');
             this.backgroundObject.setAttribute('fill', 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')')
+            if (this.backgroundObject.parentNode === null) {
+                this.nativeObject.insertBefore(this.backgroundObject, this.containerObject)
+            }
         }
         else {
             this.backgroundObject.setAttribute('visibility', 'hidden');
+            this.nativeObject.removeChild(this.backgroundObject);
         }
     }
 

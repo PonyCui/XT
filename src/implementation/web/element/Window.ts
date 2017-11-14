@@ -31,6 +31,11 @@ export class WindowElement extends ViewElement {
             if (!WindowElement._allowDefault) { e.preventDefault(); }
             else { WindowElement._allowDefault = false; }
         })
+        document.addEventListener("touchcancel", (e) => {
+            this.scriptObject.handlePointerCancel(e.timeStamp)
+            if (!WindowElement._allowDefault) { e.preventDefault(); }
+            else { WindowElement._allowDefault = false; }
+        })
     }
 
 }
