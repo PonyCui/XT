@@ -14,9 +14,9 @@ export class LabelElement extends ViewElement {
         super.loadContent();
         this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
         this.wrapperObject = document.createElement("div");
-        this.wrapperObject.style.display = "flex";
-        this.wrapperObject.style.alignItems = "center";
-        this.wrapperObject.style.justifyContent = "center";
+        this.wrapperObject.style.cssText = "display: -webkit-box; display: flex;";
+        this.wrapperObject.style.webkitAlignItems = this.wrapperObject.style.webkitBoxAlign = this.wrapperObject.style.alignItems = "center";
+        this.wrapperObject.style.webkitBoxAlign = this.wrapperObject.style.webkitJustifyContent = this.wrapperObject.style.justifyContent = "center";
         this.spanObject = document.createElement("span");
         this.wrapperObject.appendChild(this.spanObject);
         this.foreignObject.appendChild(this.wrapperObject);
@@ -145,6 +145,8 @@ export class LabelElement extends ViewElement {
             this.spanObject.style.textOverflow = this.lineBreakMode === LineBreakMode.TruncatingTail ? "ellipsis" : null;
             this.spanObject.style.display = "inline-block";
             this.spanObject.style.overflow = "hidden";
+            this.spanObject.style.wordWrap = null;
+            this.spanObject.style.wordBreak = null;
             this.spanObject.style.whiteSpace = "nowrap";
         }
         else {
@@ -153,7 +155,9 @@ export class LabelElement extends ViewElement {
             this.spanObject.style.display = "block";
             this.spanObject.style.verticalAlign = "middle";
             this.spanObject.style.overflow = "hidden";
-            this.spanObject.style.whiteSpace = null;
+            this.spanObject.style.wordWrap = "break-word";
+            this.spanObject.style.wordBreak = "break-all";
+            this.spanObject.style.whiteSpace = "pre-wrap";
         }
     }
 

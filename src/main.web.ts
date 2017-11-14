@@ -88,5 +88,9 @@ import { TextView as ITextView } from './interface/TextView'
 import { TextView as MTextView } from './implementation/web/TextView'
 export class TextView extends MTextView { }
 
+import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
+import { TextMeasurer as MTextMeasurer } from './implementation/web/TextMeasurer'
+export class TextMeasurer extends MTextMeasurer { }
+
 declare var module: any;
 (window as any).XT = module.exports;

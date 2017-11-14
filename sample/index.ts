@@ -75,6 +75,7 @@ class FirstViewController extends XT.ViewController {
         this.fooView = fooView
         fooView.register(FirstListCell, "Cell")
         fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
+            XT.TextMeasurer.measureText("123123123213123fdsfdsahlf", {numberOfLines: 0, font: XT.Font.systemFontOfSize(14), inRect: {x: 0, y: 0, width: 100, height: 244}})
             cell.owner = this
             cell.myLabel.text = item.name
         }

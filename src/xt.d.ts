@@ -694,3 +694,19 @@ export class TextView extends View {
     blur(): void
 
 }
+
+export interface TextMeasureParams {
+
+    font: Font;
+    inRect: Rect;
+    numberOfLines?: number
+    letterSpace?: number
+    lineSpace?: number
+
+}
+
+export class TextMeasurer {
+
+    static measureText(text: string, params: TextMeasureParams): Rect
+
+}

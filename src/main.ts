@@ -87,3 +87,6 @@ export class CustomView extends ICustomView { }
 import { Device as IDevice, DeviceOrientation as IDeviceOrientation } from './interface/Device'
 export const DeviceOrientation = IDeviceOrientation
 export class Device extends IDevice { }
+
+import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
+export class TextMeasurer extends ITextMeasurer { }
