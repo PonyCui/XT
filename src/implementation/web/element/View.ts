@@ -142,7 +142,6 @@ export class ViewElement extends BaseElement {
         }
         else {
             this.backgroundObject.setAttribute('visibility', 'hidden');
-            this.nativeObject.removeChild(this.backgroundObject);
         }
     }
 

@@ -12,7 +12,7 @@ import { Color as IColor } from './interface/Color'
 export class Color extends IColor { }
 
 import { Font as IFont } from './interface/Font';
-export class Font extends IFont {}
+export class Font extends IFont { }
 
 import { PointMake as IPointMake, PointEqual as IPointEqual, PointZero as IPointZero, SizeMake as ISizeMake, SizeEqual as ISizeEqual, SizeZero as ISizeZero, RectMake as IRectMake, RectZero as IRectZero, RectEqual as IRectEqual, RectInside as IRectInside, InsetsMake as IInsetsMake } from './interface/Rect'
 export const PointMake = IPointMake
@@ -29,25 +29,25 @@ export const RectInside = IRectInside
 import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from "./interface/ImageView";
 import { Image as MImage, ImageView as MImageView } from "./implementation/web/ImageView";
 export const ImageRenderingMode = IImageRenderingMode
-export class Image extends MImage {}
+export class Image extends MImage { }
 export const ContentMode = IContentMode
-export class ImageView extends MImageView {}
+export class ImageView extends MImageView { }
 
 import { TextAlignment as ITextAlignment, TextVerticalAlignment as ITextVerticalAlignment, LineBreakMode as ILineBreakMode, Label as ILabel } from './interface/Label'
 import { Label as MLabel } from './implementation/web/Label'
 export const TextAlignment = ITextAlignment
 export const TextVerticalAlignment = ITextVerticalAlignment
 export const LineBreakMode = ILineBreakMode
-export class Label extends MLabel {}
+export class Label extends MLabel { }
 
 import { LayoutAttribute as ILayoutAttribute, LayoutRelation as ILayoutRelation, LayoutConstraint as ILayoutConstraint } from './interface/LayoutConstraint'
 import { LayoutConstraint as MLayoutConstraint } from './implementation/web/LayoutConstraint'
 export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
-export class LayoutConstraint extends MLayoutConstraint {}
+export class LayoutConstraint extends MLayoutConstraint { }
 
 import { TransformMatrix as ITransformMatrix } from './interface/TransformMatrix';
-export class TransformMatrix extends ITransformMatrix {}
+export class TransformMatrix extends ITransformMatrix { }
 
 import { View as IView, InteractionState as IInteractionState, SwipeDirection as ISwipeDirection } from './interface/View'
 import { View as MView } from './implementation/web/View'
@@ -57,7 +57,13 @@ export const SwipeDirection = ISwipeDirection
 
 import { ScrollView as IScrollView } from './interface/ScrollView'
 import { ScrollView as MScrollView } from './implementation/web/ScrollView'
-export class ScrollView extends MScrollView {}
+export class ScrollView extends MScrollView { }
+
+import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView } from './interface/ListView'
+import { ListCell as MListCell, ListView as MListView } from './implementation/web/ListView'
+export const ListSelectionStyle = IListSelectionStyle
+export class ListCell extends MListCell { }
+export class ListView extends MListView { }
 
 import { Window as IWindow } from './interface/Window'
 import { Window as MWindow } from './implementation/web/Window'
@@ -65,15 +71,15 @@ export class Window extends MWindow { }
 
 import { ViewController as IViewController } from './interface/ViewController'
 import { ViewController as MViewController } from './implementation/web/ViewController'
-export class ViewController extends MViewController {}
+export class ViewController extends MViewController { }
 
 import { NavigationController as INavigationController } from './interface/NavigationController'
 import { NavigationController as MNavigationController } from './implementation/web/NavigationController'
-export class NavigationController extends MNavigationController {}
+export class NavigationController extends MNavigationController { }
 
 import { TextField as ITextField, TextFieldViewMode as ITextFieldViewMode, ReturnKeyType as IReturnKeyType, KeyboardType as IKeyboardType } from './interface/TextField'
 import { TextField as MTextField } from './implementation/web/TextField'
-export class TextField extends MTextField {}
+export class TextField extends MTextField { }
 export const TextFieldViewMode = ITextFieldViewMode
 export const ReturnKeyType = IReturnKeyType
 export const KeyboardType = IKeyboardType

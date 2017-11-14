@@ -14,6 +14,9 @@ export class WindowElement extends ViewElement {
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         });
+        document.addEventListener('mousewheel', (e) => {
+            e.preventDefault();
+        });
         document.addEventListener("touchstart", (e) => {
             this.scriptObject.handlePointerDown(e.which.toString(), e.timeStamp, { x: e.touches[e.which].clientX, y: e.touches[e.which].clientY })
             if (!WindowElement._allowDefault) { e.preventDefault(); }
