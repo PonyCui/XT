@@ -27,6 +27,8 @@ export class TextMeasurer {
         measureSpan.style.fontFamily = params.font.familyName || "Arial";
         measureSpan.style.fontWeight = params.font.fontWeight;
         measureSpan.style.fontStyle = params.font.fontStyle;
+        measureSpan.style.letterSpacing = params.letterSpace ? params.letterSpace.toString() : null
+        measureSpan.style.lineHeight = params.lineSpace ? (params.font.pointSize + params.lineSpace * 2).toString() : null
         if (params.numberOfLines === 1 || params.numberOfLines === undefined) {
             measureSpan.style.display = "inline-block";
             measureSpan.style.wordWrap = null
