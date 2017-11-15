@@ -26,6 +26,10 @@ export const RectZero = IRectZero
 export const RectEqual = IRectEqual
 export const RectInside = IRectInside
 
+import { Screen as IScreen } from './interface/Screen'
+import { Screen as MScreen } from './implementation/web/Screen'
+export class Screen extends MScreen {}
+
 import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from "./interface/ImageView";
 import { Image as MImage, ImageView as MImageView } from "./implementation/web/ImageView";
 export const ImageRenderingMode = IImageRenderingMode
@@ -97,6 +101,11 @@ import { CustomView as MCustomView } from './implementation/web/CustomView'
 import { CustomViewFactory as MCustomViewFactory } from './implementation/web/element/CustomFactory'
 export class CustomView extends MCustomView { }
 export class CustomViewFactory extends MCustomViewFactory { }
+
+import { Device as IDevice, DeviceOrientation as IDeviceOrientation } from './interface/Device'
+import { Device as MDevice } from './implementation/web/Device'
+export const DeviceOrientation = IDeviceOrientation
+export class Device extends MDevice { }
 
 import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
 import { TextMeasurer as MTextMeasurer } from './implementation/web/TextMeasurer'
