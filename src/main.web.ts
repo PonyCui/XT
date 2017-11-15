@@ -92,6 +92,12 @@ import { CanvasView as ICanvasView } from './interface/CanvasView'
 import { CanvasView as MCanvasView } from './implementation/web/CanvasView'
 export class CanvasView extends MCanvasView { }
 
+import { CustomView as ICustomView } from './interface/CustomView'
+import { CustomView as MCustomView } from './implementation/web/CustomView'
+import { CustomViewFactory as MCustomViewFactory } from './implementation/web/element/CustomFactory'
+export class CustomView extends MCustomView { }
+export class CustomViewFactory extends MCustomViewFactory { }
+
 import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
 import { TextMeasurer as MTextMeasurer } from './implementation/web/TextMeasurer'
 export class TextMeasurer extends MTextMeasurer { }

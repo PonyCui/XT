@@ -2,6 +2,36 @@
 
 // declare const FOOPlugin: any
 
+XT.CustomViewFactory.register("FOO", class _ extends XT.CustomViewFactory {
+
+    requestInnerHTML() {
+        return '<video src="http://www.sample-videos.com/video/mp4/360/big_buck_bunny_360p_1mb.mp4" style="width: 100%; height: 100%; display: block; background-color: black" playsinline></video>'
+    }
+
+    _props: any;
+
+    requestProps() {
+        return this._props || {
+            play: false
+        };
+    }
+
+    setProps(node: HTMLVideoElement, value) {
+        this._props = value
+        if (value.play === true) {
+            node.play()
+        }
+        else if (value.play === false) {
+            node.pause()
+        }
+    }
+
+    handleMessage(node, message) {
+        console.log(message)
+    }
+
+})
+
 class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
@@ -71,43 +101,18 @@ class FirstViewController extends XT.ViewController {
     // private fooView: XT.ListView;
 
     viewDidLoad() {
-
-        const ctx = new XT.CanvasView(XT.RectMake(0.0, 0.0, 300.0, 300.0))
-        ctx.fillStyle=XT.Color.yellowColor;
-        ctx.rect(0,0,250,100)
-        ctx.fill()
-        
-        ctx.setTransform(1,0.5,-0.5,1,30,10);
-        ctx.fillStyle=XT.Color.redColor;
-        ctx.rect(0,0,250,100);
-        ctx.fill()
-        
-        ctx.setTransform(1,0.5,-0.5,1,30,10);
-        ctx.fillStyle=XT.Color.blueColor;
-        ctx.fillRect(0,0,250,100);
-        this.view.addSubview(ctx);
-
-        setTimeout(() => {
-            ctx.clear();
-            ctx.fillStyle = XT.Color.orangeColor
-            ctx.fillRect(44,44,44,44)
-        }, 1000)
-
-        // const fooView = new XT.ListView(XT.RectMake(0.0, 0.0, 0.0, 0.0))
-        // this.fooView = fooView
-        // fooView.register(FirstListCell, "Cell")
-        // fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
-        //     XT.TextMeasurer.measureText("123123123213123fdsfdsahlf", {numberOfLines: 0, font: XT.Font.systemFontOfSize(14), inRect: {x: 0, y: 0, width: 100, height: 244}})
-        //     cell.owner = this
-        //     cell.myLabel.text = item.name
-        // }
-        // let items = []
-        // for (var index = 0; index < 100; index++) {
-        //     items.push(new FirstItem("Index >>> " + index + " Hello, World!" + (new Date()).toString()))
-        // }
-        // fooView.items = items
-        // fooView.reloadData()
-        // this.view.addSubview(fooView);
+        const fooView = new XT.CustomView("FOO", XT.RectMake(0, 0, 200, 200))
+        fooView.onTap = () => {
+            // fooView.emitMessage("123123")
+            // fooView.props = { play: !fooView.props.play }
+            // setTimeout(() => {
+            //     XT.View.animationWithDuration(0.35, () => {
+            //         fooView.frame = XT.RectMake(0, 0, 400, 400)
+            //     })
+            // }, 2000)
+        }
+        // fooView.backgroundColor = XT.Color.yellowColor
+        this.view.addSubview(fooView);
     }
 
     viewWillLayoutSubviews() {

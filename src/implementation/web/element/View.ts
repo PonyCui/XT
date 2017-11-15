@@ -137,7 +137,7 @@ export class ViewElement extends BaseElement {
             this.backgroundObject.setAttribute('visibility', 'inherit');
             this.backgroundObject.setAttribute('fill', 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')')
             if (this.backgroundObject.parentNode === null) {
-                this.nativeObject.insertBefore(this.backgroundObject, this.containerObject)
+                this.nativeObject.insertBefore(this.backgroundObject, this.nativeObject.childNodes[0])
             }
         }
         else {

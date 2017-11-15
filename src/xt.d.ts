@@ -576,6 +576,16 @@ export class CustomView extends View {
 
 }
 
+// Web Only
+export class CustomViewFactory {
+    static register(className: string, factory: typeof CustomViewFactory): void
+    requestInnerHTML(): string
+    requestProps(node: Node): any
+    setProps(node: Node, value: any): void
+    emitMessage(message: any): void
+    handleMessage(node: Node, message: any): void
+}
+
 export enum DeviceOrientation {
     Unknown = 0,
     Portrait = 1,
