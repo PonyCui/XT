@@ -105,6 +105,10 @@ import { Device as MDevice } from './implementation/android/Device'
 export const DeviceOrientation = IDeviceOrientation
 export class Device extends MDevice { }
 
+import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
+import { TextMeasurer as MTextMeasurer } from './implementation/android/TextMeasurer'
+export class TextMeasurer extends MTextMeasurer { }
+
 declare var module: any;
 declare var XT: any;
 if (typeof XT === "object") {

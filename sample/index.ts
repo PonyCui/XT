@@ -51,10 +51,10 @@ class FirstViewController extends XT.ViewController {
 
     viewDidLoad() {
 
-        const bounds = XT.TextMeasurer.measureText("Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!", {
+        const bounds = XT.TextMeasurer.measureText("Hello, World!", {
             inRect: {x:0, y: 0, width: 200, height: 200},
             font: XT.Font.systemFontOfSize(17),
-            // numberOfLines: 0,
+            numberOfLines: 1,
         })
         console.log(JSON.stringify(bounds));
 
