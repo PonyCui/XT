@@ -152,7 +152,7 @@ export class CanvasView extends View {
         this.nativeObject.xtr_restore();
     }
 
-    isPointInPath(x: number, y: number): void {
+    isPointInPath(x: number, y: number): boolean {
         return this.nativeObject.xtr_isPointInPath({ x, y })
     }
 

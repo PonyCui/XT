@@ -68,29 +68,45 @@ class FirstItem implements XT.ListItem {
 class FirstViewController extends XT.ViewController {
 
     title = "First"
-    private fooView: XT.ListView;
+    // private fooView: XT.ListView;
 
     viewDidLoad() {
-        const fooView = new XT.ListView(XT.RectMake(0.0, 0.0, 0.0, 0.0))
-        this.fooView = fooView
-        fooView.register(FirstListCell, "Cell")
-        fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
-            XT.TextMeasurer.measureText("123123123213123fdsfdsahlf", {numberOfLines: 0, font: XT.Font.systemFontOfSize(14), inRect: {x: 0, y: 0, width: 100, height: 244}})
-            cell.owner = this
-            cell.myLabel.text = item.name
-        }
-        let items = []
-        for (var index = 0; index < 100; index++) {
-            items.push(new FirstItem("Index >>> " + index + " Hello, World!" + (new Date()).toString()))
-        }
-        fooView.items = items
-        fooView.reloadData()
-        this.view.addSubview(fooView);
+
+        const ctx = new XT.CanvasView(XT.RectMake(0.0, 0.0, 300.0, 300.0))
+        ctx.fillStyle=XT.Color.yellowColor;
+        ctx.rect(0,0,250,100)
+        ctx.fill()
+        
+        ctx.setTransform(1,0.5,-0.5,1,30,10);
+        ctx.fillStyle=XT.Color.redColor;
+        ctx.rect(0,0,250,100);
+        ctx.fill()
+        
+        ctx.setTransform(1,0.5,-0.5,1,30,10);
+        ctx.fillStyle=XT.Color.blueColor;
+        ctx.fillRect(0,0,250,100);
+        this.view.addSubview(ctx);
+
+        // const fooView = new XT.ListView(XT.RectMake(0.0, 0.0, 0.0, 0.0))
+        // this.fooView = fooView
+        // fooView.register(FirstListCell, "Cell")
+        // fooView.renderItem = (cell: FirstListCell, item: FirstItem) => {
+        //     XT.TextMeasurer.measureText("123123123213123fdsfdsahlf", {numberOfLines: 0, font: XT.Font.systemFontOfSize(14), inRect: {x: 0, y: 0, width: 100, height: 244}})
+        //     cell.owner = this
+        //     cell.myLabel.text = item.name
+        // }
+        // let items = []
+        // for (var index = 0; index < 100; index++) {
+        //     items.push(new FirstItem("Index >>> " + index + " Hello, World!" + (new Date()).toString()))
+        // }
+        // fooView.items = items
+        // fooView.reloadData()
+        // this.view.addSubview(fooView);
     }
 
     viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews();
-        this.fooView.frame = this.view.bounds
+        // this.fooView.frame = this.view.bounds
     }
 
 }

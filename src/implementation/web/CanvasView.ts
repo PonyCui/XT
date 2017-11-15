@@ -1,23 +1,18 @@
 import { View } from './View'
-import { Rect, RectZero } from '../../interface/Rect';
 import { Color } from '../../interface/Color';
+import { Rect, RectZero } from '../../interface/Rect';
+import { CanvasElement } from './element/Canvas';
 
 export class CanvasView extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true)
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRCanvasView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObject = new CanvasElement(rect || RectZero, this);
+        this.userInteractionEnabled = true
+        setImmediate(() => { this.init(); });
     }
 
     public get globalAlpha(): number | undefined {
@@ -113,15 +108,15 @@ export class CanvasView extends View {
     }
 
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
-        this.nativeObject.xtr_quadraticCurveToXyPoint({ x: cpx, y: cpy }, { x, y })
+        this.nativeObject.xtr_quadraticCurveTo({ x: cpx, y: cpy }, { x, y })
     }
 
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
-        this.nativeObject.xtr_bezierCurveToCp2PointXyPoint({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y })
+        this.nativeObject.xtr_bezierCurveTo({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y })
     }
 
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
-        this.nativeObject.xtr_arcRSAngleEAngleCounterclockwise({ x, y }, r, sAngle, eAngle, counterclockwise)
+        this.nativeObject.xtr_arc({ x, y }, r, sAngle, eAngle, counterclockwise)
     }
 
     postScale(x: number, y: number): void {
@@ -147,7 +142,7 @@ export class CanvasView extends View {
     save(): void {
         this.nativeObject.xtr_save();
     }
-    
+
     restore(): void {
         this.nativeObject.xtr_restore();
     }
@@ -161,13 +156,3 @@ export class CanvasView extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRCanvasViewConstructor]") {
-        return new CanvasView(undefined, view);
-    }
-    return undefined;
-})

@@ -554,7 +554,7 @@ export class CanvasView extends View {
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise?: boolean): void
-    isPointInPath(x: number, y: number): void
+    isPointInPath(x: number, y: number): boolean
     postScale(x: number, y: number): void
     postRotate(angle: number): void
     postTranslate(x: number, y: number): void

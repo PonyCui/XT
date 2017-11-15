@@ -88,6 +88,10 @@ import { TextView as ITextView } from './interface/TextView'
 import { TextView as MTextView } from './implementation/web/TextView'
 export class TextView extends MTextView { }
 
+import { CanvasView as ICanvasView } from './interface/CanvasView'
+import { CanvasView as MCanvasView } from './implementation/web/CanvasView'
+export class CanvasView extends MCanvasView { }
+
 import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
 import { TextMeasurer as MTextMeasurer } from './implementation/web/TextMeasurer'
 export class TextMeasurer extends MTextMeasurer { }
