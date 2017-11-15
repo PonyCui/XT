@@ -87,6 +87,12 @@ class FirstViewController extends XT.ViewController {
         ctx.fillRect(0,0,250,100);
         this.view.addSubview(ctx);
 
+        setTimeout(() => {
+            ctx.clear();
+            ctx.fillStyle = XT.Color.orangeColor
+            ctx.fillRect(44,44,44,44)
+        }, 1000)
+
         // const fooView = new XT.ListView(XT.RectMake(0.0, 0.0, 0.0, 0.0))
         // this.fooView = fooView
         // fooView.register(FirstListCell, "Cell")

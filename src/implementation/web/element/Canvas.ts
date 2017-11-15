@@ -14,6 +14,7 @@ export class CanvasElement extends ViewElement {
         this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
         this.canvasObject = document.createElement("canvas");
         this.ctx = this.canvasObject.getContext('2d') as CanvasRenderingContext2D
+        this.ctx.save();
         this.foreignObject.appendChild(this.canvasObject);
         this.contentObject = this.foreignObject;
     }
@@ -230,9 +231,12 @@ export class CanvasElement extends ViewElement {
         return this.ctx.isPointInPath(point.x, point.y)
     }
 
-    public clear(): void {
+    public xtr_clear(): void {
+        this.ctx.restore()
+        this.ctx.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
         this.actions = [];
         this.ctx.clearRect(0, 0, this.xtr_frame().width, this.xtr_frame().height)
+        this.ctx.save();
     }
 
     private doAction(action: () => void) {
