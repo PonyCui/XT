@@ -27,9 +27,6 @@ export class CustomViewElement extends ViewElement {
                 const firstElement = this.foreignObject.children[0]
                 if (firstElement instanceof HTMLElement) {
                     this.firstElement = firstElement
-                    this.firstElement.ontouchstart = e => e.preventDefault()
-                    this.firstElement.ontouchmove = e => e.preventDefault()
-                    this.firstElement.ontouchend = e => e.preventDefault()
                 }
             }
         }
