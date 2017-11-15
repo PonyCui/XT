@@ -32,6 +32,7 @@
 #import "XTRCanvasView.h"
 #import "XTRCustomView.h"
 #import "XTRDevice.h"
+#import "XTRTextMeasurer.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <XT-Polyfill/XTPolyfill.h>
 
@@ -124,6 +125,7 @@ static NSString *globalBridgeScript;
                               [XTRCanvasView class],
                               [XTRCustomView class],
                               [XTRDevice class],
+                              [XTRTextMeasurer class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;
