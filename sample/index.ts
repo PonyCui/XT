@@ -46,17 +46,14 @@ class AppDelegate extends XT.ApplicationDelegate {
 
 class FirstViewController extends XT.ViewController {
 
-    // title = "First"
+    title = "First"
     // private fooView: XT.ListView;
 
     viewDidLoad() {
 
-        const bounds = XT.TextMeasurer.measureText("Hello, World!", {
-            inRect: {x:0, y: 0, width: 200, height: 200},
-            font: XT.Font.systemFontOfSize(17),
-            numberOfLines: 1,
-        })
-        console.log(JSON.stringify(bounds));
+        const view = new XT.View(XT.RectMake(44,44,44,44))
+        view.backgroundColor = XT.Color.redColor
+        this.view.addSubview(view)
 
         // const fooView = new XT.CustomView("FOO", XT.RectMake(0, 0, 200, 200))
         // fooView.onTap = () => {

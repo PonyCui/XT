@@ -25,31 +25,6 @@
 
 @implementation XTRView
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    UIView *view = [super hitTest:point withEvent:event];
-    return view;
-}
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touchesBegan, %@", self.backgroundColor);
-    [super touchesBegan:touches withEvent:event];
-}
-
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touchesMoved, %@", self.backgroundColor);
-    [super touchesMoved:touches withEvent:event];
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touchesEnded, %@", self.backgroundColor);
-    [super touchesEnded:touches withEvent:event];
-}
-
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touchesCancelled, %@", self.backgroundColor);
-    [super touchesCancelled:touches withEvent:event];
-}
-
 + (NSString *)name {
     return @"XTRView";
 }

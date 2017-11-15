@@ -15,7 +15,6 @@
 
 @protocol XTRApplicationDelegateExport <JSExport>
 
-+ (void)attachDelegate:(JSValue *)delegate;
 - (JSValue *)xtr_window;
 - (void)xtr_setWindow:(JSValue *)window;
 

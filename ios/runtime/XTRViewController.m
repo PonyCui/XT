@@ -76,10 +76,16 @@
             [value invokeMethod:@"viewDidAppear" withArguments:@[]];
         }
     }
+    if (self.navigationController != nil) {
+        self.navigationController.navigationBar.hidden = YES;
+    }
 }
+
+static UINavigationController *tmpNavigationController;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    tmpNavigationController = self.navigationController;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject.value;
         if (value != nil) {
@@ -96,6 +102,11 @@
             [value invokeMethod:@"viewDidDisappear" withArguments:@[]];
         }
     }
+    if (self.shouldRestoreNavigationBar && self.navigationController == nil) {
+        tmpNavigationController.navigationBar.hidden = NO;
+        tmpNavigationController.navigationBar.alpha = 1.0;
+    }
+    tmpNavigationController = nil;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -169,6 +180,14 @@
 
 - (JSValue *)xtr_navigationController {
     return [JSValue fromObject:self.navigationController context:self.context];
+}
+
+- (void)onPopGesture:(UIPanGestureRecognizer *)sender {
+    CGFloat progress = [sender locationInView:self.view.window].x / self.view.window.bounds.size.width;
+    if (![tmpNavigationController.childViewControllers containsObject:self] && self.shouldRestoreNavigationBar) {
+        tmpNavigationController.navigationBar.hidden = NO;
+        tmpNavigationController.navigationBar.alpha = progress;
+    }
 }
 
 @end

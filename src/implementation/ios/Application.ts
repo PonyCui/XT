@@ -38,7 +38,7 @@ export class Application {
             sharedApplication = this;
         }
         this.nativeObject = XTRApplication.create(this);
-        XTRApplicationDelegate.attachDelegate(delegate);
+        (window as any)._xtrDelegate = delegate;
         this.delegate = delegate;
     }
 

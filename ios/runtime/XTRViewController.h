@@ -27,6 +27,7 @@
 
 @interface XTRViewController : UIViewController<XTRComponent, XTRViewControllerExport>
 
+@property (nonatomic, assign) BOOL shouldRestoreNavigationBar;
 @property (nonatomic, copy) NSString *objectUUID;
 
 @end

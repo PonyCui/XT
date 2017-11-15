@@ -89,6 +89,13 @@ static NSString *globalBridgeScript;
 }
 
 - (void)loadViaSourceURL {
+    if (self.sourceURL.isFileURL) {
+        NSString *script = [[NSString alloc] initWithContentsOfURL:self.sourceURL encoding:NSUTF8StringEncoding error:NULL];
+        if (script) {
+            [self.context evaluateScript:script];
+        }
+        return;
+    }
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [[[NSURLSession sharedSession] dataTaskWithURL:self.sourceURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error == nil && data != nil) {
@@ -167,12 +174,12 @@ static NSString *globalBridgeScript;
 - (void)reload {
     if (self.sourceURL != nil) {
         [self loadViaSourceURL];
-        [self.appDelegate application:[UIApplication sharedApplication]
+        [self.appDelegate application:self.application
         didFinishLaunchingWithOptions:@{}];
     }
     else {
         [self.context evaluateScript:globalBridgeScript];
-        [self.appDelegate application:[UIApplication sharedApplication]
+        [self.appDelegate application:self.application
         didFinishLaunchingWithOptions:@{}];
     }
 }

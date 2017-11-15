@@ -6,12 +6,14 @@
 //  Copyright © 2017年 UED Center, YY Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "XTRBridge.h"
 #import "XTRCustomView.h"
 
-@interface XTRuntime : NSObject
+@interface XTRuntime : NSObject<UINavigationControllerDelegate>
 
 + (NSString *)version;
+
++ (void)startWithNamed:(NSString *)name inBundle:(NSBundle *)bundle navigationController:(UINavigationController *)navigationController;
 
 @end

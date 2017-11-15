@@ -9,6 +9,7 @@
 #import "XTRApplicationDelegate.h"
 #import "XTRBridge.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRApplicationDelegate()
 
@@ -19,32 +20,18 @@
 
 @implementation XTRApplicationDelegate
 
-static XTRApplicationDelegate *sharedDelegate;
-
-+ (void)attachDelegate:(JSValue *)delegate {
-    if (sharedDelegate != nil) {
-        [sharedDelegate setScriptObject:[JSManagedValue managedValueWithValue:delegate andOwner:sharedDelegate]];
-        [sharedDelegate setContext:delegate.context];
-    }
-}
-
 + (NSString *)name {
     return @"XTRApplicationDelegate";
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        sharedDelegate = self;
-    }
-    return self;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (self.bridge == nil) {
         self.bridge = [[XTRBridge alloc] initWithAppDelegate:self];
     }
+    JSValue *delegate = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
+    self.scriptObject = [JSManagedValue managedValueWithValue:delegate andOwner:self];
+    self.context = self.bridge.context;
+    self.bridge.application = application;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject.value;
         if (value != nil) {

@@ -52,7 +52,10 @@
 
 - (void)xtr_makeKeyAndVisible {
     self.frame = [UIScreen mainScreen].bounds;
-    [self makeKeyAndVisible];
+    self.context.bridge.keyWindow = self;
+    if (self.context.bridge.application == [UIApplication sharedApplication]) {
+        [self makeKeyAndVisible];
+    }
 }
 
 - (JSValue *)xtr_rootViewController {

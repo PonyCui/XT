@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "XTRApplicationDelegate.h"
 
+@class XTRContext;
+
 @interface XTRBridge : NSObject
 
+@property (nonatomic, readonly) XTRContext *context;
+@property (nonatomic, strong) UIApplication * _Nullable application;
+@property (nonatomic, weak) UIWindow * _Nullable keyWindow;
 @property (nonatomic, readonly) NSURL * _Nullable sourceURL;
 
 #pragma mark - Public methods

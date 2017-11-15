@@ -8,10 +8,12 @@
 
 #import "XTRApplication.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
+#import "XTRBridge.h"
 
 @interface XTRApplication ()
 
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, strong) XTRContext *context;
 
 @end
 
@@ -20,7 +22,7 @@
 + (XTRApplication *)create:(JSValue *)scriptObject {
     XTRApplication *app = [XTRApplication new];
     app.objectUUID = [[NSUUID UUID] UUIDString];
-    app.context = scriptObject.context;
+    app.context = (XTRContext *)scriptObject.context;
     return app;
 }
 
@@ -29,7 +31,7 @@
 }
 
 - (JSValue *)xtr_keyWindow {
-    return [JSValue fromObject:[UIApplication sharedApplication].keyWindow context:self.context];
+    return [JSValue fromObject:self.context.bridge.keyWindow context:self.context];
 }
 
 @end
