@@ -24,20 +24,12 @@ export enum LineBreakMode {
 
 export class Label extends View {
 
-    nativeObject: any;
-
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true);
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRLabel.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObject = XTRLabel.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     public get text(): string {
@@ -48,13 +40,13 @@ export class Label extends View {
         this.nativeObject.xtr_setText(value);
     }
 
-	public get font(): Font | undefined {
-		return this.nativeObject.xtr_font();
-	}
+    public get font(): Font | undefined {
+        return this.nativeObject.xtr_font();
+    }
 
-	public set font(value: Font | undefined) {
-		this.nativeObject.xtr_setFont(value);
-	}
+    public set font(value: Font | undefined) {
+        this.nativeObject.xtr_setFont(value);
+    }
 
     public get textColor(): Color {
         return this.nativeObject.xtr_textColor();
@@ -102,13 +94,3 @@ export class Label extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRLabelConstructor]") {
-        return new Label(undefined, view);
-    }
-    return undefined;
-})

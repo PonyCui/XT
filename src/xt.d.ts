@@ -343,7 +343,8 @@ export class Application {
     constructor(t: any, delegate: ApplicationDelegate)
     delegate: ApplicationDelegate
     keyWindow?: Window
-    sharedApplication?(): Application
+    static sharedApplication(): Application
+    exit(): void
 }
 
 export class Button extends View {

@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
+#import "XTRObjectRefs.h"
 
 @interface XTRView ()
 
@@ -19,7 +20,7 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end
 
@@ -29,13 +30,22 @@
     return @"XTRView";
 }
 
-+ (XTRView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRView *view = [[XTRView alloc] initWithFrame:[frame toRect]];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     view.multipleTouchEnabled = YES;
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
+}
+
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+- (void)dealloc {
+    NSLog(@"XTRView Dealloc");
 }
 
 - (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
@@ -285,7 +295,7 @@
 
 - (void)didAddSubview:(UIView *)subview {
     [super didAddSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
                                                                                       [JSValue fromObject:subview context:self.context]
@@ -295,7 +305,7 @@
 
 - (void)willRemoveSubview:(UIView *)subview {
     [super willRemoveSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
                                                                                           [JSValue fromObject:subview context:self.context]
@@ -305,7 +315,7 @@
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     [super willMoveToSuperview:newSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
                                                                                                  [JSValue fromObject:newSuperview context:self.context]
@@ -315,7 +325,7 @@
 
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
     }
@@ -323,7 +333,7 @@
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
                                                                                            [JSValue fromObject:newWindow context:self.context]
@@ -333,7 +343,7 @@
 
 - (void)didMoveToWindow {
     [super didMoveToWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
     }
@@ -361,7 +371,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
@@ -439,7 +449,7 @@
 }
 
 - (void)handleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleTap" withArguments:@[]];
     }
@@ -457,7 +467,7 @@
 }
 
 - (void)handleDoubleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleDoubleTap" withArguments:@[]];
     }
@@ -472,7 +482,7 @@
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleLongPress" withArguments:@[
                                                                       @(sender.state),
@@ -490,7 +500,7 @@
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)sender {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handlePan" withArguments:@[
                                                                 @(sender.state),

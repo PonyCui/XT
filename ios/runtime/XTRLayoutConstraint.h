@@ -15,14 +15,14 @@
 
 @property (nonatomic, copy) NSString *objectUUID;
 
-+ (XTRLayoutConstraint *)create:(JSValue *)firstItem
-                      firstAttr:(JSValue *)firstAttr
-                       relation:(JSValue *)relation
-                     secondItem:(JSValue *)secondItem
-                     secondAttr:(JSValue *)secondAttr
-                       constant:(JSValue *)constant
-                     multiplier:(JSValue *)multiplier
-                   scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)firstItem
+           firstAttr:(JSValue *)firstAttr
+            relation:(JSValue *)relation
+          secondItem:(JSValue *)secondItem
+          secondAttr:(JSValue *)secondAttr
+            constant:(JSValue *)constant
+          multiplier:(JSValue *)multiplier
+        scriptObject:(JSValue *)scriptObject;
 
 + (NSArray *)xtr_constraintsWithVisualFormat:(JSValue *)format views:(JSValue *)views;
 - (JSValue *)xtr_firstItem;

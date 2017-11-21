@@ -8,6 +8,7 @@
 
 #import "XTRLayoutConstraint.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRLayoutConstraint ()
 
@@ -20,6 +21,8 @@
     self = [super init];
     if (self) {
         self.objectUUID = [[NSUUID UUID] UUIDString];
+        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
     }
     return self;
 }
@@ -28,14 +31,14 @@
     return @"XTRLayoutConstraint";
 }
 
-+ (XTRLayoutConstraint *)create:(JSValue *)firstItem
-                      firstAttr:(JSValue *)firstAttr
-                       relation:(JSValue *)relation
-                     secondItem:(JSValue *)secondItem
-                     secondAttr:(JSValue *)secondAttr
-                       constant:(JSValue *)constant
-                     multiplier:(JSValue *)multiplier
-                   scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)firstItem
+           firstAttr:(JSValue *)firstAttr
+            relation:(JSValue *)relation
+          secondItem:(JSValue *)secondItem
+          secondAttr:(JSValue *)secondAttr
+            constant:(JSValue *)constant
+          multiplier:(JSValue *)multiplier
+        scriptObject:(JSValue *)scriptObject {
     XTRLayoutConstraint *nativeObject = [XTRLayoutConstraint new];
     nativeObject.innerObject = [NSLayoutConstraint constraintWithItem:[firstItem toView] ?: [[secondItem toView] superview]
                                                             attribute:[firstAttr toLayoutAttribute]
@@ -45,7 +48,7 @@
                                                            multiplier:[multiplier toDouble]
                                                              constant:[constant toDouble]];
     nativeObject.context = scriptObject.context;
-    return nativeObject;
+    return nativeObject.objectUUID;
 }
 
 + (NSArray *)xtr_constraintsWithVisualFormat:(JSValue *)format views:(JSValue *)argViews {

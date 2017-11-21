@@ -8,6 +8,7 @@
 
 #import "XTRDevice.h"
 #import "XTRuntime.h"
+#import "XTRContext.h"
 
 @implementation XTRDevice
 
@@ -15,8 +16,8 @@
     return @"XTRDevice";
 }
 
-+ (XTRDevice *)xtr_current {
-    return [XTRDevice new];
++ (NSString *)xtr_current {
+    return [XTRDevice new].objectUUID;
 }
 
 - (instancetype)init
@@ -24,6 +25,8 @@
     self = [super init];
     if (self) {
         self.objectUUID = [[NSUUID UUID] UUIDString];
+        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
     }
     return self;
 }

@@ -13,10 +13,10 @@
 
 @protocol XTRFontExport <JSExport>
 
-+ (XTRFont *)create:(JSValue *)pointSize
-         fontWeight:(JSValue *)fontWeight
-          fontStyle:(JSValue *)fontStyle
-         familyName:(JSValue *)familyName;
++ (NSString *)create:(JSValue *)pointSize
+          fontWeight:(JSValue *)fontWeight
+           fontStyle:(JSValue *)fontStyle
+          familyName:(JSValue *)familyName;
 
 - (NSString *)xtr_familyName;
 - (NSNumber *)xtr_pointSize;

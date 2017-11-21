@@ -10,9 +10,17 @@
 #import "XTRBridge.h"
 #import "XTRUtils.h"
 #import "XTRContext.h"
+#import "XTRuntime.h"
+
+@interface XTRuntime (Private)
+
++ (XTRApplicationDelegate *)requestDelegateWithObjectUUID:(NSString *)objectUUID;
+
+@end
 
 @interface XTRApplicationDelegate()
 
+@property (nonatomic, weak) id owner;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, strong) JSContext *context;
 
@@ -24,18 +32,29 @@
     return @"XTRApplicationDelegate";
 }
 
++ (XTRApplicationDelegate *)xtr_delegate:(NSString *)objectUUID {
+    return [XTRuntime requestDelegateWithObjectUUID:objectUUID];
+}
+
+- (void)dealloc {
+    NSLog(@"XTRApplicationDelegate dealloc");
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    if (application != nil) {
+        [XTRuntime retainDelegate:self];
+    }
     if (self.bridge == nil) {
         self.bridge = [[XTRBridge alloc] initWithAppDelegate:self];
     }
     JSValue *delegate = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
-    self.scriptObject = [JSManagedValue managedValueWithValue:delegate andOwner:self];
+    self.scriptObject = [JSManagedValue managedValueWithValue:delegate andOwner:application];
     self.context = self.bridge.context;
     self.bridge.application = application;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject.value;
         if (value != nil) {
-            [value invokeMethod:@"resetNativeObject" withArguments:@[self]];
+            [value invokeMethod:@"resetNativeObject" withArguments:@[self.objectUUID]];
             [value invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
         }
     }
@@ -55,6 +74,13 @@
     if (_bridge == nil) {
         _bridge = bridge;
     }
+}
+
+- (NSString *)objectUUID {
+    if (_objectUUID == nil) {
+        _objectUUID = [[NSUUID UUID] UUIDString];
+    }
+    return _objectUUID;
 }
 
 @end

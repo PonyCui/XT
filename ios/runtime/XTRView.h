@@ -14,7 +14,7 @@
 @protocol XTRViewExport <JSExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-+ (XTRView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSDictionary *)xtr_frame;
 - (void)xtr_setFrame:(JSValue *)frame;
 - (NSDictionary *)xtr_bounds;

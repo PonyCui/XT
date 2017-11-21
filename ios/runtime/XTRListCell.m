@@ -7,6 +7,7 @@
 //
 
 #import "XTRListCell.h"
+#import "XTRContext.h"
 
 @interface XTRListCell ()
 
@@ -20,12 +21,13 @@
     return @"XTRListCell";
 }
 
-+ (XTRListCell *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRListCell *view = [[XTRListCell alloc] initWithFrame:[frame toRect]];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (NSNumber *)xtr_selectionStyle {

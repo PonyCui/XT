@@ -13,7 +13,7 @@
 
 @protocol XTRScrollViewExport <JSExport>
 
-+ (XTRScrollView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSDictionary *)xtr_contentOffset;
 - (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(JSValue *)animated;
 - (NSDictionary *)xtr_contentSize;

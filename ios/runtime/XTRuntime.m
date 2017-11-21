@@ -12,12 +12,36 @@
 
 @implementation XTRuntime
 
+static NSSet<XTRApplicationDelegate *> *moduleDelegates;
+
 + (NSString *)version {
     return @"0.0.1";
 }
 
++ (XTRApplicationDelegate *)requestDelegateWithObjectUUID:(NSString *)objectUUID {
+    for (XTRApplicationDelegate *moduleDelegate in moduleDelegates) {
+        if ([moduleDelegate.objectUUID isEqualToString:objectUUID]) {
+            return moduleDelegate;
+        }
+    }
+    return nil;
+}
+
++ (void)retainDelegate:(XTRApplicationDelegate *)delegate {
+    NSMutableSet *mutable = [(moduleDelegates ?: [NSSet set]) mutableCopy];
+    [mutable addObject:delegate];
+    moduleDelegates = [mutable copy];
+}
+
++ (void)releaseDelegate:(XTRApplicationDelegate *)delegate {
+    NSMutableSet *mutable = [(moduleDelegates ?: [NSSet set]) mutableCopy];
+    [mutable removeObject:delegate];
+    moduleDelegates = [mutable copy];
+}
+
 + (void)startWithNamed:(NSString *)name inBundle:(NSBundle *)bundle navigationController:(UINavigationController *)navigationController {
     XTRApplicationDelegate *moduleDelegate = [[XTRApplicationDelegate alloc] init];
+    [self retainDelegate:moduleDelegate];
     NSURL *sourceURL = [NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]];
     moduleDelegate.bridge = [[XTRBridge alloc] initWithAppDelegate:moduleDelegate
                                                          sourceURL:sourceURL];
@@ -25,7 +49,7 @@
     if (moduleDelegate.window != nil && [moduleDelegate.window.rootViewController isKindOfClass:[UINavigationController class]]) {
         XTRViewController *viewController = [(UINavigationController *)moduleDelegate.window.rootViewController viewControllers].firstObject;
         viewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
-        [navigationController.interactivePopGestureRecognizer addTarget:viewController action:NSSelectorFromString(@"onPopGesture:")];
+        moduleDelegate.bridge.keyViewController = viewController;
         [UIView animateWithDuration:0.25 animations:^{
             [navigationController pushViewController:viewController
                                             animated:YES];
@@ -33,6 +57,20 @@
         } completion:^(BOOL finished) {
             navigationController.navigationBar.alpha = 1.0;
             navigationController.navigationBar.hidden = YES;
+        }];
+        __weak XTRApplicationDelegate *weakModuleDelegate = moduleDelegate;
+        [viewController setExitAction:^(XTRViewController *keyViewController) {
+            if (keyViewController.navigationController) {
+                NSUInteger keyIndex = [keyViewController.navigationController.childViewControllers indexOfObject:keyViewController];
+                if (keyIndex > 0 && keyIndex != NSNotFound) {
+                    [keyViewController.navigationController popToViewController:keyViewController.navigationController.childViewControllers[keyIndex - 1]
+                                                                       animated:YES];
+                }
+            }
+            __strong XTRApplicationDelegate *strongModuleDelegate = weakModuleDelegate;
+            if (strongModuleDelegate) {
+                [self releaseDelegate:strongModuleDelegate];
+            }
         }];
     }
 }

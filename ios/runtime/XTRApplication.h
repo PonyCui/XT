@@ -16,6 +16,7 @@
 @property (nonatomic, copy) NSString *objectUUID;
 + (XTRApplication *)create:(JSValue *)scriptObject;
 - (JSValue *)xtr_keyWindow;
+- (void)xtr_exit;
 
 @end
 

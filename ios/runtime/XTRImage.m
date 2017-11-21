@@ -24,6 +24,8 @@
     self = [super init];
     if (self) {
         self.objectUUID = [[NSUUID UUID] UUIDString];
+        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
     }
     return self;
 }

@@ -15,7 +15,7 @@
 @protocol XTRWindowExport <JSExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-+ (XTRWindow *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (void)xtr_makeKeyAndVisible;
 - (JSValue *)xtr_rootViewController;
 - (void)xtr_setRootViewController:(JSValue *)viewController;

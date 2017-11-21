@@ -2,15 +2,17 @@
 
 export class Font {
 
-    private nativeObject: any;
+    nativeObjectRef: any;
 
-    constructor(pointSize: number, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string, nativeObject?: any) {
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-        }
-        else {
-            this.nativeObject = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
-        }
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
+    constructor(pointSize: number, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
+        this.nativeObjectRef = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
+        objectRefs[this.nativeObjectRef] = this;
     }
 
     static systemFontOfSize(pointSize: number, weight: string = '400'): Font {
@@ -28,7 +30,7 @@ export class Font {
     public get familyName(): string | undefined {
         return this.nativeObject.xtr_familyName()
     }
-    
+
     public get pointSize(): number {
         return this.nativeObject.xtr_pointSize()
     }
@@ -42,13 +44,3 @@ export class Font {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRFontConstructor]") {
-        return new Font(0, undefined, undefined, undefined, view);
-    }
-    return undefined;
-})

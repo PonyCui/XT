@@ -9,6 +9,7 @@
 #import "XTRImageView.h"
 #import "XTRUtils.h"
 #import "XTRImage.h"
+#import "XTRContext.h"
 
 @interface XTRImageView ()
 
@@ -24,14 +25,15 @@
     return @"XTRImageView";
 }
 
-+ (XTRImageView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRImageView *view = [[XTRImageView alloc] initWithFrame:[frame toRect]];
     view.innerView = [[UIImageView alloc] init];
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)xtr_setImage:(JSValue *)image {

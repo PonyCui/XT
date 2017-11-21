@@ -34,14 +34,15 @@
     return @"XTRScrollView";
 }
 
-+ (XTRScrollView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRScrollView *view = [[XTRScrollView alloc] initWithFrame:[frame toRect]];
     view.delegate = view;
     [view setContentSize:CGSizeMake(0, 2000)];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)dealloc {

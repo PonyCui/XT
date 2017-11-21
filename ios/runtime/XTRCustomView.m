@@ -8,6 +8,7 @@
 
 #import "XTRCustomView.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRCustomView ()
 
@@ -33,7 +34,7 @@ static NSDictionary<NSString *, NSString *> *classMapping;
     }
 }
 
-+ (XTRCustomView *)create:(JSValue *)className frame:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)className frame:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRCustomView *view = [[XTRCustomView alloc] initWithFrame:[frame toRect]];
     if ([className toString] != nil && classMapping[className.toString] != nil) {
         Class viewClass = NSClassFromString(classMapping[className.toString]);
@@ -45,8 +46,9 @@ static NSDictionary<NSString *, NSString *> *classMapping;
     }
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)layoutSubviews {

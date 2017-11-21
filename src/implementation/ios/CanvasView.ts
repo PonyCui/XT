@@ -4,20 +4,12 @@ import { Color } from '../../interface/Color';
 
 export class CanvasView extends View {
 
-    nativeObject: any;
-
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true);
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRCanvasView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObject = XTRCanvasView.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     public get globalAlpha(): number | undefined {
@@ -161,13 +153,3 @@ export class CanvasView extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRCanvasViewConstructor]") {
-        return new CanvasView(undefined, view);
-    }
-    return undefined;
-})

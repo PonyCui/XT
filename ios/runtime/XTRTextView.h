@@ -13,7 +13,7 @@
 
 @protocol XTRTextViewExport <JSExport>
 
-+ (XTRTextView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (NSString *)xtr_text;
 - (void)xtr_setText:(JSValue *)text;
 - (JSValue *)xtr_font;

@@ -10,18 +10,12 @@ export class TextView extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true)
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true)
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRTextView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObject = XTRTextView.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     public get text(): string {
@@ -177,13 +171,3 @@ export class TextView extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRTextViewConstructor]") {
-        return new TextView(undefined, view);
-    }
-    return undefined;
-})

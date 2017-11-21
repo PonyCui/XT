@@ -15,7 +15,7 @@
 @protocol XTRNavigationControllerExport <JSExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-+ (XTRNavigationController *)create:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)scriptObject;
 - (void)xtr_setViewControllers:(NSArray<NSDictionary *> *)viewControllers animated:(JSValue *)animated;
 - (void)xtr_pushViewController:(JSValue *)viewController animated:(JSValue *)animated;
 - (JSValue *)xtr_popViewController:(JSValue *)animated;

@@ -5,18 +5,12 @@ export class CustomView extends View {
 
     onMessage?: (message: string) => any = undefined
 
-    constructor(className: string, rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(className: string, rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true);
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRCustomView.createFrameScriptObject(className, rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObject = XTRCustomView.createFrameScriptObject(className, rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     emitMessage(message: any): any {
@@ -31,13 +25,3 @@ export class CustomView extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRCustomViewConstructor]") {
-        return new CustomView("", undefined, view);
-    }
-    return undefined;
-})

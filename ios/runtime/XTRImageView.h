@@ -13,7 +13,7 @@
 
 @protocol XTRImageViewExport <JSExport>
 
-+ (XTRImageView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (void)xtr_setImage:(JSValue *)image;
 
 @end

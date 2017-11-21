@@ -13,7 +13,7 @@
 
 @protocol XTRCanvasViewExport <JSExport>
 
-+ (XTRCanvasView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
 - (CGFloat)xtr_globalAlpha;
 - (void)xtr_setGlobalAlpha:(CGFloat)globalAlpha;
 - (NSString *)xtr_fillStyle;

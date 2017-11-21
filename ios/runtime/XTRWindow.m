@@ -20,7 +20,7 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) XTRContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, strong) JSValue *scriptObject;
 @property (nonatomic, strong) id keyboardWillShowObserver;
 @property (nonatomic, strong) id keyboardWillHideObserver;
 
@@ -32,17 +32,23 @@
     return @"XTRWindow";
 }
 
-+ (XTRWindow *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRWindow *view = [[XTRWindow alloc] initWithFrame:[frame toRect]];
     [view setupDebug];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = (id)scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
     [view setupKeyboardNotifications];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
+}
+
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
 - (void)dealloc {
+    NSLog(@"XTRWindow Dealloc");
     [self unsetKeyboardNotifications];
 }
 
@@ -76,7 +82,7 @@
     __weak XTRWindow *welf = self;
     self.keyboardWillShowObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         __strong XTRWindow *strongSelf = welf;
-        JSValue *value = strongSelf.scriptObject.value;
+        JSValue *value = strongSelf.scriptObject;
         if (value) {
             [value invokeMethod:@"handleKeyboardShow" withArguments:@[
                                                                       [JSValue fromRect:[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue]],
@@ -86,7 +92,7 @@
     }];
     self.keyboardWillHideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         __strong XTRWindow *strongSelf = welf;
-        JSValue *value = strongSelf.scriptObject.value;
+        JSValue *value = strongSelf.scriptObject;
         if (value) {
             [value invokeMethod:@"handleKeyboardHide" withArguments:@[
                                                                       note.userInfo[UIKeyboardAnimationDurationUserInfoKey] ?: @(0),
@@ -340,7 +346,7 @@
 
 - (void)didAddSubview:(UIView *)subview {
     [super didAddSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
                                                                                       [JSValue fromObject:subview context:self.context]
@@ -350,7 +356,7 @@
 
 - (void)willRemoveSubview:(UIView *)subview {
     [super willRemoveSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
                                                                                           [JSValue fromObject:subview context:self.context]
@@ -360,7 +366,7 @@
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     [super willMoveToSuperview:newSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
                                                                                                  [JSValue fromObject:newSuperview context:self.context]
@@ -370,7 +376,7 @@
 
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
     }
@@ -378,7 +384,7 @@
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
                                                                                            [JSValue fromObject:newWindow context:self.context]
@@ -390,7 +396,7 @@
 
 - (void)didMoveToWindow {
     [super didMoveToWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
     }
@@ -418,7 +424,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
@@ -490,7 +496,7 @@
 }
 
 - (void)handleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleTap" withArguments:@[]];
     }
@@ -508,7 +514,7 @@
 }
 
 - (void)handleDoubleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleDoubleTap" withArguments:@[]];
     }
@@ -523,7 +529,7 @@
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleLongPress" withArguments:@[
                                                                       @(sender.state),
@@ -541,7 +547,7 @@
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)sender {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handlePan" withArguments:@[
                                                                 @(sender.state),

@@ -11,6 +11,7 @@
 #import "XTRFont.h"
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
+#import "XTRObjectRefs.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
@@ -71,79 +72,75 @@
     return nil;
 }
 
-+ (JSValue *)fromObject:(id)object context:(JSContext *)context {
-    if (object == nil) {
-        return nil;
++ (JSValue *)fromObject:(id<XTRComponent>)object context:(JSContext *)context {
+    if ([object conformsToProtocol:@protocol(XTRComponent)]) {
+        return [context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", object.objectUUID]];
     }
-    return [[context evaluateScript:@"window.XTRObjCreater"] invokeMethod:@"create" withArguments:@[object]];
+    return [JSValue valueWithUndefinedInContext:context];
+}
+
+- (id)findObject {
+    if ([self isObject] && [self[@"nativeObjectRef"] isKindOfClass:[JSValue class]]) {
+        NSString *ref = [self[@"nativeObjectRef"] toString];
+        if (ref != nil) {
+            return [[(XTRContext *)[JSContext currentContext] objectRefs] restore:ref];
+        }
+    }
+    return nil;
 }
 
 - (UIView *)toView {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        UIView *nativeView = [self[@"nativeObject"] toObject];
-        if ([nativeView isKindOfClass:[UIView class]]) {
-            return nativeView;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj;
     }
     return nil;
 }
 
 - (UIWindow *)toWindow {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        UIWindow *nativeView = [self[@"nativeObject"] toObject];
-        if ([nativeView isKindOfClass:[UIWindow class]]) {
-            return nativeView;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[UIWindow class]]) {
+        return obj;
     }
     return nil;
 }
 
 - (UIViewController *)toViewController {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        UIViewController *nativeViewController = [self[@"nativeObject"] toObject];
-        if ([nativeViewController isKindOfClass:[UIViewController class]]) {
-            return nativeViewController;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        return obj;
     }
     return nil;
 }
 
 - (UINavigationController *)toNavigationController {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        UINavigationController *nativeViewController = [self[@"nativeObject"] toObject];
-        if ([nativeViewController isKindOfClass:[UINavigationController class]]) {
-            return nativeViewController;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[UINavigationController class]]) {
+        return obj;
     }
     return nil;
 }
 
 - (XTRImage *)toImage {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        XTRImage *nativeView = [self[@"nativeObject"] toObject];
-        if ([nativeView isKindOfClass:[XTRImage class]]) {
-            return nativeView;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[XTRImage class]]) {
+        return obj;
     }
     return nil;
 }
 
 - (XTRFont *)toFont {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        XTRFont *nativeView = [self[@"nativeObject"] toObject];
-        if ([nativeView isKindOfClass:[XTRFont class]]) {
-            return nativeView;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[XTRFont class]]) {
+        return obj;
     }
     return nil;
 }
 
 - (XTRLayoutConstraint *)toLayoutConstraint {
-    if ([self isObject] && [self[@"nativeObject"] isKindOfClass:[JSValue class]]) {
-        XTRLayoutConstraint *constraint = [self[@"nativeObject"] toObject];
-        if ([constraint isKindOfClass:[XTRLayoutConstraint class]]) {
-            return constraint;
-        }
+    id obj = [self findObject];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        return obj;
     }
     return nil;
 }

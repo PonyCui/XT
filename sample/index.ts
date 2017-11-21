@@ -37,9 +37,14 @@
 class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
+        // const view = new XT.View();
+        // view.backgroundColor = XT.Color.redColor
         this.window = new XT.Window();
         this.window.rootViewController = new XT.NavigationController(new FirstViewController())
         this.window.makeKeyAndVisible();
+        // setTimeout(() => {
+        //     XT.Application.sharedApplication().exit();
+        // })
     }
 
 }
@@ -47,26 +52,20 @@ class AppDelegate extends XT.ApplicationDelegate {
 class FirstViewController extends XT.ViewController {
 
     title = "First"
+    ss = new SecondViewController()
     // private fooView: XT.ListView;
 
     viewDidLoad() {
-
         const view = new XT.View(XT.RectMake(44,44,44,44))
         view.backgroundColor = XT.Color.redColor
+        view.userInteractionEnabled = true;
+        view.onTap = () => {
+            this.navigationController && this.navigationController.pushViewController(new SecondViewController());
+        }
+        // setTimeout(() => {
+        //     new SecondViewController()
+        // }, 1000)
         this.view.addSubview(view)
-
-        // const fooView = new XT.CustomView("FOO", XT.RectMake(0, 0, 200, 200))
-        // fooView.onTap = () => {
-        //     // fooView.emitMessage("123123")
-        //     // fooView.props = { play: !fooView.props.play }
-        //     // setTimeout(() => {
-        //     //     XT.View.animationWithDuration(0.35, () => {
-        //     //         fooView.frame = XT.RectMake(0, 0, 400, 400)
-        //     //     })
-        //     // }, 2000)
-        // }
-        // // fooView.backgroundColor = XT.Color.yellowColor
-        // this.view.addSubview(fooView);
     }
 
     // viewWillLayoutSubviews() {
@@ -76,29 +75,29 @@ class FirstViewController extends XT.ViewController {
 
 }
 
-// class SecondViewController extends XT.ViewController {
+class SecondViewController extends XT.ViewController {
 
-//     title = "Second"
+    title = "Second"
 
-//     viewDidLoad() {
-//         // const fooView = new XT.CustomView("FOOView", XT.RectMake(44, 44, 200, 88))
-//         // fooView.userInteractionEnabled = true;
-//         // fooView.onTap = () => {
-//         //     fooView.props = {
-//         //         on: !fooView.props.on
-//         //     }
-//         // }
-//         // this.view.addSubview(fooView)
-//         const redView = new XT.View(XT.RectMake(88, 44, 88, 88))
-//         redView.alpha = 0.5
-//         redView.userInteractionEnabled = true
-//         redView.backgroundColor = XT.Color.redColor
-//         redView.onTap = () => {
-//             redView.alpha = 0.0
-//         }
-//         this.view.addSubview(redView)
-//     }
+    viewDidLoad() {
+        // const fooView = new XT.CustomView("FOOView", XT.RectMake(44, 44, 200, 88))
+        // fooView.userInteractionEnabled = true;
+        // fooView.onTap = () => {
+        //     fooView.props = {
+        //         on: !fooView.props.on
+        //     }
+        // }
+        // this.view.addSubview(fooView)
+        const redView = new XT.View(XT.RectMake(88, 44, 88, 88))
+        // redView.alpha = 0.5
+        // redView.userInteractionEnabled = true
+        redView.backgroundColor = XT.Color.redColor
+        // redView.onTap = () => {
+        //     redView.alpha = 0.0
+        // }
+        this.view.addSubview(redView)
+    }
 
-// }
+}
 
 const application = new XT.Application('app', new AppDelegate());

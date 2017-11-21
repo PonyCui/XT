@@ -21,6 +21,11 @@
     self = [super init];
     if (self) {
         _thread = thread;
+        _objectRefs = [XTRObjectRefs new];
+        __weak XTRContext *welf = self;
+        self[@"xtrRequestNativeObject"] = ^(NSString *objectUUID){
+            return [welf.objectRefs restore:objectUUID];
+        };
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];

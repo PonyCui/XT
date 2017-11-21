@@ -16,20 +16,12 @@ export class ListCell extends View {
     onSelected?: () => void
     onRender?: () => void
 
-    nativeObject: any;
-
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true);
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRListCell.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObject = XTRListCell.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     public get contentView(): View {
@@ -56,19 +48,14 @@ export class ListCell extends View {
 
 export class ListView extends ScrollView {
 
-    nativeObject: any;
     protected registedClasses: { [key: string]: typeof ListCell } = {}
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true);
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-        }
-        else {
-            this.nativeObject = XTRListView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-        }
+        this.nativeObject = XTRListView.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     private _items: ListItem[];

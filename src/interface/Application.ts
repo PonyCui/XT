@@ -10,4 +10,5 @@ export class Application {
     delegate: ApplicationDelegate
     keyWindow?: Window
     static sharedApplication(): Application { throw "NOT IMPLEMENT!" }
+    exit(): void { }
 }

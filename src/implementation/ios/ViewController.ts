@@ -13,19 +13,22 @@ export interface NavigationControllerInterface extends ViewController {
 
 export class ViewController {
 
-    nativeObject: any;
+    nativeObjectRef: any;
 
-    constructor(nativeObject?: any, isChild: boolean = false) {
-        if (isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRViewController.create(this);
-            (window as any).XTRObjCreater.store(this);
-        }
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
     }
+
+    constructor(isChild: boolean = false) {
+        if (isChild) { return; }
+        this.nativeObjectRef = XTRViewController.create(this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
+    }
+
+    init() { }
 
     public get view() {
         return this.nativeObject.xtr_view();
@@ -33,7 +36,6 @@ export class ViewController {
 
     public set view(value: View) {
         this.nativeObject.xtr_setView(value);
-        (this as any).viewRef = value;
     }
 
     loadView(): void {
@@ -76,7 +78,7 @@ export class ViewController {
     keyboardWillShow(frame: Rect, duration: number): void {
         this.childViewControllers.forEach(t => t.keyboardWillShow(frame, duration))
     }
-    
+
     keyboardWillHide(duration: number): void {
         this.childViewControllers.forEach(t => t.keyboardWillHide(duration))
     }
@@ -84,13 +86,3 @@ export class ViewController {
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((target: any) => {
-    if (target.constructor.toString() === "[object XTRViewControllerConstructor]") {
-        return new ViewController(target);
-    }
-    return undefined;
-})

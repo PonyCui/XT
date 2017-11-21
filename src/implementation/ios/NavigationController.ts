@@ -3,21 +3,13 @@ import { ViewController } from "./ViewController";
 
 export class NavigationController extends ViewController {
 
-    nativeObject: any;
-
-    constructor(rootViewController?: ViewController, nativeObject?: any, isChild: boolean = false) {
-        super(nativeObject, true);
+    constructor(rootViewController?: ViewController, isChild: boolean = false) {
+        super(true);
         if (isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRNavigationController.create(this);
-            (window as any).XTRObjCreater.store(this);
-            if (rootViewController) {
-                this.nativeObject.xtr_setViewControllersAnimated([rootViewController], false);
-            }
+        this.nativeObjectRef = XTRNavigationController.create(this);
+        objectRefs[this.nativeObjectRef] = this;
+        if (rootViewController) {
+            this.nativeObject.xtr_setViewControllersAnimated([rootViewController], false);
         }
     }
 

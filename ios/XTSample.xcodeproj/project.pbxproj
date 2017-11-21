@@ -39,6 +39,7 @@
 		90689F3C1FA99FE4007EF1D3 /* XTRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F201FA99FE4007EF1D3 /* XTRViewController.m */; };
 		90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F221FA99FE4007EF1D3 /* XTRWindow.m */; };
 		90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689F401FAAB1FF007EF1D3 /* sample.min.js */; };
+		9088BD941FBDA03800216FA2 /* XTRObjectRefs.m in Sources */ = {isa = PBXBuildFile; fileRef = 9088BD931FBDA03800216FA2 /* XTRObjectRefs.m */; };
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
 		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
@@ -114,6 +115,8 @@
 		90689F211FA99FE4007EF1D3 /* XTRWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRWindow.h; sourceTree = "<group>"; };
 		90689F221FA99FE4007EF1D3 /* XTRWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRWindow.m; sourceTree = "<group>"; };
 		90689F401FAAB1FF007EF1D3 /* sample.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = sample.min.js; path = ../../dist/sample.min.js; sourceTree = "<group>"; };
+		9088BD921FBDA03800216FA2 /* XTRObjectRefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRObjectRefs.h; sourceTree = "<group>"; };
+		9088BD931FBDA03800216FA2 /* XTRObjectRefs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRObjectRefs.m; sourceTree = "<group>"; };
 		90A76FE51F7A647000CB3EA5 /* FOOView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOView.h; sourceTree = "<group>"; };
 		90A76FE61F7A647000CB3EA5 /* FOOView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOView.m; sourceTree = "<group>"; };
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
@@ -258,6 +261,8 @@
 				90689F201FA99FE4007EF1D3 /* XTRViewController.m */,
 				90689F211FA99FE4007EF1D3 /* XTRWindow.h */,
 				90689F221FA99FE4007EF1D3 /* XTRWindow.m */,
+				9088BD921FBDA03800216FA2 /* XTRObjectRefs.h */,
+				9088BD931FBDA03800216FA2 /* XTRObjectRefs.m */,
 			);
 			path = runtime;
 			sourceTree = "<group>";
@@ -468,6 +473,7 @@
 				90689F351FA99FE4007EF1D3 /* XTRScreen.m in Sources */,
 				90689F331FA99FE4007EF1D3 /* XTRListView.m in Sources */,
 				90689F291FA99FE4007EF1D3 /* XTRContext.m in Sources */,
+				9088BD941FBDA03800216FA2 /* XTRObjectRefs.m in Sources */,
 				90689F241FA99FE4007EF1D3 /* XTRApplication.m in Sources */,
 				90689F3C1FA99FE4007EF1D3 /* XTRViewController.m in Sources */,
 				90689F391FA99FE4007EF1D3 /* XTRuntime.m in Sources */,

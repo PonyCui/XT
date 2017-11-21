@@ -14,7 +14,7 @@
 @protocol XTRViewControllerExport <JSExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-+ (XTRViewController *)create:(JSValue *)scriptObject;
++ (NSString *)create:(JSValue *)scriptObject;
 - (JSValue *)xtr_view;
 - (void)xtr_setView:(JSValue *)view;
 - (JSValue *)xtr_parentViewController;
@@ -25,9 +25,12 @@
 
 @end
 
+typedef void(^XTRViewControllerExitAction)(XTRViewController *keyViewController);
+
 @interface XTRViewController : UIViewController<XTRComponent, XTRViewControllerExport>
 
 @property (nonatomic, assign) BOOL shouldRestoreNavigationBar;
+@property (nonatomic, copy) XTRViewControllerExitAction exitAction;
 @property (nonatomic, copy) NSString *objectUUID;
 
 @end

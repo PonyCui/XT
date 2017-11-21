@@ -8,11 +8,11 @@
 
 #import "XTRViewController.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRViewController ()
 
 @property (nonatomic, strong) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end
 
@@ -22,12 +22,21 @@
     return @"XTRViewController";
 }
 
-+ (XTRViewController *)create:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)scriptObject {
     XTRViewController *viewController = [XTRViewController new];
     viewController.objectUUID = [[NSUUID UUID] UUIDString];
     viewController.context = scriptObject.context;
-    viewController.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:viewController];
-    return viewController;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:viewController];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [viewController description]; }];
+    return viewController.objectUUID;
+}
+
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+- (void)dealloc {
+    NSLog(@"XTRViewController Dealloc");
 }
 
 - (JSValue *)xtr_view {
@@ -40,7 +49,7 @@
 
 - (void)loadView {
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"loadView" withArguments:@[]];
         }
@@ -51,7 +60,7 @@
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidLoad" withArguments:@[]];
         }
@@ -61,7 +70,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewWillAppear" withArguments:@[]];
         }
@@ -71,7 +80,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidAppear" withArguments:@[]];
         }
@@ -87,7 +96,7 @@ static UINavigationController *tmpNavigationController;
     [super viewWillDisappear:animated];
     tmpNavigationController = self.navigationController;
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewWillDisappear" withArguments:@[]];
         }
@@ -97,7 +106,7 @@ static UINavigationController *tmpNavigationController;
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidDisappear" withArguments:@[]];
         }
@@ -112,7 +121,7 @@ static UINavigationController *tmpNavigationController;
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewWillLayoutSubviews" withArguments:@[]];
         }
@@ -122,7 +131,7 @@ static UINavigationController *tmpNavigationController;
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidLayoutSubviews" withArguments:@[]];
         }
@@ -155,7 +164,7 @@ static UINavigationController *tmpNavigationController;
 - (void)willMoveToParentViewController:(UIViewController *)parent {
     [super willMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"willMoveToParentViewController" withArguments:parent != nil ? @[
                                                                                                   [JSValue fromObject:parent
@@ -163,18 +172,31 @@ static UINavigationController *tmpNavigationController;
                                                                                                   ] : @[]];
         }
     }
+    if ([parent isKindOfClass:[UINavigationController class]] && self.shouldRestoreNavigationBar) {
+        [self.navigationController.interactivePopGestureRecognizer
+         addTarget:self
+         action:@selector(onPopGesture:)];
+    }
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     [super didMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"didMoveToParentViewController" withArguments:parent != nil ? @[
                                                                                                   [JSValue fromObject:parent
                                                                                                               context:self.context]
                                                                                                   ] : @[]];
         }
+    }
+    if (parent == nil && self.exitAction) {
+        self.exitAction(self);
+    }
+    if (parent == nil) {
+        [tmpNavigationController.interactivePopGestureRecognizer
+         removeTarget:self
+         action:@selector(onPopGesture:)];
     }
 }
 

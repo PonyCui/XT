@@ -8,11 +8,12 @@
 
 #import "XTRNavigationController.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRNavigationController ()
 
 @property (nonatomic, strong) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end
 
@@ -22,21 +23,29 @@
     return @"XTRNavigationController";
 }
 
-+ (XTRNavigationController *)create:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)scriptObject {
     XTRNavigationController *viewController = [XTRNavigationController new];
     viewController.navigationBar.hidden = YES;
     viewController.objectUUID = [[NSUUID UUID] UUIDString];
     viewController.context = scriptObject.context;
-    viewController.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:viewController];
-    return viewController;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:viewController];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [viewController description]; }];
+    return viewController.objectUUID;
+}
+
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+- (void)dealloc {
+    NSLog(@"XTRNavigationController Dealloc");
 }
 
 - (void)xtr_setViewControllers:(NSArray<NSDictionary *> *)viewControllers animated:(JSValue *)animated {
     NSMutableArray *targetViewControllers = [NSMutableArray array];
     for (NSDictionary *value in viewControllers) {
-        UIViewController *v = [[JSValue valueWithObject:value inContext:self.context] toViewController];
-        if (v) {
-            [targetViewControllers addObject:v];
+        if ([value[@"nativeObject"] isKindOfClass:[UIViewController class]]) {
+            [targetViewControllers addObject:value[@"nativeObject"]];
         }
     }
     [self setViewControllers:[targetViewControllers copy] animated:[animated toBool]];
@@ -89,7 +98,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidLoad" withArguments:@[]];
         }
@@ -99,7 +108,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewWillAppear" withArguments:@[]];
         }
@@ -109,7 +118,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidAppear" withArguments:@[]];
         }
@@ -119,7 +128,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewWillDisappear" withArguments:@[]];
         }
@@ -129,7 +138,7 @@
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidDisappear" withArguments:@[]];
         }
@@ -139,7 +148,7 @@
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewWillLayoutSubviews" withArguments:@[]];
         }
@@ -149,7 +158,7 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"viewDidLayoutSubviews" withArguments:@[]];
         }
@@ -182,7 +191,7 @@
 - (void)willMoveToParentViewController:(UIViewController *)parent {
     [super willMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"willMoveToParentViewController" withArguments:parent != nil ? @[
                                                                                                   [JSValue fromObject:parent
@@ -195,7 +204,7 @@
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     [super didMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"didMoveToParentViewController" withArguments:parent != nil ? @[
                                                                                                  [JSValue fromObject:parent

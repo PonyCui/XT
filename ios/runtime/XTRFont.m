@@ -7,10 +7,11 @@
 //
 
 #import "XTRFont.h"
+#import "XTRContext.h"
 
 @implementation XTRFont
 
-+ (XTRFont *)create:(JSValue *)pointSize
++ (NSString *)create:(JSValue *)pointSize
          fontWeight:(JSValue *)fontWeight
           fontStyle:(JSValue *)fontStyle
          familyName:(JSValue *)familyName {
@@ -34,7 +35,7 @@
             }
         }
     }
-    return nativeObject;
+    return nativeObject.objectUUID;
 }
 
 + (XTRFont *)create:(UIFont *)font {
@@ -52,6 +53,8 @@
     self = [super init];
     if (self) {
         _objectUUID = [[NSUUID UUID] UUIDString];
+        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
     }
     return self;
 }

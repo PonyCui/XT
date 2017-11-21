@@ -8,6 +8,7 @@
 
 #import "XTRCanvasView.h"
 #import "XTRUtils.h"
+#import "XTRContext.h"
 
 @interface XTRCanvasState: NSObject<NSCopying>
 
@@ -66,14 +67,15 @@
     return @"XTRCanvasView";
 }
 
-+ (XTRCanvasView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRCanvasView *view = [[XTRCanvasView alloc] initWithFrame:[frame toRect]];
     view.currentState = [XTRCanvasState new];
     view.backgroundColor = [UIColor clearColor];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = (id)scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (CGFloat)xtr_globalAlpha {

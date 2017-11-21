@@ -9,6 +9,7 @@
 #import "XTRTextView.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
+#import "XTRContext.h"
 
 @interface XTRTextView ()<UITextViewDelegate>
 
@@ -24,7 +25,7 @@
     return @"XTRTextView";
 }
 
-+ (XTRTextView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRTextView *view = [[XTRTextView alloc] initWithFrame:[frame toRect]];
     view.userInteractionEnabled = YES;
     view.innerView = [[UITextView alloc] init];
@@ -32,8 +33,9 @@
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)dealloc {

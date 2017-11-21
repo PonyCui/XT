@@ -6,10 +6,16 @@ export class Device {
         return new Device(XTRDevice.xtr_current())
     }
 
-    private nativeObject: any;
+    nativeObjectRef: any;
 
-    constructor(nativeObject: any) {
-        this.nativeObject = nativeObject;
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
+    constructor(nativeObjectRef: any) {
+        this.nativeObjectRef = nativeObjectRef;
     }
 
     public get name(): string {

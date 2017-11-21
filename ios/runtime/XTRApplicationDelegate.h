@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "XTRComponent.h"
 
-@class XTRBridge;
+@class XTRBridge, XTRApplicationDelegate;
 
 @class XTRApplication;
 
 @protocol XTRApplicationDelegateExport <JSExport>
 
++ (XTRApplicationDelegate *)xtr_delegate:(NSString *)objectUUID;
 - (JSValue *)xtr_window;
 - (void)xtr_setWindow:(JSValue *)window;
 

@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRImage.h"
 #import "XTRFont.h"
+#import "XTRContext.h"
 
 @interface XTRButton ()
 
@@ -28,7 +29,7 @@
     return @"XTRButton";
 }
 
-+ (XTRButton *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRButton *view = [[XTRButton alloc] initWithFrame:[frame toRect]];
     view.innerView = [UIButton buttonWithType:UIButtonTypeSystem];
     view.innerView.adjustsImageWhenHighlighted = NO;
@@ -39,8 +40,9 @@
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)layoutSubviews {

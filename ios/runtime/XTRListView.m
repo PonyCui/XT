@@ -11,6 +11,7 @@
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
 #import "XTRListCell.h"
+#import "XTRContext.h"
 
 @interface UIScrollView (XTRListView)
 
@@ -32,14 +33,15 @@
 
 @implementation XTRListView
 
-+ (XTRListView *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRListView *view = [[XTRListView alloc] initWithFrame:[frame toRect]];
     view.delegate = view;
     view.dataSource = view;
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 + (NSString *)name {

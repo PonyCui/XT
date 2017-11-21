@@ -7,19 +7,19 @@ import { LayoutConstraint } from "./LayoutConstraint";
 
 export class View {
 
-    nativeObject: any;
+    nativeObjectRef: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
+    constructor(rect?: Rect, _isChild: boolean = false) {
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObjectRef = XTRView.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     init() { }
@@ -445,13 +445,3 @@ export class View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRViewConstructor]") {
-        return new View(undefined, view);
-    }
-    return undefined;
-})

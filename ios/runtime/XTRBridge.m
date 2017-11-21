@@ -45,7 +45,7 @@
 @interface XTRBridge ()
 
 @property (nonatomic, strong) XTRContext *context;
-@property (nonatomic, strong) XTRApplicationDelegate *appDelegate;
+@property (nonatomic, weak) XTRApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
 @property (nonatomic, copy) NSArray *pluginInstances;
 
@@ -57,6 +57,10 @@ static NSString *globalBridgeScript;
 
 + (void)setGlobalBridgeScript:(NSString *)argGlobalBridgeScript {
     globalBridgeScript = argGlobalBridgeScript;
+}
+
+- (void)dealloc {
+    NSLog(@"XTRBridge dealloc");
 }
 
 - (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
@@ -72,7 +76,8 @@ static NSString *globalBridgeScript;
         _sourceURL = sourceURL;
         _context = [[XTRContext alloc] initWithThread:[NSThread mainThread]];
         _context.bridge = self;
-        [_context evaluateScript:@"var window = {}"];
+        [_context evaluateScript:@"var window = {}; var objectRefs = {};"];
+        
         [XTRBreakpoint attachBreakpoint:_context];
         [XTPolyfill addPolyfills:_context];
         [self loadComponents];

@@ -9,6 +9,7 @@
 #import "XTRTextField.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
+#import "XTRContext.h"
 
 @interface XTRTextField ()<UITextFieldDelegate>
 
@@ -25,7 +26,7 @@
     return @"XTRTextField";
 }
 
-+ (XTRTextField *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRTextField *view = [[XTRTextField alloc] initWithFrame:[frame toRect]];
     view.userInteractionEnabled = YES;
     view.innerView = [[UITextField alloc] init];
@@ -33,8 +34,9 @@
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)dealloc {

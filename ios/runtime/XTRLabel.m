@@ -9,6 +9,7 @@
 #import "XTRLabel.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
+#import "XTRContext.h"
 
 @interface XTRLabel ()
 
@@ -25,14 +26,15 @@
     return @"XTRLabel";
 }
 
-+ (XTRLabel *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
     XTRLabel *view = [[XTRLabel alloc] initWithFrame:[frame toRect]];
     view.innerView = [[UILabel alloc] init];
     [view addSubview:view.innerView];
     view.objectUUID = [[NSUUID UUID] UUIDString];
     view.context = scriptObject.context;
-    view.scriptObject = [JSManagedValue managedValueWithValue:scriptObject andOwner:view];
-    return view;
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    return view.objectUUID;
 }
 
 - (void)layoutSubviews {

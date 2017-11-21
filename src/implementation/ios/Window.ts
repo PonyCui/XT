@@ -5,20 +5,12 @@ import { ViewController } from "./ViewController";
 
 export class Window extends View {
 
-    nativeObject: any;
-
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true)
+    constructor(rect?: Rect, _isChild: boolean = false) {
+        super(undefined, true)
         if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRWindow.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); });
-        }
+        this.nativeObjectRef = XTRWindow.createScriptObject(rect || RectZero, this);
+        objectRefs[this.nativeObjectRef] = this;
+        setImmediate(() => { this.init(); });
     }
 
     public get rootViewController(): ViewController | undefined {
@@ -47,13 +39,3 @@ export class Window extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRWindowConstructor]") {
-        return new Window(undefined, view);
-    }
-    return undefined;
-})

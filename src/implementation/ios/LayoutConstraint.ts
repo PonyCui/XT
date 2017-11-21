@@ -24,17 +24,16 @@ export class LayoutConstraint {
     static LayoutAttribute = LayoutAttribute;
     static LayoutRelation = LayoutRelation;
 
-    nativeObject: any
+    nativeObjectRef: any;
 
-    constructor(firstItem?: View, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant: number = 0, multiplier: number = 1, nativeObject?: any) {
-        if (nativeObject !== undefined) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
-            (window as any).XTRObjCreater.store(this);
-        }
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
+    constructor(firstItem?: View, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant: number = 0, multiplier: number = 1) {
+        this.nativeObjectRef = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
     }
 
     public get firstItem(): View {
@@ -81,13 +80,3 @@ export class LayoutConstraint {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRLayoutConstraintConstructor]") {
-        return new LayoutConstraint(undefined, undefined, undefined, undefined, undefined, undefined, undefined, view);
-    }
-    return undefined;
-})

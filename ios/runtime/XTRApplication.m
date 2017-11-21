@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRContext.h"
 #import "XTRBridge.h"
+#import "XTRViewController.h"
 
 @interface XTRApplication ()
 
@@ -32,6 +33,13 @@
 
 - (JSValue *)xtr_keyWindow {
     return [JSValue fromObject:self.context.bridge.keyWindow context:self.context];
+}
+
+- (void)xtr_exit {
+    XTRViewController *keyViewController = self.context.bridge.keyViewController;
+    if ([keyViewController isKindOfClass:[XTRViewController class]] && keyViewController.exitAction) {
+        keyViewController.exitAction(keyViewController);
+    }
 }
 
 @end

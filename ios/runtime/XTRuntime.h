@@ -15,5 +15,6 @@
 + (NSString *)version;
 
 + (void)startWithNamed:(NSString *)name inBundle:(NSBundle *)bundle navigationController:(UINavigationController *)navigationController;
++ (void)retainDelegate:(XTRApplicationDelegate *)delegate;
 
 @end
