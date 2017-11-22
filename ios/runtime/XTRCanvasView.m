@@ -53,8 +53,6 @@
 
 @interface XTRCanvasView()
 
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, strong) XTRCanvasState *currentState;
 @property (nonatomic, copy) NSArray *stateStack;
 @property (nonatomic, strong) UIBezierPath *currentPath;

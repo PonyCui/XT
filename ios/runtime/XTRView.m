@@ -19,8 +19,6 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end
 

@@ -124,7 +124,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value != nil) {
         [value invokeMethod:@"handleScroll" withArguments:@[]];
     }
@@ -371,7 +371,7 @@
 
 - (void)didAddSubview:(UIView *)subview {
     [super didAddSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
                                                                                       [JSValue fromObject:subview context:self.context]
@@ -381,7 +381,7 @@
 
 - (void)willRemoveSubview:(UIView *)subview {
     [super willRemoveSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
                                                                                           [JSValue fromObject:subview context:self.context]
@@ -391,7 +391,7 @@
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     [super willMoveToSuperview:newSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
                                                                                                  [JSValue fromObject:newSuperview context:self.context]
@@ -401,7 +401,7 @@
 
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
     }
@@ -409,7 +409,7 @@
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
                                                                                            [JSValue fromObject:newWindow context:self.context]
@@ -419,7 +419,7 @@
 
 - (void)didMoveToWindow {
     [super didMoveToWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
     }
@@ -447,7 +447,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
@@ -519,7 +519,7 @@
 }
 
 - (void)handleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleTap" withArguments:@[]];
     }
@@ -537,7 +537,7 @@
 }
 
 - (void)handleDoubleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleDoubleTap" withArguments:@[]];
     }
@@ -552,7 +552,7 @@
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleLongPress" withArguments:@[
                                                                       @(sender.state),
@@ -566,7 +566,7 @@
 
 - (void)handlePan:(UIPanGestureRecognizer *)sender {
     [super handlePan: sender];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handlePan" withArguments:@[
                                                                 @(sender.state),

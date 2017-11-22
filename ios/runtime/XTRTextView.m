@@ -14,8 +14,6 @@
 @interface XTRTextView ()<UITextViewDelegate>
 
 @property (nonatomic, strong) UITextView *innerView;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end
 
@@ -176,7 +174,7 @@
 #pragma mark - UITextViewDelegate
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldBeginEditing" withArguments:@[]] toBool];
     }
@@ -184,14 +182,14 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidBeginEditing" withArguments:@[]];
     }
 }
 
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldEndEditing" withArguments:@[]] toBool];
     }
@@ -199,14 +197,14 @@
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidEndEditing" withArguments:@[]];
     }
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldChange" withArguments:@[
                                                                           @{

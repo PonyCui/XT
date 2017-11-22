@@ -13,8 +13,6 @@
 @interface XTRCustomView ()
 
 @property (nonatomic, strong) UIView *innerView;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end
 
@@ -65,7 +63,7 @@ static NSDictionary<NSString *, NSString *> *classMapping;
 } 
 
 - (JSValue *)emitMessage:(id)value {
-    JSValue *inValue = self.scriptObject.value;
+    JSValue *inValue = self.scriptObject;
     if (inValue != nil) {
         return [inValue invokeMethod:@"handleMessage"
                        withArguments:@[[JSValue fromObject:value context:self.context] ?: [JSValue valueWithUndefinedInContext:self.context]]];

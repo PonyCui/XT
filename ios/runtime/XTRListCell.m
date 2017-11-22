@@ -11,8 +11,6 @@
 
 @interface XTRListCell ()
 
-@property (nonatomic, weak) JSContext *context;
-
 @end
 
 @implementation XTRListCell

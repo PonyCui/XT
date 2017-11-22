@@ -22,6 +22,5 @@
 @interface XTRListCell : XTRView<XTRComponent, XTRListCellExport>
 
 @property (nonatomic, weak) UITableViewCell *realCell;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end

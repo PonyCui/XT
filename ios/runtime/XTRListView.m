@@ -26,7 +26,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, strong) JSValue *scriptObject;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 
 @end
@@ -53,6 +53,10 @@
     self.dataSource = nil;
 }
 
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
 - (void)xtr_setItems:(JSValue *)items {
     self.items = [items toArray];
 }
@@ -77,8 +81,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
     if ([[cell contentView] viewWithTag:1000] == nil) {
-        if (self.scriptObject.value != nil) {
-            UIView *innerView = [[self.scriptObject.value xtr_invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]] toView];
+        if (self.scriptObject != nil) {
+            UIView *innerView = [[self.scriptObject xtr_invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]] toView];
             if (innerView != nil) {
                 innerView.tag = 1000;
                 innerView.frame = cell.contentView.bounds;
@@ -90,8 +94,8 @@
     if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
         XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
         [fakeCell setRealCell:cell];
-        if (self.scriptObject.value != nil) {
-            [self.scriptObject.value xtr_invokeMethod:@"handleRenderItem"
+        if (self.scriptObject != nil) {
+            [self.scriptObject xtr_invokeMethod:@"handleRenderItem"
                                         withArguments:@[
                                                         @(indexPath.row),
                                                         [JSValue fromObject:fakeCell
@@ -103,8 +107,8 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.scriptObject.value != nil) {
-        return [[self.scriptObject.value xtr_invokeMethod:@"requestRowHeight"
+    if (self.scriptObject != nil) {
+        return [[self.scriptObject xtr_invokeMethod:@"requestRowHeight"
                                             withArguments:@[@(tableView.bounds.size.width), @(indexPath.row)]] toDouble];
     }
     return 88.0;
@@ -115,8 +119,8 @@
     if (cell != nil) {
         if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
             XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
-            if (fakeCell.scriptObject.value != nil) {
-                [fakeCell.scriptObject.value xtr_invokeMethod:@"handleSelected" withArguments:@[]];
+            if (fakeCell.scriptObject != nil) {
+                [fakeCell.scriptObject xtr_invokeMethod:@"handleSelected" withArguments:@[]];
             }
         }
     }
@@ -198,7 +202,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value != nil) {
         [value invokeMethod:@"handleScroll" withArguments:@[]];
     }
@@ -445,7 +449,7 @@
 
 - (void)didAddSubview:(UIView *)subview {
     [super didAddSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
                                                                                       [JSValue fromObject:subview context:self.context]
@@ -455,7 +459,7 @@
 
 - (void)willRemoveSubview:(UIView *)subview {
     [super willRemoveSubview:subview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
                                                                                           [JSValue fromObject:subview context:self.context]
@@ -465,7 +469,7 @@
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     [super willMoveToSuperview:newSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
                                                                                                  [JSValue fromObject:newSuperview context:self.context]
@@ -475,7 +479,7 @@
 
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
     }
@@ -483,7 +487,7 @@
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
                                                                                            [JSValue fromObject:newWindow context:self.context]
@@ -493,7 +497,7 @@
 
 - (void)didMoveToWindow {
     [super didMoveToWindow];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
     }
@@ -521,7 +525,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
     }
@@ -593,7 +597,7 @@
 }
 
 - (void)handleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleTap" withArguments:@[]];
     }
@@ -611,7 +615,7 @@
 }
 
 - (void)handleDoubleTap {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleDoubleTap" withArguments:@[]];
     }
@@ -626,7 +630,7 @@
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handleLongPress" withArguments:@[
                                                                       @(sender.state),
@@ -640,7 +644,7 @@
 
 - (void)handlePan:(UIPanGestureRecognizer *)sender {
     [super handlePan: sender];
-    JSValue *scriptObject = self.scriptObject.value;
+    JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"handlePan" withArguments:@[
                                                                 @(sender.state),

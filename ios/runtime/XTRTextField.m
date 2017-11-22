@@ -14,8 +14,6 @@
 @interface XTRTextField ()<UITextFieldDelegate>
 
 @property (nonatomic, strong) UITextField *innerView;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, strong) UIColor *placeholderColor;
 
 @end
@@ -253,7 +251,7 @@
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldBeginEditing" withArguments:@[]] toBool];
     }
@@ -261,14 +259,14 @@
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidBeginEditing" withArguments:@[]];
     }
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldEndEditing" withArguments:@[]] toBool];
     }
@@ -276,14 +274,14 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidEndEditing" withArguments:@[]];
     }
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldChange" withArguments:@[
                                                                           @{
@@ -297,7 +295,7 @@
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldClear" withArguments:@[]] toBool];
     }
@@ -305,7 +303,7 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value) {
         return [[value invokeMethod:@"handleShouldReturn" withArguments:@[]] toBool];
     }

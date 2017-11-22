@@ -17,8 +17,6 @@
 @property (nonatomic, strong) UIButton *innerView;
 @property (nonatomic, assign) BOOL vertical;
 @property (nonatomic, assign) CGFloat inset;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, assign) BOOL highlighted;
 
 @end
@@ -124,7 +122,7 @@
 }
 
 - (void)onTouchUpInside {
-    JSValue *value = self.scriptObject.value;
+    JSValue *value = self.scriptObject;
     if (value != nil) {
         [value invokeMethod:@"handleTouchUpInside" withArguments:@[]];
     }
@@ -137,7 +135,7 @@
 - (void)onTouchEvent {
     if (self.highlighted != self.innerView.highlighted) {
         self.highlighted = self.innerView.highlighted;
-        JSValue *value = self.scriptObject.value;
+        JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"handleHighlighted" withArguments:@[@(self.highlighted)]];
         }
