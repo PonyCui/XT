@@ -16,7 +16,7 @@
 
 @implementation XTRContext
 
-#ifdef DEBUG
+#ifdef LOGDEALLOC
 - (void)dealloc {
     NSLog(@"XTRContext dealloc.");
 }

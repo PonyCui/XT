@@ -16,6 +16,12 @@
 
 @implementation XTRLayoutConstraint
 
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTRLayoutConstraint dealloc.");
+#endif
+}
+
 - (instancetype)init
 {
     self = [super init];

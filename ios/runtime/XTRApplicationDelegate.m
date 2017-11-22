@@ -36,7 +36,7 @@
 }
 
 - (void)dealloc {
-#ifdef DEBUG
+#ifdef LOGDEALLOC
     NSLog(@"XTRApplicationDelegate dealloc.");
 #endif
 }

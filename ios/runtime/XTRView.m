@@ -38,7 +38,7 @@
     return view.objectUUID;
 }
 
-#ifdef DEBUG
+#ifdef LOGDEALLOC
 - (void)dealloc {
     NSLog(@"XTRView dealloc.");
 }

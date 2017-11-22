@@ -20,6 +20,12 @@
     return [XTRDevice new].objectUUID;
 }
 
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTRDevice dealloc.");
+#endif
+}
+
 - (instancetype)init
 {
     self = [super init];

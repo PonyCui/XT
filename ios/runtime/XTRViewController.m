@@ -33,6 +33,12 @@
     return viewController.objectUUID;
 }
 
+#ifdef LOGDEALLOC
+- (void)dealloc {
+    NSLog(@"XTRViewController dealloc.");
+}
+#endif
+
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }

@@ -24,7 +24,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end
 
@@ -47,6 +47,9 @@
 
 - (void)dealloc {
     self.delegate = nil;
+#ifdef LOGDEALLOC
+    NSLog(@"XTRScrollView dealloc.");
+#endif
 }
 
 #pragma mark - XTRScrollViewExport

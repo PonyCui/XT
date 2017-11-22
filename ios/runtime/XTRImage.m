@@ -19,6 +19,12 @@
 
 @implementation XTRImage
 
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTRImage dealloc.");
+#endif
+}
+
 - (instancetype)init
 {
     self = [super init];

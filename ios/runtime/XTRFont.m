@@ -48,6 +48,12 @@
     return @"XTRFont";
 }
 
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTRFont dealloc.");
+#endif
+}
+
 - (instancetype)init
 {
     self = [super init];

@@ -26,7 +26,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, weak) JSContext *context;
-@property (nonatomic, strong) JSValue *scriptObject;
+@property (nonatomic, readonly) JSValue *scriptObject;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 
 @end
@@ -51,6 +51,9 @@
 - (void)dealloc {
     self.delegate = nil;
     self.dataSource = nil;
+#ifdef LOGDEALLOC
+    NSLog(@"XTRListView dealloc.");
+#endif
 }
 
 - (JSValue *)scriptObject {

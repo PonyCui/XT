@@ -59,7 +59,7 @@ static NSString *globalBridgeScript;
     globalBridgeScript = argGlobalBridgeScript;
 }
 
-#ifdef DEBUG
+#ifdef LOGDEALLOC
 - (void)dealloc {
     NSLog(@"XTRBridge dealloc.");
 }
@@ -115,7 +115,7 @@ static NSString *globalBridgeScript;
         }
         return;
     }
-#ifdef DEBUG
+#ifdef LOGDEALLOC
     NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL
                                              cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                          timeoutInterval:15.0];
