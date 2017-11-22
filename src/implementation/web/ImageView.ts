@@ -4,8 +4,13 @@ import { View } from "./View";
 import { Size, Rect, RectZero, SizeMake } from "../../interface/Rect";
 import { ImageRenderingMode } from "../../interface/ImageView";
 import { ImageViewElement } from "./element/ImageView";
+import { Releasable } from "../../interface/Releasable";
 
-export class Image {
+export class Image implements Releasable {
+    
+    addOwner(owner: any): this {
+        return this
+    }
 
     static assetsPath = "assets/"
 

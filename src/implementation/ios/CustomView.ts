@@ -8,7 +8,7 @@ export class CustomView extends View {
     constructor(className: string, rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObject = XTRCustomView.createFrameScriptObject(className, rect || RectZero, this);
+        this.nativeObjectRef = XTRCustomView.createFrameScriptObject(className, rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }

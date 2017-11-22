@@ -4,8 +4,14 @@ import { Rect, Point, Size, RectZero } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { LayoutConstraint } from "./LayoutConstraint";
+import { Releasable } from '../../interface/Releasable';
 
-export class View {
+export class View implements Releasable {
+
+    addOwner(owner: any): this {
+        xtrAddOwner(this, owner);
+        return this;
+    }
 
     nativeObjectRef: any;
 

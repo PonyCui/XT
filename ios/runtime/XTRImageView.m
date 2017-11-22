@@ -13,6 +13,7 @@
 
 @interface XTRImageView ()
 
+@property (nonatomic, strong) XTRImage *privateImage;
 @property (nonatomic, strong) UIImageView *innerView;
 @property (nonatomic, strong) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
@@ -39,9 +40,11 @@
 - (void)xtr_setImage:(JSValue *)image {
     XTRImage *nativeObject = [image toImage];
     if (nativeObject) {
+        self.privateImage = nativeObject;
         self.innerView.image = nativeObject.nativeImage;
     }
     else {
+        self.privateImage = nil;
         self.innerView.image = nil;
     }
 }

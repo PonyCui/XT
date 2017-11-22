@@ -26,7 +26,6 @@ export class ApplicationDelegate {
         if (appDelegate) {
             appDelegate.xtr_setWindow(value);
         }
-        // (this as any).windowRef = value;
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }

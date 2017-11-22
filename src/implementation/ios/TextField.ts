@@ -13,7 +13,7 @@ export class TextField extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true)
         if (_isChild) { return; }
-        this.nativeObject = XTRTextField.createScriptObject(rect || RectZero, this);
+        this.nativeObjectRef = XTRTextField.createScriptObject(rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }

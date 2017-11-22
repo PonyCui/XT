@@ -20,7 +20,7 @@
 - (NSDictionary *)xtr_size;
 - (NSNumber *)xtr_scale;
 - (NSNumber *)xtr_renderingMode;
-- (JSValue *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode;
+- (NSString *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode;
 
 @end
 

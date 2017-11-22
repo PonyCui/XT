@@ -15,4 +15,6 @@
 
 - (id<XTRComponent>)restore:(NSString *)objectUUID;
 
+- (void)addOwner:(JSValue *)child owner:(JSValue *)owner;
+
 @end

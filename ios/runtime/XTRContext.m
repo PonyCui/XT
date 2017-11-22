@@ -26,6 +26,9 @@
         self[@"xtrRequestNativeObject"] = ^(NSString *objectUUID){
             return [welf.objectRefs restore:objectUUID];
         };
+        self[@"xtrAddOwner"] = ^(JSValue *child, JSValue *owner){
+            [welf.objectRefs addOwner:child owner:owner];
+        };
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];

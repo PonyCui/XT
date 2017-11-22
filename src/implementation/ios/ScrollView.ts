@@ -7,7 +7,7 @@ export class ScrollView extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObject = XTRScrollView.createScriptObject(rect || RectZero, this);
+        this.nativeObjectRef = XTRScrollView.createScriptObject(rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }

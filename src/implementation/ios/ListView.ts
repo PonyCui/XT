@@ -19,7 +19,7 @@ export class ListCell extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObject = XTRListCell.createScriptObject(rect || RectZero, this);
+        this.nativeObjectRef = XTRListCell.createScriptObject(rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }
@@ -53,7 +53,7 @@ export class ListView extends ScrollView {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObject = XTRListView.createScriptObject(rect || RectZero, this);
+        this.nativeObjectRef = XTRListView.createScriptObject(rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }

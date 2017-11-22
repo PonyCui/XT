@@ -1,5 +1,6 @@
 declare function require(name: string): any;
 import { View } from './View'
+import { Releasable } from './Releasable';
 
 export enum LayoutAttribute {
     Const = 0,
@@ -19,7 +20,11 @@ export enum LayoutRelation {
     Greater = 1,
 }
 
-export class LayoutConstraint {
+export class LayoutConstraint implements Releasable {
+    
+    addOwner(owner: any): this {
+        return this
+    }
 
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;

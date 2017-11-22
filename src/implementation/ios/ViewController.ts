@@ -3,6 +3,7 @@ import { View } from "./View";
 import { Color } from "../../interface/Color";
 import { Rect } from "../../interface/Rect";
 import { DeviceOrientation } from "../../interface/Device";
+import { Releasable } from "../../interface/Releasable";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -11,7 +12,7 @@ export interface NavigationControllerInterface extends ViewController {
     popToRootViewController(animated?: boolean): ViewController[]
 }
 
-export class ViewController {
+export class ViewController implements Releasable {
 
     nativeObjectRef: any;
 
@@ -26,6 +27,11 @@ export class ViewController {
         this.nativeObjectRef = XTRViewController.create(this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
+    }
+
+    addOwner(owner: any): this {
+        xtrAddOwner(this, owner);
+        return this;
     }
 
     init() { }

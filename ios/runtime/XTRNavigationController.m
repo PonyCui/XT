@@ -37,10 +37,6 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-- (void)dealloc {
-    NSLog(@"XTRNavigationController Dealloc");
-}
-
 - (void)xtr_setViewControllers:(NSArray<NSDictionary *> *)viewControllers animated:(JSValue *)animated {
     NSMutableArray *targetViewControllers = [NSMutableArray array];
     for (NSDictionary *value in viewControllers) {

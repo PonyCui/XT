@@ -44,10 +44,6 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-- (void)dealloc {
-    NSLog(@"XTRView Dealloc");
-}
-
 - (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
     if ([[self nextResponder] isKindOfClass:[UIViewController class]]) {
         [super setTranslatesAutoresizingMaskIntoConstraints:YES];

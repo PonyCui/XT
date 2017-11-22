@@ -19,7 +19,6 @@ export class Window extends View {
 
     public set rootViewController(value: ViewController | undefined) {
         this.nativeObject.xtr_setRootViewController(value);
-        (this as any).rootViewControllerRef = value;
     }
 
     makeKeyAndVisible(): void {

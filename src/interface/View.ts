@@ -3,6 +3,7 @@ import { Color } from './Color'
 import { Window } from './Window'
 import { TransformMatrix } from './TransformMatrix'
 import { LayoutConstraint } from "./LayoutConstraint";
+import { Releasable } from './Releasable';
 
 export enum InteractionState {
     Began,
@@ -18,7 +19,9 @@ export enum SwipeDirection {
     ToBottom,
 }
 
-export class View {
+export class View implements Releasable {
+
+    addOwner(owner: any): this { return this }
 
     constructor(rect?: Rect) { }
 

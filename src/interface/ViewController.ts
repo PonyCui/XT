@@ -1,6 +1,7 @@
 import { View } from "./View";
 import { Rect } from "./Rect";
 import { DeviceOrientation } from "./Device";
+import { Releasable } from "./Releasable";
 
 interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -9,7 +10,9 @@ interface NavigationControllerInterface extends ViewController {
     popToRootViewController(animated?: boolean): ViewController[]
 }
 
-export class ViewController {
+export class ViewController implements Releasable {
+
+    addOwner(owner: any): this { return this }
 
     title?: string
     readonly view: View

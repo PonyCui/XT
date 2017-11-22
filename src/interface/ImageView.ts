@@ -1,5 +1,6 @@
 import { View } from "./View";
 import { Size } from "./Rect";
+import { Releasable } from "./Releasable";
 
 export enum ImageRenderingMode {
     Automatic = 0,
@@ -7,7 +8,11 @@ export enum ImageRenderingMode {
     Template = 2,
 }
 
-export class Image {
+export class Image implements Releasable {
+    
+    addOwner(owner: any): this {
+        return this
+    }
 
     readonly size: Size;
     readonly scale: number;

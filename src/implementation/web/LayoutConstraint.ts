@@ -1,9 +1,14 @@
 import { LayoutConstraint as ILayoutConstraint, LayoutAttribute, LayoutRelation } from "../../interface/LayoutConstraint";
 import { View } from "./View";
+import { Releasable } from "../../interface/Releasable";
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
-export class LayoutConstraint extends ILayoutConstraint {
+export class LayoutConstraint extends ILayoutConstraint implements Releasable {
+    
+    addOwner(owner: any): this {
+        return this
+    }
 
     private static fromALObject(obj: any, views: { [key: string]: View }): LayoutConstraint {
         const toAttr = (attr: string): any => {

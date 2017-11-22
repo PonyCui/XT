@@ -36,10 +36,6 @@
     return [XTRuntime requestDelegateWithObjectUUID:objectUUID];
 }
 
-- (void)dealloc {
-    NSLog(@"XTRApplicationDelegate dealloc");
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (application != nil) {
         [XTRuntime retainDelegate:self];

@@ -35,10 +35,6 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-- (void)dealloc {
-    NSLog(@"XTRViewController Dealloc");
-}
-
 - (JSValue *)xtr_view {
     return [JSValue fromObject:self.view context:self.context];
 }

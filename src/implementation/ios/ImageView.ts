@@ -3,37 +3,65 @@
 import { View } from "./View";
 import { Size, Rect, RectZero } from "../../interface/Rect";
 import { ImageRenderingMode } from "../../interface/ImageView";
+import { Releasable } from "../../interface/Releasable";
 
-export class Image {
+export class Image implements Releasable {
+
+    addOwner(owner: any): this {
+        xtrAddOwner(this, owner);
+        return this;
+    }
 
     static assetsPath = "assets/"
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromURLSuccessFailure(url, success, (message: string) => {
+        XTRImage.xtr_fromURLSuccessFailure(url, (ref: string) => {
+            if (success) {
+                success(new Image(ref))
+            }
+        }, (message: string) => {
             failure && failure(new Error(message));
         });
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, [], success, (message: string) => {
+        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, [], (ref: string) => {
+            if (success) {
+                success(new Image(ref))
+            }
+        }, (message: string) => {
             failure && failure(new Error(message));
         });
     }
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, scales, success, (message: string) => {
+        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, scales, (ref: string) => {
+            if (success) {
+                success(new Image(ref))
+            }
+        }, (message: string) => {
             failure && failure(new Error(message));
         });
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {
-        XTRImage.xtr_fromBase64ScaleSuccess(value, scale, success);
+        XTRImage.xtr_fromBase64ScaleSuccess(value, scale, (ref: string) => {
+            if (success) {
+                success(new Image(ref))
+            }
+        });
     }
 
-    public nativeObject: any;
+    nativeObjectRef: any;
 
-    constructor(nativeObject?: any) {
-        this.nativeObject = nativeObject;
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
+    constructor(nativeObjectRef: any) {
+        this.nativeObjectRef = nativeObjectRef;
     }
 
     public get size(): Size {
@@ -49,7 +77,7 @@ export class Image {
     }
 
     public imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        return this.nativeObject.xtr_imageWithImageRenderingMode(renderingMode);
+        return new Image(this.nativeObject.xtr_imageWithImageRenderingMode(renderingMode));
     }
 
 }
@@ -65,7 +93,7 @@ export class ImageView extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObject = XTRImageView.createScriptObject(rect || RectZero, this);
+        this.nativeObjectRef = XTRImageView.createScriptObject(rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }

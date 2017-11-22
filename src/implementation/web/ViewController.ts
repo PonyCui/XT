@@ -5,6 +5,7 @@ import { Color } from "../../interface/Color";
 import { DeviceOrientation } from "../../interface/Device";
 // import { Device } from "./Device";
 import { TransformMatrix } from "../../interface/TransformMatrix";
+import { Releasable } from "../../interface/Releasable";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -13,7 +14,11 @@ export interface NavigationControllerInterface extends ViewController {
     popToRootViewController(animated?: boolean): ViewController[]
 }
 
-export class ViewController {
+export class ViewController implements Releasable {
+    
+    addOwner(owner: any): this {
+        return this
+    }
 
     vcID: string = performance.now().toString();
 

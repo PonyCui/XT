@@ -59,10 +59,6 @@ static NSString *globalBridgeScript;
     globalBridgeScript = argGlobalBridgeScript;
 }
 
-- (void)dealloc {
-    NSLog(@"XTRBridge dealloc");
-}
-
 - (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
 {
     return [self initWithAppDelegate:appDelegate sourceURL:nil];

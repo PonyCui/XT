@@ -11,7 +11,7 @@ export class Button extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObject = XTRButton.createScriptObject(rect || RectZero, this);
+        this.nativeObjectRef = XTRButton.createScriptObject(rect || RectZero, this);
         objectRefs[this.nativeObjectRef] = this;
         setImmediate(() => { this.init(); });
     }

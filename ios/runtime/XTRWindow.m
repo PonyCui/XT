@@ -48,7 +48,6 @@
 }
 
 - (void)dealloc {
-    NSLog(@"XTRWindow Dealloc");
     [self unsetKeyboardNotifications];
 }
 

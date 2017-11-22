@@ -7,6 +7,7 @@
 //
 
 #import "XTRObjectRefs.h"
+#import <objc/runtime.h>
 
 @interface XTRWeakRef: NSObject
 
@@ -32,6 +33,7 @@
         XTRWeakRef *ref = [XTRWeakRef new];
         ref.value = object;
         [mutableStore setObject:ref forKey:object.objectUUID];
+        [self runGC: mutableStore];
         self.store = mutableStore;
     }
 }
@@ -39,6 +41,33 @@
 - (id<XTRComponent>)restore:(NSString *)objectUUID {
     id strongValue = self.store[objectUUID].value;
     return strongValue;
+}
+
+- (void)addOwner:(JSValue *)child owner:(JSValue *)owner {
+    static int ownerTag;
+    if ([child isKindOfClass:[JSValue class]] && [child[@"nativeObjectRef"] isKindOfClass:[JSValue class]] &&
+        [owner isKindOfClass:[JSValue class]] && [owner[@"nativeObjectRef"] isKindOfClass:[JSValue class]]) {
+        NSString *childRef = [child[@"nativeObjectRef"] toString];
+        NSString *ownerRef = [owner[@"nativeObjectRef"] toString];
+        if (childRef != nil && ownerRef != nil) {
+            id childObject = [self restore:childRef];
+            id ownerObject = [self restore:ownerRef];
+            if (childObject != nil && ownerObject != nil) {
+                objc_setAssociatedObject(ownerObject, &ownerTag, childObject, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }
+        }
+    }
+}
+
+- (void)runGC:(NSMutableDictionary *)mutable {
+    if (arc4random() % 10 < 2) {
+        NSDictionary<NSString *, XTRWeakRef *> *copy = [mutable copy];
+        for (NSString *aKey in copy) {
+            if (copy[aKey].value == nil) {
+                [mutable removeObjectForKey:aKey];
+            }
+        }
+    }
 }
 
 @end

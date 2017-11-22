@@ -1,5 +1,6 @@
 /// <reference path="xtr.d.ts" />
 import { View } from './View'
+import { Releasable } from '../../interface/Releasable';
 
 export enum LayoutAttribute {
     Const = 0,
@@ -19,7 +20,12 @@ export enum LayoutRelation {
     Greater = 1,
 }
 
-export class LayoutConstraint {
+export class LayoutConstraint implements Releasable {
+
+    addOwner(owner: any): this {
+        xtrAddOwner(this, owner);
+        return this;
+    }
 
     static LayoutAttribute = LayoutAttribute;
     static LayoutRelation = LayoutRelation;

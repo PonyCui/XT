@@ -4,19 +4,19 @@
 
 // if (XT.CustomViewFactory) {
 //     XT.CustomViewFactory.register("FOO", class _ extends XT.CustomViewFactory {
-        
+
 //             requestInnerHTML() {
 //                 return '<video src="http://www.sample-videos.com/video/mp4/360/big_buck_bunny_360p_1mb.mp4" style="width: 100%; height: 100%; display: block; background-color: black" playsinline></video>'
 //             }
-        
+
 //             _props: any;
-        
+
 //             requestProps() {
 //                 return this._props || {
 //                     play: false
 //                 };
 //             }
-        
+
 //             setProps(node: HTMLVideoElement, value) {
 //                 this._props = value
 //                 if (value.play === true) {
@@ -26,11 +26,11 @@
 //                     node.pause()
 //                 }
 //             }
-        
+
 //             handleMessage(node, message) {
 //                 console.log(message)
 //             }
-        
+
 //         })
 // }
 
@@ -52,32 +52,22 @@ class AppDelegate extends XT.ApplicationDelegate {
 class FirstViewController extends XT.ViewController {
 
     title = "First"
-    ss = new SecondViewController()
-    // private fooView: XT.ListView;
 
     viewDidLoad() {
-        const view = new XT.View(XT.RectMake(44,44,44,44))
-        view.backgroundColor = XT.Color.redColor
-        view.userInteractionEnabled = true;
-        view.onTap = () => {
-            this.navigationController && this.navigationController.pushViewController(new SecondViewController());
-        }
-        // setTimeout(() => {
-        //     new SecondViewController()
-        // }, 1000)
+        const view = new XT.ImageView(XT.RectMake(44, 44, 78, 78))
+        XT.Image.fromAssets("success", (it) => {
+            view.image = it
+        })
+        view.backgroundColor = XT.Color.yellowColor
         this.view.addSubview(view)
     }
-
-    // viewWillLayoutSubviews() {
-    //     super.viewWillLayoutSubviews();
-    //     // this.fooView.frame = this.view.bounds
-    // }
 
 }
 
 class SecondViewController extends XT.ViewController {
 
     title = "Second"
+    sm = new XT.View().addOwner(this)
 
     viewDidLoad() {
         // const fooView = new XT.CustomView("FOOView", XT.RectMake(44, 44, 200, 88))

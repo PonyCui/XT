@@ -48,9 +48,7 @@
                     XTRImage *nativeObject = [XTRImage new];
                     nativeObject.nativeImage = image;
                     if (success != nil) {
-                        [success xtr_callWithArguments:@[
-                                                         [JSValue fromObject:nativeObject context:success.context]
-                                                         ] asyncResult:nil];
+                        [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""] asyncResult:nil];
                     }
                 }
                 else {
@@ -93,8 +91,16 @@
             }
             NSURL *imageURL = [[sourceURL URLByDeletingLastPathComponent]
                                URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@%@", [path toString], named, subfix]];
-            [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];
-            return;
+            if ([imageURL.scheme isEqualToString:@"file"]) {
+                if ([[NSFileManager defaultManager] fileExistsAtPath:imageURL.path]) {
+                    [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];
+                    return;
+                }
+            }
+            else {
+                [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];
+                return;
+            }
         }
     }
     UIImage *image = [UIImage imageNamed:named];
@@ -102,9 +108,7 @@
         XTRImage *nativeObject = [XTRImage new];
         nativeObject.nativeImage = image;
         if (success != nil) {
-            [success xtr_callWithArguments:@[
-                                         [JSValue fromObject:nativeObject context:success.context]
-                                         ]];
+            [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""]];
         }
     }
     else {
@@ -122,9 +126,7 @@
             XTRImage *nativeObject = [XTRImage new];
             nativeObject.nativeImage = image;
             if (success != nil) {
-                [success xtr_callWithArguments:@[
-                                                 [JSValue fromObject:nativeObject context:success.context]
-                                                 ]];
+                [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""]];
             }
         }
     }
@@ -142,10 +144,10 @@
     return @(self.nativeImage.renderingMode);
 }
 
-- (JSValue *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode {
+- (NSString *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode {
     XTRImage *newNativeObject = [XTRImage new];
     newNativeObject.nativeImage = [self.nativeImage imageWithRenderingMode:[imageRenderingMode toInt32]];
-    return [JSValue fromObject:newNativeObject context:imageRenderingMode.context];
+    return newNativeObject.objectUUID;
 }
 
 @end
