@@ -19,7 +19,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, strong) XTRContext *context;
+@property (nonatomic, weak) XTRContext *context;
 @property (nonatomic, strong) JSValue *scriptObject;
 @property (nonatomic, strong) id keyboardWillShowObserver;
 @property (nonatomic, strong) id keyboardWillHideObserver;
@@ -48,6 +48,9 @@
 }
 
 - (void)dealloc {
+#ifdef DEBUG
+    NSLog(@"XTRWindow dealloc.");
+#endif
     [self unsetKeyboardNotifications];
 }
 

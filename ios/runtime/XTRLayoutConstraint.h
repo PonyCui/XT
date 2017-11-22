@@ -42,6 +42,6 @@
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) NSLayoutConstraint *innerObject;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 
 @end

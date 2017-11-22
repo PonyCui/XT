@@ -16,6 +16,12 @@
 
 @implementation XTRContext
 
+#ifdef DEBUG
+- (void)dealloc {
+    NSLog(@"XTRContext dealloc.");
+}
+#endif
+
 - (instancetype)initWithThread:(NSThread *)thread
 {
     self = [super init];
@@ -24,10 +30,13 @@
         _objectRefs = [XTRObjectRefs new];
         __weak XTRContext *welf = self;
         self[@"xtrRequestNativeObject"] = ^(NSString *objectUUID){
-            return [welf.objectRefs restore:objectUUID];
+            __strong XTRContext *strongSelf = welf;
+            __strong id strongObject = [strongSelf.objectRefs restore:objectUUID];
+            return strongObject;
         };
         self[@"xtrAddOwner"] = ^(JSValue *child, JSValue *owner){
-            [welf.objectRefs addOwner:child owner:owner];
+            __strong XTRContext *strongSelf = welf;
+            [strongSelf.objectRefs addOwner:child owner:owner];
         };
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);

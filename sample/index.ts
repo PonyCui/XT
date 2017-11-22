@@ -54,10 +54,14 @@ class FirstViewController extends XT.ViewController {
     title = "First"
 
     viewDidLoad() {
-        const view = new XT.ImageView(XT.RectMake(44, 44, 78, 78))
-        XT.Image.fromAssets("success", (it) => {
-            view.image = it
-        })
+        const view = new XT.View(XT.RectMake(44, 44, 78, 78))
+        view.userInteractionEnabled = true;
+        view.onTap = () => {
+            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        }
+        // XT.Image.fromAssetsWithScales("success", 2, (it) => {
+        //     view.image = it
+        // })
         view.backgroundColor = XT.Color.yellowColor
         this.view.addSubview(view)
     }

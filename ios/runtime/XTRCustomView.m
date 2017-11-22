@@ -13,7 +13,7 @@
 @interface XTRCustomView ()
 
 @property (nonatomic, strong) UIView *innerView;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end

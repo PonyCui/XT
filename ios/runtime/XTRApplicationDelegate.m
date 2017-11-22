@@ -22,7 +22,6 @@
 
 @property (nonatomic, weak) id owner;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
-@property (nonatomic, strong) JSContext *context;
 
 @end
 
@@ -36,6 +35,12 @@
     return [XTRuntime requestDelegateWithObjectUUID:objectUUID];
 }
 
+- (void)dealloc {
+#ifdef DEBUG
+    NSLog(@"XTRApplicationDelegate dealloc.");
+#endif
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (application != nil) {
         [XTRuntime retainDelegate:self];
@@ -43,9 +48,9 @@
     if (self.bridge == nil) {
         self.bridge = [[XTRBridge alloc] initWithAppDelegate:self];
     }
+    [self.bridge.context.objectRefs store:self];
     JSValue *delegate = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
     self.scriptObject = [JSManagedValue managedValueWithValue:delegate andOwner:application];
-    self.context = self.bridge.context;
     self.bridge.application = application;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject.value;
@@ -58,15 +63,18 @@
 }
 
 - (JSValue *)xtr_window {
-    return [JSValue fromObject:self.window context:self.context];
+    return [JSValue fromObject:self.window context:self.bridge.context];
 }
 
 - (void)xtr_setWindow:(JSValue *)window {
     self.window = [window toWindow];
 }
 
+- (void)exit {
+    _bridge = nil;
+}
+
 - (void)setBridge:(XTRBridge *)bridge {
-    NSAssert(bridge != nil, @"Should not reset bridge.");
     if (_bridge == nil) {
         _bridge = bridge;
     }

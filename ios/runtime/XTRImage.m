@@ -30,6 +30,17 @@
     return self;
 }
 
+- (instancetype)initWithContext:(XTRContext *)context
+{
+    self = [super init];
+    if (self) {
+        self.objectUUID = [[NSUUID UUID] UUIDString];
+        [context.objectRefs store:self];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
+    }
+    return self;
+}
+
 + (NSString *)name {
     return @"XTRImage";
 }
@@ -39,13 +50,14 @@
 }
 
 + (void)xtr_fromURL:(NSString *)URLString scale:(CGFloat)scale success:(JSValue *)success failure:(JSValue *)failure {
+    XTRContext *context = (XTRContext *)[JSContext currentContext];
     NSURL *URL = [NSURL URLWithString:URLString];
     if (URL != nil) {
         [[[NSURLSession sharedSession] dataTaskWithURL:URL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (error == nil && data != nil) {
                 UIImage *image = [UIImage imageWithData:data scale:scale];
                 if (image != nil) {
-                    XTRImage *nativeObject = [XTRImage new];
+                    XTRImage *nativeObject = [[XTRImage alloc] initWithContext:context];
                     nativeObject.nativeImage = image;
                     if (success != nil) {
                         [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""] asyncResult:nil];

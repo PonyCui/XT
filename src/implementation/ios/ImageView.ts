@@ -35,7 +35,7 @@ export class Image implements Releasable {
     }
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, scales, (ref: string) => {
+        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, typeof scales === "number" ? [scales] : scales, (ref: string) => {
             if (success) {
                 success(new Image(ref))
             }

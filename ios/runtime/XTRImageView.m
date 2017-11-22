@@ -15,7 +15,7 @@
 
 @property (nonatomic, strong) XTRImage *privateImage;
 @property (nonatomic, strong) UIImageView *innerView;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end

@@ -5,27 +5,24 @@ let sharedApplication: Application | undefined = undefined;
 
 export class ApplicationDelegate {
 
-    nativeObjectUUID: any
+    nativeObjectRef: any
 
-    public resetNativeObject(nativeObjectUUID: any) {
-        this.nativeObjectUUID = nativeObjectUUID;
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
+    public resetNativeObject(nativeObjectRef: any) {
+        this.nativeObjectRef = nativeObjectRef;
     }
 
     public get window(): Window | undefined {
-        const appDelegate = XTRApplicationDelegate.xtr_delegate(this.nativeObjectUUID);
-        if (appDelegate) {
-            return appDelegate.xtr_window();
-        }
-        else {
-            return undefined;
-        }
+        return this.nativeObject.xtr_window()
     }
 
     public set window(value: Window | undefined) {
-        const appDelegate = XTRApplicationDelegate.xtr_delegate(this.nativeObjectUUID);
-        if (appDelegate) {
-            appDelegate.xtr_setWindow(value);
-        }
+        this.nativeObject.xtr_setWindow(value);
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }

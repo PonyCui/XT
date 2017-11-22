@@ -11,6 +11,9 @@
 
 @class XTRContext, XTRViewController;
 
+typedef void(^XTRBridgeCompletionBlock)(void);
+typedef void(^XTRBridgeFailureBlock)(NSError * _Nonnull error);
+
 @interface XTRBridge : NSObject
 
 @property (nonatomic, readonly) XTRContext * _Nonnull context;
@@ -23,7 +26,10 @@
 
 + (void)setGlobalBridgeScript:(nullable NSString *)globalBridgeScript;
 - (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate;
-- (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate sourceURL:(nullable NSURL *)sourceURL;
+- (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate
+                                    sourceURL:(nullable NSURL *)sourceURL
+                              completionBlock:(nullable XTRBridgeCompletionBlock)completionBlock
+                                 failureBlock:(nullable XTRBridgeFailureBlock)failureBlock;
 
 #pragma mark - Private methods
 

@@ -14,7 +14,7 @@
 
 @interface XTRApplication ()
 
-@property (nonatomic, strong) XTRContext *context;
+@property (nonatomic, weak) XTRContext *context;
 
 @end
 

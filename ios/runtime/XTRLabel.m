@@ -15,7 +15,7 @@
 
 @property (nonatomic, strong) UILabel *innerView;
 @property (nonatomic, assign) CGFloat lineSpace;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end

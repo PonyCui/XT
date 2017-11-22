@@ -26,6 +26,8 @@
 
 @interface XTRNavigationController : UINavigationController<XTRComponent, XTRViewControllerExport, XTRNavigationControllerExport>
 
++ (XTRNavigationController *)clone:(UINavigationController *)navigationController;
+
 @property (nonatomic, copy) NSString *objectUUID;
 
 @end

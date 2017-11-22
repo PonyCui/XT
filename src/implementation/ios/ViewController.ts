@@ -78,7 +78,13 @@ export class ViewController implements Releasable {
     didMoveToParentViewController(parent?: ViewController): void { }
 
     public get navigationController(): NavigationControllerInterface | undefined {
-        return this.nativeObject.xtr_navigationController();
+        const returnValue = this.nativeObject.xtr_navigationController();
+        if (typeof returnValue === "string") {
+            return new (window as any).XTRNavigationController(undefined, returnValue)
+        }
+        else {
+            return returnValue;
+        }
     }
 
     keyboardWillShow(frame: Rect, duration: number): void {

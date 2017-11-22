@@ -19,7 +19,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, readonly) JSValue *scriptObject;
 
 @end
@@ -39,6 +39,12 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
     return view.objectUUID;
 }
+
+#ifdef DEBUG
+- (void)dealloc {
+    NSLog(@"XTRView dealloc.");
+}
+#endif
 
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];

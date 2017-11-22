@@ -17,7 +17,7 @@
 @property (nonatomic, strong) UIButton *innerView;
 @property (nonatomic, assign) BOOL vertical;
 @property (nonatomic, assign) CGFloat inset;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, assign) BOOL highlighted;
 

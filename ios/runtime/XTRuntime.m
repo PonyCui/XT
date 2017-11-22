@@ -37,42 +37,68 @@ static NSSet<XTRApplicationDelegate *> *moduleDelegates;
     NSMutableSet *mutable = [(moduleDelegates ?: [NSSet set]) mutableCopy];
     [mutable removeObject:delegate];
     moduleDelegates = [mutable copy];
+    [delegate exit];
 }
 
 + (void)startWithNamed:(NSString *)name inBundle:(NSBundle *)bundle navigationController:(UINavigationController *)navigationController {
+    [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
+  navigationController:navigationController
+       completionBlock:nil
+          failureBlock:nil];
+}
+
++ (void)startWithURLString:(NSString *)URLString
+      navigationController:(UINavigationController *)navigationController
+           completionBlock:(XTRuntimeCompletionBlock)completionBlock
+              failureBlock:(XTRBridgeFailureBlock)failureBlock {
+    [self startWithURL:[NSURL URLWithString:URLString] navigationController:navigationController completionBlock:completionBlock failureBlock:failureBlock];
+}
+
++ (void)startWithURL:(NSURL *)sourceURL
+navigationController:(UINavigationController *)navigationController
+     completionBlock:(XTRuntimeCompletionBlock)completionBlock
+        failureBlock:(XTRBridgeFailureBlock)failureBlock {
     XTRApplicationDelegate *moduleDelegate = [[XTRApplicationDelegate alloc] init];
     [self retainDelegate:moduleDelegate];
-    NSURL *sourceURL = [NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]];
-    moduleDelegate.bridge = [[XTRBridge alloc] initWithAppDelegate:moduleDelegate
-                                                         sourceURL:sourceURL];
-    [moduleDelegate application:nil didFinishLaunchingWithOptions:@{}];
-    if (moduleDelegate.window != nil && [moduleDelegate.window.rootViewController isKindOfClass:[UINavigationController class]]) {
-        XTRViewController *viewController = [(UINavigationController *)moduleDelegate.window.rootViewController viewControllers].firstObject;
-        viewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
-        moduleDelegate.bridge.keyViewController = viewController;
-        [UIView animateWithDuration:0.25 animations:^{
-            [navigationController pushViewController:viewController
-                                            animated:YES];
-            navigationController.navigationBar.alpha = 0.0;
-        } completion:^(BOOL finished) {
-            navigationController.navigationBar.alpha = 1.0;
-            navigationController.navigationBar.hidden = YES;
-        }];
-        __weak XTRApplicationDelegate *weakModuleDelegate = moduleDelegate;
-        [viewController setExitAction:^(XTRViewController *keyViewController) {
-            if (keyViewController.navigationController) {
-                NSUInteger keyIndex = [keyViewController.navigationController.childViewControllers indexOfObject:keyViewController];
-                if (keyIndex > 0 && keyIndex != NSNotFound) {
-                    [keyViewController.navigationController popToViewController:keyViewController.navigationController.childViewControllers[keyIndex - 1]
+    moduleDelegate.bridge = [[XTRBridge alloc]
+                             initWithAppDelegate:moduleDelegate
+                             sourceURL:sourceURL
+                             completionBlock:^{
+                                [moduleDelegate application:nil didFinishLaunchingWithOptions:@{}];
+                                if (moduleDelegate.window != nil && [moduleDelegate.window.rootViewController isKindOfClass:[UINavigationController class]]) {
+                                    XTRViewController *viewController = [(UINavigationController *)moduleDelegate.window.rootViewController viewControllers].firstObject;
+                                    viewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
+                                    moduleDelegate.bridge.keyViewController = viewController;
+                                    [UIView animateWithDuration:0.25 animations:^{
+                                       [navigationController pushViewController:viewController
                                                                        animated:YES];
-                }
-            }
-            __strong XTRApplicationDelegate *strongModuleDelegate = weakModuleDelegate;
-            if (strongModuleDelegate) {
-                [self releaseDelegate:strongModuleDelegate];
-            }
-        }];
-    }
+                                       navigationController.navigationBar.alpha = 0.0;
+                                    } completion:^(BOOL finished) {
+                                       navigationController.navigationBar.alpha = 1.0;
+                                       navigationController.navigationBar.hidden = YES;
+                                    }];
+                                    __weak XTRApplicationDelegate *weakModuleDelegate = moduleDelegate;
+                                    [viewController setExitAction:^(XTRViewController *keyViewController) {
+                                       if (keyViewController.navigationController) {
+                                           NSUInteger keyIndex = [keyViewController.navigationController.childViewControllers indexOfObject:keyViewController];
+                                           if (keyIndex > 0 && keyIndex != NSNotFound) {
+                                               [keyViewController.navigationController popToViewController:keyViewController.navigationController.childViewControllers[keyIndex - 1]
+                                                                                                  animated:YES];
+                                           }
+                                       }
+                                       __strong XTRApplicationDelegate *strongModuleDelegate = weakModuleDelegate;
+                                       if (strongModuleDelegate) {
+                                           [self releaseDelegate:strongModuleDelegate];
+                                       }
+                                    }];
+                                    if (completionBlock) {
+                                        completionBlock();
+                                    }
+                                }
+                             }
+                             failureBlock:failureBlock];
+    return;
+    
 }
 
 @end

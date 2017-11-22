@@ -10,11 +10,22 @@
 #import "XTRBridge.h"
 #import "XTRCustomView.h"
 
+typedef void(^XTRuntimeCompletionBlock)(void);
+typedef void(^XTRuntimeFailureBlock)(NSError *error);
+
 @interface XTRuntime : NSObject<UINavigationControllerDelegate>
 
 + (NSString *)version;
 
-+ (void)startWithNamed:(NSString *)name inBundle:(NSBundle *)bundle navigationController:(UINavigationController *)navigationController;
++ (void)startWithNamed:(NSString *)name
+              inBundle:(NSBundle *)bundle
+  navigationController:(UINavigationController *)navigationController;
+
++ (void)startWithURLString:(NSString *)URLString
+      navigationController:(UINavigationController *)navigationController
+           completionBlock:(XTRuntimeCompletionBlock)completionBlock
+              failureBlock:(XTRBridgeFailureBlock)failureBlock;
+
 + (void)retainDelegate:(XTRApplicationDelegate *)delegate;
 
 @end

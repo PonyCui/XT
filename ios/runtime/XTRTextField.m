@@ -14,7 +14,7 @@
 @interface XTRTextField ()<UITextFieldDelegate>
 
 @property (nonatomic, strong) UITextField *innerView;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 @property (nonatomic, strong) UIColor *placeholderColor;
 

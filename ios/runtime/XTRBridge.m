@@ -59,28 +59,37 @@ static NSString *globalBridgeScript;
     globalBridgeScript = argGlobalBridgeScript;
 }
 
+#ifdef DEBUG
+- (void)dealloc {
+    NSLog(@"XTRBridge dealloc.");
+}
+#endif
+
 - (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
 {
-    return [self initWithAppDelegate:appDelegate sourceURL:nil];
+    return [self initWithAppDelegate:appDelegate sourceURL:nil completionBlock:nil failureBlock:nil];
 }
 
-- (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate sourceURL:(NSURL *)sourceURL
+- (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
+                          sourceURL:(NSURL *)sourceURL
+                    completionBlock:(nullable XTRBridgeCompletionBlock)completionBlock
+                       failureBlock:(XTRBridgeFailureBlock)failureBlock
 {
     self = [super init];
     if (self) {
         _appDelegate = appDelegate;
+        _appDelegate.bridge = self;
         _sourceURL = sourceURL;
         _context = [[XTRContext alloc] initWithThread:[NSThread mainThread]];
         _context.bridge = self;
         [_context evaluateScript:@"var window = {}; var objectRefs = {};"];
-        
         [XTRBreakpoint attachBreakpoint:_context];
         [XTPolyfill addPolyfills:_context];
         [self loadComponents];
         [self loadRuntime];
         [self loadPlugins];
         if (_sourceURL != nil) {
-            [self loadViaSourceURL];
+            [self loadViaSourceURL:completionBlock failureBlock:failureBlock];
         }
         else {
             [_context evaluateScript:globalBridgeScript];
@@ -89,25 +98,81 @@ static NSString *globalBridgeScript;
     return self;
 }
 
-- (void)loadViaSourceURL {
+- (void)loadViaSourceURL:(XTRBridgeCompletionBlock)completionBlock failureBlock:(XTRBridgeFailureBlock)failureBlock {
     if (self.sourceURL.isFileURL) {
         NSString *script = [[NSString alloc] initWithContentsOfURL:self.sourceURL encoding:NSUTF8StringEncoding error:NULL];
         if (script) {
             [self.context evaluateScript:script];
+            if (((JSValue *)[self.context evaluateScript:@"window._xtrDelegate"]).isUndefined) {
+                if (failureBlock) {
+                    failureBlock([NSError errorWithDomain:@"XTRBridge" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"Fail to create AppDelegate."}]);
+                }
+                return ;
+            }
+            if (completionBlock) {
+                completionBlock();
+            }
         }
         return;
     }
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [[[NSURLSession sharedSession] dataTaskWithURL:self.sourceURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (error == nil && data != nil) {
-            NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            if (script) {
-                [self.context evaluateScript:script];
+#ifdef DEBUG
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                         timeoutInterval:15.0];
+#else
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL
+                                             cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                         timeoutInterval:15.0];
+#endif
+    if (failureBlock) {
+        [[[NSURLSession sharedSession] dataTaskWithRequest:request
+                                         completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (error == nil && data != nil) {
+                NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if (script) {
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        [self.context evaluateScript:script];
+                        if (((JSValue *)[self.context evaluateScript:@"window._xtrDelegate"]).isUndefined) {
+                            if (failureBlock) {
+                                failureBlock([NSError errorWithDomain:@"XTRBridge" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"Fail to create AppDelegate."}]);
+                            }
+                            return ;
+                        }
+                        if (completionBlock) {
+                            completionBlock();
+                        }
+                    }];
+                }
             }
-        }
-        dispatch_semaphore_signal(semaphore);
-    }] resume];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            else {
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    failureBlock(error ?: [NSError errorWithDomain:@"XTRBridge" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"unknown error."}]);
+                }];
+            }
+        }] resume];
+    }
+    else {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        [[[NSURLSession sharedSession] dataTaskWithRequest:request
+                                         completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (error == nil && data != nil) {
+                NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if (script) {
+                    [self.context evaluateScript:script];
+                    if (completionBlock) {
+                        completionBlock();
+                    }
+                }
+            }
+            else {
+                if (failureBlock) {
+                    failureBlock(error);
+                }
+            }
+            dispatch_semaphore_signal(semaphore);
+        }] resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    }
 }
 
 - (void)loadComponents {
@@ -174,7 +239,7 @@ static NSString *globalBridgeScript;
 
 - (void)reload {
     if (self.sourceURL != nil) {
-        [self loadViaSourceURL];
+        [self loadViaSourceURL:nil failureBlock:nil];
         [self.appDelegate application:self.application
         didFinishLaunchingWithOptions:@{}];
     }

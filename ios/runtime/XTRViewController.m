@@ -9,10 +9,12 @@
 #import "XTRViewController.h"
 #import "XTRUtils.h"
 #import "XTRContext.h"
+#import "XTRNavigationController.h"
+#import <objc/runtime.h>
 
 @interface XTRViewController ()
 
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 
 @end
 
@@ -197,6 +199,18 @@ static UINavigationController *tmpNavigationController;
 }
 
 - (JSValue *)xtr_navigationController {
+    static int xtrNavigationControllerTag;
+    if (self.navigationController != nil && ![self.navigationController isKindOfClass:[XTRNavigationController class]]) {
+        XTRNavigationController *xtrInstance = objc_getAssociatedObject(self, &xtrNavigationControllerTag);
+        if (xtrInstance != nil) {
+            return [JSValue fromObject:xtrInstance context:self.context];
+        }
+        else {
+            xtrInstance = [XTRNavigationController clone:self.navigationController];
+            objc_setAssociatedObject(self, &xtrNavigationControllerTag, xtrInstance, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            return (id)xtrInstance.objectUUID;
+        }
+    }
     return [JSValue fromObject:self.navigationController context:self.context];
 }
 

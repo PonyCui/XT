@@ -14,7 +14,7 @@
 @interface XTRTextView ()<UITextViewDelegate>
 
 @property (nonatomic, strong) UITextView *innerView;
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end

@@ -12,8 +12,9 @@
 
 @interface XTRNavigationController ()
 
-@property (nonatomic, strong) JSContext *context;
+@property (nonatomic, weak) JSContext *context;
 @property (nonatomic, readonly) JSValue *scriptObject;
+@property (nonatomic, weak) UINavigationController *innerObject;
 
 @end
 
@@ -33,6 +34,16 @@
     return viewController.objectUUID;
 }
 
++ (XTRNavigationController *)clone:(UINavigationController *)navigationController {
+    XTRNavigationController *viewController = [XTRNavigationController new];
+    viewController.innerObject = navigationController;
+    viewController.objectUUID = [[NSUUID UUID] UUIDString];
+    viewController.context = [JSContext currentContext];
+    [((XTRContext *)[JSContext currentContext]).objectRefs store:viewController];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [viewController description]; }];
+    return viewController;
+}
+
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
@@ -44,25 +55,25 @@
             [targetViewControllers addObject:value[@"nativeObject"]];
         }
     }
-    [self setViewControllers:[targetViewControllers copy] animated:[animated toBool]];
+    [(self.innerObject ?: self) setViewControllers:[targetViewControllers copy] animated:[animated toBool]];
 }
 
 - (void)xtr_pushViewController:(JSValue *)viewController animated:(JSValue *)animated {
     UIViewController *target = [viewController toViewController];
     if (target) {
-        [self pushViewController:target animated:[animated toBool]];
+        [(self.innerObject ?: self) pushViewController:target animated:[animated toBool]];
     }
 }
 
 - (JSValue *)xtr_popViewController:(JSValue *)animated {
-    UIViewController *target = [self popViewControllerAnimated:[animated toBool]];
+    UIViewController *target = [(self.innerObject ?: self) popViewControllerAnimated:[animated toBool]];
     return [JSValue fromObject:target context:self.context];
 }
 
 - (NSArray<JSValue *> *)xtr_popToViewController:(JSValue *)viewController animated:(JSValue *)animated {
     UIViewController *target = [viewController toViewController];
     if (target) {
-        NSArray<UIViewController *> *returns = [self popToViewController:target animated:[animated toBool]];
+        NSArray<UIViewController *> *returns = [(self.innerObject ?: self) popToViewController:target animated:[animated toBool]];
         NSMutableArray *output = [NSMutableArray array];
         for (UIViewController *r in returns) {
             [output addObject:[JSValue fromObject:r context:self.context] ?: [NSNull null]];
@@ -73,7 +84,7 @@
 }
 
 - (NSArray<JSValue *> *)xtr_popToRootViewController:(JSValue *)animated {
-    NSArray<UIViewController *> *returns = [self popToRootViewControllerAnimated:[animated toBool]];
+    NSArray<UIViewController *> *returns = [(self.innerObject ?: self) popToRootViewControllerAnimated:[animated toBool]];
     NSMutableArray *output = [NSMutableArray array];
     for (UIViewController *r in returns) {
         [output addObject:[JSValue fromObject:r context:self.context] ?: [NSNull null]];
@@ -176,12 +187,12 @@
 - (void)xtr_addChildViewController:(JSValue *)childController {
     UIViewController *viewController = [childController toViewController];
     if (viewController) {
-        [self addChildViewController:viewController];
+        [(self.innerObject ?: self) addChildViewController:viewController];
     }
 }
 
 - (void)xtr_removeFromParentViewController {
-    [self removeFromParentViewController];
+    [(self.innerObject ?: self) removeFromParentViewController];
 }
 
 - (void)willMoveToParentViewController:(UIViewController *)parent {
