@@ -12,6 +12,7 @@
 @interface XTRWeakRef: NSObject
 
 @property (nonatomic, weak) id<XTRComponent> value;
+@property (nonatomic, strong) id<XTRComponent> strongValue;
 
 @end
 
@@ -38,9 +39,18 @@
     }
 }
 
+- (void)retain:(id<XTRComponent>)object {
+    if (object.objectUUID != nil) {
+        NSMutableDictionary *mutableStore = [(self.store ?: @{}) mutableCopy];
+        XTRWeakRef *ref = [XTRWeakRef new];
+        ref.strongValue = object;
+        [mutableStore setObject:ref forKey:object.objectUUID];
+        self.store = mutableStore;
+    }
+}
+
 - (id<XTRComponent>)restore:(NSString *)objectUUID {
-    id strongValue = self.store[objectUUID].value;
-    return strongValue;
+    return self.store[objectUUID].strongValue ?: self.store[objectUUID].value;
 }
 
 - (void)addOwner:(JSValue *)child owner:(JSValue *)owner {
@@ -63,7 +73,7 @@
     if (arc4random() % 10 < 2) {
         NSDictionary<NSString *, XTRWeakRef *> *copy = [mutable copy];
         for (NSString *aKey in copy) {
-            if (copy[aKey].value == nil) {
+            if (copy[aKey].strongValue == nil && copy[aKey].value == nil) {
                 [mutable removeObjectForKey:aKey];
             }
         }

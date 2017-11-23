@@ -20,15 +20,23 @@
 
 @implementation XTRApplication
 
-+ (XTRApplication *)create:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)scriptObject {
     XTRApplication *app = [XTRApplication new];
     app.objectUUID = [[NSUUID UUID] UUIDString];
     app.context = (XTRContext *)scriptObject.context;
-    return app;
+    [((XTRContext *)[JSContext currentContext]).objectRefs retain:app];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [app description]; }];
+    return app.objectUUID;
 }
 
 + (NSString *)name {
     return @"XTRApplication";
+}
+
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTRApplication dealloc.");
+#endif
 }
 
 - (JSValue *)xtr_keyWindow {

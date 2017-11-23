@@ -31,7 +31,14 @@ export class ApplicationDelegate {
 
 export class Application {
 
-    nativeObject: any;
+    nativeObjectRef: any
+
+    public set nativeObject(value: any) { }
+
+    public get nativeObject(): any {
+        return xtrRequestNativeObject(this.nativeObjectRef);
+    }
+
     delegate: ApplicationDelegate
 
     public get keyWindow(): Window | undefined {
@@ -42,7 +49,8 @@ export class Application {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.nativeObject = XTRApplication.create(this);
+        this.nativeObjectRef = XTRApplication.create(this);
+        objectRefs[this.nativeObjectRef] = this;
         (window as any)._xtrDelegate = delegate;
         this.delegate = delegate;
     }
