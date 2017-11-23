@@ -3,9 +3,15 @@ package com.opensource.xtruntime
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import java.util.*
 import kotlin.concurrent.timerTask
+import android.view.Gravity
+
+
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -16,6 +22,8 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
         protected set
     private var keyboardHeightProvider: KeyboardHeightProvider? = null
 
+    protected var loadingLayout: LinearLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         XTRScreen.resetScreenInfo(this)
@@ -24,9 +32,30 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
         setupKeyboardHeightProvider()
         setupOrientations()
         if (bridge == null) {
-            bridge = XTRBridge(applicationContext, null, {
-                onBridgeReady()
-            })
+            intent?.let {
+                it.getStringExtra("XTR_fromAssets")?.let {
+                    bridge = XTRBridge.createWithAssets(this, it, {
+                        onBridgeReady()
+                    })
+                }
+                it.getStringExtra("XTR_fromURLString")?.let {
+                    val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+                    val loadingLayout = LinearLayout(applicationContext)
+                    this.loadingLayout = loadingLayout
+                    loadingLayout.orientation = LinearLayout.VERTICAL
+                    loadingLayout.gravity = Gravity.CENTER
+                    val imageViewParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    val loadingIndicator = ProgressBar(this)
+                    loadingIndicator.isIndeterminate = true
+                    loadingLayout.addView(loadingIndicator, imageViewParams)
+                    setContentView(loadingLayout, layoutParams)
+                    bridge = XTRBridge.createWithSourceURL(this, it, {
+                        onBridgeReady()
+                    }, {
+                        XTRuntime.currentFailureBlock?.invoke(this)
+                    })
+                }
+            }
         }
     }
 

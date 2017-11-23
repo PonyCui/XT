@@ -2,37 +2,26 @@ package com.opensource.xtruntime
 
 import android.content.pm.PackageManager
 import android.os.Handler
+import android.util.Log
 import com.eclipsesource.v8.Releasable
-import com.eclipsesource.v8.V8Object
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONObject
 
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-class XTRBridge(val appContext: android.content.Context, val bridgeScript: String? = null, val completionBlock: (() -> Unit)? = null) {
+class XTRBridge(val appContext: android.content.Context, val bridgeScript: String? = null, val completionBlock: (() -> Unit)? = null, val failureBlock: ((e: Exception) -> Unit)? = null) {
 
     companion object {
 
-        var globalBridgeScript: String? = null
-        var globalBridgeStackSize: Long = 1024 * 128
-
-        fun setGlobalBridgeScriptWithAssets(appContext: android.content.Context, assetsName: String) {
-            try {
-                appContext.assets.open(assetsName)?.let { inputStream ->
-                    val byteArray = ByteArray(inputStream.available())
-                    inputStream.read(byteArray)
-                    inputStream.close()
-                    globalBridgeScript = String(byteArray)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        fun createWithAssets(appContext: android.content.Context, assetsName: String, completionBlock: (() -> Unit)? = null): XTRBridge {
+            val bridge = XTRBridge(appContext, null, completionBlock)
+            bridge.xtrSourceURL = "file:///android_asset/$assetsName"
+            return bridge
         }
 
-        fun createWithSourceURL(appContext: android.content.Context, sourceURL: String?, completionBlock: (() -> Unit)? = null): XTRBridge {
-            val bridge = XTRBridge(appContext, null, completionBlock)
+        fun createWithSourceURL(appContext: android.content.Context, sourceURL: String?, completionBlock: (() -> Unit)? = null, failureBlock: ((e: Exception) -> Unit)? = null): XTRBridge {
+            val bridge = XTRBridge(appContext, null, completionBlock, failureBlock)
             bridge.xtrSourceURL = sourceURL
             return bridge
         }
@@ -54,7 +43,6 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         loadComponents()
         loadRuntime()
         loadPlugins()
-        loadScript()
     }
 
     private fun loadComponents() {
@@ -113,33 +101,48 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
 
     fun loadScript() {
         val handler = Handler()
-        xtrContext.evaluateScript("let XTRAppRef = undefined;")
+        xtrContext.evaluateScript("let XTRAppRef = null;")
         xtrSourceURL?.let { sourceURL ->
-            Thread(Thread.currentThread().threadGroup, {
-                try {
-                    val req = Request.Builder().url(sourceURL).method("GET", null).build()
-                    val res = OkHttpClient().newCall(req).execute()
-                    val script = res.body()?.string() ?: return@Thread
-                    handler.post {
-                        xtrContext.evaluateScript(script)
-                        xtrContext.evaluateScript("XTRAppRef")?.let {
-                            xtrApplication = XTRUtils.toApplication(it)
-                            (it as? Releasable)?.release()
-                        }
-                        completionBlock?.invoke()
+            if (sourceURL.startsWith("file://")) {
+                if (sourceURL.startsWith("file:///android_asset/")) {
+                    sourceURL.replace("file:///android_asset/", "").let {
+                        try {
+                            val inputStream = appContext.assets.open(it)
+                            val byteArray = ByteArray(inputStream.available())
+                            inputStream.read(byteArray)
+                            inputStream.close()
+                            val script = String(byteArray)
+                            xtrContext.evaluateScript(script)
+                            xtrContext.evaluateScript("XTRAppRef")?.let {
+                                xtrApplication = XTRUtils.toApplication(it)
+                                (it as? Releasable)?.release()
+                            }
+                            handler.post {
+                                completionBlock?.invoke()
+                            }
+                        } catch (e: java.lang.Exception) { handler.post { failureBlock?.invoke(e) };  e.printStackTrace() }
                     }
-                } catch (e: Exception) { e.printStackTrace() }
-            }, "XTREval", globalBridgeStackSize).start()
-            return
-        }
-        (globalBridgeScript ?: bridgeScript)?.let { script ->
-            xtrContext.evaluateScript(script)
-            xtrContext.evaluateScript("XTRAppRef")?.let {
-                xtrApplication = XTRUtils.toApplication(it)
-                (it as? Releasable)?.release()
+                }
             }
-            handler.post {
-                completionBlock?.invoke()
+            else if (sourceURL.startsWith("http://") || sourceURL.startsWith("https://")) {
+                Thread(Thread.currentThread().threadGroup, {
+                    try {
+                        val req = Request.Builder().url(sourceURL).method("GET", null).build()
+                        val res = OkHttpClient().newCall(req).execute()
+                        val script = res.body()?.string() ?: return@Thread
+                        handler.post {
+                            xtrContext.evaluateScript(script)
+                            xtrContext.evaluateScript("XTRAppRef")?.let {
+                                xtrApplication = XTRUtils.toApplication(it)
+                                (it as? Releasable)?.release()
+                            }
+                            completionBlock?.invoke()
+                        }
+                    } catch (e: Exception) { handler.post { failureBlock?.invoke(e) }; e.printStackTrace() }
+                }, "XTREval").start()
+            }
+            else {
+                Log.w("XTRBridge", "Unknown sourceURL type >>> $sourceURL")
             }
             return
         }

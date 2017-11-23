@@ -9,6 +9,7 @@ import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerStat
 import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
 import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
+import { Releasable } from '../../interface/Releasable';
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
@@ -26,7 +27,11 @@ export enum SwipeDirection {
     ToBottom,
 }
 
-export class View implements Touchable, CoordinateOwner, GestureOwner {
+export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
+
+    addOwner(owner: any): this {
+        return this;
+    }
 
     nativeObject: any;
 

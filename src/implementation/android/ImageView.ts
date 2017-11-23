@@ -1,5 +1,6 @@
 import { View } from "./View";
 import { Size, Rect, RectZero } from "../../interface/Rect";
+import { Releasable } from "../../interface/Releasable";
 
 export enum ImageRenderingMode {
     Automatic = 0,
@@ -7,7 +8,11 @@ export enum ImageRenderingMode {
     Template = 2,
 }
 
-export class Image {
+export class Image implements Releasable {
+
+    addOwner(owner: any): this {
+        return this;
+    }
 
     readonly size: Size;
     readonly scale: number;
@@ -24,7 +29,7 @@ export class Image {
     }
 
     static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssets(named, this.assetsPath, scales, success, failure || function () { })
+        XTRImage.xtr_fromAssets(named, this.assetsPath, typeof scales === "number" ? [scales] : scales, success, failure || function () { })
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {
@@ -77,7 +82,7 @@ export class ImageView extends View {
     public set contentMode(value: ContentMode) {
         this.nativeObject.xtr_setContentMode(value);
     }
-    
+
     public intrinsicContentSize(width?: number): Size | undefined {
         if (this.image) {
             return this.image.size

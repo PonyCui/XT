@@ -145,11 +145,11 @@ class XTRImage: XTRComponent() {
             }
             return@let it.lastOrNull() ?: 1
         }
-        val imgNamed = named + (if (targetScale > 1) "@${targetScale.toInt()}x.png" else ".png")
-        xtrContext.xtrBridge?.xtrSourceURL?.let { sourceURL ->
+        val imgNamed = named + (if (targetScale > 1) "@${targetScale}x.png" else ".png")
+        xtrContext.xtrBridge?.xtrSourceURL?.takeIf { it.startsWith("http://") || it.startsWith("https://") }?.let { sourceURL ->
             val uri = URI(sourceURL)
             val relativeURL = uri.resolve("$path$imgNamed")
-            xtr_fromURLWithScale(relativeURL.toString(), targetScale.toInt(), success, failure)
+            xtr_fromURLWithScale(relativeURL.toString(), targetScale, success, failure)
             return
         }
         var inputStream: InputStream? = null
@@ -159,7 +159,7 @@ class XTRImage: XTRComponent() {
             xtrContext.callWithArguments(success, listOf(
                     InnerObject(
                             bitmap,
-                            targetScale.toInt(),
+                            targetScale,
                             XTRSize(bitmap.width / targetScale.toDouble(), bitmap.height / targetScale.toDouble()),
                             1
                     )
