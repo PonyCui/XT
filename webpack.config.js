@@ -76,6 +76,16 @@ module.exports = function (env) {
             }),
         ];
     }
+    if (env && env.devxtib) {
+        setting.entry = { "xtib.min": "./xtib/src/main.ts", };
+        setting.plugins = [
+            new webpack.optimize.UglifyJsPlugin({
+                include: /\.min\.js$/,
+                minimize: true,
+                output: { comments: false },
+            }),
+        ];
+    }
     if (env && env.test) {
         setting.entry = { "tests": "./src/tests.ts" };
         setting.plugins = undefined;

@@ -17,11 +17,15 @@ export class TextView extends View {
         if (_isChild) { return; }
         this.nativeObject = new TextViewElement(rect || RectZero, this);
         this.userInteractionEnabled = true;
-        this.clipsToBounds = true;
         this.onTap = () => {
             this.focus();
         }
         setImmediate(() => { this.init(); });
+    }
+
+    init() {
+        super.init();
+        this.clipsToBounds = true;
     }
 
     touchesBegan(touches: Touch[], event: Event): void {

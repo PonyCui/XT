@@ -94,4 +94,4 @@ class SecondViewController extends XT.ViewController {
 
 }
 
-const application = new XT.Application('app', new AppDelegate());
+const sampleApplication = new XT.Application('app', new AppDelegate());

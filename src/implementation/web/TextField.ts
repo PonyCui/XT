@@ -20,11 +20,15 @@ export class TextField extends View {
         if (_isChild) { return; }
         this.nativeObject = new TextFieldElement(rect || RectZero, this);
         this.userInteractionEnabled = true;
-        this.clipsToBounds = true;
         this.onTap = () => {
             this.focus();
         }
         setImmediate(() => { this.init(); });
+    }
+
+    init() {
+        super.init();
+        this.clipsToBounds = true;
     }
 
     touchesBegan(touches: Touch[], event: Event): void {

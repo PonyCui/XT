@@ -21,13 +21,13 @@ export class ScrollView extends View {
         super(undefined, true)
         if (_isChild) { return; }
         this.nativeObject = new ScrollViewElement(rect || RectZero, this);
-        this.userInteractionEnabled = true
-        this.clipsToBounds = true
+        this.userInteractionEnabled = true;
         setImmediate(() => { this.init(); });
     }
 
     init() {
         super.init();
+        this.clipsToBounds = true;
         super.addSubview(this.innerView);
         this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.horizonalScrollIndicator.cornerRadius = 1.0;

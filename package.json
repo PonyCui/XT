@@ -8,6 +8,7 @@
     "dev.android": "webpack --env.devandroid -w",
     "dev.ios": "webpack --env.devios -w",
     "dev.web": "webpack --env.devweb -w",
+    "dev.xtib": "webpack --env.devxtib -w",
     "debug": "node service/index.js",
     "test": "webpack --env.test && node dist/tests.js"
   },

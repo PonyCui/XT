@@ -97,7 +97,6 @@ export class ViewElement extends BaseElement {
         this.previousMaskParams.height = this.frame.height
         this.previousMaskParams.cornerRadius = this.cornerRadius
         if (this.clipsToBounds) {
-
             const clipPathObject = this.clipPathObject || document.createElementNS("http://www.w3.org/2000/svg", "clipPath")
             clipPathObject.setAttribute('id', this.objectUUID + ".clipPath");
             clipPathObject.innerHTML = '';
