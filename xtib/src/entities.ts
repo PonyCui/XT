@@ -16,6 +16,7 @@ export class InspectorStringProperty extends InspectorBaseProperty {
 
     defaultValue: string;
     placeholder: string;
+    valueChanged: (value: string) => void;
 
 }
 
@@ -25,5 +26,6 @@ export class InspectorNumberProperty extends InspectorBaseProperty {
     placeholder: string;
     minValue?: number;
     maxValue?: number;
+    valueChanged: (value: number) => void;
 
 }

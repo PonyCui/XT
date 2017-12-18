@@ -89,10 +89,11 @@ export class ViewElement extends BaseElement {
         }
     }
 
-    private previousMaskParams: { width?: number, height?: number, cornerRadius?: number } = {};
+    private previousMaskParams: { clipsToBounds?: boolean, width?: number, height?: number, cornerRadius?: number } = {};
 
     private resetMaskElement() {
-        if (this.previousMaskParams.width === this.frame.width && this.previousMaskParams.height === this.frame.height && this.previousMaskParams.cornerRadius === this.cornerRadius) { return; }
+        if (this.previousMaskParams.clipsToBounds === this.clipsToBounds && this.previousMaskParams.width === this.frame.width && this.previousMaskParams.height === this.frame.height && this.previousMaskParams.cornerRadius === this.cornerRadius) { return; }
+        this.previousMaskParams.clipsToBounds = this.clipsToBounds
         this.previousMaskParams.width = this.frame.width
         this.previousMaskParams.height = this.frame.height
         this.previousMaskParams.cornerRadius = this.cornerRadius

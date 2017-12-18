@@ -10,6 +10,7 @@ export class Inspector extends XT.View {
 
     init() {
         super.init();
+        this.userInteractionEnabled = true;
         this.backgroundColor = new XT.Color(0x17 / 0xff, 0x17 / 0xff, 0x17 / 0xff, 0xff);
         this.sectionTitleLabel.text = "No Item";
         this.addBorder();
@@ -52,6 +53,7 @@ export class Inspector extends XT.View {
     }
 
     private addSectionContent() {
+        this.sectionContent.userInteractionEnabled = true;
         this.addSubview(this.sectionContent);
         this.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("H:|-0-[sectionContent]-0-|", { sectionContent: this.sectionContent }));
         this.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-32-[sectionContent]-0-|", { sectionContent: this.sectionContent }));
@@ -66,19 +68,29 @@ export class Inspector extends XT.View {
             let currentY = 0;
             this.currentItem.props.forEach(prop => {
                 const view = new XT.View(XT.RectMake(0, currentY, 300, 58));
+                view.userInteractionEnabled = true;
                 const titleLabel = new XT.Label(XT.RectMake(8, 8, 300, 20))
                 titleLabel.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
                 titleLabel.font = XT.Font.systemFontOfSize(9);
                 titleLabel.text = prop.name
-                const textField = new XT.TextField(XT.RectMake(8, 28, 300 - 16, 32))
-                textField.backgroundColor = new XT.Color(0x2e / 0xff, 0x2e / 0xff, 0x2e / 0xff, 0xff);
-                textField.font = XT.Font.systemFontOfSize(12);
-                textField.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
+                const textField = new XT.View(XT.RectMake(8, 28, 300 - 16, 32))
+                textField.userInteractionEnabled = true;
+                textField.backgroundColor = XT.Color.redColor
+                textField.onTap = () => {
+                    textField.backgroundColor = XT.Color.yellowColor
+                }
+                // textField.backgroundColor = new XT.Color(0x2e / 0xff, 0x2e / 0xff, 0x2e / 0xff, 0xff);
+                // textField.font = XT.Font.systemFontOfSize(12);
+                // textField.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
+                // textField.didBeginEditing = () => {
+                //     console.log(textField.text);
+                // }
                 view.addSubview(titleLabel);
                 view.addSubview(textField);
                 this.sectionContent.addSubview(view);
                 currentY += 58;
             })
+            this.sectionContent.contentSize = {width: 0, height: 6000};
         }
     }
 

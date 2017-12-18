@@ -6,6 +6,7 @@ import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
 import { Color } from '../../interface/Color';
 import { LayoutConstraint } from './LayoutConstraint';
+import { isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
 declare function require(name: string): any;
 const Scroller = require('scroller');
 
@@ -25,9 +26,29 @@ export class ScrollView extends View {
         setImmediate(() => { this.init(); });
     }
 
+    hitTest(point: { x: number; y: number; }): Touchable | undefined {
+        let target = undefined;
+        if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
+            target = this
+            let subviews = this.innerView.subviews;
+            for (let index = subviews.length - 1; index >= 0; index--) {
+                let subview = subviews[index];
+                if (subview instanceof View) {
+                    let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))
+                    if (subTarget) {
+                        target = subTarget;
+                        break;
+                    }
+                }
+            }
+        }
+        return target
+    }
+
     init() {
         super.init();
         this.clipsToBounds = true;
+        this.innerView.userInteractionEnabled = true;
         super.addSubview(this.innerView);
         this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.horizonalScrollIndicator.cornerRadius = 1.0;

@@ -15,6 +15,7 @@ import com.facebook.rebound.SpringConfig
 import com.facebook.rebound.SpringSystem
 import java.util.*
 import kotlin.concurrent.timerTask
+import kotlin.math.abs
 
 /**
  * Created by cuiminghui on 2017/9/1.
@@ -31,6 +32,13 @@ class XTRView: XTRComponent() {
 
         fun addAnimation(aniProp: AnimationProp<Any>) {
             XTRView.animatingHandlers[aniProp.aniKey]?.invoke()
+            (aniProp.fromValue as? Float)?.let { fromValue ->
+                (aniProp.toValue as? Float)?.let { toValue ->
+                    if (abs(fromValue - toValue) < 0.001) {
+                        return
+                    }
+                }
+            }
             if (aniProp.fromValue == aniProp.toValue) {
                 return
             }
@@ -112,7 +120,11 @@ class XTRView: XTRComponent() {
             return@map animator
         }
         animationProps = mapOf()
-        XTRView.animatingHandlers = animatingHandlers.toMap()
+        XTRView.animatingHandlers?.let {
+            val mutable = it.toMutableMap()
+            mutable.putAll(animatingHandlers)
+            XTRView.animatingHandlers = mutable.toMap()
+        }
         animators.forEach { it?.start() }
     }
 
@@ -155,7 +167,11 @@ class XTRView: XTRComponent() {
             return@map animator
         }
         animationProps = mapOf()
-        XTRView.animatingHandlers = animatingHandlers.toMap()
+        XTRView.animatingHandlers?.let {
+            val mutable = it.toMutableMap()
+            mutable.putAll(animatingHandlers)
+            XTRView.animatingHandlers = mutable.toMap()
+        }
         animators.forEach { it?.start() }
     }
 
