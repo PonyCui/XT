@@ -243,6 +243,22 @@ export class ScrollView extends View {
         this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 150);
     }
 
+    wheelScroll(deltaPoint: { x: number, y: number }): void {
+        if (this.userInteractionEnabled && this.alpha > 0.0 && !this.hidden) {
+            this.verticalScrollIndicator.alpha = 1.0;
+            this.horizonalScrollIndicator.alpha = 1.0;
+            this.handleScroll(
+                Math.max(0.0, Math.min(this.contentSize.width - this.bounds.width, this.contentOffset.x + deltaPoint.x)),
+                Math.max(0.0, Math.min(this.contentSize.height - this.bounds.height, this.contentOffset.y + deltaPoint.y))
+            )
+        }
+        else {
+            if (this.superview) {
+                (this.superview as any).wheelScroll(deltaPoint);
+            }
+        }
+    }
+
     // Indicators
 
     private _tracking = false;

@@ -73,15 +73,11 @@ export class Inspector extends XT.View {
                 titleLabel.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
                 titleLabel.font = XT.Font.systemFontOfSize(9);
                 titleLabel.text = prop.name
-                const textField = new XT.View(XT.RectMake(8, 28, 300 - 16, 32))
+                const textField = new XT.TextField(XT.RectMake(8, 28, 300 - 16, 32))
                 textField.userInteractionEnabled = true;
-                textField.backgroundColor = XT.Color.redColor
-                textField.onTap = () => {
-                    textField.backgroundColor = XT.Color.yellowColor
-                }
-                // textField.backgroundColor = new XT.Color(0x2e / 0xff, 0x2e / 0xff, 0x2e / 0xff, 0xff);
-                // textField.font = XT.Font.systemFontOfSize(12);
-                // textField.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
+                textField.backgroundColor = new XT.Color(0x2e / 0xff, 0x2e / 0xff, 0x2e / 0xff, 0xff);
+                textField.font = XT.Font.systemFontOfSize(12);
+                textField.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
                 // textField.didBeginEditing = () => {
                 //     console.log(textField.text);
                 // }
@@ -90,7 +86,7 @@ export class Inspector extends XT.View {
                 this.sectionContent.addSubview(view);
                 currentY += 58;
             })
-            this.sectionContent.contentSize = {width: 0, height: 6000};
+            this.sectionContent.contentSize = {width: 0, height: currentY};
         }
     }
 

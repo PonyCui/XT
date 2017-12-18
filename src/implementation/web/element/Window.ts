@@ -15,7 +15,10 @@ export class WindowElement extends ViewElement {
             e.preventDefault();
         });
         document.addEventListener('mousewheel', (e) => {
-            console.log(e);
+            this.scriptObject.handleWheelScroll(
+                { x: e.clientX, y: e.clientY },
+                { x: e.deltaX, y: e.deltaY }
+            );
             e.preventDefault();
         });
         document.addEventListener("pointerdown", (e) => {

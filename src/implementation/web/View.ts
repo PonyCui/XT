@@ -18,7 +18,7 @@ declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
-    
+
     addOwner(owner: any): this {
         return this;
     }
@@ -552,6 +552,12 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
             }
         }
         return target
+    }
+
+    wheelScroll(deltaPoint: { x: number, y: number }): void {
+        if (this.superview) {
+            (this.superview as any).wheelScroll(deltaPoint);
+        }
     }
 
     touchesBegan(touches: Touch[], event: Event): void {

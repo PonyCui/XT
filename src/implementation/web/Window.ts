@@ -53,6 +53,13 @@ export class Window extends View {
 
     touchManager = new TouchManager(this)
 
+    handleWheelScroll(point: { x: number, y: number }, deltaPoint: { x: number, y: number }) {
+        const target = this.touchManager.root.hitTest(point)
+        if (target && (target as any).wheelScroll) {
+            (target as any).wheelScroll(deltaPoint);
+        }
+    }
+
     handlePointerDown(pid: string, timestamp: number, point: { x: number, y: number }) {
         this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
     }
