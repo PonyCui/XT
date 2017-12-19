@@ -1,5 +1,5 @@
 /// <reference path="../../src/xt.d.ts" />
-import { Inspectable } from "./entities";
+import { Inspectable, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty } from "./entities";
 
 
 export class Inspector extends XT.View {
@@ -67,26 +67,63 @@ export class Inspector extends XT.View {
             this.sectionTitleLabel.text = this.currentItem.name;
             let currentY = 0;
             this.currentItem.props.forEach(prop => {
-                const view = new XT.View(XT.RectMake(0, currentY, 300, 58));
+                const view = new XT.View(XT.RectMake(0, currentY, 300, 64));
                 view.userInteractionEnabled = true;
                 const titleLabel = new XT.Label(XT.RectMake(8, 8, 300, 20))
                 titleLabel.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
-                titleLabel.font = XT.Font.systemFontOfSize(9);
+                titleLabel.font = XT.Font.systemFontOfSize(11);
                 titleLabel.text = prop.name
-                const textField = new XT.TextField(XT.RectMake(8, 28, 300 - 16, 32))
+                const textField = new XT.TextField(XT.RectMake(8, 32, 300 - 16, 32))
                 textField.userInteractionEnabled = true;
                 textField.backgroundColor = new XT.Color(0x2e / 0xff, 0x2e / 0xff, 0x2e / 0xff, 0xff);
                 textField.font = XT.Font.systemFontOfSize(12);
                 textField.textColor = new XT.Color(0xc1 / 0xff, 0xc1 / 0xff, 0xc1 / 0xff, 0xff);
-                // textField.didBeginEditing = () => {
-                //     console.log(textField.text);
-                // }
+                if (prop instanceof InspectorStringProperty) {
+                    if (prop.defaultValue) {
+                        textField.text = prop.defaultValue
+                    }
+                    textField.placeholder = prop.placeholder
+                    textField.didEndEditing = () => {
+                        prop.valueChanged(textField.text || "")
+                    }
+                }
+                else if (prop instanceof InspectorNumberProperty) {
+                    if (prop.defaultValue) {
+                        textField.text = prop.defaultValue.toString()
+                    }
+                    textField.placeholder = prop.placeholder
+                    textField.didEndEditing = () => {
+                        if (textField.text && !isNaN(parseFloat(textField.text))) {
+                            prop.valueChanged(parseFloat(textField.text))
+                        }
+                    }
+                }
+                else if (prop instanceof InspectorBooleanProperty) {
+                    (textField as any).setOptions(["TRUE", "FALSE"], prop.defaultValue === true ? "TRUE" : "FALSE");
+                    textField.didEndEditing = () => {
+                        prop.valueChanged(textField.text === "TRUE")
+                    }
+                }
+                else if (prop instanceof InspectorEnumProperty) {
+                    (textField as any).setOptions(Object.keys(prop.enumOptions).map(it => prop.enumOptions[it]), prop.enumOptions[prop.defaultValue]);
+                    textField.didEndEditing = () => {
+                        Object.keys(prop.enumOptions).forEach(it => {
+                            if (prop.enumOptions[it] === textField.text) {
+                                prop.valueChanged(parseInt(it))
+                            }
+                        })
+                    }
+                }
+                textField.shouldReturn = () => {
+                    textField.blur()
+                    return true
+                }
                 view.addSubview(titleLabel);
                 view.addSubview(textField);
                 this.sectionContent.addSubview(view);
-                currentY += 58;
+                currentY += 64;
             })
-            this.sectionContent.contentSize = {width: 0, height: currentY};
+            this.sectionContent.contentSize = { width: 0, height: currentY };
         }
     }
 

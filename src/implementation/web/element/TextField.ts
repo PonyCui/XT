@@ -36,6 +36,16 @@ export class TextFieldElement extends ViewElement {
         this.inputObject.style.outline = "none"
         this.inputObject.style.color = "black"
         this.inputObject.style.fontSize = "14px"
+        this.inputObject.addEventListener("focus", () => {
+            if (this.scriptObject.didBeginEditing) {
+                this.scriptObject.didBeginEditing();
+            }
+        })
+        this.inputObject.addEventListener("blur", () => {
+            if (this.scriptObject.didEndEditing) {
+                this.scriptObject.didEndEditing();
+            }
+        })
         this.foreignObject.appendChild(this.inputObject);
         if (this.shouldSetupChromePatcher()) {
             this.setupChromePatcher();
@@ -52,6 +62,39 @@ export class TextFieldElement extends ViewElement {
         this.setupReturnKeyListenner();
         this.setupShouldChangeListenner();
     }
+
+    // Private - Select {
+
+    private selectObject: HTMLSelectElement
+
+    setOptions(options: string[], defaultValue: string) {
+        this.foreignObject.innerHTML = '';
+        this.selectObject = document.createElement("select")
+        this.selectObject.style.backgroundColor = "transparent"
+        this.selectObject.style.width = "100%"
+        this.selectObject.style.height = "100%"
+        this.selectObject.style.border = "none"
+        this.selectObject.style.outline = "none"
+        this.selectObject.style.color = this.inputObject.style.color
+        this.selectObject.style.fontSize = this.inputObject.style.fontSize
+        options.forEach(option => {
+            const el = document.createElement("option")
+            el.innerText = option;
+            if (option === defaultValue) {
+                el.setAttribute("selected", "selected")
+            }
+            this.selectObject.appendChild(el);
+        })
+        this.foreignObject.appendChild(this.selectObject);
+        this.selectObject.addEventListener("change", () => {
+            if (this.scriptObject.didEndEditing) {
+                this.scriptObject.didEndEditing();
+            }
+        })
+        this.resetContentRects()
+    }
+
+    // }
 
     private _editing = false
 
@@ -229,6 +272,9 @@ export class TextFieldElement extends ViewElement {
         const inputWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
         const inputHeight = this.xtr_frame().height
         this.inputGroup.setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, " + (this.activeLeftViewWidth + (this.shouldSetupIOSPatcher() ? 0.0 : 8.0)).toString() + ", 0.0)");
+        if (this.selectObject !== undefined) {
+            this.inputGroup.setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)");
+        }
         this.foreignObject.setAttribute('width', inputWidth.toString())
         this.foreignObject.setAttribute('height', inputHeight.toString())
         if (this.scriptObject.leftView) {
@@ -340,6 +386,9 @@ export class TextFieldElement extends ViewElement {
     }
 
     public xtr_text(): string {
+        if (this.selectObject) {
+            return this.selectObject.value;
+        }
         return this.inputObject.value || "";
     }
 

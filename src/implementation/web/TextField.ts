@@ -57,7 +57,7 @@ export class TextField extends View {
                 WindowElement._allowDefault = false;
             }
             else {
-                WindowElement._allowDefault = true; 
+                WindowElement._allowDefault = true;
             }
         }
     }
@@ -280,6 +280,12 @@ export class TextField extends View {
 
     blur(): void {
         this.nativeObject.xtr_blur();
+    }
+
+    // Private Methods
+
+    private setOptions(options: string[], defaultValue: string = "") {
+        this.nativeObject.setOptions(options, defaultValue)
     }
 
 }

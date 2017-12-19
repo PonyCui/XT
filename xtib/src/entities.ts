@@ -29,3 +29,18 @@ export class InspectorNumberProperty extends InspectorBaseProperty {
     valueChanged: (value: number) => void;
 
 }
+
+export class InspectorBooleanProperty extends InspectorBaseProperty {
+
+    defaultValue: boolean;
+    valueChanged: (value: boolean) => void;
+
+}
+
+export class InspectorEnumProperty extends InspectorBaseProperty {
+
+    defaultValue: number;
+    enumOptions: {[key: number]: string}
+    valueChanged: (value: number) => void;
+
+}

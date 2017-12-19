@@ -2,7 +2,7 @@
 
 import { Inspector } from './inspector'
 import { Editor } from './editor';
-import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty } from './entities';
+import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty } from './entities';
 
 class MockItem implements Inspectable {
 
@@ -13,12 +13,34 @@ class MockItem implements Inspectable {
         const fooProp = new InspectorStringProperty();
         fooProp.name = "Foo";
         fooProp.placeholder = "Input Foo Value Here";
+        fooProp.valueChanged = (value) => {
+            document.title = value
+        }
         const barProp = new InspectorNumberProperty();
         barProp.name = "Bar";
         barProp.placeholder = "Input Bar Value Here";
-        this.props = [fooProp, barProp];
+        barProp.valueChanged = (value) => {
+            document.title = value.toString()
+        }
+        const boolProp = new InspectorBooleanProperty();
+        boolProp.name = "User Interaction Enabled";
+        boolProp.valueChanged = (value) => {
+            document.title = value.toString()
+        }
+        const enumProp = new InspectorEnumProperty();
+        enumProp.name = "Content Mode";
+        enumProp.defaultValue = 1;
+        enumProp.enumOptions = {
+            0: "Scale To Fill",
+            1: "Aspect Fit",
+            2: "Aspect Fill",
+        }
+        enumProp.valueChanged = (value) => {
+            document.title = value.toString()
+        }
+        this.props = [fooProp, barProp, boolProp, enumProp];
     }
-    
+
 }
 
 class XTIBAppDelegate extends XT.ApplicationDelegate {
@@ -52,5 +74,3 @@ class XTIBAppDelegate extends XT.ApplicationDelegate {
 }
 
 const xtibApplication = new XT.Application("app", new XTIBAppDelegate());
-
-console.log("Hello, World!");

@@ -297,6 +297,10 @@ export class ScrollView extends View {
 
     // Proxy method call to innerView
 
+    public get subviews(): View[] {
+        return this.innerView.subviews;
+    }
+
     insertSubviewAtIndex(subview: View, atIndex: number) {
         this.innerView.insertSubviewAtIndex(subview, atIndex);
     }
