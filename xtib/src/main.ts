@@ -2,7 +2,7 @@
 
 import { Inspector } from './inspector'
 import { Editor } from './editor';
-import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty } from './entities';
+import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty, InspectorFourNumberProperty, InspectorHRProperty } from './entities';
 
 class MockItem implements Inspectable {
 
@@ -38,7 +38,14 @@ class MockItem implements Inspectable {
         enumProp.valueChanged = (value) => {
             document.title = value.toString()
         }
-        this.props = [fooProp, barProp, boolProp, enumProp];
+        const insetsProp = new InspectorFourNumberProperty();
+        insetsProp.name = "Content Insets"
+        insetsProp.fourNames = ["Left", "Top", "Bottom", "Right"];
+        insetsProp.fourDefaultValue = [1, 2, 3, 4];
+        insetsProp.valueChanged = (value) => {
+            console.log(value)
+        }
+        this.props = [fooProp, new InspectorHRProperty(), barProp, boolProp, enumProp, insetsProp];
     }
 
 }

@@ -628,6 +628,10 @@ export class TextFieldElement extends ViewElement {
             const currentText = this.inputObject.value;
             this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0");
         })
+        this.inputObject.addEventListener('setting', () => {
+            const currentText = this.inputObject.value;
+            this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0");
+        })
     }
 
 }

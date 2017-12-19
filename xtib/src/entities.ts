@@ -7,7 +7,7 @@ export interface Inspectable {
 }
 
 export class InspectorBaseProperty {
-    
+
     name: string;
 
 }
@@ -40,7 +40,17 @@ export class InspectorBooleanProperty extends InspectorBaseProperty {
 export class InspectorEnumProperty extends InspectorBaseProperty {
 
     defaultValue: number;
-    enumOptions: {[key: number]: string}
+    enumOptions: { [key: number]: string }
     valueChanged: (value: number) => void;
 
 }
+
+export class InspectorFourNumberProperty extends InspectorBaseProperty {
+
+    fourNames: string[];
+    fourDefaultValue: number[];
+    valueChanged: (value: number[]) => void;
+
+}
+
+export class InspectorHRProperty extends InspectorBaseProperty { }
