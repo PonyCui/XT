@@ -119,7 +119,7 @@ export class Label extends View {
 
     public intrinsicContentSize(width?: number): Size | undefined {
         if (this.text) {
-            const bounds = TextMeasurer.measureText(this.text, {font: this.font, inRect: this.bounds, letterSpace: this.letterSpace, lineSpace: this.lineSpace, numberOfLines: this.numberOfLines})
+            const bounds = TextMeasurer.measureText(this.text, {font: this.font, inRect: {x: 0, y: 0, width: width || 9999, height: 9999}, letterSpace: this.letterSpace, lineSpace: this.lineSpace, numberOfLines: this.numberOfLines})
             return SizeMake(bounds.width, bounds.height)
         }
         return undefined;

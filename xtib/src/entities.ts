@@ -54,3 +54,10 @@ export class InspectorFourNumberProperty extends InspectorBaseProperty {
 }
 
 export class InspectorHRProperty extends InspectorBaseProperty { }
+
+export class BaseLayer {
+
+    name: string = ""
+    children: BaseLayer[] = []
+
+}

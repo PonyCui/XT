@@ -18,6 +18,7 @@ export class LabelElement extends ViewElement {
         this.wrapperObject.style.webkitAlignItems = this.wrapperObject.style.webkitBoxAlign = this.wrapperObject.style.alignItems = "center";
         this.wrapperObject.style.webkitBoxAlign = this.wrapperObject.style.webkitJustifyContent = this.wrapperObject.style.justifyContent = "center";
         this.spanObject = document.createElement("span");
+        this.spanObject.style.userSelect = "none";
         this.wrapperObject.appendChild(this.spanObject);
         this.foreignObject.appendChild(this.wrapperObject);
         this.contentObject = this.foreignObject;

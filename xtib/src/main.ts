@@ -2,7 +2,8 @@
 
 import { Inspector } from './inspector'
 import { Editor } from './editor';
-import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty, InspectorFourNumberProperty, InspectorHRProperty } from './entities';
+import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty, InspectorFourNumberProperty, InspectorHRProperty, BaseLayer } from './entities';
+import { LayerView } from './layer';
 
 class MockItem implements Inspectable {
 
@@ -50,10 +51,31 @@ class MockItem implements Inspectable {
 
 }
 
+class MockLayer extends BaseLayer {
+
+    constructor() {
+        super()
+        this.name = "Root View"
+        const child0 = new BaseLayer();
+        child0.name = "Child 0 View"
+        const child1 = new BaseLayer();
+        child1.name = "Child 1 View"
+        const child2 = new BaseLayer();
+        child2.name = "Child 2 View"
+        this.children = [
+            child0,
+            child1,
+            child2,
+        ]
+    }
+
+}
+
 class XTIBAppDelegate extends XT.ApplicationDelegate {
 
     inspectorView = new Inspector();
     editorView = new Editor();
+    layerView = new LayerView();
 
     applicationDidFinishLaunchingWithOptions() {
         this.window = new XT.Window();
@@ -67,8 +89,10 @@ class XTIBAppDelegate extends XT.ApplicationDelegate {
             this.window.backgroundColor = XT.Color.yellowColor;
             this.window.addSubview(this.editorView);
             this.window.addSubview(this.inspectorView);
+            this.window.addSubview(this.layerView);
             this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("H:|-0-[editorView]-0-[inspectorView(300)]-0-|", { editorView: this.editorView, inspectorView: this.inspectorView }));
-            this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-0-[inspectorView]-0-|", { inspectorView: this.inspectorView }));
+            this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("H:[layerView(300)]-0-|", { layerView: this.layerView }));
+            this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-0-[inspectorView]-[layerView(400)]-0-|", { inspectorView: this.inspectorView, layerView: this.layerView }));
             this.window.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-0-[editorView]-0-|", { editorView: this.editorView }));
             this.window.layoutIfNeeded();
         }
@@ -76,6 +100,7 @@ class XTIBAppDelegate extends XT.ApplicationDelegate {
 
     mock() {
         this.inspectorView.item = new MockItem();
+        this.layerView.setLayerData(new MockLayer());
     }
 
 }

@@ -114,9 +114,9 @@ export class Inspector extends XT.View {
                     }
                 }
                 else if (prop instanceof InspectorEnumProperty) {
-                    (textField as any).setOptions(Object.keys(prop.enumOptions).map(it => prop.enumOptions[it]), prop.enumOptions[prop.defaultValue]);
+                    (textField as any).setOptions(Object.keys(prop.enumOptions).map((it: any) => prop.enumOptions[it]), prop.enumOptions[prop.defaultValue]);
                     textField.didEndEditing = () => {
-                        Object.keys(prop.enumOptions).forEach(it => {
+                        Object.keys(prop.enumOptions).forEach((it: any) => {
                             if (prop.enumOptions[it] === textField.text) {
                                 prop.valueChanged(parseInt(it))
                             }
@@ -142,7 +142,7 @@ export class Inspector extends XT.View {
                         }
                         it.didEndEditing = () => {
                             prop.valueChanged(textFields.map(it =>
-                                !isNaN(parseFloat(it.text)) ? parseFloat(it.text) : 0
+                                !isNaN(parseFloat(it.text || "")) ? parseFloat(it.text || "") : 0
                             ))
                         }
                         view.addSubview(it)
