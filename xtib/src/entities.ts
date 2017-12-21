@@ -1,55 +1,56 @@
+/// <reference path="../../src/xt.d.ts" />
 
 export interface Inspectable {
 
-    name: string;
-    props: InspectorBaseProperty[];
+    name: string
+    props: InspectorBaseProperty[]
 
 }
 
 export class InspectorBaseProperty {
 
-    name: string;
+    name: string
 
 }
 
 export class InspectorStringProperty extends InspectorBaseProperty {
 
-    defaultValue: string;
-    placeholder: string;
-    valueChanged: (value: string) => void;
+    defaultValue: string
+    placeholder: string
+    valueChanged: (value: string) => void
 
 }
 
 export class InspectorNumberProperty extends InspectorBaseProperty {
 
-    defaultValue: number;
-    placeholder: string;
-    minValue?: number;
-    maxValue?: number;
-    valueChanged: (value: number) => void;
+    defaultValue: number
+    placeholder: string
+    minValue?: number
+    maxValue?: number
+    valueChanged: (value: number) => void
 
 }
 
 export class InspectorBooleanProperty extends InspectorBaseProperty {
 
-    defaultValue: boolean;
-    valueChanged: (value: boolean) => void;
+    defaultValue: boolean
+    valueChanged: (value: boolean) => void
 
 }
 
 export class InspectorEnumProperty extends InspectorBaseProperty {
 
-    defaultValue: number;
+    defaultValue: number
     enumOptions: { [key: number]: string }
-    valueChanged: (value: number) => void;
+    valueChanged: (value: number) => void
 
 }
 
 export class InspectorFourNumberProperty extends InspectorBaseProperty {
 
-    fourNames: string[];
-    fourDefaultValue: number[];
-    valueChanged: (value: number[]) => void;
+    fourNames: string[]
+    fourDefaultValue: number[]
+    valueChanged: (value: number[]) => void
 
 }
 
@@ -58,6 +59,12 @@ export class InspectorHRProperty extends InspectorBaseProperty { }
 export class BaseLayer {
 
     name: string = ""
+    props: Inspectable
     children: BaseLayer[] = []
+    propsDidChange?: () => void
+
+    requestDesignView(): XT.View | undefined {
+        return undefined
+    }
 
 }
