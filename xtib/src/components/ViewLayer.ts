@@ -11,19 +11,24 @@ export class ViewLayer extends BaseLayer {
     backgroundColor: XT.Color = XT.Color.whiteColor
     frame?: XT.Rect = undefined
 
-    constructor() {
-        super();
-    }
+    static componentCloner: { [key: number]: (originLayer: ViewLayer) => ViewLayer } = {}
+    static componentMap: { [key: number]: string } = {}
+    static componentID = 0
+    static componentName = "XT.View"
 
-    public get props(): Inspectable {
+    protected findProps(): any {
         const classProp = new InspectorEnumProperty()
         classProp.name = "Class"
-        classProp.enumOptions = {
-            0: "XT.View"
-        }
-        classProp.defaultValue = 0
+        classProp.enumOptions = ViewLayer.componentMap
+        classProp.defaultValue = ViewLayer.componentID
         classProp.valueChanged = (value) => {
-
+            let newLayer: ViewLayer | undefined = undefined
+            if (ViewLayer.componentCloner[value]) {
+                newLayer = ViewLayer.componentCloner[value](this)
+            }
+            if (this.layerDidChange && newLayer) {
+                this.layerDidChange(newLayer, this)
+            }
         }
         const nameProp = new InspectorStringProperty()
         nameProp.name = "Name"
@@ -120,7 +125,34 @@ export class ViewLayer extends BaseLayer {
             this.propsDidChange && this.propsDidChange();
         }
         return {
-            name: "XT.View",
+            classProp,
+            nameProp,
+            frameProp,
+            tagProp,
+            interactionEnabledProp,
+            alphaProp,
+            backgroundColorProp,
+            hiddenProp,
+            cornerRadiusProp,
+            clipsProp,
+        }
+    }
+
+    public get props(): Inspectable {
+        const {
+            classProp,
+            nameProp,
+            frameProp,
+            tagProp,
+            interactionEnabledProp,
+            alphaProp,
+            backgroundColorProp,
+            hiddenProp,
+            cornerRadiusProp,
+            clipsProp,
+        } = this.findProps()
+        return {
+            name: "View",
             props: [
                 classProp,
                 nameProp,
@@ -138,6 +170,8 @@ export class ViewLayer extends BaseLayer {
         }
     }
 
+    layerDidChange?: (newLayer: ViewLayer, oldLayer: ViewLayer) => void
+
     requestDesignView(): XT.View | undefined {
         const view = new XT.View()
         view.backgroundColor = this.backgroundColor
@@ -152,3 +186,12 @@ export class ViewLayer extends BaseLayer {
     }
 
 }
+
+ViewLayer.componentCloner[ViewLayer.componentID] = (originLayer) => {
+    const newLayer = new ViewLayer()
+    Object.keys(originLayer).forEach(it => {
+        newLayer[it] = originLayer[it];
+    })
+    return newLayer
+}
+ViewLayer.componentMap[ViewLayer.componentID] = ViewLayer.componentName

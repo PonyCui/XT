@@ -36,6 +36,9 @@ export class TextField extends View {
         if (this.editing) {
             WindowElement._allowDefault = true;
         }
+        if (this.nativeObject.selectObject !== undefined) {
+            WindowElement._allowDefault = true;
+        }
     }
 
     touchesMoved(touches: Touch[], event: Event): void {

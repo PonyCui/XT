@@ -133,6 +133,10 @@ export class LayerView extends XT.View {
         this.sectionContent.contentSize = XT.SizeMake(0, this.currentY)
     }
 
+    public selectLayer(layer: BaseLayer) {
+        this.currentLayer = layer
+    }
+
     private selectPrevious() {
         if (this.currentLayer) {
             const idx = this.renderedLayers.indexOf(this.currentLayer)

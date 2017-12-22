@@ -598,6 +598,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public set onTap(value: (() => void) | undefined) {
+        this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof TapGestureRecognizer && t.tapsRequired == 1))
         this._existsSingleTap = true
         const tapGesture = new TapGestureRecognizer();
         tapGesture.owner = this
@@ -618,6 +619,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public set onDoubleTap(value: (() => void) | undefined) {
+        this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof TapGestureRecognizer && t.tapsRequired == 2))
         this._existsDoubleTap = true
         const tapGesture = new TapGestureRecognizer();
         tapGesture.owner = this
@@ -632,6 +634,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+        this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof LongPressGestureRecognizer))
         const longPressGesture = new LongPressGestureRecognizer();
         longPressGesture.owner = this
         longPressGesture.minimumPressDuration = this._longPressDuration
@@ -657,6 +660,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void) | undefined) {
+        this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof PanGestureRecognizer))
         const panGesture = new PanGestureRecognizer();
         panGesture.owner = this
         panGesture.fire = (state, viewLocation, absLocation) => {

@@ -4,7 +4,10 @@ import { Inspector } from './inspector'
 import { DesignView } from './design'
 import { Inspectable, InspectorBaseProperty, InspectorStringProperty, InspectorNumberProperty, InspectorBooleanProperty, InspectorEnumProperty, InspectorFourNumberProperty, InspectorHRProperty, BaseLayer } from './entities'
 import { LayerView, LayerDelegate } from './layer'
-import { ViewLayer } from './components/ViewLayer';
+import { ViewLayer } from './components/ViewLayer'
+import { registerComponents } from './components/registerComponents';
+
+registerComponents()
 
 class MockItem implements Inspectable {
 
@@ -52,35 +55,6 @@ class MockItem implements Inspectable {
 
 }
 
-class MockLayer extends ViewLayer {
-
-    constructor() {
-        super()
-        this.name = "Root View"
-        const child0 = new ViewLayer()
-        child0.propsDidChange = () => {
-            this.propsDidChange && this.propsDidChange();
-        }
-        child0.name = "Child 0 View"
-        const child1 = new ViewLayer()
-        child1.name = "Child 1 View"
-        child1.propsDidChange = () => {
-            this.propsDidChange && this.propsDidChange();
-        }
-        const child2 = new ViewLayer()
-        child2.name = "Child 2 View"
-        child2.propsDidChange = () => {
-            this.propsDidChange && this.propsDidChange();
-        }
-        this.children = [
-            child0,
-            child1,
-            child2,
-        ]
-    }
-
-}
-
 class XTIBAppDelegate extends XT.ApplicationDelegate implements LayerDelegate {
 
 
@@ -110,13 +84,23 @@ class XTIBAppDelegate extends XT.ApplicationDelegate implements LayerDelegate {
         }
     }
 
-    private mockLayer = new MockLayer()
+    private mockLayer = new ViewLayer()
 
     mock() {
-        this.mockLayer.propsDidChange = () => {
-            this.layerView.setLayerData(this.mockLayer)
-            this.designView.setLayerData(this.mockLayer)
+        this.mockLayer.name = "Root View"
+        this.mockLayer.layerDidChange = (newLayer) => {
+            this.mockLayer = newLayer
+            this.reloadData()
+            this.inspectorView.item = newLayer.props
+            this.layerView.selectLayer(newLayer)
         }
+        this.mockLayer.propsDidChange = () => {
+            this.reloadData()
+        }
+        this.reloadData()
+    }
+
+    reloadData() {
         this.layerView.setLayerData(this.mockLayer)
         this.designView.setLayerData(this.mockLayer)
     }
@@ -124,19 +108,29 @@ class XTIBAppDelegate extends XT.ApplicationDelegate implements LayerDelegate {
     layerViewDidSelectLayer(layer: BaseLayer | undefined) {
         if (layer) {
             this.inspectorView.item = layer.props
+            this.designView.currentLayer = layer
         }
     }
 
     layerViewRequireAddLayer(onLayer: BaseLayer) {
         const newChild = new ViewLayer()
         newChild.name = "New View"
+        newChild.frame = XT.RectMake(0, 0, 44, 44)
+        newChild.layerDidChange = (newLayer, oldLayer) => {
+            const idx = onLayer.children.indexOf(oldLayer)
+            if (idx >= 0) {
+                onLayer.children[idx] = newLayer
+                this.reloadData()
+                this.inspectorView.item = newLayer.props
+                this.layerView.selectLayer(newLayer)
+            }
+        }
         newChild.propsDidChange = () => {
-            this.layerView.setLayerData(this.mockLayer)
-            this.designView.setLayerData(this.mockLayer)
+            this.reloadData()
         }
         onLayer.children.push(newChild)
-        this.layerView.setLayerData(this.mockLayer)
-        this.designView.setLayerData(this.mockLayer)
+        this.reloadData()
+        this.layerView.selectLayer(newChild)
     }
 
     layerViewRequireRemoveLayer(removeLayer: BaseLayer) {
