@@ -9,8 +9,12 @@
     "dev.ios": "webpack --env.devios -w",
     "dev.web": "webpack --env.devweb -w",
     "dev.xtib": "webpack --env.devxtib -w",
+    "dev.xtml": "tsc ./xtml/*.ts -w",
     "debug": "node service/index.js",
     "test": "webpack --env.test && node dist/tests.js"
+  },
+  "bin": {
+    "create-xtml-types": "./xtml/create-xtml-types.js"
   },
   "author": "",
   "license": "ISC",
@@ -31,5 +35,8 @@
     "uglifyjs": "^2.4.11",
     "webpack": "^3.5.2",
     "webpack-shell-plugin": "^0.5.0"
+  },
+  "devDependencies": {
+    "jsdom": "^11.5.1"
   }
 }

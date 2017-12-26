@@ -1,0 +1,7 @@
+<!-- Author: Pony -->
+<View name="fooView" backgroundColor="#000000" frame="100,100,100,100">
+
+</View>
+<View name="barView" backgroundColor="#ffff00" frame="200,200,100,100">
+
+</View>

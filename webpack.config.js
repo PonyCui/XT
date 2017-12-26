@@ -14,10 +14,11 @@ module.exports = function (env) {
         },
         devtool: "source-map",
         resolve: {
-            extensions: [".ts", ".js"]
+            extensions: [".xtml", ".ts", ".js"]
         },
         module: {
             rules: [
+                { test: /\.xtml?$/, loader: require.resolve('./xtml/index') },
                 { test: /\.ts?$/, loader: "awesome-typescript-loader" },
             ],
         },

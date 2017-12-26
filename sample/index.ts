@@ -1,4 +1,6 @@
 /// <reference path="../src/xt.d.ts" />
+/// <reference path="./xtml/sayHello.d.ts" />
+import SayHello from "./xtml/sayHello.xtml"
 
 // declare const FOOPlugin: any
 
@@ -54,16 +56,21 @@ class FirstViewController extends XT.ViewController {
     title = "First"
 
     viewDidLoad() {
-        const view = new XT.ImageView(XT.RectMake(44, 44, 78, 78))
-        view.userInteractionEnabled = true;
-        view.onTap = () => {
-            this.navigationController && this.navigationController.pushViewController(new SecondViewController())
-        }
-        XT.Image.fromAssetsWithScales("success", 2, (it) => {
-            view.image = it
-        })
-        view.backgroundColor = XT.Color.yellowColor
-        this.view.addSubview(view)
+        const view = new SayHello();
+        view.frame = XT.RectMake(0, 0, 300, 400);
+        view.barView.backgroundColor = XT.Color.greenColor
+        // view.fooView.backgroundColor = XT.Color.greenColor
+        this.view.addSubview(view);
+        // const view = new XT.ImageView(XT.RectMake(44, 44, 78, 78))
+        // view.userInteractionEnabled = true;
+        // view.onTap = () => {
+        //     this.navigationController && this.navigationController.pushViewController(new SecondViewController())
+        // }
+        // XT.Image.fromAssetsWithScales("success", 2, (it) => {
+        //     view.image = it
+        // })
+        // view.backgroundColor = XT.Color.yellowColor
+        // this.view.addSubview(view)
     }
 
 }
