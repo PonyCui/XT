@@ -102,8 +102,8 @@ export class View implements Releasable {
     longPressDuration: number;
     onTap?: () => void
     onDoubleTap?: () => void
-    onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point) => void
-    onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void
+    onLongPress?: (state: InteractionState, viewLocation?: Point, absLocation?: Point, translation?: Point) => void
+    onPan?: (state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point, translation?: Point) => void
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) { }

@@ -43,9 +43,11 @@ export class DesignView extends XT.View {
         this.layerAdjustingLeftButton.backgroundColor = XT.Color.whiteColor
         this.layerAdjustingLeftButton.borderWidth = 1
         this.layerAdjustingLeftButton.borderColor = XT.Color.grayColor
+        this.layerAdjustingBottomButton.userInteractionEnabled = true
         this.layerAdjustingBottomButton.backgroundColor = XT.Color.whiteColor
         this.layerAdjustingBottomButton.borderWidth = 1
         this.layerAdjustingBottomButton.borderColor = XT.Color.grayColor
+        this.layerAdjustingRightButton.userInteractionEnabled = true
         this.layerAdjustingRightButton.backgroundColor = XT.Color.whiteColor
         this.layerAdjustingRightButton.borderWidth = 1
         this.layerAdjustingRightButton.borderColor = XT.Color.grayColor
@@ -143,6 +145,36 @@ export class DesignView extends XT.View {
             else if (state == XT.InteractionState.Changed) {
                 const movePoint = { x: absLocation.x - touchStartPoint.x, y: absLocation.y - touchStartPoint.y }
                 onView.frame = { ...onView.frame, x: touchStartFrame.x + movePoint.x, y: touchStartFrame.y + movePoint.y }
+                this.renderAdjustingButton(onView)
+            }
+            else if (state == XT.InteractionState.Ended) {
+                layer.frame = onView.frame
+                layer.propsDidChange && layer.propsDidChange()
+            }
+        }
+        this.layerAdjustingRightButton.onPan = (state, viewLocation, absLocation) => {
+            if (state == XT.InteractionState.Began) {
+                touchStartPoint = absLocation
+                touchStartFrame = onView.frame
+            }
+            else if (state == XT.InteractionState.Changed) {
+                const movePoint = { x: absLocation.x - touchStartPoint.x, y: absLocation.y - touchStartPoint.y }
+                onView.frame = { ...onView.frame, width: Math.max(0.0, touchStartFrame.width + movePoint.x) }
+                this.renderAdjustingButton(onView)
+            }
+            else if (state == XT.InteractionState.Ended) {
+                layer.frame = onView.frame
+                layer.propsDidChange && layer.propsDidChange()
+            }
+        }
+        this.layerAdjustingBottomButton.onPan = (state, viewLocation, absLocation) => {
+            if (state == XT.InteractionState.Began) {
+                touchStartPoint = absLocation
+                touchStartFrame = onView.frame
+            }
+            else if (state == XT.InteractionState.Changed) {
+                const movePoint = { x: absLocation.x - touchStartPoint.x, y: absLocation.y - touchStartPoint.y }
+                onView.frame = { ...onView.frame, height: Math.max(0.0, touchStartFrame.height + movePoint.y) }
                 this.renderAdjustingButton(onView)
             }
             else if (state == XT.InteractionState.Ended) {
