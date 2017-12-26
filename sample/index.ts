@@ -58,7 +58,11 @@ class FirstViewController extends XT.ViewController {
     viewDidLoad() {
         const view = new SayHello();
         view.frame = XT.RectMake(0, 0, 300, 400);
-        view.barView.backgroundColor = XT.Color.greenColor
+        // view.barView.backgroundColor = XT.Color.greenColor
+        // view.barButton.onTouchUpInside = () => {
+        //     console.log("12313123132")
+        // }
+        // view.barView.clipsToBounds = true
         // view.fooView.backgroundColor = XT.Color.greenColor
         this.view.addSubview(view);
         // const view = new XT.ImageView(XT.RectMake(44, 44, 78, 78))

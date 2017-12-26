@@ -16,7 +16,7 @@ function exec(file) {
     (global as any).viewOutlets = {};
     parse(fs.readFileSync(file));
     const propTypes = Object.keys((global as any).viewOutlets).map(it => {
-        return it + ":" + (global as any).viewOutlets[it]
+        return it + ": " + (global as any).viewOutlets[it]
     }).join("\n        ")
     const codeTypes = `/**
  * Generate By create-xtml-types Command line tool

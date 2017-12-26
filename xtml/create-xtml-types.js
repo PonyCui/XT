@@ -17,7 +17,7 @@ function exec(file) {
     global.viewOutlets = {};
     parse(fs.readFileSync(file));
     var propTypes = Object.keys(global.viewOutlets).map(function (it) {
-        return it + ":" + global.viewOutlets[it];
+        return it + ": " + global.viewOutlets[it];
     }).join("\n        ");
     var codeTypes = "/**\n * Generate By create-xtml-types Command line tool\n */\ndeclare module \"*/" + file + "\" {\n\n    export default class Body extends XT.View {\n        \n        " + propTypes + "\n\n    }\n\n}\n    ";
     fs.writeFileSync('./' + file.replace(".xtml", ".d.ts"), codeTypes);
