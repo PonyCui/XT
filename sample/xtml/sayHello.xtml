@@ -1,8 +1,7 @@
 <!-- Author: Pony -->
-<View name="fooView" frame="100,100,200,100" userInteractionEnabled="true">
+<View name="fooView" backgroundColor="#ffff00" frame="0,0,300,300" userInteractionEnabled="true">
     <View name="barView" 
-          backgroundColor="#ffffff" 
-          frame="0,0,200,100" 
+          backgroundColor="#ff0000" 
           cornerRadius="12" 
           clipsToBounds="true" 
           userInteractionEnabled="true">
@@ -18,10 +17,20 @@
                     src="success"
                  scales="2"
                   frame="0,0,78,78" /> -->
-            <Label text="Hello, World" 
+            <!-- <Label text="Hello, World" 
                    fontSize="14"
                    fontWeight="700"
                    frame="0,0,200,44"
-                   textAlignment="center" />
+                   textAlignment="center" /> -->
     </View>
 </View>
+<Layout>
+    <FullWidth view="fooView"></FullWidth>
+    <FullHeight view="fooView"></FullHeight>
+    <!-- <Right view="barView" value="44"></Right> -->
+    <!-- <Width view="barView" value="200"></Width>
+    <Height view="barView" value="200"></Height>
+    <Bottom view="barView" value="44"></Bottom> -->
+    <VF value="|-80-[barView]-20-|"></VF>
+    <VF value="V:|-44-[barView]-44-|"></VF>
+</Layout>

@@ -6,6 +6,7 @@ function default_1(source) {
     try {
         var dom = new jsdom_1.JSDOM(source);
         var body = new body_1.Body(dom.window.document.querySelector('body'));
+        // console.log(body.toCode());
         return body.toCode();
     }
     catch (error) {

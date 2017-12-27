@@ -57,7 +57,15 @@ class FirstViewController extends XT.ViewController {
 
     viewDidLoad() {
         const view = new SayHello();
-        view.frame = XT.RectMake(0, 0, 300, 400);
+        view.frame = XT.RectMake(0, 0, 300, 300);
+        // view.fooView.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("[barView(200)]", {barView: view.barView}))
+        // view.barView.addConstraint(new XT.LayoutConstraint(undefined, undefined, XT.LayoutRelation.Equal, view.barView, XT.LayoutAttribute.Width, 200))
+        // view.fooView.addConstraint(new XT.LayoutConstraint(view.fooView, XT.LayoutAttribute.CenterX, XT.LayoutRelation.Equal, view.barView, XT.LayoutAttribute.CenterX))
+        // view.fooView.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("H:|~[barView]~|", {fooView: view.fooView, barView: view.barView}))
+        // view.fooView.layoutIfNeeded()
+        // view.barView.layoutIfNeeded()
+        // view.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", {view: view.barView}))
+        // view.addConstraints(XT.LayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", {view: view.barView}))
         // view.barView.backgroundColor = XT.Color.greenColor
         // view.barButton.onTouchUpInside = () => {
         //     console.log("12313123132")
