@@ -11,6 +11,8 @@
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
 #import "XTRObjectRefs.h"
+#import "XTRWindow.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRView ()
 
@@ -28,14 +30,14 @@
     return @"XTRView";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame {
     XTRView *view = [[XTRView alloc] initWithFrame:[frame toRect]];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
     view.multipleTouchEnabled = YES;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    return managedObject.objectUUID;
 }
 
 #ifdef LOGDEALLOC
@@ -57,269 +59,433 @@
     }
 }
 
-- (NSDictionary *)xtr_frame {
-    return [JSValue fromRect:self.frame];
-}
-
-- (void)xtr_setFrame:(JSValue *)frame {
-    self.frame = [frame toRect];
-}
-
-- (NSDictionary *)xtr_bounds {
-    return [JSValue fromRect:self.bounds];
-}
-
-- (void)xtr_setBounds:(JSValue *)bounds {
-    self.bounds = [bounds toRect];
-}
-
-- (NSDictionary *)xtr_center {
-    return [JSValue fromPoint:self.center];
-}
-
-- (void)xtr_setCenter:(JSValue *)center {
-    self.center = [center toPoint];
-}
-
-- (NSDictionary *)xtr_transform {
-    return [JSValue fromTransform:self.transform];
-}
-
-- (void)xtr_setTransform:(JSValue *)transform {
-    self.transform = [transform toTransform];
-}
-
-- (BOOL)xtr_clipsToBounds {
-    return self.clipsToBounds;
-}
-
-- (void)xtr_setClipsToBounds:(JSValue *)clipsToBounds {
-    self.clipsToBounds = [clipsToBounds toBool];
-}
-
-- (NSDictionary *)xtr_backgroundColor {
-    if (self.backgroundColor != nil) {
-        return [JSValue fromColor: self.backgroundColor];
++ (NSDictionary *)xtr_frame:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromRect:obj.frame];
     }
-    return nil;
+    return @{};
 }
 
-- (void)xtr_setBackgroundColor:(JSValue *)backgroundColor {
-    self.backgroundColor = [backgroundColor toColor];
-}
-
-- (CGFloat)xtr_alpha {
-    return self.alpha;
-}
-
-- (void)xtr_setAlpha:(JSValue *)alpha {
-    self.alpha = [alpha toDouble];
-}
-
-- (BOOL)xtr_opaque {
-    return self.opaque;
-}
-
-- (void)xtr_setOpaque:(JSValue *)opaque {
-    self.opaque = [opaque toBool];
-}
-
-- (BOOL)xtr_hidden {
-    return self.hidden;
-}
-
-- (void)xtr_setHidden:(JSValue *)hidden {
-    self.hidden = [hidden toBool];
-}
-
-- (NSInteger)xtr_contentMode {
-    return self.contentMode;
-}
-
-- (void)xtr_setContentMode:(JSValue *)contentMode {
-    self.contentMode = [contentMode toInt32];
-}
-
-- (XTRView *)xtr_maskView {
-    return nil;
-}
-
-- (void)xtr_setMaskView:(JSValue *)maskView {
-    
-}
-
-- (NSDictionary *)xtr_tintColor {
-    if (self.tintColor != nil) {
-        return [JSValue fromColor:self.tintColor];
-    }
-    else {
-        return nil;
++ (void)xtr_setFrame:(JSValue *)frame objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.frame = [frame toRect];
     }
 }
 
-- (void)xtr_setTintColor:(JSValue *)tintColor {
-    self.tintColor = [tintColor toColor];
++ (NSDictionary *)xtr_bounds:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromRect:obj.bounds];
+    }
+    return @{};
 }
 
-- (CGFloat)xtr_cornerRadius {
-    return self.layer.cornerRadius;
++ (void)xtr_setBounds:(JSValue *)bounds objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.bounds = [bounds toRect];
+    }
 }
 
-- (void)xtr_setCornerRadius:(JSValue *)cornerRadius {
-    self.layer.cornerRadius = [cornerRadius toDouble];
++ (NSDictionary *)xtr_center:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromPoint:obj.center];
+    }
+    return @{};
 }
 
-- (CGFloat)xtr_borderWidth {
-    return self.layer.borderWidth;
++ (void)xtr_setCenter:(JSValue *)center objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.center = [center toPoint];
+    }
 }
 
-- (void)xtr_setBorderWidth:(JSValue *)borderWidth {
-    self.layer.borderWidth = [borderWidth toDouble];
++ (NSDictionary *)xtr_transform:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromTransform:obj.transform];
+    }
+    return @{};
 }
 
-- (NSDictionary *)xtr_borderColor {
-    return [JSValue fromColor:[UIColor colorWithCGColor:self.layer.borderColor]];
++ (void)xtr_setTransform:(JSValue *)transform objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.transform = [transform toTransform];
+    }
 }
 
-- (void)xtr_setBorderColor:(JSValue *)borderColor {
-    self.layer.borderColor = [[borderColor toColor] CGColor];
++ (BOOL)xtr_clipsToBounds:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.clipsToBounds;
+    }
+    return NO;
 }
 
-- (NSDictionary *)xtr_shadowColor {
-    return [JSValue fromColor:[UIColor colorWithCGColor:self.layer.shadowColor]];
++ (void)xtr_setClipsToBounds:(BOOL)clipsToBounds objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.clipsToBounds = clipsToBounds;
+    }
 }
 
-- (void)xtr_setShadowColor:(JSValue *)shadowColor {
-    self.layer.shadowColor = [[shadowColor toColor] CGColor];
++ (NSDictionary *)xtr_backgroundColor:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromColor:obj.backgroundColor];
+    }
+    return @{};
 }
 
-- (CGFloat)xtr_shadowOpacity {
-    return (CGFloat)self.layer.shadowOpacity;
++ (void)xtr_setBackgroundColor:(JSValue *)backgroundColor objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.backgroundColor = [backgroundColor toColor];
+    }
 }
 
-- (void)xtr_setShadowOpacity:(JSValue *)shadowOpacity {
-    self.layer.shadowOpacity = (float)[shadowOpacity toDouble];
++ (CGFloat)xtr_alpha:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.alpha;
+    }
+    return 0.0;
 }
 
-- (NSDictionary *)xtr_shadowOffset{
-    return [JSValue fromSize:self.layer.shadowOffset];
++ (void)xtr_setAlpha:(CGFloat)alpha objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.alpha = alpha;
+    }
 }
 
-- (void)xtr_setShadowOffset:(JSValue *)shadowOffset{
-    self.layer.shadowOffset = [shadowOffset toSize];
++ (BOOL)xtr_opaque:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.opaque;
+    }
+    return NO;
 }
 
-- (CGFloat)xtr_shadowRadius{
-    return self.layer.shadowRadius;
++ (void)xtr_setOpaque:(BOOL)opaque objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.opaque = opaque;
+    }
 }
 
-- (void)xtr_setShadowRadius:(JSValue *)shadowRadius{
-    self.layer.shadowRadius = [shadowRadius toDouble];
++ (BOOL)xtr_hidden:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.hidden;
+    }
+    return NO;
 }
 
-- (NSInteger)xtr_tag{
-    return self.tag;
++ (void)xtr_setHidden:(BOOL)hidden objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.hidden = hidden;
+    }
 }
 
-- (void)xtr_setTag:(JSValue *)tag{
-    self.tag = [tag toInt32];
++ (NSInteger)xtr_contentMode:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.contentMode;
+    }
+    return 0;
 }
 
-- (JSValue *)xtr_superview {
-    return [JSValue fromObject:self.superview context:self.context];
++ (void)xtr_setContentMode:(NSInteger)contentMode objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.contentMode = contentMode;
+    }
 }
 
-- (NSArray<JSValue *> *)xtr_subviews {
++ (NSString *)xtr_maskView:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        XTRView *maskView = (id)obj.maskView;
+        if ([maskView isKindOfClass:[XTRView class]]) {
+            return maskView.objectUUID;
+        }
+    }
+    return @"";
+}
+
++ (void)xtr_setMaskView:(NSString *)maskViewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *maskView = [XTMemoryManager find:maskViewRef];
+    if ([obj isKindOfClass:[UIView class]] && [maskView isKindOfClass:[UIView class]]) {
+        obj.maskView = maskView;
+    }
+}
+
++ (NSDictionary *)xtr_tintColor:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromColor:obj.tintColor];
+    }
+    return @{};
+}
+
++ (void)xtr_setTintColor:(JSValue *)tintColor objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.tintColor = [tintColor toColor];
+    }
+}
+
++ (CGFloat)xtr_cornerRadius:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.layer.cornerRadius;
+    }
+    return 0;
+}
+
++ (void)xtr_setCornerRadius:(CGFloat)cornerRadius objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.cornerRadius = cornerRadius;
+    }
+}
+
++ (CGFloat)xtr_borderWidth:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.layer.borderWidth;
+    }
+    return 0;
+}
+
++ (void)xtr_setBorderWidth:(CGFloat)borderWidth objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.borderWidth = borderWidth;
+    }
+}
+
++ (NSDictionary *)xtr_borderColor:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromColor:[UIColor colorWithCGColor:obj.layer.borderColor]];
+    }
+    return @{};
+}
+
++ (void)xtr_setBorderColor:(JSValue *)borderColor objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.borderColor = [borderColor toColor].CGColor;
+    }
+}
+
++ (NSDictionary *)xtr_shadowColor:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromColor:[UIColor colorWithCGColor:obj.layer.shadowColor]];
+    }
+    return @{};
+}
+
++ (void)xtr_setShadowColor:(JSValue *)shadowColor objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.shadowColor = [shadowColor toColor].CGColor;
+    }
+}
+
++ (CGFloat)xtr_shadowOpacity:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return (CGFloat)obj.layer.shadowOpacity;
+    }
+    return 0;
+}
+
++ (void)xtr_setShadowOpacity:(CGFloat)shadowOpacity objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.shadowOpacity = shadowOpacity;
+    }
+}
+
++ (NSDictionary *)xtr_shadowOffset:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return [JSValue fromSize:obj.layer.shadowOffset];
+    }
+    return @{};
+}
+
++ (void)xtr_setShadowOffset:(JSValue *)shadowOffset objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.shadowOffset = [shadowOffset toSize];
+    }
+}
+
++ (CGFloat)xtr_shadowRadius:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.layer.shadowRadius;
+    }
+    return 0;
+}
+
++ (void)xtr_setShadowRadius:(CGFloat)shadowRadius objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.layer.shadowRadius = shadowRadius;
+    }
+}
+
++ (NSInteger)xtr_tag:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.tag;
+    }
+    return 0;
+}
+
++ (void)xtr_setTag:(NSInteger)tag objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.tag = tag;
+    }
+}
+
++ (NSString *)xtr_superview:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        XTRView *superview = (id)obj.superview;
+        if ([superview isKindOfClass:[XTRView class]]) {
+            return superview.objectUUID;
+        }
+    }
+    return @"";
+}
+
++ (NSArray<NSString *> *)xtr_subviews:(NSString *)objectRef {
     NSMutableArray *subviews = [NSMutableArray array];
-    for (UIView *subview in self.subviews) {
-        [subviews addObject:[JSValue fromObject:subview context:self.context] ?: [NSNull null]];
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        for (XTRView *subview in obj.subviews) {
+            if ([subview isKindOfClass:[XTRView class]]) {
+                [subviews addObject:subview.objectUUID ?: @""];
+            }
+        }
     }
     return [subviews copy];
 }
 
-- (UIWindow *)xtr_window {
-    return self.window;
++ (NSString *)xtr_window:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        XTRWindow *window = (id)obj.window;
+        if ([window isKindOfClass:[XTRWindow class]]) {
+            return window.objectUUID;
+        }
+    }
+    return @"";
 }
 
-- (void)xtr_removeFromSuperview {
-    [self removeFromSuperview];
-}
-
-- (void)xtr_insertSubviewAtIndex:(JSValue *)subview atIndex:(JSValue *)atIndex {
-    UIView *view = [subview toView];
-    if (view) {
-        [self insertSubview:view atIndex:[atIndex toInt32]];
++ (void)xtr_removeFromSuperview:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        [obj removeFromSuperview];
     }
 }
 
-- (void)xtr_exchangeSubviewAtIndex:(JSValue *)index1 index2:(JSValue *)index2 {
-    [self exchangeSubviewAtIndex:[index1 toInt32] withSubviewAtIndex:[index2 toInt32]];
-}
-
-- (void)xtr_addSubview:(JSValue *)subview {
-    UIView *view = [subview toView];
-    if (view) {
-        [self addSubview:view];
++ (void)xtr_insertSubviewAtIndex:(NSString *)subviewRef atIndex:(NSInteger)atIndex objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *subview = [XTMemoryManager find:subviewRef];
+    if ([obj isKindOfClass:[UIView class]] && [subview isKindOfClass:[UIView class]]) {
+        [obj insertSubview:subview atIndex:atIndex];
     }
 }
 
-- (void)xtr_insertSubviewBelow:(JSValue *)subview siblingSubview:(JSValue *)siblingSubview {
-    UIView *view = [subview toView];
-    UIView *siblingView = [siblingSubview toView];
-    if (view && siblingView) {
-        [self insertSubview:view belowSubview:siblingView];
++ (void)xtr_exchangeSubviewAtIndex:(NSInteger)index1 index2:(NSInteger)index2 objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        [obj exchangeSubviewAtIndex:index1 withSubviewAtIndex:index2];
     }
 }
 
-- (void)xtr_insertSubviewAbove:(JSValue *)subview siblingSubview:(JSValue *)siblingSubview {
-    UIView *view = [subview toView];
-    UIView *siblingView = [siblingSubview toView];
-    if (view && siblingView) {
-        [self insertSubview:view aboveSubview:siblingView];
++ (void)xtr_addSubview:(NSString *)subviewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *subview = [XTMemoryManager find:subviewRef];
+    if ([obj isKindOfClass:[UIView class]] && [subview isKindOfClass:[UIView class]]) {
+        [obj addSubview:subview];
     }
 }
 
-- (void)xtr_bringSubviewToFront:(JSValue *)subview {
-    UIView *view = [subview toView];
-    if (view) {
-        [self bringSubviewToFront:view];
++ (void)xtr_insertSubviewBelow:(NSString *)subviewRef siblingSubview:(NSString *)siblingSubviewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *subview = [XTMemoryManager find:subviewRef];
+    UIView *siblingSubview = [XTMemoryManager find:siblingSubviewRef];
+    if ([obj isKindOfClass:[UIView class]] && [subview isKindOfClass:[UIView class]] && [siblingSubview isKindOfClass:[UIView class]]) {
+        [obj insertSubview:subview belowSubview:siblingSubview];
     }
 }
 
-- (void)xtr_sendSubviewToBack:(JSValue *)subview {
-    UIView *view = [subview toView];
-    if (view) {
-        [self sendSubviewToBack:view];
++ (void)xtr_insertSubviewAbove:(NSString *)subviewRef siblingSubview:(NSString *)siblingSubviewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *subview = [XTMemoryManager find:subviewRef];
+    UIView *siblingSubview = [XTMemoryManager find:siblingSubviewRef];
+    if ([obj isKindOfClass:[UIView class]] && [subview isKindOfClass:[UIView class]] && [siblingSubview isKindOfClass:[UIView class]]) {
+        [obj insertSubview:subview aboveSubview:siblingSubview];
     }
 }
 
-- (void)didAddSubview:(UIView *)subview {
++ (void)xtr_bringSubviewToFront:(NSString *)subviewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *subview = [XTMemoryManager find:subviewRef];
+    if ([obj isKindOfClass:[UIView class]] && [subview isKindOfClass:[UIView class]]) {
+        [obj bringSubviewToFront:subview];
+    }
+}
+
++ (void)xtr_sendSubviewToBack:(NSString *)subviewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *subview = [XTMemoryManager find:subviewRef];
+    if ([obj isKindOfClass:[UIView class]] && [subview isKindOfClass:[UIView class]]) {
+        [obj sendSubviewToBack:subview];
+    }
+}
+
+- (void)didAddSubview:(XTRView *)subview {
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil ? @[
-                                                                                      [JSValue fromObject:subview context:self.context]
-                                                                                      ] : @[])];
+        [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil && [subview isKindOfClass:[XTRView class]]
+                                                                   ? @[subview.objectUUID ?: @""] : @[])];
     }
 }
 
-- (void)willRemoveSubview:(UIView *)subview {
+- (void)willRemoveSubview:(XTRView *)subview {
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil ? @[
-                                                                                          [JSValue fromObject:subview context:self.context]
-                                                                                          ] : @[])];
+        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil && [subview isKindOfClass:[XTRView class]]
+                                                                       ? @[subview.objectUUID ?: @""] : @[])];
     }
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
+- (void)willMoveToSuperview:(XTRView *)newSuperview {
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil ? @[
-                                                                                                 [JSValue fromObject:newSuperview context:self.context]
-                                                                                                 ] : @[])];
+        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil && [newSuperview isKindOfClass:[XTRView class]]
+                                                                         ? @[newSuperview.objectUUID ?: @""] : @[])];
     }
 }
 
@@ -331,13 +497,12 @@
     }
 }
 
-- (void)willMoveToWindow:(UIWindow *)newWindow {
+- (void)willMoveToWindow:(XTRWindow *)newWindow {
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil ? @[
-                                                                                           [JSValue fromObject:newWindow context:self.context]
-                                                                                           ] : @[])];
+        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil && [newWindow isKindOfClass:[XTRWindow class]]
+                                                                      ? @[newWindow.objectUUID ?: @""] : @[])];
     }
 }
 
@@ -349,24 +514,38 @@
     }
 }
 
-- (BOOL)xtr_isDescendantOfView:(JSValue *)view {
-    UIView *aView = [view toView];
-    if (aView) {
-        return [self isDescendantOfView:aView];
++ (BOOL)xtr_isDescendantOfView:(NSString *)viewRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    UIView *view = [XTMemoryManager find:viewRef];
+    if ([obj isKindOfClass:[UIView class]] && [view isKindOfClass:[UIView class]]) {
+        return [obj isDescendantOfView:view];
     }
     return NO;
 }
 
-- (JSValue *)xtr_viewWithTag:(JSValue *)tag {
-    return [JSValue fromObject:[self viewWithTag:[tag toInt32]] context:self.context];
++ (NSString *)xtr_viewWithTag:(NSInteger)tag objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        XTRView *view = [obj viewWithTag:tag];
+        if ([view isKindOfClass:[XTRView class]]) {
+            return view.objectUUID;
+        }
+    }
+    return @"";
 }
 
-- (void)xtr_setNeedsLayout {
-    [self setNeedsLayout];
++ (void)xtr_setNeedsLayout:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        [obj setNeedsLayout];
+    }
 }
 
-- (void)xtr_layoutIfNeeded {
-    [self layoutIfNeeded];
++ (void)xtr_layoutIfNeeded:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        [obj layoutIfNeeded];
+    }
 }
 
 - (void)layoutSubviews {
@@ -377,74 +556,95 @@
     }
 }
 
-- (NSArray *)xtr_constraints {
++ (NSArray<NSString *> *)xtr_constraints:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
     NSMutableArray *output = [NSMutableArray array];
-    for (NSLayoutConstraint *constraint in self.constraints) {
-        XTRLayoutConstraint *v = [XTRLayoutConstraint new];
-        v.innerObject = constraint;
-        v.context = self.context;
-        [output addObject:[JSValue fromObject:v context:self.context] ?: [NSNull null]];
+    if ([obj isKindOfClass:[UIView class]]) {
+        for (XTRLayoutConstraint *constraint in obj.constraints) {
+            [output addObject:constraint.objectUUID ?: @""];
+        }
     }
-    return output;
+    return output.copy;
 }
 
-- (void)xtr_addConstraint:(JSValue *)value {
-    XTRLayoutConstraint *constraint = [value toLayoutConstraint];
-    if (constraint) {
-        if ([constraint.innerObject.firstItem isKindOfClass:[UIView class]]) {
-            [constraint.innerObject.firstItem setTranslatesAutoresizingMaskIntoConstraints:NO];
-        }
-        if ([constraint.innerObject.secondItem isKindOfClass:[UIView class]]) {
-            [constraint.innerObject.secondItem setTranslatesAutoresizingMaskIntoConstraints:NO];
-        }
-        [self addConstraint:constraint.innerObject];
-    }
-}
-
-- (void)xtr_addConstraints:(JSValue *)value {
-    NSArray *argConstraints = [value toArray];
-    for (NSDictionary *cValue in argConstraints) {
-        XTRLayoutConstraint *cObject = [[JSValue valueWithObject:cValue inContext:self.context] toLayoutConstraint];
-        if (cObject) {
-            [self addConstraint:cObject.innerObject];
++ (void)xtr_addConstraint:(NSString *)valueRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    XTRLayoutConstraint *constraint = [XTMemoryManager find:valueRef];
+    if ([obj isKindOfClass:[UIView class]] && [constraint isKindOfClass:[XTRLayoutConstraint class]]) {
+        if (constraint) {
+            if ([constraint.innerObject.firstItem isKindOfClass:[UIView class]]) {
+                [constraint.innerObject.firstItem setTranslatesAutoresizingMaskIntoConstraints:NO];
+            }
+            if ([constraint.innerObject.secondItem isKindOfClass:[UIView class]]) {
+                [constraint.innerObject.secondItem setTranslatesAutoresizingMaskIntoConstraints:NO];
+            }
+            [obj addConstraint:constraint.innerObject];
         }
     }
 }
 
-- (void)xtr_removeConstraint:(JSValue *)value {
-    XTRLayoutConstraint *constraint = [value toLayoutConstraint];
-    if (constraint) {
-        [self removeConstraint:constraint.innerObject];
++ (void)xtr_addConstraints:(JSValue *)value objectRef:(NSString *)objectRef {
+    NSArray *constraintsRef = [value toArray];
+    for (NSString *constraintRef in constraintsRef) {
+        [self xtr_addConstraint:constraintRef objectRef:objectRef];
     }
 }
 
-- (void)xtr_removeAllConstraints {
-    [self removeConstraints:self.constraints];
-}
-
-- (BOOL)xtr_userInteractionEnabled {
-    return self.userInteractionEnabled;
-}
-
-- (void)xtr_setUserInteractionEnabled:(JSValue *)value {
-    self.userInteractionEnabled = [value toBool];
-}
-
-- (CGFloat)xtr_longPressDuration {
-    return self.longPressDuration;
-}
-
-- (void)xtr_setLongPressDuration:(JSValue *)duration {
-    self.longPressDuration = [duration toDouble];
-}
-
-- (void)xtr_activeTap {
-    if (self.tapGestureRecognizer == nil) {
-        self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
-        [self addGestureRecognizer:self.tapGestureRecognizer];
++ (void)xtr_removeConstraint:(NSString *)valueRef objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    XTRLayoutConstraint *constraint = [XTMemoryManager find:valueRef];
+    if ([obj isKindOfClass:[UIView class]] && [constraint isKindOfClass:[XTRLayoutConstraint class]]) {
+        [obj removeConstraint:constraint.innerObject];
     }
-    if (self.doubleTapGestureRecognizer != nil) {
-        [self.tapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
+}
+
++ (void)xtr_removeAllConstraints:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        [obj removeConstraints:obj.constraints];
+    }
+}
+
++ (BOOL)xtr_userInteractionEnabled:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        return obj.userInteractionEnabled;
+    }
+    return NO;
+}
+
++ (void)xtr_setUserInteractionEnabled:(BOOL)value objectRef:(NSString *)objectRef {
+    UIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIView class]]) {
+        obj.userInteractionEnabled = value;
+    }
+}
+
++ (CGFloat)xtr_longPressDuration:(NSString *)objectRef {
+    XTRView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRView class]]) {
+        return obj.longPressDuration;
+    }
+    return 0;
+}
+
++ (void)xtr_setLongPressDuration:(CGFloat)duration objectRef:(NSString *)objectRef {
+    XTRView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRView class]]) {
+        obj.longPressDuration = duration;
+    }
+}
+
++ (void)xtr_activeTap:(NSString *)objectRef {
+    XTRView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRView class]]) {
+        if (obj.tapGestureRecognizer == nil) {
+            obj.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:obj action:@selector(handleTap)];
+            [obj addGestureRecognizer:obj.tapGestureRecognizer];
+        }
+        if (obj.doubleTapGestureRecognizer != nil) {
+            [obj.tapGestureRecognizer requireGestureRecognizerToFail:obj.doubleTapGestureRecognizer];
+        }
     }
 }
 
@@ -455,14 +655,17 @@
     }
 }
 
-- (void)xtr_activeDoubleTap {
-    if (self.doubleTapGestureRecognizer == nil) {
-        self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap)];
-        self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
-        [self addGestureRecognizer:self.doubleTapGestureRecognizer];
-    }
-    if (self.tapGestureRecognizer != nil) {
-        [self.tapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
++ (void)xtr_activeDoubleTap:(NSString *)objectRef {
+    XTRView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRView class]]) {
+        if (obj.doubleTapGestureRecognizer == nil) {
+            obj.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:obj action:@selector(handleDoubleTap)];
+            obj.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+            [obj addGestureRecognizer:obj.doubleTapGestureRecognizer];
+        }
+        if (obj.tapGestureRecognizer != nil) {
+            [obj.tapGestureRecognizer requireGestureRecognizerToFail:obj.doubleTapGestureRecognizer];
+        }
     }
 }
 
@@ -473,12 +676,15 @@
     }
 }
 
-- (void)xtr_activeLongPress {
-    if (self.longPressGestureRecognizer == nil) {
-        self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        [self addGestureRecognizer:self.longPressGestureRecognizer];
++ (void)xtr_activeLongPress:(NSString *)objectRef {
+    XTRView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRView class]]) {
+        if (obj.longPressGestureRecognizer == nil) {
+            obj.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:obj action:@selector(handleLongPress:)];
+            [obj addGestureRecognizer:obj.longPressGestureRecognizer];
+        }
+        obj.longPressGestureRecognizer.minimumPressDuration = obj.longPressDuration > 0 ? obj.longPressDuration : 0.25;
     }
-    self.longPressGestureRecognizer.minimumPressDuration = self.longPressDuration > 0 ? self.longPressDuration : 0.25;
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
@@ -492,10 +698,13 @@
     }
 }
 
-- (void)xtr_activePan {
-    if (self.panGestureRecognizer == nil) {
-        self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-        [self addGestureRecognizer:self.panGestureRecognizer];
++ (void)xtr_activePan:(NSString *)objectRef {
+    XTRView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRView class]]) {
+        if (obj.panGestureRecognizer == nil) {
+            obj.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:obj action:@selector(handlePan:)];
+            [obj addGestureRecognizer:obj.panGestureRecognizer];
+        }
     }
 }
 

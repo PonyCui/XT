@@ -11,6 +11,8 @@
 #import "XTRContext.h"
 #import "XTRBridge.h"
 #import "XTRViewController.h"
+#import "XTRWindow.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRApplication ()
 
@@ -22,11 +24,11 @@
 
 + (NSString *)create:(JSValue *)scriptObject {
     XTRApplication *app = [XTRApplication new];
-    app.objectUUID = [[NSUUID UUID] UUIDString];
-    app.context = (XTRContext *)scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs retain:app];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [app description]; }];
-    return app.objectUUID;
+    app.context = (id)scriptObject.context;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:app];
+    [XTMemoryManager add:managedObject];
+    [XTMemoryManager retain:managedObject.objectUUID];
+    return managedObject.objectUUID;
 }
 
 + (NSString *)name {
@@ -39,15 +41,25 @@
 #endif
 }
 
-- (JSValue *)xtr_keyWindow {
-    return [JSValue fromObject:self.context.bridge.keyWindow context:self.context];
++ (NSString *)xtr_keyWindow:(NSString *)objectRef {
+    XTRApplication *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRApplication class]]) {
+        return @"";
+//        NSString *keyWindowRef = obj.context.bridge.keyWindow;
+//        return keyWindowRef;
+    }
+    return @"";
 }
 
-- (void)xtr_exit {
-    XTRViewController *keyViewController = self.context.bridge.keyViewController;
-    if ([keyViewController isKindOfClass:[XTRViewController class]] && keyViewController.exitAction) {
-        keyViewController.exitAction(keyViewController);
++ (void)xtr_exit:(NSString *)objectRef {
+    XTRApplication *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRApplication class]]) {
+        XTRViewController *keyViewController = obj.context.bridge.keyViewController;
+        if ([keyViewController isKindOfClass:[XTRViewController class]] && keyViewController.exitAction) {
+            keyViewController.exitAction(keyViewController);
+        }
     }
+    
 }
 
 @end

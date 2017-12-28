@@ -4,6 +4,8 @@
 export as namespace XT;
 
 export interface Releasable {
+    retain(): this;
+    release(): this;
     addOwner(owner: any): this;
 }
 
@@ -23,6 +25,8 @@ export enum SwipeDirection {
 
 export class View implements Releasable {
 
+    retain(): this;
+    release(): this;
     addOwner(owner: any): this
     constructor(rect?: Rect)
     init(): void
@@ -327,6 +331,8 @@ export enum LayoutRelation {
 }
 
 export class LayoutConstraint implements Releasable {
+    retain(): this;
+    release(): this;
     addOwner(owner: any): this
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;
@@ -383,6 +389,8 @@ export enum ImageRenderingMode {
 }
 
 export class Image implements Releasable {
+    retain(): this;
+    release(): this;
     addOwner(owner: any): this
     readonly size: Size;
     readonly scale: number;
@@ -512,6 +520,8 @@ export class Window extends View {
 }
 
 export class ViewController implements Releasable {
+    retain(): this;
+    release(): this;
     addOwner(owner: any): this
     readonly view: View
     loadView(): void

@@ -63,11 +63,11 @@ static NSDictionary<NSString *, NSString *> *classMapping;
 } 
 
 - (JSValue *)emitMessage:(id)value {
-    JSValue *inValue = self.scriptObject;
-    if (inValue != nil) {
-        return [inValue invokeMethod:@"handleMessage"
-                       withArguments:@[[JSValue fromObject:value context:self.context] ?: [JSValue valueWithUndefinedInContext:self.context]]];
-    }
+//    JSValue *inValue = self.scriptObject;
+//    if (inValue != nil) {
+//        return [inValue invokeMethod:@"handleMessage"
+//                       withArguments:@[[JSValue fromObject:value context:self.context] ?: [JSValue valueWithUndefinedInContext:self.context]]];
+//    }
     return nil;
 }
 

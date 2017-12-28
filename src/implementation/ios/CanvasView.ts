@@ -7,8 +7,8 @@ export class CanvasView extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObjectRef = XTRCanvasView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.nativeObjectRef] = this;
+        this.objectRef = XTRCanvasView.createScriptObject(rect || RectZero, this);
+        objectRefs[this.objectRef] = this;
         setImmediate(() => { this.init(); });
     }
 

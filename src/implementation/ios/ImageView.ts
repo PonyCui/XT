@@ -7,6 +7,16 @@ import { Releasable } from "../../interface/Releasable";
 
 export class Image implements Releasable {
 
+    retain(): this {
+        XTMemoryManager_Retain(this.objectRef)
+        return this
+    }
+
+    release(): this {
+        XTMemoryManager_Release(this.objectRef)
+        return this
+    }
+
     addOwner(owner: any): this {
         xtrAddOwner(this, owner);
         return this;
@@ -52,32 +62,26 @@ export class Image implements Releasable {
         });
     }
 
-    nativeObjectRef: any;
+    objectRef: any;
 
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
-    }
-
-    constructor(nativeObjectRef: any) {
-        this.nativeObjectRef = nativeObjectRef;
+    constructor(objectRef: any) {
+        this.objectRef = objectRef;
     }
 
     public get size(): Size {
-        return this.nativeObject.xtr_size();
+        return XTRImage.xtr_size(this.objectRef)
     }
 
     public get scale(): number {
-        return this.nativeObject.xtr_scale();
+        return XTRImage.xtr_scale(this.objectRef)
     }
 
     public get renderingMode(): ImageRenderingMode {
-        return this.nativeObject.xtr_renderingMode();
+        return XTRImage.xtr_renderingMode(this.objectRef)
     }
 
     public imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        return new Image(this.nativeObject.xtr_imageWithImageRenderingMode(renderingMode));
+        return new Image(XTRImage.xtr_imageWithImageRenderingModeObjectRef(renderingMode, this.objectRef))
     }
 
 }
@@ -93,8 +97,8 @@ export class ImageView extends View {
     constructor(rect?: Rect, _isChild: boolean = false) {
         super(undefined, true);
         if (_isChild) { return; }
-        this.nativeObjectRef = XTRImageView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.nativeObjectRef] = this;
+        this.objectRef = XTRImageView.createScriptObject(rect || RectZero, this);
+        objectRefs[this.objectRef] = this;
         setImmediate(() => { this.init(); });
     }
 

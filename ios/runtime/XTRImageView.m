@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRImage.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRImageView ()
 
@@ -36,10 +37,10 @@
 }
 
 - (void)xtr_setImage:(JSValue *)image {
-    XTRImage *nativeObject = [image toImage];
-    if (nativeObject) {
-        self.privateImage = nativeObject;
-        self.innerView.image = nativeObject.nativeImage;
+    id obj = [XTMemoryManager find:[image toString]];
+    if ([obj isKindOfClass:[UIImage class]]) {
+        self.privateImage = obj;
+        self.innerView.image = obj;
     }
     else {
         self.privateImage = nil;

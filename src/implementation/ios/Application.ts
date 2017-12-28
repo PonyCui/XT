@@ -5,24 +5,21 @@ let sharedApplication: Application | undefined = undefined;
 
 export class ApplicationDelegate {
 
-    nativeObjectRef: any
+    objectRef: any
 
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
-    }
-
-    public resetNativeObject(nativeObjectRef: any) {
-        this.nativeObjectRef = nativeObjectRef;
+    public resetNativeObject(objectRef: any) {
+        this.objectRef = objectRef;
     }
 
     public get window(): Window | undefined {
-        return this.nativeObject.xtr_window()
+        const windowRef = XTRApplicationDelegate.xtr_window(this.objectRef)
+        return objectRefs[windowRef] || new Window(windowRef)
     }
 
     public set window(value: Window | undefined) {
-        this.nativeObject.xtr_setWindow(value);
+        if (value) {
+            XTRApplicationDelegate.xtr_setWindowObjectRef(value.objectRef, this.objectRef)
+        }
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
@@ -31,26 +28,21 @@ export class ApplicationDelegate {
 
 export class Application {
 
-    nativeObjectRef: any
-
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
-    }
+    objectRef: any
 
     delegate: ApplicationDelegate
 
     public get keyWindow(): Window | undefined {
-        return this.nativeObject.xtr_keyWindow;
+        const ref = XTRApplication.xtr_keyWindow(this.objectRef)
+        return objectRefs[ref] || new Window(ref);
     }
 
     constructor(t: any, delegate: ApplicationDelegate) {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.nativeObjectRef = XTRApplication.create(this);
-        objectRefs[this.nativeObjectRef] = this;
+        this.objectRef = XTRApplication.create(this);
+        objectRefs[this.objectRef] = this;
         (window as any)._xtrDelegate = delegate;
         this.delegate = delegate;
     }
@@ -60,7 +52,7 @@ export class Application {
     }
 
     exit(): void {
-        this.nativeObject.xtr_exit();
+        XTRApplication.xtr_exit(this.objectRef);
     }
 
 }

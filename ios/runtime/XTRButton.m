@@ -11,6 +11,7 @@
 #import "XTRImage.h"
 #import "XTRFont.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRButton ()
 
@@ -70,8 +71,15 @@
 }
 
 - (void)xtr_setImage:(JSValue *)image {
-    [self.innerView setImage:[[image toImage] nativeImage] forState:UIControlStateNormal];
-    [self resetInset];
+    id obj = [XTMemoryManager find:[image toString]];
+    if ([obj isKindOfClass:[UIImage class]]) {
+        [self.innerView setImage:obj forState:UIControlStateNormal];
+        [self resetInset];
+    }
+    else {
+        [self.innerView setImage:nil forState:UIControlStateNormal];
+        [self resetInset];
+    }
 }
 
 - (NSDictionary *)xtr_color {

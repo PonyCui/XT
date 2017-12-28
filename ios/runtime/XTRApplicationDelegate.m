@@ -11,6 +11,8 @@
 #import "XTRUtils.h"
 #import "XTRContext.h"
 #import "XTRuntime.h"
+#import "XTRWindow.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRuntime (Private)
 
@@ -19,9 +21,6 @@
 @end
 
 @interface XTRApplicationDelegate()
-
-@property (nonatomic, weak) id owner;
-@property (nonatomic, strong) JSManagedValue *scriptObject;
 
 @end
 
@@ -48,26 +47,35 @@
     if (self.bridge == nil) {
         self.bridge = [[XTRBridge alloc] initWithAppDelegate:self];
     }
-    [self.bridge.context.objectRefs store:self];
-    JSValue *delegate = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
-    self.scriptObject = [JSManagedValue managedValueWithValue:delegate andOwner:application];
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:self];
+    [XTMemoryManager add:managedObject];
+    [XTMemoryManager retain:managedObject.objectUUID];
+    self.objectRef = managedObject.objectUUID;
     self.bridge.application = application;
-    if (self.scriptObject != nil) {
-        JSValue *value = self.scriptObject.value;
-        if (value != nil) {
-            [value invokeMethod:@"resetNativeObject" withArguments:@[self.objectUUID]];
-            [value invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
-        }
+    JSValue *scriptObject = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"resetNativeObject" withArguments:@[self.objectRef]];
+        [scriptObject invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
     }
     return YES;
 }
 
-- (JSValue *)xtr_window {
-    return [JSValue fromObject:self.window context:self.bridge.context];
++ (NSString *)xtr_window:(NSString *)objectRef {
+    XTRApplicationDelegate *delegate = [XTMemoryManager find:objectRef];
+    if ([delegate isKindOfClass:[XTRApplicationDelegate class]]) {
+        if ([delegate.window isKindOfClass:[XTRWindow class]]) {
+            return [(XTRWindow *)delegate.window objectUUID];
+        }
+    }
+    return @"";
 }
 
-- (void)xtr_setWindow:(JSValue *)window {
-    self.window = [window toWindow];
++ (void)xtr_setWindow:(NSString *)windowRef objectRef:(NSString *)objectRef {
+    XTRApplicationDelegate *delegate = [XTMemoryManager find:objectRef];
+    XTRWindow *window = [XTMemoryManager find:windowRef];
+    if ([delegate isKindOfClass:[XTRApplicationDelegate class]] && [window isKindOfClass:[XTRWindow class]]) {
+        delegate.window = window;
+    }
 }
 
 - (void)exit {
@@ -80,11 +88,11 @@
     }
 }
 
-- (NSString *)objectUUID {
-    if (_objectUUID == nil) {
-        _objectUUID = [[NSUUID UUID] UUIDString];
+- (NSString *)objectRef {
+    if (_objectRef == nil) {
+        _objectRef = [[NSUUID UUID] UUIDString];
     }
-    return _objectUUID;
+    return _objectRef;
 }
 
 @end

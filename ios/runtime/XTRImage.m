@@ -10,42 +10,13 @@
 #import "XTRUtils.h"
 #import "XTRContext.h"
 #import "XTRBridge.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRImage ()
-
-@property (nonatomic, strong) UIImage *nativeImage;
 
 @end
 
 @implementation XTRImage
-
-- (void)dealloc {
-#ifdef LOGDEALLOC
-    NSLog(@"XTRImage dealloc.");
-#endif
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.objectUUID = [[NSUUID UUID] UUIDString];
-        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
-    }
-    return self;
-}
-
-- (instancetype)initWithContext:(XTRContext *)context
-{
-    self = [super init];
-    if (self) {
-        self.objectUUID = [[NSUUID UUID] UUIDString];
-        [context.objectRefs store:self];
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
-    }
-    return self;
-}
 
 + (NSString *)name {
     return @"XTRImage";
@@ -56,17 +27,16 @@
 }
 
 + (void)xtr_fromURL:(NSString *)URLString scale:(CGFloat)scale success:(JSValue *)success failure:(JSValue *)failure {
-    XTRContext *context = (XTRContext *)[JSContext currentContext];
     NSURL *URL = [NSURL URLWithString:URLString];
     if (URL != nil) {
         [[[NSURLSession sharedSession] dataTaskWithURL:URL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (error == nil && data != nil) {
                 UIImage *image = [UIImage imageWithData:data scale:scale];
                 if (image != nil) {
-                    XTRImage *nativeObject = [[XTRImage alloc] initWithContext:context];
-                    nativeObject.nativeImage = image;
+                    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:image];
+                    [XTMemoryManager add:managedObject];
                     if (success != nil) {
-                        [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""] asyncResult:nil];
+                        [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""] asyncResult:nil];
                     }
                 }
                 else {
@@ -123,10 +93,10 @@
     }
     UIImage *image = [UIImage imageNamed:named];
     if (image != nil) {
-        XTRImage *nativeObject = [XTRImage new];
-        nativeObject.nativeImage = image;
+        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:image];
+        [XTMemoryManager add:managedObject];
         if (success != nil) {
-            [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""]];
+            [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
         }
     }
     else {
@@ -141,31 +111,48 @@
     if (data != nil) {
         UIImage *image = [UIImage imageWithData:data scale:scale];
         if (image != nil) {
-            XTRImage *nativeObject = [XTRImage new];
-            nativeObject.nativeImage = image;
+            XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:image];
+            [XTMemoryManager add:managedObject];
             if (success != nil) {
-                [success xtr_callWithArguments:@[nativeObject.objectUUID ?: @""]];
+                [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
             }
         }
     }
 }
 
-- (NSDictionary *)xtr_size {
-    return [JSValue fromSize:self.nativeImage.size];
++ (NSDictionary *)xtr_size:(NSString *)objectRef {
+    UIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[UIImage class]]) {
+        return [JSValue fromSize:image.size];
+    }
+    return @{};
 }
 
-- (NSNumber *)xtr_scale {
-    return @(self.nativeImage.scale);
++ (NSNumber *)xtr_scale:(NSString *)objectRef {
+    UIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[UIImage class]]) {
+        return @(image.scale);
+    }
+    return @(1.0);
 }
 
-- (NSNumber *)xtr_renderingMode {
-    return @(self.nativeImage.renderingMode);
++ (NSNumber *)xtr_renderingMode:(NSString *)objectRef {
+    UIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[UIImage class]]) {
+        return @(image.renderingMode);
+    }
+    return @(0);
 }
 
-- (NSString *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode {
-    XTRImage *newNativeObject = [XTRImage new];
-    newNativeObject.nativeImage = [self.nativeImage imageWithRenderingMode:[imageRenderingMode toInt32]];
-    return newNativeObject.objectUUID;
++ (NSString *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode objectRef:(NSString *)objectRef {
+    UIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[UIImage class]]) {
+        UIImage *newImage = [image imageWithRenderingMode:[imageRenderingMode toInt32]];
+        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:newImage];
+        [XTMemoryManager add:managedObject];
+        return managedObject.objectUUID;
+    }
+    return objectRef;
 }
 
 @end

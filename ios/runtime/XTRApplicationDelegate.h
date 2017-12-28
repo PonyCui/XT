@@ -15,15 +15,14 @@
 
 @protocol XTRApplicationDelegateExport <JSExport>
 
-+ (XTRApplicationDelegate *)xtr_delegate:(NSString *)objectUUID;
-- (JSValue *)xtr_window;
-- (void)xtr_setWindow:(JSValue *)window;
++ (JSValue *)xtr_window:(NSString *)objectRef;
++ (void)xtr_setWindow:(JSValue *)window objectRef:(NSString *)objectRef;
 
 @end
 
 @interface XTRApplicationDelegate : UIResponder<UIApplicationDelegate, XTRComponent, XTRApplicationDelegateExport>
 
-@property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, strong) NSString *objectRef;
 @property (nonatomic, strong) XTRBridge *bridge;
 @property (strong, nonatomic) UIWindow *window;
 

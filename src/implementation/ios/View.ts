@@ -8,24 +8,34 @@ import { Releasable } from '../../interface/Releasable';
 
 export class View implements Releasable {
 
+    retain(): this {
+        XTMemoryManager_Retain(this.objectRef)
+        return this
+    }
+
+    release(): this {
+        XTMemoryManager_Release(this.objectRef)
+        return this
+    }
+
     addOwner(owner: any): this {
         xtrAddOwner(this, owner);
         return this;
     }
 
-    nativeObjectRef: any;
+    objectRef: any;
 
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
-    }
-
-    constructor(rect?: Rect, _isChild: boolean = false) {
+    constructor(rect?: Rect | string, _isChild: boolean = false) {
         if (_isChild) { return; }
-        this.nativeObjectRef = XTRView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.nativeObjectRef] = this;
-        setImmediate(() => { this.init(); });
+        if (typeof rect === "string") {
+            this.objectRef = rect;
+            objectRefs[this.objectRef] = this;
+        }
+        else {
+            this.objectRef = XTRView.create(rect || RectZero);
+            objectRefs[this.objectRef] = this;
+            setImmediate(() => { this.init(); });
+        }
     }
 
     init() { }

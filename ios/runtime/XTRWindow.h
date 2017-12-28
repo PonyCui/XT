@@ -10,21 +10,22 @@
 #import "XTRView.h"
 #import "XTRComponent.h"
 
-@class XTRWindow;
+@class XTRWindow, XTRContext;
 
 @protocol XTRWindowExport <JSExport>
 
-@property (nonatomic, copy) NSString *objectUUID;
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
-- (void)xtr_makeKeyAndVisible;
-- (JSValue *)xtr_rootViewController;
-- (void)xtr_setRootViewController:(JSValue *)viewController;
-- (void)xtr_endEditing;
++ (NSString *)create:(JSValue *)frame;
++ (void)xtr_makeKeyAndVisible:(NSString *)objectRef;
++ (NSString *)xtr_rootViewController:(NSString *)objectRef;
++ (void)xtr_setRootViewController:(NSString *)viewControllerRef objectRef:(NSString *)objectRef;
++ (void)xtr_endEditing:(NSString *)objectRef;
 
 @end
 
-@interface XTRWindow : UIWindow<XTRComponent, XTRWindowExport, XTRViewExport>
+@interface XTRWindow : UIWindow<XTRComponent, XTRWindowExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, weak) XTRContext *context;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRContext ()
 
@@ -27,6 +28,7 @@
     self = [super init];
     if (self) {
         _thread = thread;
+        [XTMemoryManager attachContext:self];
         _objectRefs = [XTRObjectRefs new];
         __weak XTRContext *welf = self;
         self[@"xtrRequestNativeObject"] = ^(NSString *objectUUID){
