@@ -50,11 +50,11 @@
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:self];
     [XTMemoryManager add:managedObject];
     [XTMemoryManager retain:managedObject.objectUUID];
-    self.objectRef = managedObject.objectUUID;
+    self.objectUUID = managedObject.objectUUID;
     self.bridge.application = application;
     JSValue *scriptObject = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"resetNativeObject" withArguments:@[self.objectRef]];
+        [scriptObject invokeMethod:@"resetNativeObject" withArguments:@[self.objectUUID]];
         [scriptObject invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
     }
     return YES;
@@ -88,11 +88,11 @@
     }
 }
 
-- (NSString *)objectRef {
-    if (_objectRef == nil) {
-        _objectRef = [[NSUUID UUID] UUIDString];
+- (NSString *)objectUUID {
+    if (_objectUUID == nil) {
+        _objectUUID = [[NSUUID UUID] UUIDString];
     }
-    return _objectRef;
+    return _objectUUID;
 }
 
 @end

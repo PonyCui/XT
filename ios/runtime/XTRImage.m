@@ -18,6 +18,15 @@
 
 @implementation XTRImage
 
+- (instancetype)initWithImage:(UIImage *)image
+{
+    self = [super init];
+    if (self) {
+        _image = image;
+    }
+    return self;
+}
+
 + (NSString *)name {
     return @"XTRImage";
 }
@@ -33,7 +42,9 @@
             if (error == nil && data != nil) {
                 UIImage *image = [UIImage imageWithData:data scale:scale];
                 if (image != nil) {
-                    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:image];
+                    XTRImage *obj = [[XTRImage alloc] initWithImage:image];
+                    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+                    obj.objectUUID = managedObject.objectUUID;
                     [XTMemoryManager add:managedObject];
                     if (success != nil) {
                         [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""] asyncResult:nil];
@@ -93,7 +104,9 @@
     }
     UIImage *image = [UIImage imageNamed:named];
     if (image != nil) {
-        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:image];
+        XTRImage *obj = [[XTRImage alloc] initWithImage:image];
+        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+        obj.objectUUID = managedObject.objectUUID;
         [XTMemoryManager add:managedObject];
         if (success != nil) {
             [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
@@ -111,7 +124,9 @@
     if (data != nil) {
         UIImage *image = [UIImage imageWithData:data scale:scale];
         if (image != nil) {
-            XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:image];
+            XTRImage *obj = [[XTRImage alloc] initWithImage:image];
+            XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+            obj.objectUUID = managedObject.objectUUID;
             [XTMemoryManager add:managedObject];
             if (success != nil) {
                 [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
@@ -145,10 +160,12 @@
 }
 
 + (NSString *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode objectRef:(NSString *)objectRef {
-    UIImage *image = [XTMemoryManager find:objectRef];
-    if ([image isKindOfClass:[UIImage class]]) {
-        UIImage *newImage = [image imageWithRenderingMode:[imageRenderingMode toInt32]];
-        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:newImage];
+    XTRImage *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRImage class]]) {
+        UIImage *newImage = [obj.image imageWithRenderingMode:[imageRenderingMode toInt32]];
+        XTRImage *newObj = [[XTRImage alloc] initWithImage:newImage];
+        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:newObj];
+        newObj.objectUUID = managedObject.objectUUID;
         [XTMemoryManager add:managedObject];
         return managedObject.objectUUID;
     }

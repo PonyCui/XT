@@ -21,4 +21,6 @@
 
 @interface XTRApplication : NSObject<XTRComponent, XTRApplicationExport>
 
+@property (nonatomic, copy) NSString *objectUUID;
+
 @end

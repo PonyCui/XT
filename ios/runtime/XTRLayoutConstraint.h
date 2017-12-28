@@ -13,28 +13,25 @@
 
 @protocol XTRLayoutConstraintExport <JSExport>
 
-@property (nonatomic, copy) NSString *objectUUID;
++ (NSString *)create:(NSString *)firstItemRef
+           firstAttr:(NSInteger)firstAttr
+            relation:(NSInteger)relation
+          secondItem:(NSString *)secondItemRef
+          secondAttr:(NSInteger)secondAttr
+            constant:(CGFloat)constant
+          multiplier:(CGFloat)multiplier;
 
-+ (NSString *)create:(JSValue *)firstItem
-           firstAttr:(JSValue *)firstAttr
-            relation:(JSValue *)relation
-          secondItem:(JSValue *)secondItem
-          secondAttr:(JSValue *)secondAttr
-            constant:(JSValue *)constant
-          multiplier:(JSValue *)multiplier
-        scriptObject:(JSValue *)scriptObject;
-
-+ (NSArray *)xtr_constraintsWithVisualFormat:(JSValue *)format views:(JSValue *)views;
-- (JSValue *)xtr_firstItem;
-- (NSNumber *)xtr_firstAttr;
-- (NSNumber *)xtr_relation;
-- (JSValue *)xtr_secondItem;
-- (NSNumber *)xtr_secondAttr;
-- (NSNumber *)xtr_constant;
-- (void)xtr_setConstant:(JSValue *)constant;
-- (NSNumber *)xtr_multiplier;
-- (NSNumber *)xtr_priority;
-- (void)xtr_setPriority:(JSValue *)priority;
++ (NSArray *)xtr_constraintsWithVisualFormat:(NSString *)format views:(JSValue *)views;
++ (NSString *)xtr_firstItem:(NSString *)objectRef;
++ (NSInteger)xtr_firstAttr:(NSString *)objectRef;
++ (NSInteger)xtr_relation:(NSString *)objectRef;
++ (NSString *)xtr_secondItem:(NSString *)objectRef;
++ (NSInteger)xtr_secondAttr:(NSString *)objectRef;
++ (CGFloat)xtr_constant:(NSString *)objectRef;
++ (void)xtr_setConstant:(CGFloat)constant objectRef:(NSString *)objectRef;
++ (CGFloat)xtr_multiplier:(NSString *)objectRef;
++ (NSInteger)xtr_priority:(NSString *)objectRef;
++ (void)xtr_setPriority:(NSInteger)priority objectRef:(NSString *)objectRef;
 
 @end
 
@@ -42,6 +39,5 @@
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) NSLayoutConstraint *innerObject;
-@property (nonatomic, weak) JSContext *context;
 
 @end

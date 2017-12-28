@@ -22,7 +22,7 @@
 
 @interface XTRApplicationDelegate : UIResponder<UIApplicationDelegate, XTRComponent, XTRApplicationDelegateExport>
 
-@property (nonatomic, strong) NSString *objectRef;
+@property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) XTRBridge *bridge;
 @property (strong, nonatomic) UIWindow *window;
 

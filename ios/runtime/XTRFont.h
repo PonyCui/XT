@@ -18,10 +18,10 @@
            fontStyle:(JSValue *)fontStyle
           familyName:(JSValue *)familyName;
 
-- (NSString *)xtr_familyName;
-- (NSNumber *)xtr_pointSize;
-- (NSString *)xtr_fontWeight;
-- (NSString *)xtr_fontStyle;
++ (NSString *)xtr_familyName:(NSString *)objectRef;
++ (NSNumber *)xtr_pointSize:(NSString *)objectRef;
++ (NSString *)xtr_fontWeight:(NSString *)objectRef;
++ (NSString *)xtr_fontStyle:(NSString *)objectRef;
 
 @end
 
@@ -30,6 +30,6 @@
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) UIFont *innerObject;
 
-+ (XTRFont *)create:(UIFont *)font;
++ (NSString *)create:(UIFont *)font;
 
 @end

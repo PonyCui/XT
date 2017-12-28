@@ -13,22 +13,22 @@
 
 @protocol XTRLabelExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
-- (NSString *)xtr_text;
-- (void)xtr_setText:(JSValue *)text;
-- (JSValue *)xtr_font;
-- (void)xtr_setFont:(JSValue *)font;
-- (NSDictionary *)xtr_textColor;
-- (void)xtr_setTextColor:(JSValue *)textColor;
-- (NSNumber *)xtr_textAlignment;
-- (void)xtr_setTextAlignment:(JSValue *)textAlignment;
-- (NSNumber *)xtr_numberOfLines;
-- (void)xtr_setNumberOfLines:(JSValue *)numberOfLines;
-- (NSNumber *)xtr_lineBreakMode;
-- (void)xtr_setLineBreakMode:(JSValue *)lineBreakMode;
-- (NSNumber *)xtr_lineSpace;
-- (void)xtr_setLineSpace:(JSValue *)lineSpace;
-- (NSDictionary *)xtr_textRectForBounds:(JSValue *)bounds;
++ (NSString *)create:(JSValue *)frame;
++ (NSString *)xtr_text:(NSString *)objectRef;
++ (void)xtr_setText:(NSString *)text objectRef:(NSString *)objectRef;
++ (NSString *)xtr_font:(NSString *)objectRef;
++ (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef;
++ (NSDictionary *)xtr_textColor:(NSString *)objectRef;
++ (void)xtr_setTextColor:(JSValue *)textColor objectRef:(NSString *)objectRef;
++ (NSInteger)xtr_textAlignment:(NSString *)objectRef;
++ (void)xtr_setTextAlignment:(JSValue *)textAlignment objectRef:(NSString *)objectRef;
++ (NSInteger)xtr_numberOfLines:(NSString *)objectRef;
++ (void)xtr_setNumberOfLines:(NSInteger)numberOfLines objectRef:(NSString *)objectRef;
++ (NSInteger)xtr_lineBreakMode:(NSString *)objectRef;
++ (void)xtr_setLineBreakMode:(NSInteger)lineBreakMode objectRef:(NSString *)objectRef;
++ (CGFloat)xtr_lineSpace:(NSString *)objectRef;
++ (void)xtr_setLineSpace:(CGFloat)lineSpace objectRef:(NSString *)objectRef;
++ (NSDictionary *)xtr_textRectForBounds:(JSValue *)bounds objectRef:(NSString *)objectRef;
 
 @end
 

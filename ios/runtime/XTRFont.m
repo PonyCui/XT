@@ -8,6 +8,7 @@
 
 #import "XTRFont.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @implementation XTRFont
 
@@ -15,33 +16,39 @@
          fontWeight:(JSValue *)fontWeight
           fontStyle:(JSValue *)fontStyle
          familyName:(JSValue *)familyName {
-    XTRFont *nativeObject = [XTRFont new];
+    XTRFont *obj = [XTRFont new];
     if (familyName != nil && [familyName toString].length > 0) {
-        nativeObject.innerObject = [UIFont fontWithName:[familyName toString] size:[pointSize toDouble]];
+        obj.innerObject = [UIFont fontWithName:[familyName toString] size:[pointSize toDouble]];
     }
     else if ([[fontStyle toString] isEqualToString:@"italic"]) {
-        nativeObject.innerObject = [UIFont italicSystemFontOfSize:[pointSize toDouble]];
+        obj.innerObject = [UIFont italicSystemFontOfSize:[pointSize toDouble]];
     }
     else {
         if ([UIDevice currentDevice].systemVersion.floatValue >= 8.2) {
-            nativeObject.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:[fontWeight toDouble]];
+            obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:[fontWeight toDouble]];
         }
         else {
             if ([fontWeight toDouble] >= 700) {
-                nativeObject.innerObject = [UIFont boldSystemFontOfSize:[pointSize toDouble]];
+                obj.innerObject = [UIFont boldSystemFontOfSize:[pointSize toDouble]];
             }
             else {
-                nativeObject.innerObject = [UIFont systemFontOfSize:[pointSize toDouble]];
+                obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble]];
             }
         }
     }
-    return nativeObject.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+    obj.objectUUID = managedObject.objectUUID;
+    [XTMemoryManager add:managedObject];
+    return managedObject.objectUUID;
 }
 
-+ (XTRFont *)create:(UIFont *)font {
-    XTRFont *nativeObject = [XTRFont new];
-    nativeObject.innerObject = font;
-    return nativeObject;
++ (NSString *)create:(UIFont *)font {
+    XTRFont *obj = [XTRFont new];
+    obj.innerObject = font;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+    obj.objectUUID = managedObject.objectUUID;
+    [XTMemoryManager add:managedObject];
+    return managedObject.objectUUID;
 }
 
 + (NSString *)name {
@@ -54,39 +61,44 @@
 #endif
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        _objectUUID = [[NSUUID UUID] UUIDString];
-        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
++ (NSString *)xtr_familyName:(NSString *)objectRef {
+    XTRFont *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRFont class]]) {
+        return obj.innerObject.familyName;
     }
-    return self;
+    return nil;
 }
 
-- (NSString *)xtr_familyName {
-    return self.innerObject.familyName;
-}
-
-- (NSNumber *)xtr_pointSize {
-    return @(self.innerObject.pointSize);
-}
-
-- (NSString *)xtr_fontWeight {
-    NSString *UIUsageAttribute = self.innerObject.fontDescriptor.fontAttributes[@"NSCTFontUIUsageAttribute"];
-    if ([UIUsageAttribute isEqualToString:@"CTFontBlackUsage"]) {
-        return @"700";
++ (NSNumber *)xtr_pointSize:(NSString *)objectRef {
+    XTRFont *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRFont class]]) {
+        return @(obj.innerObject.pointSize);
     }
-    return @"400";
+    return nil;
 }
 
-- (NSString *)xtr_fontStyle {
-    NSString *UIUsageAttribute = self.innerObject.fontDescriptor.fontAttributes[@"NSCTFontUIUsageAttribute"];
-    if ([UIUsageAttribute isEqualToString:@"CTFontObliqueUsage"]) {
-        return @"italic";
++ (NSString *)xtr_fontWeight:(NSString *)objectRef {
+    XTRFont *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRFont class]]) {
+        NSString *UIUsageAttribute = obj.innerObject.fontDescriptor.fontAttributes[@"NSCTFontUIUsageAttribute"];
+        if ([UIUsageAttribute isEqualToString:@"CTFontBlackUsage"]) {
+            return @"700";
+        }
+        return @"400";
     }
-    return @"normal";
+    return nil;
+}
+
++ (NSString *)xtr_fontStyle:(NSString *)objectRef {
+    XTRFont *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRFont class]]) {
+        NSString *UIUsageAttribute = obj.innerObject.fontDescriptor.fontAttributes[@"NSCTFontUIUsageAttribute"];
+        if ([UIUsageAttribute isEqualToString:@"CTFontObliqueUsage"]) {
+            return @"italic";
+        }
+        return @"normal";
+    }
+    return nil;
 }
 
 @end

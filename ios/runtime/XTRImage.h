@@ -25,4 +25,9 @@
 
 @interface XTRImage : NSObject<XTRComponent, XTRImageExport>
 
+@property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, readonly) UIImage *image;
+
+- (instancetype)initWithImage:(UIImage *)image;
+
 @end

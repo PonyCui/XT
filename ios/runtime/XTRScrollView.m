@@ -461,7 +461,7 @@
     for (NSLayoutConstraint *constraint in self.constraints) {
         XTRLayoutConstraint *v = [XTRLayoutConstraint new];
         v.innerObject = constraint;
-        v.context = self.context;
+//        v.context = self.context;
         [output addObject:[JSValue fromObject:v context:self.context] ?: [NSNull null]];
     }
     return output;

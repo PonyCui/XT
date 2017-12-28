@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRFont.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRLabel ()
 
@@ -28,11 +29,11 @@
     XTRLabel *view = [[XTRLabel alloc] initWithFrame:[frame toRect]];
     view.innerView = [[UILabel alloc] init];
     [view addSubview:view.innerView];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
 - (void)layoutSubviews {
@@ -40,118 +41,152 @@
     self.innerView.frame = self.bounds;
 }
 
-- (NSString *)xtr_text {
-    return self.innerView.text;
-}
-
-- (void)xtr_setText:(JSValue *)text {
-    self.innerView.text = [text toString];
-    [self resetAttributedText];
-}
-
-- (JSValue *)xtr_font {
-    if (self.innerView.font != nil) {
-        return [JSValue fromObject:[XTRFont create:self.innerView.font] context:self.context];
++ (NSString *)xtr_text:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        return obj.innerView.text;
     }
     return nil;
 }
 
-- (void)xtr_setFont:(JSValue *)font {
-    XTRFont *aFont = [font toFont];
-    if (aFont) {
-        self.innerView.font = aFont.innerObject;
++ (void)xtr_setText:(NSString *)text objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        obj.innerView.text = text;
+        [obj resetAttributedText];
     }
 }
 
-- (NSDictionary *)xtr_textColor {
-    return [JSValue fromColor:self.innerView.textColor ?: [UIColor blackColor]];
++ (NSString *)xtr_font:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        return [XTRFont create:obj.innerView.font];
+    }
+    return nil;
 }
 
-
-- (void)xtr_setTextColor:(JSValue *)textColor {
-    self.innerView.textColor = [textColor toColor];
-    [self resetAttributedText];
-}
-
-
-- (NSNumber *)xtr_textAlignment {
-    switch (self.innerView.textAlignment) {
-        case NSTextAlignmentLeft:
-            return @(0);
-        case NSTextAlignmentCenter:
-            return @(1);
-        case NSTextAlignmentRight:
-            return @(2);
-        default:
-            return @(0);
++ (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    XTRFont *font = [XTMemoryManager find:fontRef];
+    if ([obj isKindOfClass:[XTRLabel class]] && [font isKindOfClass:[XTRFont class]]) {
+        obj.innerView.font = font.innerObject;
     }
 }
 
-
-- (void)xtr_setTextAlignment:(JSValue *)textAlignment {
-    switch ([textAlignment toInt32]) {
-        case 0:
-            self.innerView.textAlignment = NSTextAlignmentLeft;
-            break;
-        case 1:
-            self.innerView.textAlignment = NSTextAlignmentCenter;
-            break;
-        case 2:
-            self.innerView.textAlignment = NSTextAlignmentRight;
-            break;
-        default:
-            break;
++ (NSDictionary *)xtr_textColor:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        return [JSValue fromColor:obj.innerView.textColor ?: [UIColor blackColor]];
     }
-    [self resetAttributedText];
+    return nil;
 }
 
-
-- (NSNumber *)xtr_numberOfLines {
-    return @(self.innerView.numberOfLines);
-}
-
-
-- (void)xtr_setNumberOfLines:(JSValue *)numberOfLines {
-    self.innerView.numberOfLines = [numberOfLines toInt32];
-    [self resetAttributedText];
-}
-
-
-- (NSNumber *)xtr_lineBreakMode {
-    switch (self.innerView.lineBreakMode) {
-        case NSLineBreakByWordWrapping:
-            return @(0);
-        case NSLineBreakByTruncatingTail:
-            return @(4);
-        default:
-            return @(0);
++ (void)xtr_setTextColor:(JSValue *)textColor objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        obj.innerView.textColor = [textColor toColor];
+        [obj resetAttributedText];
     }
 }
 
-
-- (void)xtr_setLineBreakMode:(JSValue *)lineBreakMode {
-    switch ([lineBreakMode toInt32]) {
-        case 0:
-            self.innerView.lineBreakMode = NSLineBreakByWordWrapping;
-            break;
-        case 4:
-            self.innerView.lineBreakMode = NSLineBreakByTruncatingTail;
-            break;
-        default:
-            break;
++ (NSInteger)xtr_textAlignment:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        switch (obj.innerView.textAlignment) {
+            case NSTextAlignmentLeft:
+                return 0;
+            case NSTextAlignmentCenter:
+                return 1;
+            case NSTextAlignmentRight:
+                return 2;
+            default:
+                return 0;
+        }
     }
-    [self resetAttributedText];
+    return 0;
 }
 
-
-- (NSNumber *)xtr_lineSpace {
-    return @(self.lineSpace);
++ (void)xtr_setTextAlignment:(JSValue *)textAlignment objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        switch ([textAlignment toInt32]) {
+            case 0:
+                obj.innerView.textAlignment = NSTextAlignmentLeft;
+                break;
+            case 1:
+                obj.innerView.textAlignment = NSTextAlignmentCenter;
+                break;
+            case 2:
+                obj.innerView.textAlignment = NSTextAlignmentRight;
+                break;
+            default:
+                break;
+        }
+        [obj resetAttributedText];
+    }
 }
 
++ (NSInteger)xtr_numberOfLines:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        return obj.innerView.numberOfLines;
+    }
+    return 0;
+}
 
-- (void)xtr_setLineSpace:(JSValue *)lineSpace {
-    self.lineSpace = [lineSpace toDouble];
-    [self resetAttributedText];
++ (void)xtr_setNumberOfLines:(NSInteger)numberOfLines objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        obj.innerView.numberOfLines = numberOfLines;
+    }
+}
+
++ (NSInteger)xtr_lineBreakMode:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        switch (obj.innerView.lineBreakMode) {
+            case NSLineBreakByWordWrapping:
+                return 0;
+            case NSLineBreakByTruncatingTail:
+                return 4;
+            default:
+                return 0;
+        }
+    }
+    return 0;
+}
+
++ (void)xtr_setLineBreakMode:(NSInteger)lineBreakMode objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        switch (lineBreakMode) {
+            case 0:
+                obj.innerView.lineBreakMode = NSLineBreakByWordWrapping;
+                break;
+            case 4:
+                obj.innerView.lineBreakMode = NSLineBreakByTruncatingTail;
+                break;
+            default:
+                break;
+        }
+        [obj resetAttributedText];
+    }
+}
+
++ (CGFloat)xtr_lineSpace:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        return obj.lineSpace;
+    }
+    return 0;
+}
+
++ (void)xtr_setLineSpace:(CGFloat)lineSpace objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        obj.lineSpace = lineSpace;
+        [obj resetAttributedText];
+    }
 }
 
 - (void)resetAttributedText {
@@ -167,8 +202,12 @@
     }
 }
 
-- (NSDictionary *)xtr_textRectForBounds:(JSValue *)bounds {
-    return [JSValue fromRect:[self.innerView textRectForBounds:[bounds toRect] limitedToNumberOfLines:self.innerView.numberOfLines]];
++ (NSDictionary *)xtr_textRectForBounds:(JSValue *)bounds objectRef:(NSString *)objectRef {
+    XTRLabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLabel class]]) {
+        return [JSValue fromRect:[obj.innerView textRectForBounds:[bounds toRect] limitedToNumberOfLines:obj.innerView.numberOfLines]];
+    }
+    return @{};
 }
 
 @end

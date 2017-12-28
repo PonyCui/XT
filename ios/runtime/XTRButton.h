@@ -13,19 +13,19 @@
 
 @protocol XTRButtonExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
-- (NSString *)xtr_title;
-- (void)xtr_setTitle:(JSValue *)title;
-- (JSValue *)xtr_font;
-- (void)xtr_setFont:(JSValue *)font;
-- (JSValue *)xtr_image;
-- (void)xtr_setImage:(JSValue *)image;
-- (NSDictionary *)xtr_color;
-- (void)xtr_setColor:(JSValue *)color;
-- (BOOL)xtr_vertical;
-- (void)xtr_setVertical:(JSValue *)vertical;
-- (NSNumber *)xtr_inset;
-- (void)xtr_setInset:(JSValue *)inset;
++ (NSString *)create:(JSValue *)frame;
++ (NSString *)xtr_title:(NSString *)objectRef;
++ (void)xtr_setTitle:(JSValue *)title objectRef:(NSString *)objectRef;
++ (NSString *)xtr_font:(NSString *)objectRef;
++ (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef;
++ (NSString *)xtr_image:(NSString *)objectRef;
++ (void)xtr_setImage:(NSString *)imageRef objectRef:(NSString *)objectRef;
++ (NSDictionary *)xtr_color:(NSString *)objectRef;
++ (void)xtr_setColor:(JSValue *)color objectRef:(NSString *)objectRef;
++ (BOOL)xtr_vertical:(NSString *)objectRef;
++ (void)xtr_setVertical:(BOOL)vertical objectRef:(NSString *)objectRef;
++ (CGFloat)xtr_inset:(NSString *)objectRef;
++ (void)xtr_setInset:(CGFloat)inset objectRef:(NSString *)objectRef;
 
 @end
 

@@ -9,6 +9,8 @@
 #import "XTRLayoutConstraint.h"
 #import "XTRUtils.h"
 #import "XTRContext.h"
+#import "XTRView.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRLayoutConstraint ()
 
@@ -37,31 +39,100 @@
     return @"XTRLayoutConstraint";
 }
 
-+ (NSString *)create:(JSValue *)firstItem
-           firstAttr:(JSValue *)firstAttr
-            relation:(JSValue *)relation
-          secondItem:(JSValue *)secondItem
-          secondAttr:(JSValue *)secondAttr
-            constant:(JSValue *)constant
-          multiplier:(JSValue *)multiplier
-        scriptObject:(JSValue *)scriptObject {
-    XTRLayoutConstraint *nativeObject = [XTRLayoutConstraint new];
-    nativeObject.innerObject = [NSLayoutConstraint constraintWithItem:[firstItem toView] ?: [[secondItem toView] superview]
-                                                            attribute:[firstAttr toLayoutAttribute]
-                                                            relatedBy:[relation toLayoutRelation]
-                                                               toItem:[secondItem toView] ?: [[firstItem toView] superview]
-                                                            attribute:[secondAttr toLayoutAttribute]
-                                                           multiplier:[multiplier toDouble]
-                                                             constant:[constant toDouble]];
-    nativeObject.context = scriptObject.context;
-    return nativeObject.objectUUID;
++ (NSString *)create:(NSString *)firstItemRef
+           firstAttr:(NSInteger)firstAttr
+            relation:(NSInteger)relation
+          secondItem:(NSString *)secondItemRef
+          secondAttr:(NSInteger)secondAttr
+            constant:(CGFloat)constant
+          multiplier:(CGFloat)multiplier {
+    XTRView *firstItem = [XTMemoryManager find:firstItemRef];
+    XTRView *secondItem = [XTMemoryManager find:secondItemRef];
+    NSLayoutAttribute firstAttrValue = 0;
+    switch (firstAttr) {
+        case 1:
+            firstAttrValue = NSLayoutAttributeLeft;
+            break;
+        case 2:
+            firstAttrValue = NSLayoutAttributeRight;
+            break;
+        case 3:
+            firstAttrValue = NSLayoutAttributeTop;
+            break;
+        case 4:
+            firstAttrValue = NSLayoutAttributeBottom;
+            break;
+        case 7:
+            firstAttrValue = NSLayoutAttributeWidth;
+            break;
+        case 8:
+            firstAttrValue = NSLayoutAttributeHeight;
+            break;
+        case 9:
+            firstAttrValue = NSLayoutAttributeCenterX;
+            break;
+        case 10:
+            firstAttrValue = NSLayoutAttributeCenterY;
+            break;
+    }
+    NSLayoutRelation relationValue = NSLayoutRelationEqual;
+    switch (relation) {
+        case -1:
+            relationValue = NSLayoutRelationLessThanOrEqual;
+            break;
+        case 0:
+            relationValue = NSLayoutRelationEqual;
+            break;
+        case 1:
+            relationValue = NSLayoutRelationGreaterThanOrEqual;
+            break;
+    }
+    NSLayoutAttribute secondAttrValue = 0;
+    switch (secondAttr) {
+        case 1:
+            secondAttrValue = NSLayoutAttributeLeft;
+            break;
+        case 2:
+            secondAttrValue = NSLayoutAttributeRight;
+            break;
+        case 3:
+            secondAttrValue = NSLayoutAttributeTop;
+            break;
+        case 4:
+            secondAttrValue = NSLayoutAttributeBottom;
+            break;
+        case 7:
+            secondAttrValue = NSLayoutAttributeWidth;
+            break;
+        case 8:
+            secondAttrValue = NSLayoutAttributeHeight;
+            break;
+        case 9:
+            secondAttrValue = NSLayoutAttributeCenterX;
+            break;
+        case 10:
+            secondAttrValue = NSLayoutAttributeCenterY;
+            break;
+    }
+    XTRLayoutConstraint *obj = [XTRLayoutConstraint new];
+    obj.innerObject = [NSLayoutConstraint constraintWithItem:firstItem ?: [secondItem superview]
+                                                   attribute:firstAttrValue
+                                                   relatedBy:relationValue
+                                                      toItem:secondItem ?: [firstItem superview]
+                                                   attribute:secondAttrValue
+                                                  multiplier:multiplier
+                                                    constant:constant];
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+    [XTMemoryManager add:managedObject];
+    obj.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
 + (NSArray *)xtr_constraintsWithVisualFormat:(JSValue *)format views:(JSValue *)argViews {
     NSMutableDictionary *views = [NSMutableDictionary dictionary];
     [[argViews toDictionary] enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        UIView *toView = [[JSValue valueWithObject:obj inContext:argViews.context] toView];
-        if (toView) {
+        UIView *toView = [XTMemoryManager find:obj];
+        if ([toView isKindOfClass:[UIView class]]) {
             toView.translatesAutoresizingMaskIntoConstraints = NO;
             [views setObject:toView forKey:key];
         }
@@ -72,103 +143,149 @@
                                                                            views:[views copy]];
     NSMutableArray *outputConstraint = [NSMutableArray array];
     for (NSLayoutConstraint *nativeConstraint in nativeConstraints) {
-        XTRLayoutConstraint *v = [XTRLayoutConstraint new];
-        v.innerObject = nativeConstraint;
-        v.context = argViews.context;
-        [outputConstraint addObject:[JSValue fromObject:v context:argViews.context] ?: [NSNull null]];
+        XTRLayoutConstraint *obj = [XTRLayoutConstraint new];
+        obj.innerObject = nativeConstraint;
+        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+        [XTMemoryManager add:managedObject];
+        obj.objectUUID = managedObject.objectUUID;
+        [outputConstraint addObject:managedObject.objectUUID];
     }
     return [outputConstraint copy];
 }
 
-- (JSValue *)xtr_firstItem {
-    return [JSValue fromObject:self.innerObject.firstItem context:self.context];
++ (NSString *)xtr_firstItem:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        XTRView *view = obj.innerObject.firstItem;
+        if ([view isKindOfClass:[XTRView class]]) {
+            return view.objectUUID;
+        }
+    }
+    return nil;
 }
 
-- (NSNumber *)xtr_firstAttr {
-    switch (self.innerObject.firstAttribute) {
-        case 0:
-            return @(0);
-        case NSLayoutAttributeLeft:
-            return @(1);
-        case NSLayoutAttributeRight:
-            return @(2);
-        case NSLayoutAttributeTop:
-            return @(3);
-        case NSLayoutAttributeBottom:
-            return @(4);
-        case NSLayoutAttributeWidth:
-            return @(7);
-        case NSLayoutAttributeHeight:
-            return @(8);
-        case NSLayoutAttributeCenterX:
-            return @(9);
-        case NSLayoutAttributeCenterY:
-            return @(10);
-        default:
-            return @(0);
++ (NSInteger)xtr_firstAttr:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        switch (obj.innerObject.firstAttribute) {
+            case 0:
+                return 0;
+            case NSLayoutAttributeLeft:
+                return 1;
+            case NSLayoutAttributeRight:
+                return 2;
+            case NSLayoutAttributeTop:
+                return 3;
+            case NSLayoutAttributeBottom:
+                return 4;
+            case NSLayoutAttributeWidth:
+                return 7;
+            case NSLayoutAttributeHeight:
+                return 8;
+            case NSLayoutAttributeCenterX:
+                return 9;
+            case NSLayoutAttributeCenterY:
+                return 10;
+            default:
+                return 0;
+        }
+    }
+    return 0;
+}
+
++ (NSInteger)xtr_relation:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        switch (obj.innerObject.relation) {
+            case NSLayoutRelationLessThanOrEqual:
+                return -1;
+            case NSLayoutRelationEqual:
+                return 0;
+            case NSLayoutRelationGreaterThanOrEqual:
+                return 1;
+            default:
+                return 0;
+        }
+    }
+    return 0;
+}
+
++ (NSString *)xtr_secondItem:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        XTRView *view = obj.innerObject.secondItem;
+        if ([view isKindOfClass:[XTRView class]]) {
+            return view.objectUUID;
+        }
+    }
+    return nil;
+}
+
++ (NSInteger)xtr_secondAttr:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        switch (obj.innerObject.secondAttribute) {
+            case 0:
+                return 0;
+            case NSLayoutAttributeLeft:
+                return 1;
+            case NSLayoutAttributeRight:
+                return 2;
+            case NSLayoutAttributeTop:
+                return 3;
+            case NSLayoutAttributeBottom:
+                return 4;
+            case NSLayoutAttributeWidth:
+                return 7;
+            case NSLayoutAttributeHeight:
+                return 8;
+            case NSLayoutAttributeCenterX:
+                return 9;
+            case NSLayoutAttributeCenterY:
+                return 10;
+            default:
+                return 0;
+        }
+    }
+    return 0;
+}
+
++ (CGFloat)xtr_constant:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        return obj.innerObject.constant;
+    }
+    return 0.0;
+}
+
++ (void)xtr_setConstant:(CGFloat)constant objectRef:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        obj.innerObject.constant = constant;
     }
 }
 
-- (NSNumber *)xtr_relation {
-    switch (self.innerObject.relation) {
-        case NSLayoutRelationLessThanOrEqual:
-            return @(-1);
-        case NSLayoutRelationEqual:
-            return @(0);
-        case NSLayoutRelationGreaterThanOrEqual:
-            return @(1);
-        default:
-            return @(0);
++ (CGFloat)xtr_multiplier:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        return obj.innerObject.multiplier;
     }
+    return 0.0;
 }
 
-- (JSValue *)xtr_secondItem {
-    return [JSValue fromObject:self.innerObject.secondItem context:self.context];
-}
-
-- (NSNumber *)xtr_secondAttr {
-    switch (self.innerObject.secondAttribute) {
-        case 0:
-            return @(0);
-        case NSLayoutAttributeLeft:
-            return @(1);
-        case NSLayoutAttributeRight:
-            return @(2);
-        case NSLayoutAttributeTop:
-            return @(3);
-        case NSLayoutAttributeBottom:
-            return @(4);
-        case NSLayoutAttributeWidth:
-            return @(7);
-        case NSLayoutAttributeHeight:
-            return @(8);
-        case NSLayoutAttributeCenterX:
-            return @(9);
-        case NSLayoutAttributeCenterY:
-            return @(10);
-        default:
-            return @(0);
++ (NSInteger)xtr_priority:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        return obj.innerObject.priority;
     }
+    return 0.0;
 }
 
-- (NSNumber *)xtr_constant {
-    return @(self.innerObject.constant);
-}
-
-- (void)xtr_setConstant:(JSValue *)constant {
-    self.innerObject.constant = [constant toDouble];
-}
-
-- (NSNumber *)xtr_multiplier {
-    return @(self.innerObject.multiplier);
-}
-
-- (NSNumber *)xtr_priority {
-    return @(self.innerObject.priority);
-}
-
-- (void)xtr_setPriority:(JSValue *)priority {
-    self.innerObject.priority = [priority toDouble];
++ (void)xtr_setPriority:(NSInteger)priority objectRef:(NSString *)objectRef {
+    XTRLayoutConstraint *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRLayoutConstraint class]]) {
+        obj.innerObject.priority = priority;
+    }
 }
 
 @end

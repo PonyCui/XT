@@ -28,7 +28,7 @@
     return @"XTRButton";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame {
     XTRButton *view = [[XTRButton alloc] initWithFrame:[frame toRect]];
     view.innerView = [UIButton buttonWithType:UIButtonTypeSystem];
     view.innerView.adjustsImageWhenHighlighted = NO;
@@ -37,11 +37,11 @@
     [view.innerView addTarget:view action:@selector(onTouchStart) forControlEvents:UIControlEventTouchDown];
     [view.innerView addTarget:view action:@selector(onTouchEvent) forControlEvents:UIControlEventAllTouchEvents];
     [view addSubview:view.innerView];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
 - (void)layoutSubviews {
@@ -49,63 +49,110 @@
     self.innerView.frame = self.bounds;
 }
 
-- (NSString *)xtr_title {
-    return [self.innerView titleForState:UIControlStateNormal];
-}
-
-- (void)xtr_setTitle:(JSValue *)title {
-    [self.innerView setTitle:[title toString] forState:UIControlStateNormal];
-    [self resetInset];
-}
-
-- (JSValue *)xtr_font {
-    return [JSValue fromObject:[XTRFont create:[[self.innerView titleLabel] font]] context:self.context];
-}
-
-- (void)xtr_setFont:(JSValue *)font {
-    [self.innerView.titleLabel setFont:[font toFont].innerObject];
-}
-
-- (JSValue *)xtr_image {
-    return [JSValue fromObject:[self.innerView imageForState:UIControlStateNormal] context:self.context];
-}
-
-- (void)xtr_setImage:(JSValue *)image {
-    id obj = [XTMemoryManager find:[image toString]];
-    if ([obj isKindOfClass:[UIImage class]]) {
-        [self.innerView setImage:obj forState:UIControlStateNormal];
-        [self resetInset];
++ (NSString *)xtr_title:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        return [obj.innerView titleForState:UIControlStateNormal];
     }
-    else {
-        [self.innerView setImage:nil forState:UIControlStateNormal];
-        [self resetInset];
+    return nil;
+}
+
++ (void)xtr_setTitle:(JSValue *)title objectRef:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        [obj.innerView setTitle:[title toString] forState:UIControlStateNormal];
+        [obj resetInset];
     }
 }
 
-- (NSDictionary *)xtr_color {
-    return [JSValue fromColor:[self.innerView titleColorForState:UIControlStateNormal]];
++ (NSString *)xtr_font:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        return [XTRFont create:[[obj.innerView titleLabel] font]];
+    }
+    return nil;
 }
 
-- (void)xtr_setColor:(JSValue *)color {
-    [self.innerView setTitleColor:[color toColor] forState:UIControlStateNormal];
++ (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    XTRFont *font = [XTMemoryManager find:fontRef];
+    if ([obj isKindOfClass:[XTRButton class]] && [font isKindOfClass:[XTRFont class]]) {
+        [obj.innerView.titleLabel setFont:font.innerObject];
+    }
 }
 
-- (BOOL)xtr_vertical {
-    return self.vertical;
++ (NSString *)xtr_image:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        XTRImage *image = (id)[obj.innerView imageForState:UIControlStateNormal];
+        if ([image isKindOfClass:[XTRImage class]]) {
+            return image.objectUUID;
+        }
+    }
+    return nil;
 }
 
-- (void)xtr_setVertical:(JSValue *)vertical {
-    self.vertical = [vertical toBool];
-    [self resetInset];
++ (void)xtr_setImage:(NSString *)imageRef objectRef:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        XTRImage *img = [XTMemoryManager find:imageRef];
+        if ([img isKindOfClass:[XTRImage class]]) {
+            [obj.innerView setImage:img.image forState:UIControlStateNormal];
+            [obj resetInset];
+        }
+        else {
+            [obj.innerView setImage:nil forState:UIControlStateNormal];
+            [obj resetInset];
+        }
+    }
 }
 
-- (NSNumber *)xtr_inset {
-    return @(self.inset);
++ (NSDictionary *)xtr_color:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        UIColor *color = [obj.innerView titleColorForState:UIControlStateNormal];
+        if ([color isKindOfClass:[UIColor class]]) {
+            return [JSValue fromColor:color];
+        }
+    }
+    return @{};
 }
 
-- (void)xtr_setInset:(JSValue *)inset {
-    self.inset = [inset toDouble];
-    [self resetInset];
++ (void)xtr_setColor:(JSValue *)color objectRef:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        [obj.innerView setTitleColor:[color toColor] forState:UIControlStateNormal];
+    }
+}
+
++ (BOOL)xtr_vertical:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        return obj.vertical;
+    }
+    return NO;
+}
+
++ (void)xtr_setVertical:(BOOL)vertical objectRef:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        obj.vertical = vertical;
+    }
+}
+
++ (CGFloat)xtr_inset:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        return obj.inset;
+    }
+    return 0;
+}
+
++ (void)xtr_setInset:(CGFloat)inset objectRef:(NSString *)objectRef {
+    XTRButton *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRButton class]]) {
+        obj.inset = inset;
+    }
 }
 
 - (void)resetInset {
