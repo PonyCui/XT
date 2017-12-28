@@ -9,6 +9,7 @@
 #import "XTRTextMeasurer.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @implementation XTRTextMeasurer
 
@@ -16,11 +17,14 @@
     return @"XTRTextMeasurer";
 }
 
-+ (NSDictionary *)measureText:(JSValue *)argText params:(JSValue *)argParams {
-    NSString *text = [argText toString];
++ (NSDictionary *)measureText:(NSString *)argText params:(JSValue *)argParams {
+    NSString *text = argText;
     JSValue *params = argParams;
     if (text != nil && params != nil) {
-        UIFont *font = [params[@"font"] isKindOfClass:[JSValue class]] ? [[params[@"font"] toFont] innerObject] : nil;
+        XTRFont *font = [params[@"font"] isKindOfClass:[JSValue class]] ? [XTMemoryManager find:params[@"font"].toString] : nil;
+        if (![font isKindOfClass:[XTRFont class]]) {
+            font = nil;
+        }
         NSInteger numberOfLines = [params[@"numberOfLines"] isKindOfClass:[JSValue class]] && [params[@"numberOfLines"] isNumber]
         ? [[params[@"numberOfLines"] toNumber] integerValue] : 1;
         CGFloat letterSpace = [params[@"letterSpace"] isKindOfClass:[JSValue class]] && [params[@"letterSpace"] isNumber]
@@ -32,7 +36,7 @@
         NSAttributedString *attributedString = [[NSAttributedString alloc]
                                                 initWithString:text
                                                 attributes:@{
-                                                             NSFontAttributeName: font ?: [UIFont systemFontOfSize:14],
+                                                             NSFontAttributeName: font.innerObject ?: [UIFont systemFontOfSize:14],
                                                              NSKernAttributeName: @(letterSpace),
                                                              NSParagraphStyleAttributeName: paragraphStyle,
                                                              }];

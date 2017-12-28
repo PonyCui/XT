@@ -11,7 +11,7 @@
 
 @protocol XTRTextMeasurer <JSExport>
 
-+ (NSDictionary *)measureText:(JSValue *)text params:(JSValue *)params;
++ (NSDictionary *)measureText:(NSString *)text params:(JSValue *)params;
 
 @end
 

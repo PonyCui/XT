@@ -9,6 +9,7 @@
 #import "XTRCanvasView.h"
 #import "XTRUtils.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRCanvasState: NSObject<NSCopying>
 
@@ -69,210 +70,322 @@
     XTRCanvasView *view = [[XTRCanvasView alloc] initWithFrame:[frame toRect]];
     view.currentState = [XTRCanvasState new];
     view.backgroundColor = [UIColor clearColor];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = (id)scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
-- (CGFloat)xtr_globalAlpha {
-    return self.currentState.globalAlpha;
++ (CGFloat)xtr_globalAlpha:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return view.currentState.globalAlpha;
+    }
+    return 0.0;
 }
 
-- (void)xtr_setGlobalAlpha:(CGFloat)globalAlpha {
-    self.currentState.globalAlpha = globalAlpha;
-}
-
-- (NSDictionary *)xtr_fillStyle {
-    return [JSValue fromColor:self.currentState.fillStyle];
-}
-
-- (void)xtr_setFillStyle:(JSValue *)fillStyle {
-    self.currentState.fillStyle = [fillStyle toColor];
-}
-
-- (NSDictionary *)xtr_strokeStyle {
-    return [JSValue fromColor:self.currentState.strokeStyle];
-}
-
-- (void)xtr_setStrokeStyle:(JSValue *)strokeStyle {
-    self.currentState.strokeStyle = [strokeStyle toColor];
-}
-
-- (NSString *)xtr_lineCap {
-    return self.currentState.lineCap;
-}
-
-- (void)xtr_setLineCap:(NSString *)lineCap {
-    self.currentState.lineCap = lineCap;
-}
-
-- (NSString *)xtr_lineJoin {
-    return self.currentState.lineJoin;
-}
-
-- (void)xtr_setLineJoin:(NSString *)lineJoin {
-    self.currentState.lineJoin = lineJoin;
-}
-
-- (CGFloat)xtr_lineWidth {
-    return self.currentState.lineWidth;
-}
-
-- (void)xtr_setLineWidth:(CGFloat)lineWidth {
-    self.currentState.lineWidth = lineWidth;
-}
-
-- (CGFloat)xtr_miterLimit {
-    return self.currentState.miterLimit;
-}
-
-- (void)xtr_setMiterLimit:(CGFloat)miterLimit {
-    self.currentState.miterLimit = miterLimit;
-}
-
-- (void)xtr_rect:(JSValue *)rect {
-    self.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
-}
-
-- (void)xtr_fillRect:(JSValue *)rect {
-    [self xtr_rect:rect];
-    [self xtr_fill];
-}
-
-- (void)xtr_strokeRect:(JSValue *)rect {
-    [self xtr_rect:rect];
-    [self xtr_stroke];
-}
-
-- (void)xtr_fill {
-    if (self.currentPath != nil) {
-        CAShapeLayer *layer = [CAShapeLayer layer];
-        layer.transform = CATransform3DMakeAffineTransform(self.currentState.currentTransform);
-        [layer setPath:[self.currentPath CGPath]];
-        [layer setFillColor:[(self.currentState.fillStyle ?: [UIColor blackColor]) CGColor]];
-        [layer setOpacity:self.currentState.globalAlpha];
-        [layer setStrokeColor:[UIColor clearColor].CGColor];
-        [self.layer addSublayer:layer];
++ (void)xtr_setGlobalAlpha:(CGFloat)globalAlpha objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.globalAlpha = globalAlpha;
     }
 }
 
-- (void)xtr_stroke {
-    if (self.currentPath != nil) {
-        CAShapeLayer *layer = [CAShapeLayer layer];
-        layer.transform = CATransform3DMakeAffineTransform(self.currentState.currentTransform);
-        [layer setPath:[self.currentPath CGPath]];
-        [layer setStrokeColor:[(self.currentState.strokeStyle ?: [UIColor blackColor]) CGColor]];
-        [layer setOpacity:self.currentState.globalAlpha];
-        if ([self.currentState.lineCap isEqualToString:@"butt"]) {
-            layer.lineCap = @"butt";
-        }
-        else if ([self.currentState.lineCap isEqualToString:@"round"]) {
-            layer.lineCap = @"round";
-        }
-        else if ([self.currentState.lineCap isEqualToString:@"square"]) {
-            layer.lineCap = @"suqare";
-        }
-        if ([self.currentState.lineJoin isEqualToString:@"bevel"]) {
-            layer.lineJoin = @"bevel";
-        }
-        else if ([self.currentState.lineJoin isEqualToString:@"miter"]) {
-            layer.lineJoin = @"miter";
-        }
-        else if ([self.currentState.lineJoin isEqualToString:@"round"]) {
-            layer.lineJoin = @"round";
-        }
-        layer.lineWidth = self.currentState.lineWidth;
-        layer.miterLimit = self.currentState.miterLimit;
-        [layer setFillColor:[UIColor clearColor].CGColor];
-        [self.layer addSublayer:layer];
++ (NSDictionary *)xtr_fillStyle:(NSString *)objectRef{
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return [JSValue fromColor:view.currentState.fillStyle];
+    }
+    return nil;
+}
+
++ (void)xtr_setFillStyle:(JSValue *)fillStyle objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.fillStyle = [fillStyle toColor];
     }
 }
 
-- (void)xtr_beginPath {
-    self.currentPath = [[UIBezierPath alloc] init];
-}
-- (void)xtr_moveTo:(JSValue *)point {
-    [self.currentPath moveToPoint:[point toPoint]];
-}
-- (void)xtr_closePath {
-    [self.currentPath closePath];
-}
-
-- (void)xtr_lineTo:(JSValue *)point {
-    [self.currentPath addLineToPoint:[point toPoint]];
-}
-
-- (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint {
-    [self.currentPath addQuadCurveToPoint:[xyPoint toPoint] controlPoint:[cpPoint toPoint]];
-}
-
-- (void)xtr_bezierCurveTo:(JSValue *)cp1Point cp2Point:(JSValue *)cp2Point xyPoint:(JSValue *)xyPoint {
-    [self.currentPath addCurveToPoint:[xyPoint toPoint]
-                        controlPoint1:[cp1Point toPoint]
-                        controlPoint2:[cp2Point toPoint]];
-}
-
-- (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise {
-    [self.currentPath addArcWithCenter:[point toPoint]
-                                radius:r.toDouble
-                            startAngle:sAngle.toDouble
-                              endAngle:eAngle.toDouble
-                             clockwise:!counterclockwise.toBool];
-}
-
-- (BOOL)xtr_isPointInPath:(JSValue *)point {
-    UIBezierPath *currentPath = self.currentPath;
-    if (!CGAffineTransformIsIdentity(self.currentState.currentTransform)) {
-        currentPath = [UIBezierPath bezierPath];
-        [currentPath appendPath:self.currentPath];
-        [currentPath applyTransform:self.currentState.currentTransform];
++ (NSDictionary *)xtr_strokeStyle:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return [JSValue fromColor:view.currentState.strokeStyle];
     }
-    return [currentPath containsPoint:[point toPoint]];
+    return nil;
 }
 
-- (void)xtr_postScale:(JSValue *)point {
-    self.currentState.currentTransform = CGAffineTransformScale(self.currentState.currentTransform, [point toPoint].x, [point toPoint].y);
++ (void)xtr_setStrokeStyle:(JSValue *)strokeStyle objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.strokeStyle = [strokeStyle toColor];
+    }
 }
 
-- (void)xtr_postRotate:(JSValue *)angle {
-    self.currentState.currentTransform = CGAffineTransformRotate(self.currentState.currentTransform, angle.toDouble);
++ (NSString *)xtr_lineCap:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return view.currentState.lineCap;
+    }
+    return nil;
 }
 
-- (void)xtr_postTranslate:(JSValue *)point {
-    self.currentState.currentTransform = CGAffineTransformTranslate(self.currentState.currentTransform, [point toPoint].x, [point toPoint].y);
++ (void)xtr_setLineCap:(NSString *)lineCap objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.lineCap = lineCap;
+    }
 }
 
-- (void)xtr_postTransform:(JSValue *)transform {
-    self.currentState.currentTransform = CGAffineTransformConcat(self.currentState.currentTransform, [transform toTransform]);
++ (NSString *)xtr_lineJoin:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return view.currentState.lineJoin;
+    }
+    return nil;
+}
+
++ (void)xtr_setLineJoin:(NSString *)lineJoin objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.lineJoin = lineJoin;
+    }
+}
+
++ (CGFloat)xtr_lineWidth:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return view.currentState.lineWidth;
+    }
+    return 0.0;
+}
+
++ (void)xtr_setLineWidth:(CGFloat)lineWidth objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.lineWidth = lineWidth;
+    }
+}
+
++ (CGFloat)xtr_miterLimit:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        return view.currentState.miterLimit;
+    }
+    return 0.0;
+}
+
++ (void)xtr_setMiterLimit:(CGFloat)miterLimit objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.miterLimit = miterLimit;
+    }
+}
+
++ (void)xtr_rect:(JSValue *)rect objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentPath = [UIBezierPath bezierPathWithRect:[rect toRect]];
+    }
+}
+
++ (void)xtr_fillRect:(JSValue *)rect objectRef:(NSString *)objectRef {
+    [self xtr_rect:rect objectRef:objectRef];
+    [self xtr_fill:objectRef];
+}
+
++ (void)xtr_strokeRect:(JSValue *)rect objectRef:(NSString *)objectRef {
+    [self xtr_rect:rect objectRef:objectRef];
+    [self xtr_stroke:objectRef];
+}
+
++ (void)xtr_fill:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        if (view.currentPath != nil) {
+            CAShapeLayer *layer = [CAShapeLayer layer];
+            layer.transform = CATransform3DMakeAffineTransform(view.currentState.currentTransform);
+            [layer setPath:[view.currentPath CGPath]];
+            [layer setFillColor:[(view.currentState.fillStyle ?: [UIColor blackColor]) CGColor]];
+            [layer setOpacity:view.currentState.globalAlpha];
+            [layer setStrokeColor:[UIColor clearColor].CGColor];
+            [view.layer addSublayer:layer];
+        }
+    }
+}
+
++ (void)xtr_stroke:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        if (view.currentPath != nil) {
+            CAShapeLayer *layer = [CAShapeLayer layer];
+            layer.transform = CATransform3DMakeAffineTransform(view.currentState.currentTransform);
+            [layer setPath:[view.currentPath CGPath]];
+            [layer setStrokeColor:[(view.currentState.strokeStyle ?: [UIColor blackColor]) CGColor]];
+            [layer setOpacity:view.currentState.globalAlpha];
+            if ([view.currentState.lineCap isEqualToString:@"butt"]) {
+                layer.lineCap = @"butt";
+            }
+            else if ([view.currentState.lineCap isEqualToString:@"round"]) {
+                layer.lineCap = @"round";
+            }
+            else if ([view.currentState.lineCap isEqualToString:@"square"]) {
+                layer.lineCap = @"suqare";
+            }
+            if ([view.currentState.lineJoin isEqualToString:@"bevel"]) {
+                layer.lineJoin = @"bevel";
+            }
+            else if ([view.currentState.lineJoin isEqualToString:@"miter"]) {
+                layer.lineJoin = @"miter";
+            }
+            else if ([view.currentState.lineJoin isEqualToString:@"round"]) {
+                layer.lineJoin = @"round";
+            }
+            layer.lineWidth = view.currentState.lineWidth;
+            layer.miterLimit = view.currentState.miterLimit;
+            [layer setFillColor:[UIColor clearColor].CGColor];
+            [view.layer addSublayer:layer];
+        }
+    }
+}
+
++ (void)xtr_beginPath:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentPath = [[UIBezierPath alloc] init];
+    }
+}
+
++ (void)xtr_moveTo:(JSValue *)point objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.currentPath moveToPoint:[point toPoint]];
+    }
+}
+
++ (void)xtr_closePath:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.currentPath closePath];
+    }
+}
+
++ (void)xtr_lineTo:(JSValue *)point objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.currentPath addLineToPoint:[point toPoint]];
+    }
+}
+
++ (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.currentPath addQuadCurveToPoint:[xyPoint toPoint] controlPoint:[cpPoint toPoint]];
+    }
+}
+
++ (void)xtr_bezierCurveTo:(JSValue *)cp1Point cp2Point:(JSValue *)cp2Point xyPoint:(JSValue *)xyPoint objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.currentPath addCurveToPoint:[xyPoint toPoint]
+                            controlPoint1:[cp1Point toPoint]
+                            controlPoint2:[cp2Point toPoint]];
+    }
+}
+
++ (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.currentPath addArcWithCenter:[point toPoint]
+                                    radius:r.toDouble
+                                startAngle:sAngle.toDouble
+                                  endAngle:eAngle.toDouble
+                                 clockwise:!counterclockwise.toBool];
+    }
+}
+
++ (BOOL)xtr_isPointInPath:(JSValue *)point objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        UIBezierPath *currentPath = view.currentPath;
+        if (!CGAffineTransformIsIdentity(view.currentState.currentTransform)) {
+            currentPath = [UIBezierPath bezierPath];
+            [currentPath appendPath:view.currentPath];
+            [currentPath applyTransform:view.currentState.currentTransform];
+        }
+        return [currentPath containsPoint:[point toPoint]];
+    }
+    return NO;
+}
+
++ (void)xtr_postScale:(JSValue *)point objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.currentTransform = CGAffineTransformScale(view.currentState.currentTransform, [point toPoint].x, [point toPoint].y);
+    }
+}
+
++ (void)xtr_postRotate:(JSValue *)angle objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.currentTransform = CGAffineTransformRotate(view.currentState.currentTransform, angle.toDouble);
+    }
+}
+
++ (void)xtr_postTranslate:(JSValue *)point objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.currentTransform = CGAffineTransformTranslate(view.currentState.currentTransform, [point toPoint].x, [point toPoint].y);
+    }
+}
+
++ (void)xtr_postTransform:(JSValue *)transform objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        view.currentState.currentTransform = CGAffineTransformConcat(view.currentState.currentTransform, [transform toTransform]);
+    }
+}
+
++ (void)xtr_setCanvasTransform:(JSValue *)transform objectRef:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+    }
 }
 
 - (void)xtr_setCanvasTransform:(JSValue *)transform {
     self.currentState.currentTransform = [transform toTransform];
 }
 
-- (void)xtr_save {
-    NSMutableArray *stateStack = [(self.stateStack ?: @[]) mutableCopy];
-    [stateStack addObject:self.currentState];
-    self.stateStack = stateStack;
-    self.currentState = [self.currentState copy];
-}
-
-- (void)xtr_restore {
-    if ([self.stateStack count] > 0) {
-        self.currentState = [self.stateStack lastObject];
-        NSMutableArray *stateStack = [(self.stateStack ?: @[]) mutableCopy];
-        [stateStack removeLastObject];
-        self.stateStack = stateStack;
++ (void)xtr_save:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        NSMutableArray *stateStack = [(view.stateStack ?: @[]) mutableCopy];
+        [stateStack addObject:view.currentState];
+        view.stateStack = stateStack;
+        view.currentState = [view.currentState copy];
     }
 }
 
-- (void)xtr_clear {
-    [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
-    self.stateStack = @[];
-    self.currentState = [XTRCanvasState new];
-    self.currentPath = nil;
++ (void)xtr_restore:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        if ([view.stateStack count] > 0) {
+            view.currentState = [view.stateStack lastObject];
+            NSMutableArray *stateStack = [(view.stateStack ?: @[]) mutableCopy];
+            [stateStack removeLastObject];
+            view.stateStack = stateStack;
+        }
+    }
+}
+
++ (void)xtr_clear:(NSString *)objectRef {
+    XTRCanvasView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCanvasView class]]) {
+        [view.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+        view.stateStack = @[];
+        view.currentState = [XTRCanvasState new];
+        view.currentPath = nil;
+    }
 }
 
 @end

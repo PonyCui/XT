@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRFont.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRTextView ()<UITextViewDelegate>
 
@@ -23,16 +24,16 @@
     return @"XTRTextView";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame {
     XTRTextView *view = [[XTRTextView alloc] initWithFrame:[frame toRect]];
     view.userInteractionEnabled = YES;
     view.innerView = [[UITextView alloc] init];
     view.innerView.delegate = view;
     [view addSubview:view.innerView];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
     return view.objectUUID;
 }
 
@@ -45,130 +46,213 @@
     self.innerView.frame = self.bounds;
 }
 
-- (NSString *)xtr_text {
-    return self.innerView.text;
-}
-
-- (void)xtr_setText:(JSValue *)text {
-    self.innerView.text = [text toString];
-}
-
-- (JSValue *)xtr_font {
-    if (self.innerView.font != nil) {
-        return [JSValue fromObject:[XTRFont create:self.innerView.font] context:self.context];
++ (NSString *)xtr_text:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.text;
     }
     return nil;
 }
 
-- (void)xtr_setFont:(JSValue *)font {
-    XTRFont *aFont = [font toFont];
-    if (aFont) {
-        self.innerView.font = aFont.innerObject;
++ (void)xtr_setText:(NSString *)text objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.text = text;
     }
 }
 
-- (NSDictionary *)xtr_textColor {
-    return [JSValue fromColor:self.innerView.textColor ?: [UIColor blackColor]];
++ (NSString *)xtr_font:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return [XTRFont create:view.innerView.font];
+    }
+    return nil;
 }
 
-- (void)xtr_setTextColor:(JSValue *)textColor {
-    self.innerView.textColor = [textColor toColor];
-}
-
-- (NSNumber *)xtr_textAlignment {
-    switch (self.innerView.textAlignment) {
-        case NSTextAlignmentLeft:
-            return @(0);
-        case NSTextAlignmentCenter:
-            return @(1);
-        case NSTextAlignmentRight:
-            return @(2);
-        default:
-            return @(0);
++ (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    XTRFont *font = [XTMemoryManager find:fontRef];
+    if ([view isKindOfClass:[XTRTextView class]] && [font isKindOfClass:[XTRFont class]]) {
+        view.innerView.font = font.innerObject;
     }
 }
 
-- (void)xtr_setTextAlignment:(JSValue *)textAlignment {
-    switch ([textAlignment toInt32]) {
-        case 0:
-            self.innerView.textAlignment = NSTextAlignmentLeft;
-            break;
-        case 1:
-            self.innerView.textAlignment = NSTextAlignmentCenter;
-            break;
-        case 2:
-            self.innerView.textAlignment = NSTextAlignmentRight;
-            break;
-        default:
-            break;
++ (NSDictionary *)xtr_textColor:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return [JSValue fromColor:view.innerView.textColor ?: [UIColor blackColor]];
+    }
+    return nil;
+}
+
++ (void)xtr_setTextColor:(JSValue *)textColor objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.textColor = [textColor toColor];
     }
 }
 
-- (BOOL)xtr_editing {
-    return self.innerView.isFirstResponder;
++ (NSInteger)xtr_textAlignment:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        switch (view.innerView.textAlignment) {
+            case NSTextAlignmentLeft:
+                return 0;
+            case NSTextAlignmentCenter:
+                return 1;
+            case NSTextAlignmentRight:
+                return 2;
+            default:
+                return 0;
+        }
+    }
+    return 0;
 }
 
-- (BOOL)xtr_allowAutocapitalization {
-    return self.innerView.autocapitalizationType != UITextAutocapitalizationTypeNone;
++ (void)xtr_setTextAlignment:(NSInteger)textAlignment objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        switch (textAlignment) {
+            case 0:
+                view.innerView.textAlignment = NSTextAlignmentLeft;
+                break;
+            case 1:
+                view.innerView.textAlignment = NSTextAlignmentCenter;
+                break;
+            case 2:
+                view.innerView.textAlignment = NSTextAlignmentRight;
+                break;
+            default:
+                break;
+        }
+    }
 }
 
-- (void)xtr_setAllowAutocapitalization:(JSValue *)allowAutocapitalization {
-    self.innerView.autocapitalizationType = [allowAutocapitalization toBool] ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
++ (BOOL)xtr_editing:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return [view.innerView isFirstResponder];
+    }
+    return NO;
 }
 
-- (BOOL)xtr_allowAutocorrection {
-    return self.innerView.autocorrectionType != UITextAutocorrectionTypeNo;
++ (BOOL)xtr_allowAutocapitalization:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.autocapitalizationType != UITextAutocapitalizationTypeNone;
+    }
+    return NO;
 }
 
-- (void)xtr_setAllowAutocorrection:(JSValue *)allowAutocorrection {
-    self.innerView.autocorrectionType = [allowAutocorrection toBool] ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
++ (void)xtr_setAllowAutocapitalization:(BOOL)allowAutocapitalization objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.autocapitalizationType = allowAutocapitalization;
+    }
 }
 
-- (BOOL)xtr_allowSpellChecking {
-    return self.innerView.spellCheckingType != UITextSpellCheckingTypeNo;
-}
-- (void)xtr_setAllowSpellChecking:(JSValue *)allowSpellChecking {
-    self.innerView.spellCheckingType = [allowSpellChecking toBool] ? UITextSpellCheckingTypeYes : UITextSpellCheckingTypeNo;
-}
-
-- (NSNumber *)xtr_keyboardType {
-    return @(self.innerView.keyboardType);
++ (BOOL)xtr_allowAutocorrection:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.autocorrectionType != UITextAutocorrectionTypeNo;
+    }
+    return NO;
 }
 
-- (void)xtr_setKeyboardType:(JSValue *)keyboardType {
-    self.innerView.keyboardType = [keyboardType toInt32];
++ (void)xtr_setAllowAutocorrection:(BOOL)allowAutocorrection objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.autocorrectionType = allowAutocorrection ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+    }
 }
 
-- (NSNumber *)xtr_returnKeyType {
-    return @(self.innerView.returnKeyType);
++ (BOOL)xtr_allowSpellChecking:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.spellCheckingType != UITextSpellCheckingTypeNo;
+    }
+    return NO;
 }
 
-- (void)xtr_setReturnKeyType:(JSValue *)returnKeyType {
-    self.innerView.returnKeyType = [returnKeyType toInt32];
++ (void)xtr_setAllowSpellChecking:(BOOL)allowSpellChecking objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.spellCheckingType = allowSpellChecking ? UITextSpellCheckingTypeYes : UITextSpellCheckingTypeNo;
+    }
 }
 
-- (BOOL)xtr_enablesReturnKeyAutomatically {
-    return self.innerView.enablesReturnKeyAutomatically;
++ (NSInteger)xtr_keyboardType:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.keyboardType;
+    }
+    return 0;
 }
 
-- (void)xtr_setEnablesReturnKeyAutomatically:(JSValue *)enablesReturnKeyAutomatically {
-    self.innerView.enablesReturnKeyAutomatically = [enablesReturnKeyAutomatically toBool];
++ (void)xtr_setKeyboardType:(NSInteger)keyboardType objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.keyboardType = keyboardType;
+    }
 }
 
-- (BOOL)xtr_secureTextEntry {
-    return self.innerView.secureTextEntry;
++ (NSInteger)xtr_returnKeyType:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.returnKeyType;
+    }
+    return 0;
 }
 
-- (void)xtr_setSecureTextEntry:(JSValue *)secureTextEntry {
-    self.innerView.secureTextEntry = [secureTextEntry toBool];
++ (void)xtr_setReturnKeyType:(NSInteger)returnKeyType objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.returnKeyType = returnKeyType;
+    }
 }
 
-- (void)xtr_focus {
-    [self.innerView becomeFirstResponder];
++ (BOOL)xtr_enablesReturnKeyAutomatically:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.enablesReturnKeyAutomatically;
+    }
+    return NO;
 }
 
-- (void)xtr_blur {
-    [self.innerView resignFirstResponder];
++ (void)xtr_setEnablesReturnKeyAutomatically:(BOOL)enablesReturnKeyAutomatically objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically;
+    }
+}
+
++ (BOOL)xtr_secureTextEntry:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        return view.innerView.secureTextEntry;
+    }
+    return NO;
+}
+
++ (void)xtr_setSecureTextEntry:(BOOL)secureTextEntry objectRef:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        view.innerView.secureTextEntry = secureTextEntry;
+    }
+}
+
++ (void)xtr_focus:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        [view.innerView becomeFirstResponder];
+    }
+}
+
++ (void)xtr_blur:(NSString *)objectRef {
+    XTRTextView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRTextView class]]) {
+        [view.innerView resignFirstResponder];
+    }
 }
 
 #pragma mark - UITextViewDelegate
