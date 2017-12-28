@@ -14,20 +14,23 @@
 
 @protocol XTRNavigationControllerExport <JSExport>
 
-@property (nonatomic, copy) NSString *objectUUID;
 + (NSString *)create:(JSValue *)scriptObject;
-- (void)xtr_setViewControllers:(NSArray<NSDictionary *> *)viewControllers animated:(JSValue *)animated;
-- (void)xtr_pushViewController:(JSValue *)viewController animated:(JSValue *)animated;
-- (JSValue *)xtr_popViewController:(JSValue *)animated;
-- (NSArray<JSValue *> *)xtr_popToViewController:(JSValue *)viewController animated:(JSValue *)animated;
-- (NSArray<JSValue *> *)xtr_popToRootViewController:(JSValue *)animated;
++ (void)xtr_setViewControllers:(NSArray<NSString *> *)viewControllers animated:(BOOL)animated objectRef:(NSString *)objectRef;
++ (void)xtr_pushViewController:(NSString *)viewControllerRef animated:(BOOL)animated objectRef:(NSString *)objectRef;
++ (NSString *)xtr_popViewController:(BOOL)animated objectRef:(NSString *)objectRef;
++ (NSArray<NSString *> *)xtr_popToViewController:(NSString *)viewControllerRef
+                                        animated:(JSValue *)animated
+                                       objectRef:(NSString *)objectRef;
++ (NSArray<NSString *> *)xtr_popToRootViewController:(BOOL)animated objectRef:(NSString *)objectRef;
 
 @end
 
-@interface XTRNavigationController : UINavigationController<XTRComponent, XTRViewControllerExport, XTRNavigationControllerExport>
+@interface XTRNavigationController : UINavigationController<XTRComponent, XTRNavigationControllerExport>
 
 + (XTRNavigationController *)clone:(UINavigationController *)navigationController;
 
 @property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, weak) JSContext *context;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end

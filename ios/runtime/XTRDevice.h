@@ -13,13 +13,12 @@
 
 @protocol XTRDeviceExport <JSExport>
 
-+ (NSString *)xtr_current;
-- (NSString *)xtr_name;
-- (NSString *)xtr_systemName;
-- (NSString *)xtr_systemVersion;
-- (NSString *)xtr_xtRuntimeVersion;
-- (NSString *)xtr_model;
-- (NSInteger)xtr_orientation;
++ (NSString *)xtr_name;
++ (NSString *)xtr_systemName;
++ (NSString *)xtr_systemVersion;
++ (NSString *)xtr_xtRuntimeVersion;
++ (NSString *)xtr_model;
++ (NSInteger)xtr_orientation;
 
 @end
 

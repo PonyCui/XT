@@ -11,7 +11,6 @@
 #import "XTRFont.h"
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
-#import "XTRObjectRefs.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
@@ -80,12 +79,6 @@
 }
 
 - (id)findObject {
-    if ([self isObject] && [self[@"nativeObjectRef"] isKindOfClass:[JSValue class]]) {
-        NSString *ref = [self[@"nativeObjectRef"] toString];
-        if (ref != nil) {
-            return [[(XTRContext *)[JSContext currentContext] objectRefs] restore:ref];
-        }
-    }
     return nil;
 }
 

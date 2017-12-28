@@ -10,7 +10,9 @@
 #import "XTRUtils.h"
 #import "XTRContext.h"
 #import "XTRNavigationController.h"
+#import "XTRView.h"
 #import <objc/runtime.h>
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRViewController ()
 
@@ -26,11 +28,11 @@
 
 + (NSString *)create:(JSValue *)scriptObject {
     XTRViewController *viewController = [XTRViewController new];
-    viewController.objectUUID = [[NSUUID UUID] UUIDString];
-    viewController.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:viewController];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [viewController description]; }];
-    return viewController.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:viewController];
+    [XTMemoryManager add:managedObject];
+    viewController.context = [JSContext currentContext];
+    viewController.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
 #ifdef LOGDEALLOC
@@ -43,13 +45,91 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-- (JSValue *)xtr_view {
-    return [JSValue fromObject:self.view context:self.context];
++ (NSString *)xtr_view:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        XTRView *view = (id)obj.view;
+        if ([view isKindOfClass:[XTRView class]]) {
+            return view.objectUUID;
+        }
+    }
+    return nil;
 }
 
-- (void)xtr_setView:(JSValue *)view {
-    self.view = [view toView];
++ (void)xtr_setView:(NSString *)viewRef objectRef:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    UIView *view = [XTMemoryManager find:viewRef];
+    if ([obj isKindOfClass:[UIViewController class]] && [view isKindOfClass:[UIView class]]) {
+        obj.view = view;
+    }
 }
+
++ (NSString *)xtr_parentViewController:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        id parentViewController = [obj parentViewController];
+        if ([parentViewController conformsToProtocol:@protocol(XTRComponent)]) {
+            return [parentViewController objectUUID];
+        }
+    }
+    return nil;
+}
+
++ (NSArray<NSString *> *)xtr_childViewControllers:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    NSMutableArray *childViewControllers = [NSMutableArray array];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        for (id viewController in obj.childViewControllers) {
+            if ([viewController conformsToProtocol:@protocol(XTRComponent)]) {
+                [childViewControllers addObject:[viewController objectUUID] ?: @""];
+            }
+        }
+    }
+    return [childViewControllers copy];
+}
+
++ (void)xtr_addChildViewController:(NSString *)childControllerRef objectRef:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        UIViewController *childController = [XTMemoryManager find:childControllerRef];
+        if ([childController isKindOfClass:[UIViewController class]]) {
+            [obj addChildViewController:childController];
+        }
+    }
+}
+
++ (void)xtr_removeFromParentViewController:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        [obj removeFromParentViewController];
+    }
+}
+
++ (NSString *)xtr_navigationController:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        
+    }
+    return nil;
+}
+
+//- (JSValue *)xtr_navigationController {
+//    static int xtrNavigationControllerTag;
+//    if (self.navigationController != nil && ![self.navigationController isKindOfClass:[XTRNavigationController class]]) {
+//        XTRNavigationController *xtrInstance = objc_getAssociatedObject(self, &xtrNavigationControllerTag);
+//        if (xtrInstance != nil) {
+//            return [JSValue fromObject:xtrInstance context:self.context];
+//        }
+//        else {
+//            xtrInstance = [XTRNavigationController clone:self.navigationController];
+//            objc_setAssociatedObject(self, &xtrNavigationControllerTag, xtrInstance, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//            return (id)xtrInstance.objectUUID;
+//        }
+//    }
+//    return [JSValue fromObject:self.navigationController context:self.context];
+//}
+
+#pragma mark - ViewController callbacks
 
 - (void)loadView {
     if (self.scriptObject != nil) {
@@ -142,29 +222,6 @@ static UINavigationController *tmpNavigationController;
     }
 }
 
-- (JSValue *)xtr_parentViewController {
-    return [JSValue fromObject:self.parentViewController context:self.context];
-}
-
-- (NSArray<JSValue *> *)xtr_childViewControllers {
-    NSMutableArray *childViewControllers = [NSMutableArray array];
-    for (UIViewController *viewController in self.childViewControllers) {
-        [childViewControllers addObject:[JSValue fromObject:viewController context:self.context] ?: [NSNull null]];
-    }
-    return [childViewControllers copy];
-}
-
-- (void)xtr_addChildViewController:(JSValue *)childController {
-    UIViewController *viewController = [childController toViewController];
-    if (viewController) {
-        [self addChildViewController:viewController];
-    }
-}
-
-- (void)xtr_removeFromParentViewController {
-    [self removeFromParentViewController];
-}
-
 - (void)willMoveToParentViewController:(UIViewController *)parent {
     [super willMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
@@ -202,22 +259,6 @@ static UINavigationController *tmpNavigationController;
          removeTarget:self
          action:@selector(onPopGesture:)];
     }
-}
-
-- (JSValue *)xtr_navigationController {
-    static int xtrNavigationControllerTag;
-    if (self.navigationController != nil && ![self.navigationController isKindOfClass:[XTRNavigationController class]]) {
-        XTRNavigationController *xtrInstance = objc_getAssociatedObject(self, &xtrNavigationControllerTag);
-        if (xtrInstance != nil) {
-            return [JSValue fromObject:xtrInstance context:self.context];
-        }
-        else {
-            xtrInstance = [XTRNavigationController clone:self.navigationController];
-            objc_setAssociatedObject(self, &xtrNavigationControllerTag, xtrInstance, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            return (id)xtrInstance.objectUUID;
-        }
-    }
-    return [JSValue fromObject:self.navigationController context:self.context];
 }
 
 - (void)onPopGesture:(UIPanGestureRecognizer *)sender {

@@ -25,26 +25,29 @@
     return @"XTRImageView";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame {
     XTRImageView *view = [[XTRImageView alloc] initWithFrame:[frame toRect]];
     view.innerView = [[UIImageView alloc] init];
     [view addSubview:view.innerView];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
-- (void)xtr_setImage:(JSValue *)image {
-    id obj = [XTMemoryManager find:[image toString]];
-    if ([obj isKindOfClass:[UIImage class]]) {
-        self.privateImage = obj;
-        self.innerView.image = obj;
-    }
-    else {
-        self.privateImage = nil;
-        self.innerView.image = nil;
++ (void)xtr_setImage:(NSString *)imageRef objectRef:(NSString *)objectRef {
+    XTRImageView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRImageView class]]) {
+        XTRImage *img = [XTMemoryManager find:imageRef];
+        if ([img isKindOfClass:[XTRImage class]]) {
+            view.privateImage = img;
+            view.innerView.image = img.image;
+        }
+        else {
+            view.privateImage = nil;
+            view.innerView.image = nil;
+        }
     }
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "XTRObjectRefs.h"
 
 @class XTRBridge;
 
@@ -16,7 +15,6 @@ typedef void (^JSValueAsynchronousResult)(JSValue * _Nullable value);
 @interface XTRContext : JSContext
 
 @property (nonatomic, weak) XTRBridge * _Nullable bridge;
-@property (nonatomic, strong) XTRObjectRefs * _Nonnull objectRefs;
 
 - (instancetype _Nonnull )initWithThread:(NSThread *_Nonnull)thread;
 

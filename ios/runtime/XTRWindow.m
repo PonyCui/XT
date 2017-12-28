@@ -16,12 +16,6 @@
 
 @interface XTRWindow ()
 
-@property (nonatomic, assign) NSTimeInterval longPressDuration;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
-@property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
-@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
-@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-
 @property (nonatomic, strong) id keyboardWillShowObserver;
 @property (nonatomic, strong) id keyboardWillHideObserver;
 
@@ -96,7 +90,15 @@
     }
 }
 
-#pragma mark - View Layout Callbacks
+#pragma mark - View Callbacks
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    JSValue *scriptObject = self.scriptObject;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"layoutSubviews" withArguments:@[]];
+    }
+}
 
 - (void)didAddSubview:(XTRView *)subview {
     [super didAddSubview:subview];

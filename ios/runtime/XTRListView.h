@@ -12,14 +12,16 @@
 
 @protocol XTRListViewExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
-- (void)xtr_setItems:(JSValue *)items;
-- (void)xtr_reloadData;
++ (NSString *)create:(JSValue *)frame;
++ (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef;
++ (void)xtr_reloadData:(NSString *)objectRef;
 
 @end
 
-@interface XTRListView : UITableView<XTRComponent, XTRViewExport, XTRScrollViewExport, XTRListViewExport>
+@interface XTRListView : UITableView<XTRComponent, XTRListViewExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, weak) JSContext *context;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end

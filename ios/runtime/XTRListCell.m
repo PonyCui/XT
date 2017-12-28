@@ -8,6 +8,7 @@
 
 #import "XTRListCell.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRListCell ()
 
@@ -19,41 +20,48 @@
     return @"XTRListCell";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)frame {
     XTRListCell *view = [[XTRListCell alloc] initWithFrame:[frame toRect]];
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
-- (NSNumber *)xtr_selectionStyle {
-    UITableViewCell *realCell = self.realCell;
-    if (realCell == nil) {
-        return @(0);
++ (NSInteger)xtr_selectionStyle:(NSString *)objectRef {
+    XTRListCell *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRListCell class]]) {
+        UITableViewCell *realCell = view.realCell;
+        if (realCell == nil) {
+            return 0;
+        }
+        else if (realCell.selectionStyle == UITableViewCellSelectionStyleNone) {
+            return 0;
+        }
+        else if (realCell.selectionStyle == UITableViewCellSelectionStyleGray) {
+            return 1;
+        }
+        return 0;
     }
-    else if (realCell.selectionStyle == UITableViewCellSelectionStyleNone) {
-        return @(0);
-    }
-    else if (realCell.selectionStyle == UITableViewCellSelectionStyleGray) {
-        return @(1);
-    }
-    return @(0);
+    return 0;
 }
 
-- (void)xtr_setSelectionStyle:(JSValue *)selectionStyle {
-    UITableViewCell *realCell = self.realCell;
-    if (realCell == nil) {
-        return;
-    }
-    switch ([selectionStyle toInt32]) {
-        case 0:
-            realCell.selectionStyle = UITableViewCellSelectionStyleNone;
-            break;
-        case 1:
-            realCell.selectionStyle = UITableViewCellSelectionStyleGray;
-            break;
++ (void)xtr_setSelectionStyle:(NSInteger)selectionStyle objectRef:(NSString *)objectRef {
+    XTRListCell *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRListCell class]]) {
+        UITableViewCell *realCell = view.realCell;
+        if (realCell == nil) {
+            return;
+        }
+        switch (selectionStyle) {
+            case 0:
+                realCell.selectionStyle = UITableViewCellSelectionStyleNone;
+                break;
+            case 1:
+                realCell.selectionStyle = UITableViewCellSelectionStyleGray;
+                break;
+        }
     }
 }
 

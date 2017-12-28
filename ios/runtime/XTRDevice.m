@@ -16,48 +16,27 @@
     return @"XTRDevice";
 }
 
-+ (NSString *)xtr_current {
-    return [XTRDevice new].objectUUID;
-}
-
-- (void)dealloc {
-#ifdef LOGDEALLOC
-    NSLog(@"XTRDevice dealloc.");
-#endif
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.objectUUID = [[NSUUID UUID] UUIDString];
-        [((XTRContext *)[JSContext currentContext]).objectRefs store:self];
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [self description]; }];
-    }
-    return self;
-}
-
-- (NSString *)xtr_name {
++ (NSString *)xtr_name {
     return [UIDevice currentDevice].name;
 }
 
-- (NSString *)xtr_systemName {
++ (NSString *)xtr_systemName {
     return [UIDevice currentDevice].systemName;
 }
 
-- (NSString *)xtr_systemVersion {
++ (NSString *)xtr_systemVersion {
     return [UIDevice currentDevice].systemVersion;
 }
 
-- (NSString *)xtr_xtRuntimeVersion {
++ (NSString *)xtr_xtRuntimeVersion {
     return [XTRuntime version];
 }
 
-- (NSString *)xtr_model {
++ (NSString *)xtr_model {
     return [UIDevice currentDevice].model;
 }
 
-- (NSInteger)xtr_orientation {
++ (NSInteger)xtr_orientation {
     return [UIDevice currentDevice].orientation;
 }
 

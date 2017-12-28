@@ -13,15 +13,14 @@
 
 @protocol XTRViewControllerExport <JSExport>
 
-@property (nonatomic, copy) NSString *objectUUID;
 + (NSString *)create:(JSValue *)scriptObject;
-- (JSValue *)xtr_view;
-- (void)xtr_setView:(JSValue *)view;
-- (JSValue *)xtr_parentViewController;
-- (NSArray<JSValue *> *)xtr_childViewControllers;
-- (void)xtr_addChildViewController:(JSValue *)childController;
-- (void)xtr_removeFromParentViewController;
-- (JSValue *)xtr_navigationController;
++ (NSString *)xtr_view:(NSString *)objectRef;
++ (void)xtr_setView:(NSString *)viewRef objectRef:(NSString *)objectRef;
++ (NSString *)xtr_parentViewController:(NSString *)objectRef;
++ (NSArray<NSString *> *)xtr_childViewControllers:(NSString *)objectRef;
++ (void)xtr_addChildViewController:(NSString *)childControllerRef objectRef:(NSString *)objectRef;
++ (void)xtr_removeFromParentViewController:(NSString *)objectRef;
++ (NSString *)xtr_navigationController:(NSString *)objectRef;
 
 @end
 

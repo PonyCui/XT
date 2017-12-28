@@ -9,6 +9,7 @@
 #import "XTRCustomView.h"
 #import "XTRUtils.h"
 #import "XTRContext.h"
+#import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRCustomView ()
 
@@ -32,7 +33,7 @@ static NSDictionary<NSString *, NSString *> *classMapping;
     }
 }
 
-+ (NSString *)create:(JSValue *)className frame:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
++ (NSString *)create:(JSValue *)className frame:(JSValue *)frame {
     XTRCustomView *view = [[XTRCustomView alloc] initWithFrame:[frame toRect]];
     if ([className toString] != nil && classMapping[className.toString] != nil) {
         Class viewClass = NSClassFromString(classMapping[className.toString]);
@@ -42,11 +43,11 @@ static NSDictionary<NSString *, NSString *> *classMapping;
             [view addSubview:view.innerView];
         }
     }
-    view.objectUUID = [[NSUUID UUID] UUIDString];
-    view.context = scriptObject.context;
-    [((XTRContext *)[JSContext currentContext]).objectRefs store:view];
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ [view description]; }];
-    return view.objectUUID;
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
+    [XTMemoryManager add:managedObject];
+    view.context = [JSContext currentContext];
+    view.objectUUID = managedObject.objectUUID;
+    return managedObject.objectUUID;
 }
 
 - (void)layoutSubviews {
@@ -54,20 +55,19 @@ static NSDictionary<NSString *, NSString *> *classMapping;
     self.innerView.frame = self.bounds;
 }
 
-- (JSValue *)handleMessage:(JSValue *)value {
-    if ([self.innerView respondsToSelector:@selector(onMessage:customView:)]) {
-        return [JSValue fromObject:[(id<XTRCustomViewProtocol>)self.innerView onMessage:value customView:self]
-                           context:self.context];
++ (JSValue *)handleMessage:(JSValue *)value objectRef:(NSString *)objectRef {
+    XTRCustomView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRCustomView class]]) {
+        if ([view.innerView respondsToSelector:@selector(onMessage:customView:)]) {
+            return [JSValue fromObject:[(id<XTRCustomViewProtocol>)view.innerView onMessage:value customView:view]
+                               context:view.context];
+        }
+        return nil;
     }
-    return [JSValue valueWithUndefinedInContext:self.context];
-} 
+    return nil;
+}
 
 - (JSValue *)emitMessage:(id)value {
-//    JSValue *inValue = self.scriptObject;
-//    if (inValue != nil) {
-//        return [inValue invokeMethod:@"handleMessage"
-//                       withArguments:@[[JSValue fromObject:value context:self.context] ?: [JSValue valueWithUndefinedInContext:self.context]]];
-//    }
     return nil;
 }
 

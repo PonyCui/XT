@@ -13,9 +13,9 @@
 
 @protocol XTRListCellExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject;
-- (NSNumber *)xtr_selectionStyle;
-- (void)xtr_setSelectionStyle:(JSValue *)selectionStyle;
++ (NSString *)create:(JSValue *)frame;
++ (NSInteger)xtr_selectionStyle:(NSString *)objectRef;
++ (void)xtr_setSelectionStyle:(NSInteger)selectionStyle objectRef:(NSString *)objectRef;
 
 @end
 

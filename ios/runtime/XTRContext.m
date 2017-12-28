@@ -29,17 +29,6 @@
     if (self) {
         _thread = thread;
         [XTMemoryManager attachContext:self];
-        _objectRefs = [XTRObjectRefs new];
-        __weak XTRContext *welf = self;
-        self[@"xtrRequestNativeObject"] = ^(NSString *objectUUID){
-            __strong XTRContext *strongSelf = welf;
-            __strong id strongObject = [strongSelf.objectRefs restore:objectUUID];
-            return strongObject;
-        };
-        self[@"xtrAddOwner"] = ^(JSValue *child, JSValue *owner){
-            __strong XTRContext *strongSelf = welf;
-            [strongSelf.objectRefs addOwner:child owner:owner];
-        };
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];
