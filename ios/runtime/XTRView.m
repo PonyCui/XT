@@ -211,9 +211,9 @@
 + (NSString *)xtr_maskView:(NSString *)objectRef {
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
-        XTRView *maskView = (id)obj.maskView;
-        if ([maskView isKindOfClass:[XTRView class]]) {
-            return maskView.objectUUID;
+        id maskView = (id)obj.maskView;
+        if ([maskView conformsToProtocol:@protocol(XTRComponent)]) {
+            return [maskView objectUUID];
         }
     }
     return @"";
@@ -365,9 +365,9 @@
 + (NSString *)xtr_superview:(NSString *)objectRef {
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
-        XTRView *superview = (id)obj.superview;
-        if ([superview isKindOfClass:[XTRView class]]) {
-            return superview.objectUUID;
+        id superview = (id)obj.superview;
+        if ([superview conformsToProtocol:@protocol(XTRComponent)]) {
+            return [superview objectUUID];
         }
     }
     return @"";
@@ -377,9 +377,9 @@
     NSMutableArray *subviews = [NSMutableArray array];
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
-        for (XTRView *subview in obj.subviews) {
-            if ([subview isKindOfClass:[XTRView class]]) {
-                [subviews addObject:subview.objectUUID ?: @""];
+        for (id subview in obj.subviews) {
+            if ([subview conformsToProtocol:@protocol(XTRComponent)]) {
+                [subviews addObject:[subview objectUUID] ?: @""];
             }
         }
     }
@@ -465,8 +465,8 @@
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:(subview != nil && [subview isKindOfClass:[XTRView class]]
-                                                                   ? @[subview.objectUUID ?: @""] : @[])];
+        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+                                                                   ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -474,8 +474,8 @@
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:(subview != nil && [subview isKindOfClass:[XTRView class]]
-                                                                       ? @[subview.objectUUID ?: @""] : @[])];
+        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+                                                                       ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -483,8 +483,8 @@
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:(newSuperview != nil && [newSuperview isKindOfClass:[XTRView class]]
-                                                                         ? @[newSuperview.objectUUID ?: @""] : @[])];
+        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+                                                                         ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -500,8 +500,8 @@
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:(newWindow != nil && [newWindow isKindOfClass:[XTRWindow class]]
-                                                                      ? @[newWindow.objectUUID ?: @""] : @[])];
+        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+                                                                      ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -525,9 +525,9 @@
 + (NSString *)xtr_viewWithTag:(NSInteger)tag objectRef:(NSString *)objectRef {
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
-        XTRView *view = [obj viewWithTag:tag];
-        if ([view isKindOfClass:[XTRView class]]) {
-            return view.objectUUID;
+        id view = [obj viewWithTag:tag];
+        if ([view conformsToProtocol:@protocol(XTRComponent)]) {
+            return [view objectUUID];
         }
     }
     return @"";

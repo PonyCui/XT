@@ -108,26 +108,16 @@
 + (NSString *)xtr_navigationController:(NSString *)objectRef {
     UIViewController *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIViewController class]]) {
-        
+        UINavigationController *naviCtl = obj.navigationController;
+        if ([naviCtl isKindOfClass:[XTRNavigationController class]]) {
+            return [(XTRNavigationController *)naviCtl objectUUID];
+        }
+        else if ([naviCtl isKindOfClass:[UINavigationController class]]) {
+            return [XTRNavigationController clone:naviCtl];
+        }
     }
     return nil;
 }
-
-//- (JSValue *)xtr_navigationController {
-//    static int xtrNavigationControllerTag;
-//    if (self.navigationController != nil && ![self.navigationController isKindOfClass:[XTRNavigationController class]]) {
-//        XTRNavigationController *xtrInstance = objc_getAssociatedObject(self, &xtrNavigationControllerTag);
-//        if (xtrInstance != nil) {
-//            return [JSValue fromObject:xtrInstance context:self.context];
-//        }
-//        else {
-//            xtrInstance = [XTRNavigationController clone:self.navigationController];
-//            objc_setAssociatedObject(self, &xtrNavigationControllerTag, xtrInstance, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//            return (id)xtrInstance.objectUUID;
-//        }
-//    }
-//    return [JSValue fromObject:self.navigationController context:self.context];
-//}
 
 #pragma mark - ViewController callbacks
 

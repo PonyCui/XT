@@ -19,7 +19,7 @@ export class View implements Releasable {
     }
 
     addOwner(owner: any): this {
-        xtrAddOwner(this, owner);
+        // xtrAddOwner(this, owner);
         return this;
     }
 
