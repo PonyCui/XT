@@ -23,8 +23,8 @@
 
 @implementation XTRListView
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRListView *view = [[XTRListView alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRListView *view = [[XTRListView alloc] initWithFrame:CGRectZero];
     view.delegate = view;
     view.dataSource = view;
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];

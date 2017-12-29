@@ -4,68 +4,64 @@ import { Point, Size, Insets, Rect, RectZero } from "../../interface/Rect";
 
 export class ScrollView extends View {
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRScrollView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRScrollView)
     }
 
     public get isDirectionalLockEnabled(): boolean {
-        return this.nativeObject.xtr_isDirectionalLockEnabled();
+        return XTRScrollView.xtr_isDirectionalLockEnabled(this.objectRef);
     }
 
     public set isDirectionalLockEnabled(value: boolean) {
-        this.nativeObject.xtr_setDirectionalLockEnabled(value);
+        XTRScrollView.xtr_setDirectionalLockEnabledObjectRef(value, this.objectRef);
     }
 
     public get bounces(): boolean {
-        return this.nativeObject.xtr_bounces();
+        return XTRScrollView.xtr_bounces(this.objectRef);
     }
 
     public set bounces(value: boolean) {
-        this.nativeObject.xtr_setBounces(value);
+        XTRScrollView.xtr_setBouncesObjectRef(value, this.objectRef);
     }
 
     public get isScrollEnabled(): boolean {
-        return this.nativeObject.xtr_isScrollEnabled();
+        return XTRScrollView.xtr_isScrollEnabled(this.objectRef);
     }
 
     public set isScrollEnabled(value: boolean) {
-        this.nativeObject.xtr_setScrollEnabled(value);
+        XTRScrollView.xtr_setScrollEnabledObjectRef(value, this.objectRef);
     }
 
     public get showsHorizontalScrollIndicator(): boolean {
-        return this.nativeObject.xtr_showsHorizontalScrollIndicator();
+        return XTRScrollView.xtr_showsHorizontalScrollIndicator(this.objectRef);
     }
 
     public set showsHorizontalScrollIndicator(value: boolean) {
-        this.nativeObject.xtr_setShowsHorizontalScrollIndicator(value);
+        XTRScrollView.xtr_setShowsHorizontalScrollIndicatorObjectRef(value, this.objectRef);
     }
 
     public get showsVerticalScrollIndicator(): boolean {
-        return this.nativeObject.xtr_showsVerticalScrollIndicator();
+        return XTRScrollView.xtr_showsVerticalScrollIndicator(this.objectRef);
     }
 
     public set showsVerticalScrollIndicator(value: boolean) {
-        this.nativeObject.xtr_setShowsVerticalScrollIndicator(value);
+        XTRScrollView.xtr_setShowsVerticalScrollIndicatorObjectRef(value, this.objectRef);
     }
 
     public get alwaysBounceVertical(): boolean {
-        return this.nativeObject.xtr_alwaysBounceVertical();
+        return XTRScrollView.xtr_alwaysBounceVertical(this.objectRef);
     }
 
     public set alwaysBounceVertical(value: boolean) {
-        this.nativeObject.xtr_setAlwaysBounceVertical(value);
+        XTRScrollView.xtr_setAlwaysBounceVerticalObjectRef(value, this.objectRef);
     }
 
     public get alwaysBounceHorizontal(): boolean {
-        return this.nativeObject.xtr_alwaysBounceHorizontal();
+        return XTRScrollView.xtr_alwaysBounceHorizontal(this.objectRef);
     }
 
     public set alwaysBounceHorizontal(value: boolean) {
-        this.nativeObject.xtr_setAlwaysBounceHorizontal(value);
+        XTRScrollView.xtr_setAlwaysBounceHorizontalObjectRef(value, this.objectRef);
     }
 
     onScroll?: (scrollView: ScrollView) => void

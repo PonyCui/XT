@@ -25,8 +25,8 @@
     return @"XTRTextField";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRTextField *view = [[XTRTextField alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRTextField *view = [[XTRTextField alloc] initWithFrame:CGRectZero];
     view.userInteractionEnabled = YES;
     view.innerView = [[UITextField alloc] init];
     view.innerView.delegate = view;

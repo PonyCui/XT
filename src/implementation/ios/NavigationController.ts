@@ -3,30 +3,27 @@ import { ViewController } from "./ViewController";
 
 export class NavigationController extends ViewController {
 
-    constructor(rootViewController?: ViewController, nativeObjectRef?: string, isChild: boolean = false) {
-        super(true);
-        if (isChild) { return; }
-        this.nativeObjectRef = nativeObjectRef || XTRNavigationController.create(this);
-        objectRefs[this.nativeObjectRef] = this;
+    constructor(rootViewController?: ViewController, ref?: any) {
+        super(ref || XTRNavigationController)
         if (rootViewController) {
-            this.nativeObject.xtr_setViewControllersAnimated([rootViewController], false);
+            XTRNavigationController.xtr_setViewControllersAnimatedObjectRef([rootViewController], false, this.objectRef);
         }
     }
 
     pushViewController(viewController: ViewController, animated: boolean = true): void {
-        this.nativeObject.xtr_pushViewControllerAnimated(viewController, animated);
+        XTRNavigationController.xtr_pushViewControllerAnimatedObjectRef(viewController, animated, this.objectRef);
     }
 
     popViewController(animated: boolean = true): ViewController | undefined {
-        return this.nativeObject.xtr_popViewController(animated);
+        return XTRNavigationController.xtr_popViewControllerObjectRef(animated, this.objectRef);
     }
 
     popToViewController(viewController: ViewController, animated: boolean = true): ViewController[] {
-        return this.nativeObject.xtr_popToViewController(viewController, animated);
+        return XTRNavigationController.xtr_popToViewControllerObjectRef(viewController, animated, this.objectRef);
     }
 
     popToRootViewController(animated: boolean = true): ViewController[] {
-        return this.nativeObject.xtr_popToRootViewController(animated);
+        return XTRNavigationController.xtr_popToRootViewControllerObjectRef(animated, this.objectRef);
     }
 
 }

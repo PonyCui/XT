@@ -66,8 +66,8 @@
     return @"XTRCanvasView";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
-    XTRCanvasView *view = [[XTRCanvasView alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRCanvasView *view = [[XTRCanvasView alloc] initWithFrame:CGRectZero];
     view.currentState = [XTRCanvasState new];
     view.backgroundColor = [UIColor clearColor];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];

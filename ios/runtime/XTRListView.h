@@ -12,7 +12,7 @@
 
 @protocol XTRListViewExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame;
++ (NSString *)create;
 + (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef;
 + (void)xtr_reloadData:(NSString *)objectRef;
 

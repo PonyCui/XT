@@ -4,152 +4,148 @@ import { Color } from '../../interface/Color';
 
 export class CanvasView extends View {
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRCanvasView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRCanvasView)
     }
 
     public get globalAlpha(): number | undefined {
-        return this.nativeObject.xtr_globalAlpha()
+        return XTRCanvasView.xtr_globalAlpha(this.objectRef)
     }
 
     public set globalAlpha(value: number | undefined) {
-        this.nativeObject.xtr_setGlobalAlpha(value)
+        XTRCanvasView.xtr_setGlobalAlphaObjectRef(value, this.objectRef)
     }
 
     public get fillStyle(): Color | undefined {
-        return this.nativeObject.xtr_fillStyle()
+        return XTRCanvasView.xtr_fillStyle(this.objectRef)
     }
 
     public set fillStyle(value: Color | undefined) {
-        this.nativeObject.xtr_setFillStyle(value)
+        XTRCanvasView.xtr_setFillStyleObjectRef(value, this.objectRef)
     }
 
     public get strokeStyle(): Color | undefined {
-        return this.nativeObject.xtr_strokeStyle()
+        return XTRCanvasView.xtr_strokeStyle(this.objectRef)
     }
 
     public set strokeStyle(value: Color | undefined) {
-        this.nativeObject.xtr_setStrokeStyle(value)
+        XTRCanvasView.xtr_setStrokeStyleObjectRef(value, this.objectRef)
     }
 
     public get lineCap(): string | undefined {
-        return this.nativeObject.xtr_lineCap()
+        return XTRCanvasView.xtr_lineCap(this.objectRef)
     }
 
     public set lineCap(value: string | undefined) {
-        this.nativeObject.xtr_setLineCap(value)
+        XTRCanvasView.xtr_setLineCapObjectRef(value, this.objectRef)
     }
 
     public get lineJoin(): string | undefined {
-        return this.nativeObject.xtr_lineJoin()
+        return XTRCanvasView.xtr_lineJoin(this.objectRef)
     }
 
     public set lineJoin(value: string | undefined) {
-        this.nativeObject.xtr_setLineJoin(value)
+        XTRCanvasView.xtr_setLineJoinObjectRef(value, this.objectRef)
     }
 
     public get lineWidth(): number | undefined {
-        return this.nativeObject.xtr_lineWidth()
+        return XTRCanvasView.xtr_lineWidth(this.objectRef)
     }
 
     public set lineWidth(value: number | undefined) {
-        this.nativeObject.xtr_setLineWidth(value)
+        XTRCanvasView.xtr_setLineWidthObjectRef(value, this.objectRef)
     }
 
     public get miterLimit(): number | undefined {
-        return this.nativeObject.xtr_miterLimit()
+        return XTRCanvasView.xtr_miterLimit(this.objectRef)
     }
 
     public set miterLimit(value: number | undefined) {
-        this.nativeObject.xtr_setMiterLimit(value)
+        XTRCanvasView.xtr_setMiterLimitObjectRef(value, this.objectRef)
     }
 
     rect(x: number, y: number, width: number, height: number): void {
-        this.nativeObject.xtr_rect({ x, y, width, height })
+        XTRCanvasView.xtr_rectObjectRef({ x, y, width, height }, this.objectRef)
     }
 
     fillRect(x: number, y: number, width: number, height: number): void {
-        this.nativeObject.xtr_fillRect({ x, y, width, height })
+        XTRCanvasView.xtr_fillRectObjectRef({ x, y, width, height }, this.objectRef)
     }
 
     strokeRect(x: number, y: number, width: number, height: number): void {
-        this.nativeObject.xtr_strokeRect({ x, y, width, height })
+        XTRCanvasView.xtr_strokeRectObjectRef({ x, y, width, height }, this.objectRef)
     }
 
     fill() {
-        this.nativeObject.xtr_fill();
+        XTRCanvasView.xtr_fill(this.objectRef);
     }
 
     stroke() {
-        this.nativeObject.xtr_stroke();
+        XTRCanvasView.xtr_stroke(this.objectRef);
     }
 
     beginPath(): void {
-        this.nativeObject.xtr_beginPath();
+        XTRCanvasView.xtr_beginPath(this.objectRef);
     }
 
     moveTo(x: number, y: number): void {
-        this.nativeObject.xtr_moveTo({ x, y });
+        XTRCanvasView.xtr_moveToObjectRef({ x, y }, this.objectRef);
     }
 
     closePath(): void {
-        this.nativeObject.xtr_closePath()
+        XTRCanvasView.xtr_closePath(this.objectRef)
     }
 
     lineTo(x: number, y: number): void {
-        this.nativeObject.xtr_lineTo({ x, y })
+        XTRCanvasView.xtr_lineToObjectRef({ x, y }, this.objectRef)
     }
 
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
-        this.nativeObject.xtr_quadraticCurveToXyPoint({ x: cpx, y: cpy }, { x, y })
+        XTRCanvasView.xtr_quadraticCurveToXyPointObjectRef({ x: cpx, y: cpy }, { x, y }, this.objectRef)
     }
 
     bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
-        this.nativeObject.xtr_bezierCurveToCp2PointXyPoint({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y })
+        XTRCanvasView.xtr_bezierCurveToCp2PointXyPointObjectRef({ x: cp1x, y: cp1y }, { x: cp2x, y: cp2y }, { x, y }, this.objectRef)
     }
 
     arc(x: number, y: number, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
-        this.nativeObject.xtr_arcRSAngleEAngleCounterclockwise({ x, y }, r, sAngle, eAngle, counterclockwise)
+        XTRCanvasView.xtr_arcRSAngleEAngleCounterclockwiseObjectRef({ x, y }, r, sAngle, eAngle, counterclockwise, this.objectRef)
     }
 
     postScale(x: number, y: number): void {
-        this.nativeObject.xtr_postScale({ x, y })
+        XTRCanvasView.xtr_postScaleObjectRef({ x, y }, this.objectRef)
     }
 
     postRotate(angle: number) {
-        this.nativeObject.xtr_postRotate(angle);
+        XTRCanvasView.xtr_postRotateObjectRef(angle, this.objectRef);
     }
 
     postTranslate(x: number, y: number): void {
-        this.nativeObject.xtr_postTranslate({ x, y })
+        XTRCanvasView.xtr_postTranslateObjectRef({ x, y }, this.objectRef)
     }
 
     postTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void {
-        this.nativeObject.xtr_postTransform({ a, b, c, d, tx, ty })
+        XTRCanvasView.xtr_postTransformObjectRef({ a, b, c, d, tx, ty }, this.objectRef)
     }
 
     setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number): void {
-        this.nativeObject.xtr_setCanvasTransform({ a, b, c, d, tx, ty })
+        XTRCanvasView.xtr_setCanvasTransformObjectRef({ a, b, c, d, tx, ty }, this.objectRef)
     }
 
     save(): void {
-        this.nativeObject.xtr_save();
+        XTRCanvasView.xtr_save(this.objectRef);
     }
     
     restore(): void {
-        this.nativeObject.xtr_restore();
+        XTRCanvasView.xtr_restore(this.objectRef);
     }
 
     isPointInPath(x: number, y: number): boolean {
-        return this.nativeObject.xtr_isPointInPath({ x, y })
+        return XTRCanvasView.xtr_isPointInPathObjectRef({ x, y }, this.objectRef)
     }
 
     clear(): void {
-        this.nativeObject.xtr_clear();
+        XTRCanvasView.xtr_clear(this.objectRef);
     }
 
 }

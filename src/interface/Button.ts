@@ -3,6 +3,7 @@ import { Label } from "./Label";
 import { Color } from "./Color";
 import { ImageView, Image } from "./ImageView";
 import { Font } from "./Font";
+import { Rect } from "./Rect";
 
 export class Button extends View {
 

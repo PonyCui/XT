@@ -1,8 +1,9 @@
 import { View } from './View'
 import { Color } from './Color';
+import { Rect } from './Rect';
 
 export class CanvasView extends View {
-
+    
     globalAlpha: number = 1.0
     fillStyle?: Color
     strokeStyle?: Color

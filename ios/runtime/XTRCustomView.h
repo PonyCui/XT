@@ -20,8 +20,7 @@
 
 @protocol XTRCustomViewExport <JSExport>
 
-+ (nonnull XTRCustomView *)create:(nonnull JSValue *)className
-                            frame:(nonnull JSValue *)frame;
++ (nonnull XTRCustomView *)create:(nonnull JSValue *)className;
 + (nullable JSValue *)handleMessage:(nonnull JSValue *)value objectRef:(nonnull NSString *)objectRef;
 
 @end

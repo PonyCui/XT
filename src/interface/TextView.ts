@@ -3,6 +3,7 @@ import { Font } from './Font';
 import { Color } from './Color';
 import { TextAlignment } from './Label';
 import { KeyboardType, ReturnKeyType } from './TextField';
+import { Rect } from './Rect';
 
 export class TextView extends View {
 

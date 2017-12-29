@@ -13,7 +13,7 @@
 
 @protocol XTRViewControllerExport <JSExport>
 
-+ (NSString *)create:(JSValue *)scriptObject;
++ (NSString *)create;
 + (NSString *)xtr_view:(NSString *)objectRef;
 + (void)xtr_setView:(NSString *)viewRef objectRef:(NSString *)objectRef;
 + (NSString *)xtr_parentViewController:(NSString *)objectRef;

@@ -22,8 +22,11 @@ export enum LayoutRelation {
 
 export class LayoutConstraint implements Releasable {
     
-    addOwner(owner: any): this {
-        return this
+    retain(): this {
+        throw new Error("Method not implemented.");
+    }
+    release(): this {
+        throw new Error("Method not implemented.");
     }
 
     readonly firstItem?: View;

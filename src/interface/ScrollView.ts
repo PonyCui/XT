@@ -1,5 +1,5 @@
 import { View } from "./View";
-import { Point, Size, Insets } from "./Rect";
+import { Point, Size, Insets, Rect } from "./Rect";
 
 export class ScrollView extends View {
 

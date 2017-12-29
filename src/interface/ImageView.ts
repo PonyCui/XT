@@ -1,5 +1,5 @@
 import { View } from "./View";
-import { Size } from "./Rect";
+import { Size, Rect } from "./Rect";
 import { Releasable } from "./Releasable";
 
 export enum ImageRenderingMode {
@@ -9,9 +9,12 @@ export enum ImageRenderingMode {
 }
 
 export class Image implements Releasable {
-    
-    addOwner(owner: any): this {
-        return this
+
+    retain(): this {
+        throw new Error("Method not implemented.");
+    }
+    release(): this {
+        throw new Error("Method not implemented.");
     }
 
     readonly size: Size;

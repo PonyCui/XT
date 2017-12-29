@@ -27,8 +27,8 @@
     return @"XTRWindow";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRWindow *view = [[XTRWindow alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRWindow *view = [[XTRWindow alloc] initWithFrame:CGRectZero];
     [view setupDebug];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];

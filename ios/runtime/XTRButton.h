@@ -13,7 +13,7 @@
 
 @protocol XTRButtonExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame;
++ (NSString *)create;
 + (NSString *)xtr_title:(NSString *)objectRef;
 + (void)xtr_setTitle:(JSValue *)title objectRef:(NSString *)objectRef;
 + (NSString *)xtr_font:(NSString *)objectRef;

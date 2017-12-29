@@ -21,11 +21,10 @@ export enum SwipeDirection {
 
 export class View implements Releasable {
 
-    addOwner(owner: any): this { return this }
+    retain(): this { throw "" }
+    release(): this { throw "" }
 
-    constructor(rect?: Rect) { }
-
-    init() { }
+    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) { throw "" }
 
     // Mark: View Geometry
     frame: Rect;

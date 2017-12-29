@@ -29,8 +29,8 @@
     return @"XTRView";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRView *view = [[XTRView alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRView *view = [[XTRView alloc] initWithFrame:CGRectZero];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];
     view.context = [JSContext currentContext];

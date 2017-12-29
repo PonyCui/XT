@@ -8,170 +8,164 @@ import { TextFieldViewMode, KeyboardType, ReturnKeyType } from '../../interface/
 
 export class TextField extends View {
 
-    nativeObject: any;
-
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.objectRef = XTRTextField.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRTextField)
     }
 
     public get text(): string {
-        return this.nativeObject.xtr_text();
+        return XTRTextField.xtr_text(this.objectRef);
     }
 
     public set text(value: string) {
-        this.nativeObject.xtr_setText(value);
+        XTRTextField.xtr_setTextObjectRef(value, this.objectRef);
     }
 
     public get font(): Font | undefined {
-        return this.nativeObject.xtr_font();
+        return XTRTextField.xtr_font(this.objectRef);
     }
 
     public set font(value: Font | undefined) {
-        this.nativeObject.xtr_setFont(value);
+        XTRTextField.xtr_setFontObjectRef(value, this.objectRef);
     }
 
     public get textColor(): Color {
-        return this.nativeObject.xtr_textColor();
+        return XTRTextField.xtr_textColor(this.objectRef);
     }
 
     public set textColor(value: Color) {
-        this.nativeObject.xtr_setTextColor(value);
+        XTRTextField.xtr_setTextColorObjectRef(value, this.objectRef);
     }
 
     public get textAlignment(): TextAlignment {
-        return this.nativeObject.xtr_textAlignment();
+        return XTRTextField.xtr_textAlignment(this.objectRef);
     }
 
     public set textAlignment(value: TextAlignment) {
-        this.nativeObject.xtr_setTextAlignment(value);
+        XTRTextField.xtr_setTextAlignmentObjectRef(value, this.objectRef);
     }
 
     public get placeholder(): string {
-        return this.nativeObject.xtr_placeholder();
+        return XTRTextField.xtr_placeholder(this.objectRef);
     }
 
     public set placeholder(value: string) {
-        this.nativeObject.xtr_setPlaceholder(value);
+        XTRTextField.xtr_setPlaceholderObjectRef(value, this.objectRef);
     }
 
     public get placeholderColor(): Color {
-        return this.nativeObject.xtr_placeholderColor();
+        return XTRTextField.xtr_placeholderColor(this.objectRef);
     }
 
     public set placeholderColor(value: Color) {
-        this.nativeObject.xtr_setPlaceholderColor(value);
+        XTRTextField.xtr_setPlaceholderColorObjectRef(value, this.objectRef);
     }
 
     public get clearsOnBeginEditing(): Boolean {
-        return this.nativeObject.xtr_clearsOnBeginEditing();
+        return XTRTextField.xtr_clearsOnBeginEditing(this.objectRef);
     }
 
     public set clearsOnBeginEditing(value: Boolean) {
-        this.nativeObject.xtr_setClearsOnBeginEditing(value);
+        XTRTextField.xtr_setClearsOnBeginEditingObjectRef(value, this.objectRef);
     }
 
     public get editing(): Boolean {
-        return this.nativeObject.xtr_editing();
+        return XTRTextField.xtr_editing(this.objectRef);
     }
 
     public get clearButtonMode(): TextFieldViewMode {
-        return this.nativeObject.xtr_clearButtonMode();
+        return XTRTextField.xtr_clearButtonMode(this.objectRef);
     }
 
     public set clearButtonMode(value: TextFieldViewMode) {
-        this.nativeObject.xtr_setClearButtonMode(value);
+        XTRTextField.xtr_setClearButtonModeObjectRef(value, this.objectRef);
     }
 
     public get leftView(): View {
-        return this.nativeObject.xtr_leftView();
+        return XTRTextField.xtr_leftView(this.objectRef);
     }
 
     public set leftView(view: View) {
-        this.nativeObject.xtr_setLeftView(view);
+        XTRTextField.xtr_setLeftViewObjectRef(view, this.objectRef);
     }
 
     public get leftViewMode(): TextFieldViewMode {
-        return this.nativeObject.xtr_leftViewMode();
+        return XTRTextField.xtr_leftViewMode(this.objectRef);
     }
 
     public set leftViewMode(value: TextFieldViewMode) {
-        this.nativeObject.xtr_setLeftViewMode(value);
+        XTRTextField.xtr_setLeftViewModeObjectRef(value, this.objectRef);
     }
 
     public get rightView(): View {
-        return this.nativeObject.xtr_rightView();
+        return XTRTextField.xtr_rightView(this.objectRef);
     }
 
     public set rightView(view: View) {
-        this.nativeObject.xtr_setRightView(view);
+        XTRTextField.xtr_setRightViewObjectRef(view, this.objectRef);
     }
 
     public get rightViewMode(): TextFieldViewMode {
-        return this.nativeObject.xtr_rightViewMode();
+        return XTRTextField.xtr_rightViewMode(this.objectRef);
     }
 
     public set rightViewMode(value: TextFieldViewMode) {
-        this.nativeObject.xtr_setRightViewMode(value);
+        XTRTextField.xtr_setRightViewModeObjectRef(value, this.objectRef);
     }
 
     public get allowAutocapitalization(): Boolean {
-        return this.nativeObject.xtr_allowAutocapitalization();
+        return XTRTextField.xtr_allowAutocapitalization(this.objectRef);
     }
 
     public set allowAutocapitalization(value: Boolean) {
-        this.nativeObject.xtr_setAllowAutocapitalization(value);
+        XTRTextField.xtr_setAllowAutocapitalizationObjectRef(value, this.objectRef);
     }
 
     public get allowAutocorrection(): Boolean {
-        return this.nativeObject.xtr_allowAutocorrection();
+        return XTRTextField.xtr_allowAutocorrection(this.objectRef);
     }
 
     public set allowAutocorrection(value: Boolean) {
-        this.nativeObject.xtr_setAllowAutocorrection(value);
+        XTRTextField.xtr_setAllowAutocorrectionObjectRef(value, this.objectRef);
     }
 
     public get allowSpellChecking(): Boolean {
-        return this.nativeObject.xtr_allowSpellChecking();
+        return XTRTextField.xtr_allowSpellChecking(this.objectRef);
     }
 
     public set allowSpellChecking(value: Boolean) {
-        this.nativeObject.xtr_setAllowSpellChecking(value);
+        XTRTextField.xtr_setAllowSpellCheckingObjectRef(value, this.objectRef);
     }
 
     public get keyboardType(): KeyboardType {
-        return this.nativeObject.xtr_keyboardType();
+        return XTRTextField.xtr_keyboardType(this.objectRef);
     }
 
     public set keyboardType(value: KeyboardType) {
-        this.nativeObject.xtr_setKeyboardType(value);
+        XTRTextField.xtr_setKeyboardTypeObjectRef(value, this.objectRef);
     }
 
     public get returnKeyType(): ReturnKeyType {
-        return this.nativeObject.xtr_returnKeyType();
+        return XTRTextField.xtr_returnKeyType(this.objectRef);
     }
 
     public set returnKeyType(value: ReturnKeyType) {
-        this.nativeObject.xtr_setReturnKeyType(value);
+        XTRTextField.xtr_setReturnKeyTypeObjectRef(value, this.objectRef);
     }
 
     public get enablesReturnKeyAutomatically(): Boolean {
-        return this.nativeObject.xtr_enablesReturnKeyAutomatically();
+        return XTRTextField.xtr_enablesReturnKeyAutomatically(this.objectRef);
     }
 
     public set enablesReturnKeyAutomatically(value: Boolean) {
-        this.nativeObject.xtr_setEnablesReturnKeyAutomatically(value);
+        XTRTextField.xtr_setEnablesReturnKeyAutomaticallyObjectRef(value, this.objectRef);
     }
 
     public get secureTextEntry(): Boolean {
-        return this.nativeObject.xtr_secureTextEntry;
+        return XTRTextField.xtr_secureTextEntry(this.objectRef);
     }
 
     public set secureTextEntry(value: Boolean) {
-        this.nativeObject.xtr_setSecureTextEntry(value);
+        XTRTextField.xtr_setSecureTextEntryObjectRef(value, this.objectRef);
     }
 
     shouldBeginEditing?: () => Boolean = undefined
@@ -226,12 +220,12 @@ export class TextField extends View {
     }
 
     focus(): void {
-        this.nativeObject.xtr_focus();
+        XTRTextField.xtr_focus(this.objectRef);
     }
 
     blur(): void {
         if (!this.handleShouldEndEditing()) { return }
-        this.nativeObject.xtr_blur();
+        XTRTextField.xtr_blur(this.objectRef);
     }
 
 }

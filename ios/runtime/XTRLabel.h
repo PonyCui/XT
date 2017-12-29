@@ -13,7 +13,7 @@
 
 @protocol XTRLabelExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame;
++ (NSString *)create;
 + (NSString *)xtr_text:(NSString *)objectRef;
 + (void)xtr_setText:(NSString *)text objectRef:(NSString *)objectRef;
 + (NSString *)xtr_font:(NSString *)objectRef;

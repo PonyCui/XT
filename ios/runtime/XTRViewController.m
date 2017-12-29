@@ -26,7 +26,7 @@
     return @"XTRViewController";
 }
 
-+ (NSString *)create:(JSValue *)scriptObject {
++ (NSString *)create {
     XTRViewController *viewController = [XTRViewController new];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:viewController];
     [XTMemoryManager add:managedObject];

@@ -13,7 +13,7 @@
 
 @protocol XTRViewExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame;
++ (NSString *)create;
 + (NSDictionary *)xtr_frame:(NSString *)objectRef;
 + (void)xtr_setFrame:(JSValue *)frame objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_bounds:(NSString *)objectRef;

@@ -24,73 +24,69 @@ export enum LineBreakMode {
 
 export class Label extends View {
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRLabel.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRLabel)
     }
 
     public get text(): string {
-        return this.nativeObject.xtr_text();
+        return XTRLabel.xtr_text(this.objectRef);
     }
 
     public set text(value: string) {
-        this.nativeObject.xtr_setText(value);
+        XTRLabel.xtr_setTextObjectRef(value, this.objectRef);
     }
 
     public get font(): Font | undefined {
-        return this.nativeObject.xtr_font();
+        return XTRLabel.xtr_font(this.objectRef);
     }
 
     public set font(value: Font | undefined) {
-        this.nativeObject.xtr_setFont(value);
+        XTRLabel.xtr_setFontObjectRef(value, this.objectRef);
     }
 
     public get textColor(): Color {
-        return this.nativeObject.xtr_textColor();
+        return XTRLabel.xtr_textColor(this.objectRef);
     }
 
     public set textColor(value: Color) {
-        this.nativeObject.xtr_setTextColor(value);
+        XTRLabel.xtr_setTextColorObjectRef(value, this.objectRef);
     }
 
     public get textAlignment(): TextAlignment {
-        return this.nativeObject.xtr_textAlignment();
+        return XTRLabel.xtr_textAlignment(this.objectRef);
     }
 
     public set textAlignment(value: TextAlignment) {
-        this.nativeObject.xtr_setTextAlignment(value);
+        XTRLabel.xtr_setTextAlignmentObjectRef(value, this.objectRef);
     }
 
     public get numberOfLines(): number {
-        return this.nativeObject.xtr_numberOfLines();
+        return XTRLabel.xtr_numberOfLines(this.objectRef);
     }
 
     public set numberOfLines(value: number) {
-        this.nativeObject.xtr_setNumberOfLines(value);
+        XTRLabel.xtr_setNumberOfLinesObjectRef(value, this.objectRef);
     }
 
 
     public get lineBreakMode(): LineBreakMode {
-        return this.nativeObject.xtr_lineBreakMode();
+        return XTRLabel.xtr_lineBreakMode(this.objectRef);
     }
 
     public set lineBreakMode(value: LineBreakMode) {
-        this.nativeObject.xtr_setLineBreakMode(value);
+        XTRLabel.xtr_setLineBreakModeObjectRef(value, this.objectRef);
     }
 
     public get lineSpace(): number {
-        return this.nativeObject.xtr_lineSpace();
+        return XTRLabel.xtr_lineSpace(this.objectRef);
     }
 
     public set lineSpace(value: number) {
-        this.nativeObject.xtr_setLineSpace(value);
+        XTRLabel.xtr_setLineSpaceObjectRef(value, this.objectRef);
     }
 
     textRectForBounds(bounds: Rect): Rect {
-        return this.nativeObject.xtr_textRectForBounds(bounds);
+        return XTRLabel.xtr_textRectForBoundsObjectRef(bounds, this.objectRef);
     }
 
 }

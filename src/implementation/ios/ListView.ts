@@ -16,12 +16,8 @@ export class ListCell extends View {
     onSelected?: () => void
     onRender?: () => void
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRListCell.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRListCell)
     }
 
     public get contentView(): View {
@@ -29,11 +25,11 @@ export class ListCell extends View {
     }
 
     public get selectionStyle(): ListSelectionStyle {
-        return this.nativeObject._selectionStyle;
+        return XTRListCell.xtr_selectionStyle(this.objectRef);
     }
 
     public set selectionStyle(value: ListSelectionStyle) {
-        this.nativeObject.xtr_setSelectionStyle(value);
+        XTRListCell.xtr_setSelectionStyleObjectRef(value, this.objectRef);
     }
 
     handleSelected() {
@@ -50,12 +46,8 @@ export class ListView extends ScrollView {
 
     protected registedClasses: { [key: string]: typeof ListCell } = {}
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRListView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRListView)
     }
 
     private _items: ListItem[];
@@ -66,7 +58,7 @@ export class ListView extends ScrollView {
 
     public set items(value: ListItem[]) {
         this._items = value;
-        this.nativeObject.xtr_setItems(value);
+        XTRListView.xtr_setItemsObjectRef(value, this.objectRef);
     }
 
     renderItem?: (cell: ListCell, item: ListItem) => void
@@ -76,7 +68,7 @@ export class ListView extends ScrollView {
     }
 
     reloadData() {
-        this.nativeObject.xtr_reloadData();
+        XTRListView.xtr_reloadData();
     }
 
     requestRowHeight(width: number, rowIndex: number): number {
@@ -106,16 +98,3 @@ export class ListView extends ScrollView {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.constructor.toString() === "[object XTRListViewConstructor]") {
-        return new ListView(undefined, view);
-    }
-    if (view.constructor.toString() === "[object XTRListCellConstructor]") {
-        return new ListCell(undefined, view);
-    }
-    return undefined;
-})

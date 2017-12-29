@@ -2,6 +2,7 @@ import { View } from './View'
 import { Font } from './Font';
 import { Color } from './Color';
 import { TextAlignment } from './Label';
+import { Rect } from './Rect';
 
 export enum TextFieldViewMode {
     Never,

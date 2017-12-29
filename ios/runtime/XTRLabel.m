@@ -25,8 +25,8 @@
     return @"XTRLabel";
 }
 
-+ (NSString *)create:(JSValue *)frame scriptObject:(JSValue *)scriptObject {
-    XTRLabel *view = [[XTRLabel alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRLabel *view = [[XTRLabel alloc] initWithFrame:CGRectZero];
     view.innerView = [[UILabel alloc] init];
     [view addSubview:view.innerView];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];

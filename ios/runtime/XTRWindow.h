@@ -14,7 +14,7 @@
 
 @protocol XTRWindowExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame;
++ (NSString *)create;
 + (void)xtr_makeKeyAndVisible:(NSString *)objectRef;
 + (NSString *)xtr_rootViewController:(NSString *)objectRef;
 + (void)xtr_setRootViewController:(NSString *)viewControllerRef objectRef:(NSString *)objectRef;

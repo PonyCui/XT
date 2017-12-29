@@ -17,11 +17,6 @@ export class Image implements Releasable {
         return this
     }
 
-    addOwner(owner: any): this {
-        xtrAddOwner(this, owner);
-        return this;
-    }
-
     static assetsPath = "assets/"
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
@@ -94,23 +89,18 @@ export enum ContentMode {
 
 export class ImageView extends View {
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRImageView.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRImageView)
     }
 
-    private _image?: Image;
-
     public get image(): Image | undefined {
-        return this._image;
+        const ref = XTRImageView.xtr_image(this.objectRef)
+        if (typeof ref !== "string") { return ref }
+        return objectRefs[ref] || new Image(ref);
     }
 
     public set image(value: Image | undefined) {
-        this._image = value;
-        this.nativeObject.xtr_setImage(value);
+        XTRImageView.xtr_setImageObjectRef(value ? value.objectRef : undefined, this.objectRef);
     }
 
 }

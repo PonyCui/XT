@@ -21,6 +21,16 @@ export enum LayoutRelation {
 }
 
 export class LayoutConstraint implements Releasable {
+    
+    retain(): this {
+        XTMemoryManager_Retain(this.objectRef)
+        return this
+    }
+
+    release(): this {
+        XTMemoryManager_Release(this.objectRef)
+        return this
+    }
 
     addOwner(owner: any): this {
         xtrAddOwner(this, owner);
@@ -30,55 +40,49 @@ export class LayoutConstraint implements Releasable {
     static LayoutAttribute = LayoutAttribute;
     static LayoutRelation = LayoutRelation;
 
-    nativeObjectRef: any;
-
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
-    }
+    objectRef: any;
 
     constructor(firstItem?: View, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant: number = 0, multiplier: number = 1) {
-        this.nativeObjectRef = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
+        this.objectRef = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
     }
 
     public get firstItem(): View {
-        return this.nativeObject.xtr_firstItem();
+        return XTRLayoutConstraint.xtr_firstItem(this.objectRef);
     }
     public get firstAttr(): LayoutAttribute {
-        return this.nativeObject.xtr_firstAttr();
+        return XTRLayoutConstraint.xtr_firstAttr(this.objectRef);
     }
 
     public get relation(): LayoutRelation {
-        return this.nativeObject.xtr_relation();
+        return XTRLayoutConstraint.xtr_relation(this.objectRef);
     }
 
     public get secondItem(): View {
-        return this.nativeObject.xtr_secondItem();
+        return XTRLayoutConstraint.xtr_secondItem(this.objectRef);
     }
 
     public get secondAttr(): LayoutAttribute {
-        return this.nativeObject.xtr_secondAttr();
+        return XTRLayoutConstraint.xtr_secondAttr(this.objectRef);
     }
 
     public get constant(): number {
-        return this.nativeObject.xtr_constant();
+        return XTRLayoutConstraint.xtr_constant(this.objectRef);
     }
 
     public set constant(value: number) {
-        this.nativeObject.xtr_setConstant(value);
+        XTRLayoutConstraint.xtr_setConstantObjectRef(value, this.objectRef);
     }
 
     public get multiplier(): number {
-        return this.nativeObject.xtr_multiplier();
+        return XTRLayoutConstraint.xtr_multiplier(this.objectRef);
     }
 
     public get priority(): number {
-        return this.nativeObject.xtr_priority();
+        return XTRLayoutConstraint.xtr_priority(this.objectRef);
     }
 
     public set priority(value: number) {
-        this.nativeObject.xtr_setPriority(value);
+        XTRLayoutConstraint.xtr_setPriorityObjectRef(value, this.objectRef);
     }
 
     static constraintsWithVisualFormat(format: string, views: { [key: string]: View }): LayoutConstraint[] {

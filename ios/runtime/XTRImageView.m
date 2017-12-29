@@ -25,8 +25,8 @@
     return @"XTRImageView";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRImageView *view = [[XTRImageView alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRImageView *view = [[XTRImageView alloc] initWithFrame:CGRectZero];
     view.innerView = [[UIImageView alloc] init];
     [view addSubview:view.innerView];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
@@ -34,6 +34,14 @@
     view.context = [JSContext currentContext];
     view.objectUUID = managedObject.objectUUID;
     return managedObject.objectUUID;
+}
+
++ (NSString *)xtr_image:(NSString *)objectRef {
+    XTRImageView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTRImageView class]]) {
+        return view.privateImage.objectUUID;
+    }
+    return nil;
 }
 
 + (void)xtr_setImage:(NSString *)imageRef objectRef:(NSString *)objectRef {

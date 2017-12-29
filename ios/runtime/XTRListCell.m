@@ -20,8 +20,8 @@
     return @"XTRListCell";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRListCell *view = [[XTRListCell alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRListCell *view = [[XTRListCell alloc] initWithFrame:CGRectZero];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];
     view.context = [JSContext currentContext];

@@ -13,7 +13,7 @@
 
 @protocol XTRListCellExport <JSExport>
 
-+ (NSString *)create:(JSValue *)frame;
++ (NSString *)create;
 + (NSInteger)xtr_selectionStyle:(NSString *)objectRef;
 + (void)xtr_setSelectionStyle:(NSInteger)selectionStyle objectRef:(NSString *)objectRef;
 

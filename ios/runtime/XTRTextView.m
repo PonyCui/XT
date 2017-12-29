@@ -24,8 +24,8 @@
     return @"XTRTextView";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRTextView *view = [[XTRTextView alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRTextView *view = [[XTRTextView alloc] initWithFrame:CGRectZero];
     view.userInteractionEnabled = YES;
     view.innerView = [[UITextView alloc] init];
     view.innerView.delegate = view;

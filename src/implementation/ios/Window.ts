@@ -5,24 +5,20 @@ import { ViewController } from "./ViewController";
 
 export class Window extends View {
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.objectRef = XTRWindow.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRWindow)
     }
 
     public get rootViewController(): ViewController | undefined {
-        return this.nativeObject.xtr_rootViewController();
+        return XTRWindow.xtr_rootViewController(this.objectRef);
     }
 
     public set rootViewController(value: ViewController | undefined) {
-        this.nativeObject.xtr_setRootViewController(value);
+        XTRWindow.xtr_setRootViewControllerObjectRef(value, this.objectRef);
     }
 
     makeKeyAndVisible(): void {
-        this.nativeObject.xtr_makeKeyAndVisible();
+        XTRWindow.xtr_makeKeyAndVisible(this.objectRef);
     }
 
     handleKeyboardShow(frame: Rect, duration: number) {
@@ -34,7 +30,7 @@ export class Window extends View {
     }
 
     endEditing(): void {
-        this.nativeObject.xtr_endEditing();
+        XTRWindow.xtr_endEditing(this.objectRef);
     }
 
 }

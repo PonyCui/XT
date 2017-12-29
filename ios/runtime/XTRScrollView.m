@@ -34,8 +34,8 @@
     return @"XTRScrollView";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRScrollView *view = [[XTRScrollView alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRScrollView *view = [[XTRScrollView alloc] initWithFrame:CGRectZero];
     view.delegate = view;
     [view setContentSize:CGSizeMake(0, 2000)];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];

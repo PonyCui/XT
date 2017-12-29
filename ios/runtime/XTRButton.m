@@ -28,8 +28,8 @@
     return @"XTRButton";
 }
 
-+ (NSString *)create:(JSValue *)frame {
-    XTRButton *view = [[XTRButton alloc] initWithFrame:[frame toRect]];
++ (NSString *)create {
+    XTRButton *view = [[XTRButton alloc] initWithFrame:CGRectZero];
     view.innerView = [UIButton buttonWithType:UIButtonTypeSystem];
     view.innerView.adjustsImageWhenHighlighted = NO;
     [view.innerView setTitleColor:view.tintColor forState:UIControlStateNormal];

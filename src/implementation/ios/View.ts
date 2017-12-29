@@ -18,62 +18,60 @@ export class View implements Releasable {
         return this
     }
 
-    addOwner(owner: any): this {
-        // xtrAddOwner(this, owner);
-        return this;
-    }
+    public objectRef: any;
 
-    objectRef: any;
-
-    constructor(rect?: Rect | string, _isChild: boolean = false) {
-        if (_isChild) { return; }
-        if (typeof rect === "string") {
-            this.objectRef = rect;
-            objectRefs[this.objectRef] = this;
+    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
+        if (typeof ref === "string") {
+            this.objectRef = ref;
+            if (objectRefs[ref]) {
+                objectRefs[ref] = this;
+            }
+        }
+        else if (typeof ref === "function") {
+            let args = [];
+            for (let index = 0; index < arguments.length; index++) {
+                if (index > 0) {
+                    args.push(arguments[index])
+                }
+            }
+            this.objectRef = ref.apply(this, args)
+        }
+        else if (typeof ref === "object") {
+            this.objectRef = (ref as any).create()
         }
         else {
-            this.objectRef = XTRView.create(rect || RectZero);
-            objectRefs[this.objectRef] = this;
-            setImmediate(() => { this.init(); });
+            this.objectRef = XTRView.create()
         }
     }
 
-    init() { }
-
     // Mark: View Geometry
-    private _frame: Rect;
 
     public get frame(): Rect {
-        return this.nativeObject.xtr_frame();
+        return XTRView.xtr_frame(this.objectRef);
     }
 
     public set frame(value: Rect) {
-        this.nativeObject.xtr_setFrame(value);
+        XTRView.xtr_setFrameObjectRef(value, this.objectRef);
     }
 
-    private _bounds: Rect;
-
-
     public get bounds(): Rect {
-        return this.nativeObject.xtr_bounds();
+        return XTRView.xtr_bounds(this.objectRef);
     }
 
     public set bounds(value: Rect) {
-        this.nativeObject.xtr_setBounds(value);
+        XTRView.xtr_setBoundsObjectRef(value, this.objectRef);
     }
 
-    private _center: Point;
-
     public get center(): Point {
-        return this.nativeObject.xtr_center();
+        return XTRView.xtr_center(this.objectRef);
     }
 
     public set center(value: Point) {
-        this.nativeObject.xtr_setCenter(value);
+        XTRView.xtr_setCenterObjectRef(value, this.objectRef);
     }
 
     public get transform(): TransformMatrix {
-        const value = this.nativeObject.xtr_transform();
+        const value = XTRView.xtr_transform(this.objectRef);
         if (value instanceof Object) {
             return new TransformMatrix(value.a, value.b, value.c, value.d, value.tx, value.ty)
         }
@@ -81,24 +79,21 @@ export class View implements Releasable {
     }
 
     public set transform(value: TransformMatrix) {
-        this.nativeObject.xtr_setTransform(value);
+        XTRView.xtr_setTransformObjectRef(value, this.objectRef);
     }
 
     // Mark: View Rendering
-    private _clipsToBounds: boolean;
 
     public get clipsToBounds(): boolean {
-        return this.nativeObject.xtr_clipsToBounds();
+        return XTRView.xtr_clipsToBounds(this.objectRef);
     }
 
     public set clipsToBounds(value: boolean) {
-        this.nativeObject.xtr_setClipsToBounds(value);
+        XTRView.xtr_setClipsToBoundsObjectRef(value, this.objectRef);
     }
 
-    private _backgroundColor?: Color;
-
     public get backgroundColor(): Color | undefined {
-        const value = this.nativeObject.xtr_backgroundColor();
+        const value = XTRView.xtr_backgroundColor(this.objectRef);
         if (value instanceof Object) {
             return new Color(value.r, value.g, value.b, value.a)
         }
@@ -106,63 +101,53 @@ export class View implements Releasable {
     }
 
     public set backgroundColor(value: Color | undefined) {
-        this.nativeObject.xtr_setBackgroundColor(value);
+        XTRView.xtr_setBackgroundColorObjectRef(value, this.objectRef);
     }
 
-    private _alpha: number;
-
     public get alpha(): number {
-        return this.nativeObject.xtr_alpha();
+        return XTRView.xtr_alpha(this.objectRef);
     }
 
     public set alpha(value: number) {
-        this.nativeObject.xtr_setAlpha(value);
+        XTRView.xtr_setAlphaObjectRef(value, this.objectRef);
     }
 
-    private _opaque: boolean;
-
     public get opaque(): boolean {
-        return this.nativeObject.xtr_opaque();
+        return XTRView.xtr_opaque(this.objectRef);
     }
 
     public set opaque(value: boolean) {
-        this.nativeObject.xtr_setOpaque(value);
+        XTRView.xtr_setOpaqueObjectRef(value, this.objectRef);
     }
 
-    private _hidden: boolean;
-
     public get hidden(): boolean {
-        return this.nativeObject.xtr_hidden();
+        return XTRView.xtr_hidden(this.objectRef);
     }
 
     public set hidden(value: boolean) {
-        this.nativeObject.xtr_setHidden(value);
+        XTRView.xtr_setHiddenObjectRef(value, this.objectRef);
     }
 
-    private _contentMode: number | undefined;
-
     public get contentMode(): number | undefined {
-        return this.nativeObject.xtr_contentMode();
+        return XTRView.xtr_contentMode(this.objectRef);
     }
 
     public set contentMode(value: number | undefined) {
-        this.nativeObject.xtr_setContentMode(value);
+        XTRView.xtr_setContentModeObjectRef(value, this.objectRef);
     }
 
-    private _maskView: View | undefined
-
     public get maskView(): View | undefined {
-        return this.nativeObject.xtr_maskView();
+        const ref = XTRView.xtr_maskView(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref);
     }
 
     public set maskView(value: View | undefined) {
-        this.nativeObject.xtr_setMaskView(value);
+        XTRView.xtr_setMaskViewObjectRef(value ? value.objectRef : undefined, this.objectRef);
     }
 
-    private _tintColor: Color
-
     public get tintColor(): Color {
-        const value = this.nativeObject.xtr_tintColor();
+        const value = XTRView.xtr_tintColor(this.objectRef);
         if (value instanceof Object) {
             return new Color(value.r, value.g, value.b, value.a)
         }
@@ -170,7 +155,7 @@ export class View implements Releasable {
     }
 
     public set tintColor(value: Color) {
-        this.nativeObject.xtr_setTintColor(value);
+        XTRView.xtr_setTintColorObjectRef(value, this.objectRef);
     }
 
     tintColorDidChange() { }
@@ -178,30 +163,25 @@ export class View implements Releasable {
     setNeedsDisplay() { }
 
     // Mark: View Layer-Back Rendering
-    private _cornerRadius: number;
 
     public get cornerRadius(): number {
-        return this.nativeObject.xtr_cornerRadius();
+        return XTRView.xtr_cornerRadius(this.objectRef);
     }
 
     public set cornerRadius(value: number) {
-        this.nativeObject.xtr_setCornerRadius(value);
+        XTRView.xtr_setCornerRadiusObjectRef(value, this.objectRef);
     }
 
-    private _borderWidth: number;
-
     public get borderWidth(): number {
-        return this.nativeObject.xtr_borderWidth();
+        return XTRView.xtr_borderWidth(this.objectRef);
     }
 
     public set borderWidth(value: number) {
-        this.nativeObject.xtr_setBorderWidth(value);
+        XTRView.xtr_setBorderWidthObjectRef(value, this.objectRef);
     }
 
-    private _borderColor: Color | undefined;
-
     public get borderColor(): Color | undefined {
-        const value = this.nativeObject.xtr_borderColor();
+        const value = XTRView.xtr_borderColor(this.objectRef);
         if (value instanceof Object) {
             return new Color(value.r, value.g, value.b, value.a)
         }
@@ -209,13 +189,11 @@ export class View implements Releasable {
     }
 
     public set borderColor(value: Color | undefined) {
-        this.nativeObject.xtr_setBorderColor(value);
+        XTRView.xtr_setBorderColorObjectRef(value, this.objectRef);
     }
 
-    private _shadowColor: Color | undefined;
-
     public get shadowColor(): Color | undefined {
-        const value = this.nativeObject.xtr_shadowColor();
+        const value = XTRView.xtr_shadowColor(this.objectRef);
         if (value instanceof Object) {
             return new Color(value.r, value.g, value.b, value.a)
         }
@@ -223,132 +201,132 @@ export class View implements Releasable {
     }
 
     public set shadowColor(value: Color | undefined) {
-        this.nativeObject.xtr_setShadowColor(value);
+        XTRView.xtr_setShadowColorObjectRef(value, this.objectRef);
     }
 
-    private _shadowOpacity: number;
-
     public get shadowOpacity(): number {
-        return this.nativeObject.xtr_shadowOpacity();
+        return XTRView.xtr_shadowOpacity(this.objectRef);
     }
 
     public set shadowOpacity(value: number) {
-        this.nativeObject.xtr_setShadowOpacity(value);
+        XTRView.xtr_setShadowOpacityObjectRef(value, this.objectRef);
     }
 
-    private _shadowOffset: Size | undefined;
-
     public get shadowOffset(): Size | undefined {
-        return this.nativeObject.xtr_shadowOffset();
+        return XTRView.xtr_shadowOffset(this.objectRef);
     }
 
     public set shadowOffset(value: Size | undefined) {
-        this.nativeObject.xtr_setShadowOffset(value);
+        XTRView.xtr_setShadowOffsetObjectRef(value, this.objectRef);
     }
 
-    private _shadowRadius: number;
-
     public get shadowRadius(): number {
-        return this.nativeObject.xtr_shadowRadius();
+        return XTRView.xtr_shadowRadius(this.objectRef);
     }
 
     public set shadowRadius(value: number) {
-        this.nativeObject.xtr_setShadowRadius(value);
+        XTRView.xtr_setShadowRadiusObjectRef(value, this.objectRef);
     }
 
     // Mark: View Hierarchy
-    private _tag: number | undefined;
 
     public get tag(): number | undefined {
-        return this.nativeObject.xtr_tag();
+        return XTRView.xtr_tag(this.objectRef);
     }
 
     public set tag(value: number | undefined) {
-        this.nativeObject.xtr_setTag(value);
+        XTRView.xtr_setTagObjectRef(value, this.objectRef);
     }
 
     public get superview(): View | undefined {
-        return this.nativeObject.xtr_superview();
+        const ref = XTRView.xtr_superview(this.objectRef)
+        if (!ref) { return undefined }
+        return new View(ref);
     }
 
     public get subviews(): View[] {
-        return this.nativeObject.xtr_subviews();
+        return XTRView.xtr_subviews(this.objectRef).map((ref: string) => {
+            return new View(ref);
+        });
     }
 
     window?: Window
 
     removeFromSuperview() {
-        this.nativeObject.xtr_removeFromSuperview();
+        XTRView.xtr_removeFromSuperview(this.objectRef);
     }
 
     insertSubviewAtIndex(subview: View, atIndex: number) {
-        this.nativeObject.xtr_insertSubviewAtIndexAtIndex(subview, atIndex)
+        XTRView.xtr_insertSubviewAtIndexAtIndexObjectRef(subview, atIndex, this.objectRef)
     }
 
     exchangeSubviewAtIndex(index1: number, index2: number) {
-        this.nativeObject.xtr_exchangeSubviewAtIndexIndex2(index1, index2)
+        XTRView.xtr_exchangeSubviewAtIndexIndex2ObjectRef(index1, index2, this.objectRef)
     }
 
     addSubview(subview: View) {
-        this.nativeObject.xtr_addSubview(subview)
+        XTRView.xtr_addSubviewObjectRef(subview, this.objectRef)
     }
 
     insertSubviewBelow(subview: View, siblingSubview: View) {
-        this.nativeObject.xtr_insertSubviewBelowSiblingSubview(subview, siblingSubview);
+        XTRView.xtr_insertSubviewBelowSiblingSubviewObjectRef(subview, siblingSubview, this.objectRef);
     }
 
     insertSubviewAbove(subview: View, siblingSubview: View) {
-        this.nativeObject.xtr_insertSubviewAboveSiblingSubview(subview, siblingSubview);
+        XTRView.xtr_insertSubviewAboveSiblingSubviewObjectRef(subview, siblingSubview, this.objectRef);
     }
 
     bringSubviewToFront(subview: View) {
-        this.nativeObject.xtr_bringSubviewToFront(subview);
+        XTRView.xtr_bringSubviewToFrontObjectRef(subview, this.objectRef);
     }
 
     sendSubviewToBack(subview: View) {
-        this.nativeObject.xtr_sendSubviewToBack(subview);
+        XTRView.xtr_sendSubviewToBackObjectRef(subview, this.objectRef);
     }
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
-
     willMoveToSuperview(newSuperview?: View) { }
     didMoveToSuperview() { }
     willMoveToWindow(newWindow?: Window) { }
     didMoveToWindow() { }
 
     isDescendantOfView(view: View) {
-        return this.nativeObject.xtr_isDescendantOfView(view);
+        return XTRView.xtr_isDescendantOfViewObjectRef(view, this.objectRef);
     }
 
     viewWithTag(tag: number): View | undefined {
-        return this.nativeObject.xtr_viewWithTag(tag);
+        const ref = XTRView.xtr_viewWithTagObjectRef(tag, this.objectRef)
+        if (!ref) { return undefined }
+        return new View(ref);
     }
 
-    setNeedsLayout() { this.nativeObject.xtr_setNeedsLayout() }
-    layoutIfNeeded() { this.nativeObject.xtr_layoutIfNeeded() }
+    setNeedsLayout() { XTRView.xtr_setNeedsLayout() }
+    layoutIfNeeded() { XTRView.xtr_layoutIfNeeded() }
     layoutSubviews() { }
 
     // Mark: View LayoutConstraint
 
     public get constraints(): LayoutConstraint[] {
-        return this.nativeObject.xtr_constraints();
+        return XTRView.xtr_constraints(this.objectRef).map((ref: string) => {
+            return objectRefs[ref] // todo
+        });
     }
 
     addConstraint(constraint: LayoutConstraint) {
-        this.nativeObject.xtr_addConstraint(constraint);
+        // XTRView.xtr_addConstraint(constraint);
     }
 
     addConstraints(constraints: LayoutConstraint[]) {
-        this.nativeObject.xtr_addConstraints(constraints);
+        // XTRView.xtr_addConstraints(constraints);
     }
 
     removeConstraint(constraint: LayoutConstraint) {
-        this.nativeObject.xtr_removeConstraint();
+        // XTRView.xtr_removeConstraint();
     }
 
     removeAllConstraints() {
-        this.nativeObject.xtr_removeAllConstraints();
+        // XTRView.xtr_removeAllConstraints(this.objectRef);
     }
 
     // Mark: View Interactive
@@ -356,21 +334,21 @@ export class View implements Releasable {
     static SwipeDirection = SwipeDirection
 
     public get userInteractionEnabled(): boolean {
-        return this.nativeObject.xtr_userInteractionEnabled();
+        return XTRView.xtr_userInteractionEnabled(this.objectRef);
     }
 
     public set userInteractionEnabled(value: boolean) {
-        this.nativeObject.xtr_setUserInteractionEnabled(value);
+        XTRView.xtr_setUserInteractionEnabledObjectRef(value, this.objectRef);
     }
 
 
     public get longPressDuration(): number {
-        return this.nativeObject.xtr_longPressDuration();
+        return XTRView.xtr_longPressDuration(this.objectRef);
     }
 
     public set longPressDuration(value: number) {
-        this.nativeObject.xtr_setLongPressDuration(value);
-        this.nativeObject.xtr_activeLongPress();
+        XTRView.xtr_setLongPressDurationObjectRef(value, this.objectRef);
+        XTRView.xtr_activeLongPress(this.objectRef);
     }
 
     private _onTap?: () => void
@@ -381,7 +359,7 @@ export class View implements Releasable {
 
     public set onTap(value: (() => void) | undefined) {
         this._onTap = value;
-        this.nativeObject.xtr_activeTap();
+        XTRView.xtr_activeTap(this.objectRef);
     }
 
     handleTap() {
@@ -396,7 +374,7 @@ export class View implements Releasable {
 
     public set onDoubleTap(value: (() => void) | undefined) {
         this._onDoubleTap = value;
-        this.nativeObject.xtr_activeDoubleTap();
+        XTRView.xtr_activeDoubleTap(this.objectRef);
     }
 
     handleDoubleTap() {
@@ -411,7 +389,7 @@ export class View implements Releasable {
 
     public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
         this._onLongPress = value;
-        this.nativeObject.xtr_activeLongPress();
+        XTRView.xtr_activeLongPress(this.objectRef);
     }
 
     handleLongPress(state: number, viewLocation: Point, absLocation: Point) {
@@ -434,7 +412,7 @@ export class View implements Releasable {
 
     public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
         this._onPan = value;
-        this.nativeObject.xtr_activePan();
+        XTRView.xtr_activePan(this.objectRef);
     }
 
     handlePan(state: number, viewLocation: Point, absLocation: Point) {

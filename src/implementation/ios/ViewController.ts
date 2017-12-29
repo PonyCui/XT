@@ -14,34 +14,50 @@ export interface NavigationControllerInterface extends ViewController {
 
 export class ViewController implements Releasable {
 
-    nativeObjectRef: any;
-
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
+    retain(): this {
+        XTMemoryManager_Retain(this.objectRef)
+        return this
     }
 
-    constructor(isChild: boolean = false) {
-        if (isChild) { return; }
-        this.nativeObjectRef = XTRViewController.create(this);
-        objectRefs[this.nativeObjectRef] = this;
-        setImmediate(() => { this.init(); });
+    release(): this {
+        XTMemoryManager_Release(this.objectRef)
+        return this
     }
+   
+    protected objectRef: any;
 
-    addOwner(owner: any): this {
-        xtrAddOwner(this, owner);
-        return this;
+    constructor(ref: string | Object | Function | undefined, ...args: any[]) {
+        if (typeof ref === "string") {
+            this.objectRef = ref;
+            if (objectRefs[ref]) {
+                objectRefs[ref] = this;
+            }
+        }
+        else if (typeof ref === "function") {
+            let args = [];
+            for (let index = 0; index < arguments.length; index++) {
+                if (index > 0) {
+                    args.push(arguments[index])
+                }
+            }
+            this.objectRef = ref.apply(this, args)
+        }
+        else if (typeof ref === "object") {
+            this.objectRef = (ref as any).create()
+        }
+        else {
+            this.objectRef = XTRViewController.create()
+        }
     }
 
     init() { }
 
     public get view() {
-        return this.nativeObject.xtr_view();
+        return XTRViewController.xtr_view(this.objectRef);
     }
 
     public set view(value: View) {
-        this.nativeObject.xtr_setView(value);
+        XTRViewController.xtr_setViewObjectRef(value, this.objectRef);
     }
 
     loadView(): void {
@@ -59,26 +75,26 @@ export class ViewController implements Releasable {
     viewDidLayoutSubviews(): void { }
 
     public get parentViewController(): ViewController | undefined {
-        return this.nativeObject.xtr_parentViewController();
+        return XTRViewController.xtr_parentViewController(this.objectRef);
     }
 
     public get childViewControllers(): ViewController[] {
-        return this.nativeObject.xtr_childViewControllers();
+        return XTRViewController.xtr_childViewControllers(this.objectRef);
     }
 
     addChildViewController(childController: ViewController): void {
-        this.nativeObject.xtr_addChildViewController(childController);
+        XTRViewController.xtr_addChildViewControllerObjectRef(childController, this.objectRef);
     }
 
     removeFromParentViewController(): void {
-        this.nativeObject.xtr_removeFromParentViewController();
+        XTRViewController.xtr_removeFromParentViewController(this.objectRef);
     }
 
     willMoveToParentViewController(parent?: ViewController): void { }
     didMoveToParentViewController(parent?: ViewController): void { }
 
     public get navigationController(): NavigationControllerInterface | undefined {
-        const returnValue = this.nativeObject.xtr_navigationController();
+        const returnValue = XTRViewController.xtr_navigationController(this.objectRef);
         if (typeof returnValue === "string") {
             return new (window as any).XTRNavigationController(undefined, returnValue)
         }

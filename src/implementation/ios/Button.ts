@@ -8,60 +8,56 @@ import { Font } from "./Font";
 
 export class Button extends View {
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true);
-        if (_isChild) { return; }
-        this.objectRef = XTRButton.createScriptObject(rect || RectZero, this);
-        objectRefs[this.objectRef] = this;
-        setImmediate(() => { this.init(); });
+    constructor(ref: any) {
+        super(ref || XTRButton)
     }
 
     public get title(): string | undefined {
-        return this.nativeObject.xtr_title();
+        return XTRButton.xtr_title(this.objectRef);
     }
 
     public set title(value: string | undefined) {
-        this.nativeObject.xtr_setTitle(value);
+        XTRButton.xtr_setTitleObjectRef(value, this.objectRef);
     }
 
     public get font(): Font {
-        return this.nativeObject.xtr_font();
+        return XTRButton.xtr_font(this.objectRef);
     }
 
     public set font(value: Font) {
-        this.nativeObject.xtr_setFont(value);
+        XTRButton.xtr_setFontObjectRef(value, this.objectRef);
     }
 
     public get image(): Image {
-        return this.nativeObject.xtr_image();
+        return XTRButton.xtr_image(this.objectRef);
     }
 
     public set image(value: Image) {
-        this.nativeObject.xtr_setImage(value);
+        XTRButton.xtr_setImageObjectRef(value, this.objectRef);
     }
 
     public get color(): Color {
-        return this.nativeObject.xtr_color();
+        return XTRButton.xtr_color(this.objectRef);
     }
 
     public set color(value: Color) {
-        this.nativeObject.xtr_setColor(value);
+        XTRButton.xtr_setColorObjectRef(value, this.objectRef);
     }
 
     public get vertical(): boolean {
-        return this.nativeObject.xtr_vertical();
+        return XTRButton.xtr_vertical(this.objectRef);
     }
 
     public set vertical(value: boolean) {
-        this.nativeObject.xtr_setVertical(value);
+        XTRButton.xtr_setVerticalObjectRef(value, this.objectRef);
     }
 
     public get inset(): number {
-        return this.nativeObject.xtr_inset();
+        return XTRButton.xtr_inset(this.objectRef);
     }
 
     public set inset(value: number) {
-        this.nativeObject.xtr_setInset(value);
+        XTRButton.xtr_setInsetObjectRef(value, this.objectRef);
     }
 
     onHighlighted?: (highligted: boolean) => void
