@@ -38,14 +38,15 @@ export class Application {
 
     public get keyWindow(): Window | undefined {
         const ref = XTRApplication.xtr_keyWindow(this.objectRef)
-        return objectRefs[ref] || new Window(ref);
+        if (typeof ref !== "string") { return undefined }
+        return new Window(ref);
     }
 
     constructor(t: any, delegate: ApplicationDelegate) {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.objectRef = XTRApplication.create(this);
+        this.objectRef = XTRApplication.create();
         objectRefs[this.objectRef] = this;
         (window as any)._xtrDelegate = delegate;
         this.delegate = delegate;

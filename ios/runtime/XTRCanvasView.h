@@ -39,9 +39,9 @@
 + (void)xtr_lineTo:(JSValue *)point objectRef:(NSString *)objectRef;
 + (void)xtr_quadraticCurveTo:(JSValue *)cpPoint xyPoint:(JSValue *)xyPoint objectRef:(NSString *)objectRef;
 + (void)xtr_bezierCurveTo:(JSValue *)cp1Point cp2Point:(JSValue *)cp2Point xyPoint:(JSValue *)xyPoint objectRef:(NSString *)objectRef;
-+ (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise objectRef:(NSString *)objectRef;
++ (void)xtr_arc:(JSValue *)point r:(CGFloat)r sAngle:(CGFloat)sAngle eAngle:(CGFloat)eAngle counterclockwise:(BOOL)counterclockwise objectRef:(NSString *)objectRef;
 + (void)xtr_postScale:(JSValue *)point objectRef:(NSString *)objectRef;
-+ (void)xtr_postRotate:(JSValue *)angle objectRef:(NSString *)objectRef;
++ (void)xtr_postRotate:(CGFloat)angle objectRef:(NSString *)objectRef;
 + (void)xtr_postTranslate:(JSValue *)point objectRef:(NSString *)objectRef;
 + (void)xtr_postTransform:(JSValue *)transform objectRef:(NSString *)objectRef;
 + (void)xtr_setCanvasTransform:(JSValue *)transform objectRef:(NSString *)objectRef;

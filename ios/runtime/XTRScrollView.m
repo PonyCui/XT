@@ -214,8 +214,8 @@
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
-                                                                   ? @[[subview objectUUID] ?: @""] : @[])];
+        [scriptObject invokeMethod:@"_didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+                                                                    ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -223,8 +223,8 @@
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
-                                                                       ? @[[subview objectUUID] ?: @""] : @[])];
+        [scriptObject invokeMethod:@"_willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+                                                                        ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -232,8 +232,8 @@
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
-                                                                         ? @[[newSuperview objectUUID] ?: @""] : @[])];
+        [scriptObject invokeMethod:@"_willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+                                                                          ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -241,7 +241,7 @@
     [super didMoveToSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
+        [scriptObject invokeMethod:@"_didMoveToSuperview" withArguments:@[]];
     }
 }
 
@@ -249,8 +249,8 @@
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
-                                                                      ? @[[newWindow objectUUID] ?: @""] : @[])];
+        [scriptObject invokeMethod:@"_willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+                                                                       ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }
 
@@ -258,7 +258,7 @@
     [super didMoveToWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
+        [scriptObject invokeMethod:@"_didMoveToWindow" withArguments:@[]];
     }
 }
 

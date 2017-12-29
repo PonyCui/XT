@@ -399,7 +399,7 @@
             return window.objectUUID;
         }
     }
-    return @"";
+    return nil;
 }
 
 + (void)xtr_removeFromSuperview:(NSString *)objectRef {

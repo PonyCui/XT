@@ -44,7 +44,7 @@
 + (NSString *)xtr_text:(NSString *)objectRef {
     XTRLabel *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRLabel class]]) {
-        return obj.innerView.text;
+        return obj.innerView.text ?: @"";
     }
     return nil;
 }
@@ -106,10 +106,10 @@
     return 0;
 }
 
-+ (void)xtr_setTextAlignment:(JSValue *)textAlignment objectRef:(NSString *)objectRef {
++ (void)xtr_setTextAlignment:(NSInteger)textAlignment objectRef:(NSString *)objectRef {
     XTRLabel *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRLabel class]]) {
-        switch ([textAlignment toInt32]) {
+        switch (textAlignment) {
             case 0:
                 obj.innerView.textAlignment = NSTextAlignmentLeft;
                 break;

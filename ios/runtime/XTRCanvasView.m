@@ -125,7 +125,7 @@
 + (NSString *)xtr_lineCap:(NSString *)objectRef {
     XTRCanvasView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRCanvasView class]]) {
-        return view.currentState.lineCap;
+        return view.currentState.lineCap ?: @"";
     }
     return nil;
 }
@@ -140,7 +140,7 @@
 + (NSString *)xtr_lineJoin:(NSString *)objectRef {
     XTRCanvasView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRCanvasView class]]) {
-        return view.currentState.lineJoin;
+        return view.currentState.lineJoin ?: @"";
     }
     return nil;
 }
@@ -293,14 +293,14 @@
     }
 }
 
-+ (void)xtr_arc:(JSValue *)point r:(JSValue *)r sAngle:(JSValue *)sAngle eAngle:(JSValue *)eAngle counterclockwise:(JSValue *)counterclockwise objectRef:(NSString *)objectRef {
++ (void)xtr_arc:(JSValue *)point r:(CGFloat)r sAngle:(CGFloat)sAngle eAngle:(CGFloat)eAngle counterclockwise:(BOOL)counterclockwise objectRef:(NSString *)objectRef {
     XTRCanvasView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRCanvasView class]]) {
         [view.currentPath addArcWithCenter:[point toPoint]
-                                    radius:r.toDouble
-                                startAngle:sAngle.toDouble
-                                  endAngle:eAngle.toDouble
-                                 clockwise:!counterclockwise.toBool];
+                                    radius:r
+                                startAngle:sAngle
+                                  endAngle:eAngle
+                                 clockwise:!counterclockwise];
     }
 }
 
@@ -325,10 +325,10 @@
     }
 }
 
-+ (void)xtr_postRotate:(JSValue *)angle objectRef:(NSString *)objectRef {
++ (void)xtr_postRotate:(CGFloat)angle objectRef:(NSString *)objectRef {
     XTRCanvasView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRCanvasView class]]) {
-        view.currentState.currentTransform = CGAffineTransformRotate(view.currentState.currentTransform, angle.toDouble);
+        view.currentState.currentTransform = CGAffineTransformRotate(view.currentState.currentTransform, angle);
     }
 }
 

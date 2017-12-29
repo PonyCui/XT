@@ -10,11 +10,13 @@ export class Window extends View {
     }
 
     public get rootViewController(): ViewController | undefined {
-        return XTRWindow.xtr_rootViewController(this.objectRef);
+        const ref = XTRWindow.xtr_rootViewController(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new ViewController(ref);
     }
 
     public set rootViewController(value: ViewController | undefined) {
-        XTRWindow.xtr_setRootViewControllerObjectRef(value ? value.objectRef : undefined, this.objectRef);
+        XTRWindow.xtr_setRootViewControllerObjectRef(value ? value.objectRef : "", this.objectRef);
     }
 
     makeKeyAndVisible(): void {

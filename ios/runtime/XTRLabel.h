@@ -21,7 +21,7 @@
 + (NSDictionary *)xtr_textColor:(NSString *)objectRef;
 + (void)xtr_setTextColor:(JSValue *)textColor objectRef:(NSString *)objectRef;
 + (NSInteger)xtr_textAlignment:(NSString *)objectRef;
-+ (void)xtr_setTextAlignment:(JSValue *)textAlignment objectRef:(NSString *)objectRef;
++ (void)xtr_setTextAlignment:(NSInteger)textAlignment objectRef:(NSString *)objectRef;
 + (NSInteger)xtr_numberOfLines:(NSString *)objectRef;
 + (void)xtr_setNumberOfLines:(NSInteger)numberOfLines objectRef:(NSString *)objectRef;
 + (NSInteger)xtr_lineBreakMode:(NSString *)objectRef;

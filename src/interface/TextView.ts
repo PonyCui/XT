@@ -7,8 +7,8 @@ import { Rect } from './Rect';
 
 export class TextView extends View {
 
-    text?: string;
-    font?: Font;
+    text: string;
+    font: Font;
     textColor: Color = new Color(0, 0, 0);
     textAlignment: TextAlignment = TextAlignment.Left;
     readonly editing: Boolean = false

@@ -10,17 +10,15 @@ export enum DeviceOrientation {
 
 export class Device {
 
-    static current: Device
+    static deviceName: string
+    static systemName: string
+    static systemVersion: string
+    static xtRuntimeVersion: string
+    static model: string
+    static orientation: DeviceOrientation
 
-    name: string
-    systemName: string
-    systemVersion: string
-    xtRuntimeVersion: string
-    model: string
-    orientation: DeviceOrientation
-
-    isiOS(): Boolean { return false }
-    isAndroid(): Boolean { return false }
-    isWeb(): Boolean { return false }
+    static isiOS(): Boolean { return false }
+    static isAndroid(): Boolean { return false }
+    static isWeb(): Boolean { return false }
 
 }

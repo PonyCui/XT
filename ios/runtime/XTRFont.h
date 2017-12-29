@@ -19,7 +19,7 @@
           familyName:(JSValue *)familyName;
 
 + (NSString *)xtr_familyName:(NSString *)objectRef;
-+ (NSNumber *)xtr_pointSize:(NSString *)objectRef;
++ (CGFloat)xtr_pointSize:(NSString *)objectRef;
 + (NSString *)xtr_fontWeight:(NSString *)objectRef;
 + (NSString *)xtr_fontStyle:(NSString *)objectRef;
 

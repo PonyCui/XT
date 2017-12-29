@@ -68,7 +68,7 @@ export class ListView extends ScrollView {
     }
 
     reloadData() {
-        XTRListView.xtr_reloadData();
+        XTRListView.xtr_reloadData(this.objectRef);
     }
 
     requestRowHeight(width: number, rowIndex: number): number {

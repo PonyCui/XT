@@ -21,7 +21,7 @@ export enum LayoutRelation {
 }
 
 export class LayoutConstraint implements Releasable {
-    
+
     retain(): this {
         XTMemoryManager_Retain(this.objectRef)
         return this
@@ -43,14 +43,17 @@ export class LayoutConstraint implements Releasable {
                 return objectRefs[firstItem]
             }
             this.objectRef = firstItem
-            return;
         }
-        this.objectRef = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
+        else {
+            this.objectRef = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
+        }
         objectRefs[this.objectRef] = this;
     }
 
-    public get firstItem(): View {
-        return XTRLayoutConstraint.xtr_firstItem(this.objectRef);
+    public get firstItem(): View | undefined {
+        const ref = XTRLayoutConstraint.xtr_firstItem(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref);
     }
     public get firstAttr(): LayoutAttribute {
         return XTRLayoutConstraint.xtr_firstAttr(this.objectRef);
@@ -60,8 +63,10 @@ export class LayoutConstraint implements Releasable {
         return XTRLayoutConstraint.xtr_relation(this.objectRef);
     }
 
-    public get secondItem(): View {
-        return XTRLayoutConstraint.xtr_secondItem(this.objectRef);
+    public get secondItem(): View | undefined {
+        const ref = XTRLayoutConstraint.xtr_secondItem(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref);
     }
 
     public get secondAttr(): LayoutAttribute {
@@ -89,7 +94,9 @@ export class LayoutConstraint implements Releasable {
     }
 
     static constraintsWithVisualFormat(format: string, views: { [key: string]: View }): LayoutConstraint[] {
-        return XTRLayoutConstraint.xtr_constraintsWithVisualFormatViews(format, views);
+        return XTRLayoutConstraint.xtr_constraintsWithVisualFormatViews(format, views).map((ref: string) => {
+            return new LayoutConstraint(ref)
+        });
     }
 
 }

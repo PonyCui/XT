@@ -6,11 +6,12 @@ export class Font {
 
     constructor(pointSize: number | string, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
         if (typeof pointSize === "string") {
+            if (objectRefs[pointSize]) { return objectRefs[pointSize] }
             this.objectRef = pointSize;
-            objectRefs[this.objectRef] = this;
-            return 
         }
-        this.objectRef = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
+        else {
+            this.objectRef = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
+        }
         objectRefs[this.objectRef] = this;
     }
 

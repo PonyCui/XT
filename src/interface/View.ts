@@ -34,7 +34,7 @@ export class View implements Releasable {
 
     // Mark: View Rendering
     clipsToBounds: boolean;
-    backgroundColor?: Color;
+    backgroundColor: Color;
     alpha: number;
     opaque: boolean;
     hidden: boolean;

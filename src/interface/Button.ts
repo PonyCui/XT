@@ -15,7 +15,7 @@ export class Button extends View {
     title?: string;
     font: Font;
     image?: Image;
-    color?: Color;
+    color: Color;
 
     onHighlighted?: (highligted: boolean) => void
     onTouchUpInside?: () => void

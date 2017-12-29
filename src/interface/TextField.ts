@@ -28,12 +28,12 @@ export enum ReturnKeyType {
 
 export class TextField extends View {
 
-    text?: string;
-    font?: Font;
+    text: string;
+    font: Font;
     textColor: Color = new Color(0, 0, 0);
     textAlignment: TextAlignment = TextAlignment.Left;
     placeholder?: string;
-    placeholderColor?: Color = Color.colorWithWhite(0.7, 1.0)
+    placeholderColor: Color = Color.colorWithWhite(0.7, 1.0)
     clearsOnBeginEditing: Boolean = false
     readonly editing: Boolean = false
     clearButtonMode: TextFieldViewMode = TextFieldViewMode.Never

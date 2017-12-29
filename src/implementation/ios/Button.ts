@@ -18,7 +18,7 @@ export class Button extends View {
     }
 
     public set title(value: string | undefined) {
-        XTRButton.xtr_setTitleObjectRef(typeof value === "string" ? value : undefined, this.objectRef);
+        XTRButton.xtr_setTitleObjectRef(typeof value === "string" ? value : "", this.objectRef);
     }
 
     public get font(): Font {
@@ -29,12 +29,14 @@ export class Button extends View {
         XTRButton.xtr_setFontObjectRef(value.objectRef, this.objectRef);
     }
 
-    public get image(): Image {
-        return XTRButton.xtr_image(this.objectRef);
+    public get image(): Image | undefined {
+        const ref = XTRButton.xtr_image(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new Image(ref);
     }
 
-    public set image(value: Image) {
-        XTRButton.xtr_setImageObjectRef(value, this.objectRef);
+    public set image(value: Image | undefined) {
+        XTRButton.xtr_setImageObjectRef(typeof value === "string" ? value : "", this.objectRef);
     }
 
     public get color(): Color {

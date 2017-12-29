@@ -69,12 +69,12 @@
     return nil;
 }
 
-+ (NSNumber *)xtr_pointSize:(NSString *)objectRef {
++ (CGFloat)xtr_pointSize:(NSString *)objectRef {
     XTRFont *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRFont class]]) {
-        return @(obj.innerObject.pointSize);
+        return obj.innerObject.pointSize;
     }
-    return nil;
+    return 0.0;
 }
 
 + (NSString *)xtr_fontWeight:(NSString *)objectRef {

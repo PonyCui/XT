@@ -36,12 +36,12 @@ export class Label extends View {
         XTRLabel.xtr_setTextObjectRef(value, this.objectRef);
     }
 
-    public get font(): Font | undefined {
-        return XTRLabel.xtr_font(this.objectRef);
+    public get font(): Font {
+        return new Font(XTRLabel.xtr_font(this.objectRef));
     }
 
-    public set font(value: Font | undefined) {
-        XTRLabel.xtr_setFontObjectRef(value, this.objectRef);
+    public set font(value: Font) {
+        XTRLabel.xtr_setFontObjectRef(value.objectRef, this.objectRef);
     }
 
     public get textColor(): Color {

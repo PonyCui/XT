@@ -13,7 +13,7 @@
 
 @protocol XTRApplicationExport <JSExport>
 
-+ (NSString *)create:(JSValue *)scriptObject;
++ (NSString *)create;
 + (NSString *)xtr_keyWindow:(NSString *)objectRef;
 + (void)xtr_exit:(NSString *)objectRef;
 

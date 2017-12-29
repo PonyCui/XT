@@ -5,10 +5,10 @@ import { Rect } from './Rect';
 export class CanvasView extends View {
     
     globalAlpha: number = 1.0
-    fillStyle?: Color
-    strokeStyle?: Color
-    lineCap?: string
-    lineJoin?: string
+    fillStyle: Color
+    strokeStyle: Color
+    lineCap: string
+    lineJoin: string
     lineWidth: number = 1.0
     miterLimit: number
     rect(x: number, y: number, width: number, height: number): void { }

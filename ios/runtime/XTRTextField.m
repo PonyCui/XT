@@ -50,7 +50,7 @@
 + (NSString *)xtr_text:(NSString *)objectRef {
     XTRTextField *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRTextField class]]) {
-        return view.innerView.text;
+        return view.innerView.text ?: @"";
     }
     return nil;
 }
@@ -140,7 +140,7 @@
 + (void)xtr_setPlaceholder:(NSString *)placeholder objectRef:(NSString *)objectRef {
     XTRTextField *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRTextField class]]) {
-        view.innerView.placeholder = placeholder;
+        view.innerView.placeholder = placeholder.length ? placeholder : nil;
     }
 }
 
@@ -221,9 +221,14 @@
 
 + (void)xtr_setLeftView:(NSString *)leftViewRef objectRef:(NSString *)objectRef {
     XTRTextField *view = [XTMemoryManager find:objectRef];
-    XTRView *leftView = [XTMemoryManager find:leftViewRef];
     if ([view isKindOfClass:[XTRTextField class]]) {
-        view.innerView.leftView = leftView;
+        UIView *leftView = [XTMemoryManager find:leftViewRef];
+        if ([leftView isKindOfClass:[UIView class]]) {
+            view.innerView.leftView = leftView;
+        }
+        else {
+            view.innerView.leftView = nil;
+        }
     }
 }
 
@@ -255,9 +260,14 @@
 
 + (void)xtr_setRightView:(NSString *)rightViewRef objectRef:(NSString *)objectRef {
     XTRTextField *view = [XTMemoryManager find:objectRef];
-    XTRView *rightView = [XTMemoryManager find:rightViewRef];
     if ([view isKindOfClass:[XTRTextField class]]) {
-        view.innerView.leftView = rightView;
+        UIView *rightView = [XTMemoryManager find:rightViewRef];
+        if ([rightView isKindOfClass:[UIView class]]) {
+            view.innerView.leftView = rightView;
+        }
+        else {
+            view.innerView.leftView = nil;
+        }
     }
 }
 

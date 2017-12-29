@@ -1,7 +1,7 @@
 /// <reference path="xtr.d.ts" />
 import { View } from './View'
 import { Rect, RectZero } from '../../interface/Rect';
-import { Font } from '../../interface/Font';
+import { Font } from './Font';
 import { Color } from '../../interface/Color';
 import { TextAlignment } from '../../interface/Label';
 import { TextFieldViewMode, KeyboardType, ReturnKeyType } from '../../interface/TextField';
@@ -20,12 +20,12 @@ export class TextField extends View {
         XTRTextField.xtr_setTextObjectRef(value, this.objectRef);
     }
 
-    public get font(): Font | undefined {
-        return XTRTextField.xtr_font(this.objectRef);
+    public get font(): Font {
+        return new Font(XTRTextField.xtr_font(this.objectRef));
     }
 
-    public set font(value: Font | undefined) {
-        XTRTextField.xtr_setFontObjectRef(value, this.objectRef);
+    public set font(value: Font) {
+        XTRTextField.xtr_setFontObjectRef(value.objectRef, this.objectRef);
     }
 
     public get textColor(): Color {
@@ -44,12 +44,13 @@ export class TextField extends View {
         XTRTextField.xtr_setTextAlignmentObjectRef(value, this.objectRef);
     }
 
-    public get placeholder(): string {
-        return XTRTextField.xtr_placeholder(this.objectRef);
+    public get placeholder(): string | undefined {
+        const value = XTRTextField.xtr_placeholder(this.objectRef)
+        return typeof value === "string" ? value : undefined;
     }
 
-    public set placeholder(value: string) {
-        XTRTextField.xtr_setPlaceholderObjectRef(value, this.objectRef);
+    public set placeholder(value: string | undefined) {
+        XTRTextField.xtr_setPlaceholderObjectRef(value || "", this.objectRef);
     }
 
     public get placeholderColor(): Color {
@@ -80,12 +81,14 @@ export class TextField extends View {
         XTRTextField.xtr_setClearButtonModeObjectRef(value, this.objectRef);
     }
 
-    public get leftView(): View {
-        return XTRTextField.xtr_leftView(this.objectRef);
+    public get leftView(): View | undefined {
+        const ref = XTRTextField.xtr_leftView(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref);
     }
 
-    public set leftView(view: View) {
-        XTRTextField.xtr_setLeftViewObjectRef(view, this.objectRef);
+    public set leftView(view: View | undefined) {
+        XTRTextField.xtr_setLeftViewObjectRef(view ? view.objectRef : "", this.objectRef);
     }
 
     public get leftViewMode(): TextFieldViewMode {
@@ -96,12 +99,14 @@ export class TextField extends View {
         XTRTextField.xtr_setLeftViewModeObjectRef(value, this.objectRef);
     }
 
-    public get rightView(): View {
-        return XTRTextField.xtr_rightView(this.objectRef);
+    public get rightView(): View | undefined {
+        const ref = XTRTextField.xtr_rightView(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref);
     }
 
-    public set rightView(view: View) {
-        XTRTextField.xtr_setRightViewObjectRef(view, this.objectRef);
+    public set rightView(view: View | undefined) {
+        XTRTextField.xtr_setRightViewObjectRef(view ? view.objectRef : "", this.objectRef);
     }
 
     public get rightViewMode(): TextFieldViewMode {

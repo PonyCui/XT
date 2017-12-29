@@ -49,7 +49,7 @@
 + (NSString *)xtr_text:(NSString *)objectRef {
     XTRTextView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRTextView class]]) {
-        return view.innerView.text;
+        return view.innerView.text ?: @"";
     }
     return nil;
 }

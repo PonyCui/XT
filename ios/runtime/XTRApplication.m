@@ -22,9 +22,9 @@
 
 @implementation XTRApplication
 
-+ (NSString *)create:(JSValue *)scriptObject {
++ (NSString *)create {
     XTRApplication *app = [XTRApplication new];
-    app.context = (id)scriptObject.context;
+    app.context = (id)[JSContext currentContext];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:app];
     [XTMemoryManager add:managedObject];
     [XTMemoryManager retain:managedObject.objectUUID];

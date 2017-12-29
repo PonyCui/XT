@@ -14,4 +14,6 @@ export class ScrollView extends View {
     alwaysBounceHorizontal: boolean = false
     onScroll?: (scrollView: ScrollView) => void
 
+    setContentOffset(value: Point, animated: boolean): void {}
+
 }

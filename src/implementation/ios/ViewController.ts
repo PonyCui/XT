@@ -23,15 +23,15 @@ export class ViewController implements Releasable {
         XTMemoryManager_Release(this.objectRef)
         return this
     }
-   
+
     public objectRef: any;
 
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
         if (typeof ref === "string") {
-            this.objectRef = ref;
             if (objectRefs[ref]) {
-                objectRefs[ref] = this;
+                return objectRefs[ref]
             }
+            this.objectRef = ref;
         }
         else if (typeof ref === "function") {
             let args = [];
@@ -50,8 +50,6 @@ export class ViewController implements Releasable {
         }
         objectRefs[this.objectRef] = this;
     }
-
-    init() { }
 
     public get view() {
         return new View(XTRViewController.xtr_view(this.objectRef));
@@ -76,32 +74,45 @@ export class ViewController implements Releasable {
     viewDidLayoutSubviews(): void { }
 
     public get parentViewController(): ViewController | undefined {
-        return XTRViewController.xtr_parentViewController(this.objectRef);
+        const ref = XTRViewController.xtr_parentViewController(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new ViewController(ref);
     }
 
     public get childViewControllers(): ViewController[] {
-        return XTRViewController.xtr_childViewControllers(this.objectRef);
+        return XTRViewController.xtr_childViewControllers(this.objectRef).map((ref: string) => {
+            return new ViewController(ref)
+        });
     }
 
     addChildViewController(childController: ViewController): void {
-        XTRViewController.xtr_addChildViewControllerObjectRef(childController, this.objectRef);
+        XTRViewController.xtr_addChildViewControllerObjectRef(childController.objectRef, this.objectRef);
     }
 
     removeFromParentViewController(): void {
         XTRViewController.xtr_removeFromParentViewController(this.objectRef);
     }
 
+    _willMoveToParentViewController(parent?: string): void {
+        this.willMoveToParentViewController(
+            typeof parent === "string" ? new ViewController(parent) : undefined
+        )
+    }
+
     willMoveToParentViewController(parent?: ViewController): void { }
+
+    _didMoveToParentViewController(parent?: string): void {
+        this.didMoveToParentViewController(
+            typeof parent === "string" ? new ViewController(parent) : undefined
+        )
+    }
+
     didMoveToParentViewController(parent?: ViewController): void { }
 
     public get navigationController(): NavigationControllerInterface | undefined {
-        const returnValue = XTRViewController.xtr_navigationController(this.objectRef);
-        if (typeof returnValue === "string") {
-            return new (window as any).XTRNavigationController(undefined, returnValue)
-        }
-        else {
-            return returnValue;
-        }
+        const ref = XTRViewController.xtr_navigationController(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new (window as any)._NavigationControllerInterface(undefined, ref)
     }
 
     keyboardWillShow(frame: Rect, duration: number): void {

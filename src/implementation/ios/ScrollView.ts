@@ -8,6 +8,26 @@ export class ScrollView extends View {
         super(ref || XTRScrollView)
     }
 
+    public get contentOffset(): Point {
+        return XTRScrollView.xtr_contentOffset(this.objectRef);
+    }
+
+    public set contentOffset(value: Point) {
+        XTRScrollView.xtr_setContentOffsetAnimatedObjectRef(value, false, this.objectRef)
+    }
+
+    public setContentOffset(value: Point, animated: boolean): void {
+        XTRScrollView.xtr_setContentOffsetAnimatedObjectRef(value, animated, this.objectRef)
+    }
+
+    public get contentSize(): Size {
+        return XTRScrollView.xtr_contentSize(this.objectRef);
+    }
+
+    public set contentSize(value: Size) {
+        XTRScrollView.xtr_setContentSizeObjectRef(value, false, this.objectRef)
+    }
+
     public get isDirectionalLockEnabled(): boolean {
         return XTRScrollView.xtr_isDirectionalLockEnabled(this.objectRef);
     }

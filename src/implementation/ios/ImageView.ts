@@ -60,6 +60,9 @@ export class Image implements Releasable {
     objectRef: any;
 
     constructor(objectRef: any) {
+        if (objectRefs[this.objectRef]) {
+            return objectRefs[this.objectRef]
+        }
         this.objectRef = objectRef;
         objectRefs[this.objectRef] = this;
     }
@@ -96,8 +99,8 @@ export class ImageView extends View {
 
     public get image(): Image | undefined {
         const ref = XTRImageView.xtr_image(this.objectRef)
-        if (typeof ref !== "string") { return ref }
-        return objectRefs[ref] || new Image(ref);
+        if (typeof ref !== "string") { return undefined }
+        return new Image(ref);
     }
 
     public set image(value: Image | undefined) {

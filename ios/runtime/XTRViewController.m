@@ -212,15 +212,13 @@ static UINavigationController *tmpNavigationController;
     }
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
+- (void)willMoveToParentViewController:(id)parent {
     [super willMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
-            [value invokeMethod:@"willMoveToParentViewController" withArguments:parent != nil ? @[
-                                                                                                  [JSValue fromObject:parent
-                                                                                                              context:self.context]
-                                                                                                  ] : @[]];
+            [value invokeMethod:@"_willMoveToParentViewController"
+                  withArguments:[parent conformsToProtocol:@protocol(XTRComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
     if ([parent isKindOfClass:[UINavigationController class]] && self.shouldRestoreNavigationBar) {
@@ -230,15 +228,13 @@ static UINavigationController *tmpNavigationController;
     }
 }
 
-- (void)didMoveToParentViewController:(UIViewController *)parent {
+- (void)didMoveToParentViewController:(id)parent {
     [super didMoveToParentViewController:parent];
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
-            [value invokeMethod:@"didMoveToParentViewController" withArguments:parent != nil ? @[
-                                                                                                  [JSValue fromObject:parent
-                                                                                                              context:self.context]
-                                                                                                  ] : @[]];
+            [value invokeMethod:@"_didMoveToParentViewController"
+                  withArguments:[parent conformsToProtocol:@protocol(XTRComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
     if (parent == nil && self.exitAction) {

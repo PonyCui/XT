@@ -25,9 +25,7 @@ export class View implements Releasable {
             if (objectRefs[ref]) {
                 return objectRefs[ref]
             }
-            else {
-                this.objectRef = ref
-            }
+            this.objectRef = ref
         }
         else if (typeof ref === "function") {
             let args = [];
@@ -95,15 +93,11 @@ export class View implements Releasable {
         XTRView.xtr_setClipsToBoundsObjectRef(value, this.objectRef);
     }
 
-    public get backgroundColor(): Color | undefined {
-        const value = XTRView.xtr_backgroundColor(this.objectRef);
-        if (value instanceof Object) {
-            return new Color(value.r, value.g, value.b, value.a)
-        }
-        return undefined;
+    public get backgroundColor(): Color {
+        return XTRView.xtr_backgroundColor(this.objectRef)
     }
 
-    public set backgroundColor(value: Color | undefined) {
+    public set backgroundColor(value: Color) {
         XTRView.xtr_setBackgroundColorObjectRef(value, this.objectRef);
     }
 
@@ -237,7 +231,7 @@ export class View implements Releasable {
 
     public get superview(): View | undefined {
         const ref = XTRView.xtr_superview(this.objectRef)
-        if (!ref) { return undefined }
+        if (typeof ref !== "string") { return undefined }
         return new View(ref);
     }
 
@@ -249,7 +243,7 @@ export class View implements Releasable {
 
     public get window(): any | undefined {
         const ref = XTRView.xtr_window(this.objectRef)
-        if (!ref) { return undefined }
+        if (typeof ref !== "string") { return undefined }
         return new View(ref);
     }
 
@@ -305,12 +299,12 @@ export class View implements Releasable {
 
     viewWithTag(tag: number): View | undefined {
         const ref = XTRView.xtr_viewWithTagObjectRef(tag, this.objectRef)
-        if (!ref) { return undefined }
+        if (typeof ref !== "string") { return undefined }
         return new View(ref);
     }
 
-    setNeedsLayout() { XTRView.xtr_setNeedsLayout() }
-    layoutIfNeeded() { XTRView.xtr_layoutIfNeeded() }
+    setNeedsLayout() { XTRView.xtr_setNeedsLayout(this.objectRef) }
+    layoutIfNeeded() { XTRView.xtr_layoutIfNeeded(this.objectRef) }
     layoutSubviews() { }
 
     // Mark: View LayoutConstraint

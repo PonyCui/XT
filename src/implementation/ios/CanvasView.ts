@@ -16,51 +16,51 @@ export class CanvasView extends View {
         XTRCanvasView.xtr_setGlobalAlphaObjectRef(value, this.objectRef)
     }
 
-    public get fillStyle(): Color | undefined {
+    public get fillStyle(): Color {
         return XTRCanvasView.xtr_fillStyle(this.objectRef)
     }
 
-    public set fillStyle(value: Color | undefined) {
+    public set fillStyle(value: Color) {
         XTRCanvasView.xtr_setFillStyleObjectRef(value, this.objectRef)
     }
 
-    public get strokeStyle(): Color | undefined {
+    public get strokeStyle(): Color {
         return XTRCanvasView.xtr_strokeStyle(this.objectRef)
     }
 
-    public set strokeStyle(value: Color | undefined) {
+    public set strokeStyle(value: Color) {
         XTRCanvasView.xtr_setStrokeStyleObjectRef(value, this.objectRef)
     }
 
-    public get lineCap(): string | undefined {
+    public get lineCap(): string {
         return XTRCanvasView.xtr_lineCap(this.objectRef)
     }
 
-    public set lineCap(value: string | undefined) {
+    public set lineCap(value: string) {
         XTRCanvasView.xtr_setLineCapObjectRef(value, this.objectRef)
     }
 
-    public get lineJoin(): string | undefined {
+    public get lineJoin(): string {
         return XTRCanvasView.xtr_lineJoin(this.objectRef)
     }
 
-    public set lineJoin(value: string | undefined) {
+    public set lineJoin(value: string) {
         XTRCanvasView.xtr_setLineJoinObjectRef(value, this.objectRef)
     }
 
-    public get lineWidth(): number | undefined {
+    public get lineWidth(): number {
         return XTRCanvasView.xtr_lineWidth(this.objectRef)
     }
 
-    public set lineWidth(value: number | undefined) {
+    public set lineWidth(value: number) {
         XTRCanvasView.xtr_setLineWidthObjectRef(value, this.objectRef)
     }
 
-    public get miterLimit(): number | undefined {
+    public get miterLimit(): number {
         return XTRCanvasView.xtr_miterLimit(this.objectRef)
     }
 
-    public set miterLimit(value: number | undefined) {
+    public set miterLimit(value: number) {
         XTRCanvasView.xtr_setMiterLimitObjectRef(value, this.objectRef)
     }
 

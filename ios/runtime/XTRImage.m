@@ -143,26 +143,26 @@
     return @{};
 }
 
-+ (NSNumber *)xtr_scale:(NSString *)objectRef {
++ (CGFloat)xtr_scale:(NSString *)objectRef {
     UIImage *image = [XTMemoryManager find:objectRef];
     if ([image isKindOfClass:[UIImage class]]) {
-        return @(image.scale);
+        return image.scale;
     }
-    return @(1.0);
+    return 1.0;
 }
 
-+ (NSNumber *)xtr_renderingMode:(NSString *)objectRef {
++ (NSInteger)xtr_renderingMode:(NSString *)objectRef {
     UIImage *image = [XTMemoryManager find:objectRef];
     if ([image isKindOfClass:[UIImage class]]) {
-        return @(image.renderingMode);
+        return image.renderingMode;
     }
-    return @(0);
+    return 0;
 }
 
-+ (NSString *)xtr_imageWithImageRenderingMode:(JSValue *)imageRenderingMode objectRef:(NSString *)objectRef {
++ (NSString *)xtr_imageWithImageRenderingMode:(NSInteger)imageRenderingMode objectRef:(NSString *)objectRef {
     XTRImage *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRImage class]]) {
-        UIImage *newImage = [obj.image imageWithRenderingMode:[imageRenderingMode toInt32]];
+        UIImage *newImage = [obj.image imageWithRenderingMode:imageRenderingMode];
         XTRImage *newObj = [[XTRImage alloc] initWithImage:newImage];
         XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:newObj];
         newObj.objectUUID = managedObject.objectUUID;

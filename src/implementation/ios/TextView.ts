@@ -1,7 +1,7 @@
 /// <reference path="xtr.d.ts" />
 import { View } from './View'
 import { Rect, RectZero } from '../../interface/Rect';
-import { Font } from '../../interface/Font';
+import { Font } from './Font';
 import { Color } from '../../interface/Color';
 import { TextAlignment } from '../../interface/Label';
 import { TextFieldViewMode, KeyboardType, ReturnKeyType } from '../../interface/TextField';
@@ -20,12 +20,12 @@ export class TextView extends View {
         XTRTextView.xtr_setTextObjectRef(value, this.objectRef);
     }
 
-    public get font(): Font | undefined {
-        return XTRTextView.xtr_font(this.objectRef);
+    public get font(): Font {
+        return new Font(XTRTextView.xtr_font(this.objectRef));
     }
 
-    public set font(value: Font | undefined) {
-        XTRTextView.xtr_setFontObjectRef(value, this.objectRef);
+    public set font(value: Font) {
+        XTRTextView.xtr_setFontObjectRef(value.objectRef, this.objectRef);
     }
 
     public get textColor(): Color {
