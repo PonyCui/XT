@@ -14,7 +14,7 @@ export class Window extends View {
     }
 
     public set rootViewController(value: ViewController | undefined) {
-        XTRWindow.xtr_setRootViewControllerObjectRef(value, this.objectRef);
+        XTRWindow.xtr_setRootViewControllerObjectRef(value ? value.objectRef : undefined, this.objectRef);
     }
 
     makeKeyAndVisible(): void {

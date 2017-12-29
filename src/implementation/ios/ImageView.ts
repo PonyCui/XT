@@ -61,6 +61,7 @@ export class Image implements Releasable {
 
     constructor(objectRef: any) {
         this.objectRef = objectRef;
+        objectRefs[this.objectRef] = this;
     }
 
     public get size(): Size {

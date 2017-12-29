@@ -15,7 +15,7 @@
 
 + (NSString *)create;
 + (NSDictionary *)xtr_contentOffset:(NSString *)objectRef;
-+ (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(JSValue *)animated objectRef:(NSString *)objectRef;
++ (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(BOOL)animated objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_contentSize:(NSString *)objectRef;
 + (void)xtr_setContentSize:(JSValue *)contentSize objectRef:(NSString *)objectRef;
 + (BOOL)xtr_isDirectionalLockEnabled:(NSString *)objectRef;

@@ -44,9 +44,10 @@
 + (NSString *)xtr_keyWindow:(NSString *)objectRef {
     XTRApplication *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRApplication class]]) {
-        return @"";
-//        NSString *keyWindowRef = obj.context.bridge.keyWindow;
-//        return keyWindowRef;
+        XTRWindow *keyWindow = (id)obj.context.bridge.keyWindow;
+        if ([keyWindow isKindOfClass:[XTRWindow class]]) {
+            return keyWindow.objectUUID;
+        }
     }
     return @"";
 }

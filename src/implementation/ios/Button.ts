@@ -13,19 +13,20 @@ export class Button extends View {
     }
 
     public get title(): string | undefined {
-        return XTRButton.xtr_title(this.objectRef);
+        const value = XTRButton.xtr_title(this.objectRef)
+        return typeof value === "string" ? value : undefined;
     }
 
     public set title(value: string | undefined) {
-        XTRButton.xtr_setTitleObjectRef(value, this.objectRef);
+        XTRButton.xtr_setTitleObjectRef(typeof value === "string" ? value : undefined, this.objectRef);
     }
 
     public get font(): Font {
-        return XTRButton.xtr_font(this.objectRef);
+        return new Font(XTRButton.xtr_font(this.objectRef));
     }
 
     public set font(value: Font) {
-        XTRButton.xtr_setFontObjectRef(value, this.objectRef);
+        XTRButton.xtr_setFontObjectRef(value.objectRef, this.objectRef);
     }
 
     public get image(): Image {

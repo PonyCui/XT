@@ -14,12 +14,12 @@
 
 @protocol XTRNavigationControllerExport <JSExport>
 
-+ (NSString *)create:(JSValue *)scriptObject;
++ (NSString *)create;
 + (void)xtr_setViewControllers:(NSArray<NSString *> *)viewControllers animated:(BOOL)animated objectRef:(NSString *)objectRef;
 + (void)xtr_pushViewController:(NSString *)viewControllerRef animated:(BOOL)animated objectRef:(NSString *)objectRef;
 + (NSString *)xtr_popViewController:(BOOL)animated objectRef:(NSString *)objectRef;
 + (NSArray<NSString *> *)xtr_popToViewController:(NSString *)viewControllerRef
-                                        animated:(JSValue *)animated
+                                        animated:(BOOL)animated
                                        objectRef:(NSString *)objectRef;
 + (NSArray<NSString *> *)xtr_popToRootViewController:(BOOL)animated objectRef:(NSString *)objectRef;
 

@@ -32,18 +32,21 @@ export class LayoutConstraint implements Releasable {
         return this
     }
 
-    addOwner(owner: any): this {
-        xtrAddOwner(this, owner);
-        return this;
-    }
-
     static LayoutAttribute = LayoutAttribute;
     static LayoutRelation = LayoutRelation;
 
     objectRef: any;
 
-    constructor(firstItem?: View, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant: number = 0, multiplier: number = 1) {
+    constructor(firstItem?: View | string, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant: number = 0, multiplier: number = 1) {
+        if (typeof firstItem === "string") {
+            if (objectRefs[firstItem]) {
+                return objectRefs[firstItem]
+            }
+            this.objectRef = firstItem
+            return;
+        }
         this.objectRef = XTRLayoutConstraint.createFirstAttrRelationSecondItemSecondAttrConstantMultiplierScriptObject(firstItem, firstAttr, relation, secondItem, secondAttr, constant, multiplier, this);
+        objectRefs[this.objectRef] = this;
     }
 
     public get firstItem(): View {

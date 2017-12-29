@@ -9,11 +9,15 @@ export class ApplicationDelegate {
 
     public resetNativeObject(objectRef: any) {
         this.objectRef = objectRef;
+        objectRefs[this.objectRef] = this;
     }
 
     public get window(): Window | undefined {
         const windowRef = XTRApplicationDelegate.xtr_window(this.objectRef)
-        return objectRefs[windowRef] || new Window(windowRef)
+        if (typeof windowRef !== "string") {
+            return undefined
+        }
+        return new Window(windowRef)
     }
 
     public set window(value: Window | undefined) {

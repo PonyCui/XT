@@ -35,7 +35,7 @@
     [XTMemoryManager add:managedObject];
     view.context = [JSContext currentContext];
     view.objectUUID = managedObject.objectUUID;
-    return view.objectUUID;
+    return managedObject.objectUUID;
 }
 
 - (void)dealloc {

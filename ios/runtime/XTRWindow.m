@@ -65,20 +65,21 @@
 }
 
 + (NSString *)xtr_rootViewController:(NSString *)objectRef {
-    XTRWindow *window = [XTMemoryManager find:objectRef];
-    if ([window isKindOfClass:[XTRWindow class]]) {
-        XTRViewController *viewController = (id)window.rootViewController;
-        if ([viewController isKindOfClass:[XTRViewController class]]) {
-            return viewController.objectUUID;
+    UIWindow *window = [XTMemoryManager find:objectRef];
+    if ([window isKindOfClass:[UIWindow class]]) {
+        id viewController = (id)window.rootViewController;
+        if ([viewController conformsToProtocol:@protocol(XTRComponent)]) {
+            return [viewController objectUUID];
         }
     }
     return nil;
 }
 
 + (void)xtr_setRootViewController:(NSString *)viewControllerRef objectRef:(NSString *)objectRef {
-    XTRWindow *window = [XTMemoryManager find:objectRef];
-    XTRViewController *viewController = [XTMemoryManager find:viewControllerRef];
-    if ([window isKindOfClass:[XTRWindow class]] && [viewController isKindOfClass:[XTRViewController class]]) {
+    UIWindow *window = [XTMemoryManager find:objectRef];
+    UIViewController *viewController = [XTMemoryManager find:viewControllerRef];
+    if ([window isKindOfClass:[UIWindow class]] &&
+        [viewController isKindOfClass:[UIViewController class]]) {
         window.rootViewController = viewController;
     }
 }

@@ -38,7 +38,7 @@ export class View implements Releasable {
     alpha: number;
     opaque: boolean;
     hidden: boolean;
-    contentMode?: any; // todo
+    contentMode: any;
     maskView?: View
     tintColor: Color
     tintColorDidChange() { }
@@ -46,14 +46,14 @@ export class View implements Releasable {
     // Mark: View Layer-Back Rendering
     cornerRadius: number;
     borderWidth: number;
-    borderColor?: Color;
-    shadowColor?: Color;
+    borderColor: Color;
+    shadowColor: Color;
     shadowOpacity: number;
-    shadowOffset?: Size;
+    shadowOffset: Size;
     shadowRadius: number;
 
     // Mark: View Hierarchy
-    tag?: number;
+    tag: number;
     superview?: View
     subviews: View[]
     window?: Window
@@ -71,7 +71,6 @@ export class View implements Releasable {
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
-
     willMoveToSuperview(newSuperview?: View) { }
     didMoveToSuperview() { }
     willMoveToWindow(newWindow?: Window) { }

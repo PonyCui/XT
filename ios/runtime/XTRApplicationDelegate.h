@@ -15,8 +15,8 @@
 
 @protocol XTRApplicationDelegateExport <JSExport>
 
-+ (JSValue *)xtr_window:(NSString *)objectRef;
-+ (void)xtr_setWindow:(JSValue *)window objectRef:(NSString *)objectRef;
++ (NSString *)xtr_window:(NSString *)objectRef;
++ (void)xtr_setWindow:(NSString *)windowRef objectRef:(NSString *)objectRef;
 
 @end
 

@@ -2,17 +2,16 @@
 
 export class Font {
 
-    nativeObjectRef: any;
+    objectRef: any;
 
-    public set nativeObject(value: any) { }
-
-    public get nativeObject(): any {
-        return xtrRequestNativeObject(this.nativeObjectRef);
-    }
-
-    constructor(pointSize: number, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
-        this.nativeObjectRef = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
-        objectRefs[this.nativeObjectRef] = this;
+    constructor(pointSize: number | string, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
+        if (typeof pointSize === "string") {
+            this.objectRef = pointSize;
+            objectRefs[this.objectRef] = this;
+            return 
+        }
+        this.objectRef = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
+        objectRefs[this.objectRef] = this;
     }
 
     static systemFontOfSize(pointSize: number, weight: string = '400'): Font {
@@ -28,19 +27,19 @@ export class Font {
     }
 
     public get familyName(): string | undefined {
-        return this.nativeObject.xtr_familyName()
+        return XTRFont.xtr_familyName(this.objectRef)
     }
 
     public get pointSize(): number {
-        return this.nativeObject.xtr_pointSize()
+        return XTRFont.xtr_pointSize(this.objectRef)
     }
 
     public get fontWeight(): string {
-        return this.nativeObject.xtr_fontWeight();
+        return XTRFont.xtr_fontWeight(this.objectRef);
     }
 
     public get fontStyle(): string {
-        return this.nativeObject.xtr_fontStyle();
+        return XTRFont.xtr_fontStyle(this.objectRef);
     }
 
 }

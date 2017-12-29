@@ -82,12 +82,12 @@
 + (void)xtr_activeDoubleTap:(NSString *)objectRef;
 + (void)xtr_activeLongPress:(NSString *)objectRef;
 + (void)xtr_activePan:(NSString *)objectRef;
-+ (void)xtr_animationWithDuration:(JSValue *)duration
++ (void)xtr_animationWithDuration:(CGFloat)duration
                         animation:(JSValue *)animation
                        completion:(JSValue *)completion;
-+ (void)xtr_animationWithBouncinessAndSpeed:(JSValue *)duration
-                                    damping:(JSValue *)damping
-                                   velocity:(JSValue *)velocity
++ (void)xtr_animationWithBouncinessAndSpeed:(CGFloat)duration
+                                    damping:(CGFloat)damping
+                                   velocity:(CGFloat)velocity
                                   animation:(JSValue *)animation
                                  completion:(JSValue *)completion;
 

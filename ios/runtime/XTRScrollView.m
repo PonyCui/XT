@@ -66,7 +66,7 @@
     return @{};
 }
 
-+ (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(JSValue *)animated objectRef:(NSString *)objectRef {
++ (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(BOOL)animated objectRef:(NSString *)objectRef {
     UIScrollView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[UIScrollView class]]) {
         [view setContentOffset:[contentOffset toPoint] animated:animated];

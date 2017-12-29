@@ -70,7 +70,7 @@
     }
 }
 
-+ (void)xtr_fromAssets:(NSString *)named path:(JSValue *)path scales:(JSValue *)scales success:(JSValue *)success failure:(JSValue *)failure {
++ (void)xtr_fromAssets:(NSString *)named path:(NSString *)path scales:(JSValue *)scales success:(JSValue *)success failure:(JSValue *)failure {
     if ([[success context] isKindOfClass:[XTRContext class]]) {
         NSURL *sourceURL = [[(XTRContext *)success.context bridge] sourceURL];
         if (sourceURL != nil) {
@@ -89,7 +89,7 @@
                 }
             }
             NSURL *imageURL = [[sourceURL URLByDeletingLastPathComponent]
-                               URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@%@", [path toString], named, subfix]];
+                               URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@%@", path, named, subfix]];
             if ([imageURL.scheme isEqualToString:@"file"]) {
                 if ([[NSFileManager defaultManager] fileExistsAtPath:imageURL.path]) {
                     [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];

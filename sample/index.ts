@@ -1,9 +1,5 @@
 /// <reference path="../src/xt.d.ts" />
 
-XT.Image.fromAssets("location", (it) => {
-    console.log(it.imageWithImageRenderingMode(XT.ImageRenderingMode.Template))
-})
-
 // /// <reference path="./xtml/sayHello.d.ts" />
 // import SayHello from "./xtml/sayHello.xtml"
 
@@ -41,20 +37,20 @@ XT.Image.fromAssets("location", (it) => {
 //         })
 // }
 
-// class AppDelegate extends XT.ApplicationDelegate {
+class AppDelegate extends XT.ApplicationDelegate {
 
-//     applicationDidFinishLaunchingWithOptions() {
-//         // const view = new XT.View();
-//         // view.backgroundColor = XT.Color.redColor
-//         this.window = new XT.Window();
-//         this.window.rootViewController = new XT.NavigationController(new FirstViewController())
-//         this.window.makeKeyAndVisible();
-//         // setTimeout(() => {
-//         //     XT.Application.sharedApplication().exit();
-//         // })
-//     }
+    applicationDidFinishLaunchingWithOptions() {
+        // const view = new XT.View();
+        // view.backgroundColor = XT.Color.redColor
+        this.window = new XT.Window();
+        this.window.rootViewController = new XT.ViewController()
+        this.window.makeKeyAndVisible();
+        // setTimeout(() => {
+        //     XT.Application.sharedApplication().exit();
+        // })
+    }
 
-// }
+}
 
 // class FirstViewController extends XT.ViewController {
 
@@ -105,4 +101,4 @@ XT.Image.fromAssets("location", (it) => {
 
 // }
 
-// const sampleApplication = new XT.Application('app', new AppDelegate());
+const sampleApplication = new XT.Application('app', new AppDelegate());

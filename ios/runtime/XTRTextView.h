@@ -15,9 +15,9 @@
 
 + (NSString *)create;
 + (NSString *)xtr_text:(NSString *)objectRef;
-+ (void)xtr_setText:(JSValue *)text objectRef:(NSString *)objectRef;
-+ (JSValue *)xtr_font:(NSString *)objectRef;
-+ (void)xtr_setFont:(JSValue *)fontRef objectRef:(NSString *)objectRef;
++ (void)xtr_setText:(NSString *)text objectRef:(NSString *)objectRef;
++ (NSString *)xtr_font:(NSString *)objectRef;
++ (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_textColor:(NSString *)objectRef;
 + (void)xtr_setTextColor:(JSValue *)textColor objectRef:(NSString *)objectRef;
 + (NSInteger)xtr_textAlignment:(NSString *)objectRef;

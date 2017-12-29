@@ -57,10 +57,10 @@
     return nil;
 }
 
-+ (void)xtr_setTitle:(JSValue *)title objectRef:(NSString *)objectRef {
++ (void)xtr_setTitle:(NSString *)title objectRef:(NSString *)objectRef {
     XTRButton *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRButton class]]) {
-        [obj.innerView setTitle:[title toString] forState:UIControlStateNormal];
+        [obj.innerView setTitle:title forState:UIControlStateNormal];
         [obj resetInset];
     }
 }

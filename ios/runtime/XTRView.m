@@ -222,8 +222,13 @@
 + (void)xtr_setMaskView:(NSString *)maskViewRef objectRef:(NSString *)objectRef {
     UIView *obj = [XTMemoryManager find:objectRef];
     UIView *maskView = [XTMemoryManager find:maskViewRef];
-    if ([obj isKindOfClass:[UIView class]] && [maskView isKindOfClass:[UIView class]]) {
-        obj.maskView = maskView;
+    if ([obj isKindOfClass:[UIView class]]) {
+        if ([maskView isKindOfClass:[UIView class]]) {
+            obj.maskView = maskView;
+        }
+        else {
+            obj.maskView = nil;
+        }
     }
 }
 
@@ -465,7 +470,7 @@
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
                                                                    ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -474,7 +479,7 @@
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
                                                                        ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -483,7 +488,7 @@
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
                                                                          ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
@@ -492,7 +497,7 @@
     [super didMoveToSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
+        [scriptObject invokeMethod:@"_didMoveToSuperview" withArguments:@[]];
     }
 }
 
@@ -500,7 +505,7 @@
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
                                                                       ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }
@@ -509,7 +514,7 @@
     [super didMoveToWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
+        [scriptObject invokeMethod:@"_didMoveToWindow" withArguments:@[]];
     }
 }
 
@@ -718,10 +723,10 @@
     }
 }
 
-+ (void)xtr_animationWithDuration:(JSValue *)duration
++ (void)xtr_animationWithDuration:(CGFloat)duration
                         animation:(JSValue *)animation
                        completion:(JSValue *)completion {
-    [UIView animateWithDuration:[duration toDouble] animations:^{
+    [UIView animateWithDuration:duration animations:^{
         if ([animation isObject]) {
             [animation xtr_callWithArguments:@[]];
         }
@@ -732,15 +737,15 @@
     }];
 }
 
-+ (void)xtr_animationWithBouncinessAndSpeed:(JSValue *)duration
-                                    damping:(JSValue *)damping
-                                   velocity:(JSValue *)velocity
++ (void)xtr_animationWithBouncinessAndSpeed:(CGFloat)duration
+                                    damping:(CGFloat)damping
+                                   velocity:(CGFloat)velocity
                                   animation:(JSValue *)animation
                                  completion:(JSValue *)completion {
-    [UIView animateWithDuration:[duration toDouble]
+    [UIView animateWithDuration:duration
                           delay:0.0
-         usingSpringWithDamping:[damping toDouble]
-          initialSpringVelocity:[velocity toDouble]
+         usingSpringWithDamping:damping
+          initialSpringVelocity:velocity
                         options:kNilOptions
                      animations:^{
                          if ([animation isObject]) {

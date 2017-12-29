@@ -22,9 +22,11 @@ export class View implements Releasable {
 
     constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
         if (typeof ref === "string") {
-            this.objectRef = ref;
             if (objectRefs[ref]) {
-                objectRefs[ref] = this;
+                return objectRefs[ref]
+            }
+            else {
+                this.objectRef = ref
             }
         }
         else if (typeof ref === "function") {
@@ -42,6 +44,7 @@ export class View implements Releasable {
         else {
             this.objectRef = XTRView.create()
         }
+        objectRefs[this.objectRef] = this;
     }
 
     // Mark: View Geometry
@@ -128,11 +131,11 @@ export class View implements Releasable {
         XTRView.xtr_setHiddenObjectRef(value, this.objectRef);
     }
 
-    public get contentMode(): number | undefined {
+    public get contentMode(): number {
         return XTRView.xtr_contentMode(this.objectRef);
     }
 
-    public set contentMode(value: number | undefined) {
+    public set contentMode(value: number) {
         XTRView.xtr_setContentModeObjectRef(value, this.objectRef);
     }
 
@@ -143,7 +146,7 @@ export class View implements Releasable {
     }
 
     public set maskView(value: View | undefined) {
-        XTRView.xtr_setMaskViewObjectRef(value ? value.objectRef : undefined, this.objectRef);
+        XTRView.xtr_setMaskViewObjectRef(value ? value.objectRef : "", this.objectRef);
     }
 
     public get tintColor(): Color {
@@ -180,27 +183,21 @@ export class View implements Releasable {
         XTRView.xtr_setBorderWidthObjectRef(value, this.objectRef);
     }
 
-    public get borderColor(): Color | undefined {
+    public get borderColor(): Color {
         const value = XTRView.xtr_borderColor(this.objectRef);
-        if (value instanceof Object) {
-            return new Color(value.r, value.g, value.b, value.a)
-        }
-        return undefined;
+        return new Color(value.r, value.g, value.b, value.a)
     }
 
-    public set borderColor(value: Color | undefined) {
+    public set borderColor(value: Color) {
         XTRView.xtr_setBorderColorObjectRef(value, this.objectRef);
     }
 
-    public get shadowColor(): Color | undefined {
+    public get shadowColor(): Color {
         const value = XTRView.xtr_shadowColor(this.objectRef);
-        if (value instanceof Object) {
-            return new Color(value.r, value.g, value.b, value.a)
-        }
-        return undefined;
+        return new Color(value.r, value.g, value.b, value.a)
     }
 
-    public set shadowColor(value: Color | undefined) {
+    public set shadowColor(value: Color) {
         XTRView.xtr_setShadowColorObjectRef(value, this.objectRef);
     }
 
@@ -212,11 +209,11 @@ export class View implements Releasable {
         XTRView.xtr_setShadowOpacityObjectRef(value, this.objectRef);
     }
 
-    public get shadowOffset(): Size | undefined {
+    public get shadowOffset(): Size {
         return XTRView.xtr_shadowOffset(this.objectRef);
     }
 
-    public set shadowOffset(value: Size | undefined) {
+    public set shadowOffset(value: Size) {
         XTRView.xtr_setShadowOffsetObjectRef(value, this.objectRef);
     }
 
@@ -230,11 +227,11 @@ export class View implements Releasable {
 
     // Mark: View Hierarchy
 
-    public get tag(): number | undefined {
+    public get tag(): number {
         return XTRView.xtr_tag(this.objectRef);
     }
 
-    public set tag(value: number | undefined) {
+    public set tag(value: number) {
         XTRView.xtr_setTagObjectRef(value, this.objectRef);
     }
 
@@ -250,14 +247,18 @@ export class View implements Releasable {
         });
     }
 
-    window?: Window
+    public get window(): any | undefined {
+        const ref = XTRView.xtr_window(this.objectRef)
+        if (!ref) { return undefined }
+        return new View(ref);
+    }
 
     removeFromSuperview() {
         XTRView.xtr_removeFromSuperview(this.objectRef);
     }
 
     insertSubviewAtIndex(subview: View, atIndex: number) {
-        XTRView.xtr_insertSubviewAtIndexAtIndexObjectRef(subview, atIndex, this.objectRef)
+        XTRView.xtr_insertSubviewAtIndexAtIndexObjectRef(subview.objectRef, atIndex, this.objectRef)
     }
 
     exchangeSubviewAtIndex(index1: number, index2: number) {
@@ -265,24 +266,31 @@ export class View implements Releasable {
     }
 
     addSubview(subview: View) {
-        XTRView.xtr_addSubviewObjectRef(subview, this.objectRef)
+        XTRView.xtr_addSubviewObjectRef(subview.objectRef, this.objectRef)
     }
 
     insertSubviewBelow(subview: View, siblingSubview: View) {
-        XTRView.xtr_insertSubviewBelowSiblingSubviewObjectRef(subview, siblingSubview, this.objectRef);
+        XTRView.xtr_insertSubviewBelowSiblingSubviewObjectRef(subview.objectRef, siblingSubview.objectRef, this.objectRef);
     }
 
     insertSubviewAbove(subview: View, siblingSubview: View) {
-        XTRView.xtr_insertSubviewAboveSiblingSubviewObjectRef(subview, siblingSubview, this.objectRef);
+        XTRView.xtr_insertSubviewAboveSiblingSubviewObjectRef(subview.objectRef, siblingSubview.objectRef, this.objectRef);
     }
 
     bringSubviewToFront(subview: View) {
-        XTRView.xtr_bringSubviewToFrontObjectRef(subview, this.objectRef);
+        XTRView.xtr_bringSubviewToFrontObjectRef(subview.objectRef, this.objectRef);
     }
 
     sendSubviewToBack(subview: View) {
-        XTRView.xtr_sendSubviewToBackObjectRef(subview, this.objectRef);
+        XTRView.xtr_sendSubviewToBackObjectRef(subview.objectRef, this.objectRef);
     }
+
+    private _didAddSubview(subviewRef: View) { this.didAddSubview(new View(subviewRef)) }
+    private _willRemoveSubview(subviewRef: View) { this.willRemoveSubview(new View(subviewRef)) }
+    private _willMoveToSuperview(newSuperviewRef?: View) { this.willMoveToSuperview(newSuperviewRef ? new View(newSuperviewRef) : undefined) }
+    private _didMoveToSuperview() { this.didMoveToSuperview() }
+    private _willMoveToWindow(newWindowRef?: Window) { this.willMoveToWindow(newWindowRef ? new View(newWindowRef) as any : undefined) }
+    private _didMoveToWindow() { this.didMoveToWindow() }
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
@@ -292,7 +300,7 @@ export class View implements Releasable {
     didMoveToWindow() { }
 
     isDescendantOfView(view: View) {
-        return XTRView.xtr_isDescendantOfViewObjectRef(view, this.objectRef);
+        return XTRView.xtr_isDescendantOfViewObjectRef(view.objectRef, this.objectRef);
     }
 
     viewWithTag(tag: number): View | undefined {
@@ -309,24 +317,24 @@ export class View implements Releasable {
 
     public get constraints(): LayoutConstraint[] {
         return XTRView.xtr_constraints(this.objectRef).map((ref: string) => {
-            return objectRefs[ref] // todo
+            return new LayoutConstraint(ref)
         });
     }
 
     addConstraint(constraint: LayoutConstraint) {
-        // XTRView.xtr_addConstraint(constraint);
+        XTRView.xtr_addConstraintObjectRef(constraint.objectRef, this.objectRef);
     }
 
     addConstraints(constraints: LayoutConstraint[]) {
-        // XTRView.xtr_addConstraints(constraints);
+        XTRView.xtr_addConstraintsObjectRef(constraints.map(it => it.objectRef), this.objectRef);
     }
 
     removeConstraint(constraint: LayoutConstraint) {
-        // XTRView.xtr_removeConstraint();
+        XTRView.xtr_removeConstraintObjectRef(constraint.objectRef, this.objectRef);
     }
 
     removeAllConstraints() {
-        // XTRView.xtr_removeAllConstraints(this.objectRef);
+        XTRView.xtr_removeAllConstraints(this.objectRef);
     }
 
     // Mark: View Interactive

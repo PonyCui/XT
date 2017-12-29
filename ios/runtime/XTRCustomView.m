@@ -33,10 +33,10 @@ static NSDictionary<NSString *, NSString *> *classMapping;
     }
 }
 
-+ (NSString *)create:(JSValue *)className {
++ (NSString *)create:(NSString *)className {
     XTRCustomView *view = [[XTRCustomView alloc] initWithFrame:CGRectZero];
-    if ([className toString] != nil && classMapping[className.toString] != nil) {
-        Class viewClass = NSClassFromString(classMapping[className.toString]);
+    if (className != nil && classMapping[className] != nil) {
+        Class viewClass = NSClassFromString(classMapping[className]);
         id viewInstane = [viewClass new];
         if ([viewInstane isKindOfClass:[UIView class]]) {
             view.innerView = viewInstane;

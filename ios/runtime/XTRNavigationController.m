@@ -23,7 +23,7 @@
     return @"XTRNavigationController";
 }
 
-+ (NSString *)create:(JSValue *)scriptObject {
++ (NSString *)create {
     XTRNavigationController *viewController = [XTRNavigationController new];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:viewController];
     [XTMemoryManager add:managedObject];
@@ -84,7 +84,7 @@
 }
 
 + (NSArray<NSString *> *)xtr_popToViewController:(NSString *)viewControllerRef
-                                        animated:(JSValue *)animated
+                                        animated:(BOOL)animated
                                        objectRef:(NSString *)objectRef {
     XTRNavigationController *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRNavigationController class]]) {

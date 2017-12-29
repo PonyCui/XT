@@ -15,7 +15,7 @@
 
 + (NSString *)create;
 + (NSString *)xtr_title:(NSString *)objectRef;
-+ (void)xtr_setTitle:(JSValue *)title objectRef:(NSString *)objectRef;
++ (void)xtr_setTitle:(NSString *)title objectRef:(NSString *)objectRef;
 + (NSString *)xtr_font:(NSString *)objectRef;
 + (void)xtr_setFont:(NSString *)fontRef objectRef:(NSString *)objectRef;
 + (NSString *)xtr_image:(NSString *)objectRef;

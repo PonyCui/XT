@@ -24,7 +24,7 @@ export class ViewController implements Releasable {
         return this
     }
    
-    protected objectRef: any;
+    public objectRef: any;
 
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
         if (typeof ref === "string") {
@@ -48,16 +48,17 @@ export class ViewController implements Releasable {
         else {
             this.objectRef = XTRViewController.create()
         }
+        objectRefs[this.objectRef] = this;
     }
 
     init() { }
 
     public get view() {
-        return XTRViewController.xtr_view(this.objectRef);
+        return new View(XTRViewController.xtr_view(this.objectRef));
     }
 
     public set view(value: View) {
-        XTRViewController.xtr_setViewObjectRef(value, this.objectRef);
+        XTRViewController.xtr_setViewObjectRef(value.objectRef, this.objectRef);
     }
 
     loadView(): void {

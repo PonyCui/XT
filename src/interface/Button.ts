@@ -13,7 +13,7 @@ export class Button extends View {
     vertical: boolean;
     inset: number;
     title?: string;
-    font?: Font;
+    font: Font;
     image?: Image;
     color?: Color;
 
