@@ -28,8 +28,7 @@ export class View implements Releasable {
     retain(): this;
     release(): this;
     addOwner(owner: any): this
-    constructor(rect?: Rect)
-    init(): void
+    constructor()
 
     // Mark: View Geometry
     /**
@@ -458,6 +457,7 @@ export class ListCell extends View {
     readonly reuseIdentifier: string
     readonly currentItem?: ListItem
     readonly contentView: View
+    readonly context?: any
     selectionStyle: ListSelectionStyle
     onSelected?: () => void
     onRender?: () => void
@@ -469,7 +469,7 @@ export class ListView extends ScrollView {
 
     items: ListItem[]
     renderItem?: (cell: ListCell, item: ListItem) => void
-    register(clazz: typeof ListCell, reuseIdentifier: string): void
+    register(clazz: typeof ListCell, reuseIdentifier: string, context?: any): void
     reloadData(): void
 
 }
@@ -524,6 +524,7 @@ export class ViewController implements Releasable {
     release(): this;
     addOwner(owner: any): this
     readonly view: View
+    readonly safeAreaInsets: Insets
     loadView(): void
     viewDidLoad(): void
     viewWillAppear(): void
@@ -542,6 +543,30 @@ export class ViewController implements Releasable {
     keyboardWillHide(duration: number): void
     supportOrientations: DeviceOrientation[]
     readonly navigationController?: NavigationController
+    readonly navigationBar: NavigationBar
+    showNavigationBar(animated?: boolean): void
+    hideNavigationBar(animated?: boolean): void
+}
+
+export class NavigationBarButtonItem {
+
+    image?: Image
+    title?: string
+    customView?: View
+    onTouchUpInside?: () => void
+
+}
+
+export class NavigationBar extends View {
+
+    title: string
+    translucent: boolean
+    lightContent: boolean
+    setLeftBarButtonItem(navigationItem?: NavigationBarButtonItem): void
+    setLeftBarButtonItems(navigationItems: NavigationBarButtonItem[]): void
+    setRightBarButtonItem(navigationItem?: NavigationBarButtonItem): void
+    setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void
+
 }
 
 export class NavigationController extends ViewController {
@@ -589,7 +614,7 @@ export class CustomView extends View {
 
     onMessage?: (message: string) => any
     props: any
-    constructor(className: string, rect?: Rect)
+    constructor(className: string)
     emitMessage(message: any): any
     handleMessage(message: any): any
 
@@ -786,6 +811,8 @@ declare global {
         TransformMatrix: typeof TransformMatrix,
         Window: typeof Window,
         ViewController: typeof ViewController,
+        NavigationBarButtonItem: typeof NavigationBarButtonItem,
+        NavigationBar: typeof NavigationBar,
         NavigationController: typeof NavigationController,
         CanvasView: typeof CanvasView,
         CustomView: typeof CustomView,

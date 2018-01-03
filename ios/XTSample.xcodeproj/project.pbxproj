@@ -39,6 +39,7 @@
 		90689F3C1FA99FE4007EF1D3 /* XTRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F201FA99FE4007EF1D3 /* XTRViewController.m */; };
 		90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F221FA99FE4007EF1D3 /* XTRWindow.m */; };
 		90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689F401FAAB1FF007EF1D3 /* sample.min.js */; };
+		909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */; };
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
 		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
@@ -114,6 +115,8 @@
 		90689F211FA99FE4007EF1D3 /* XTRWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRWindow.h; sourceTree = "<group>"; };
 		90689F221FA99FE4007EF1D3 /* XTRWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRWindow.m; sourceTree = "<group>"; };
 		90689F401FAAB1FF007EF1D3 /* sample.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = sample.min.js; path = ../../dist/sample.min.js; sourceTree = "<group>"; };
+		909009DC1FFC87BC00B27F2D /* XTRNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRNavigationBar.h; sourceTree = "<group>"; };
+		909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRNavigationBar.m; sourceTree = "<group>"; };
 		90A76FE51F7A647000CB3EA5 /* FOOView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOView.h; sourceTree = "<group>"; };
 		90A76FE61F7A647000CB3EA5 /* FOOView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOView.m; sourceTree = "<group>"; };
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
@@ -236,6 +239,8 @@
 				90689F0C1FA99FE4007EF1D3 /* XTRListCell.m */,
 				90689F0D1FA99FE4007EF1D3 /* XTRListView.h */,
 				90689F0E1FA99FE4007EF1D3 /* XTRListView.m */,
+				909009DC1FFC87BC00B27F2D /* XTRNavigationBar.h */,
+				909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */,
 				90689F0F1FA99FE4007EF1D3 /* XTRNavigationController.h */,
 				90689F101FA99FE4007EF1D3 /* XTRNavigationController.m */,
 				90689F111FA99FE4007EF1D3 /* XTRScreen.h */,
@@ -455,6 +460,7 @@
 				90689F2C1FA99FE4007EF1D3 /* XTRDevice.m in Sources */,
 				90689F321FA99FE4007EF1D3 /* XTRListCell.m in Sources */,
 				90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */,
+				909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */,
 				90689F2D1FA99FE4007EF1D3 /* XTRFont.m in Sources */,
 				90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */,
 				90BB25571FBC24D700286398 /* XTRTextMeasurer.m in Sources */,

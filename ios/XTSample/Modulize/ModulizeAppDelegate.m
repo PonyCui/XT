@@ -9,11 +9,28 @@
 #import "ModulizeAppDelegate.h"
 #import "ModulizeStartViewController.h"
 
+@interface ModulizeNavigationController: UINavigationController
+
+@end
+
+@implementation ModulizeNavigationController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationBar.tintColor = [UIColor blackColor];
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return self.childViewControllers.lastObject;
+}
+
+@end
+
 @implementation ModulizeAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ModulizeStartViewController new]];
+    self.window.rootViewController = [[ModulizeNavigationController alloc] initWithRootViewController:[ModulizeStartViewController new]];
     [self.window makeKeyAndVisible];
     return YES;
 }

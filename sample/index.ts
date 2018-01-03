@@ -1,7 +1,6 @@
 /// <reference path="../src/xt.d.ts" />
 import { List } from "./explorer/list";
 
-
 class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {

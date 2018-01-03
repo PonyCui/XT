@@ -24,6 +24,10 @@
     return @{@"x": @(rect.origin.x), @"y": @(rect.origin.y), @"width": @(rect.size.width), @"height": @(rect.size.height)};
 }
 
++ (NSDictionary *)fromInsets:(UIEdgeInsets)insets {
+    return @{@"top": @(insets.top), @"left": @(insets.left), @"bottom": @(insets.bottom), @"right": @(insets.right)};
+}
+
 + (NSDictionary *)fromSize:(CGSize)size {
     return @{@"width": @(size.width), @"height": @(size.height)};
 }

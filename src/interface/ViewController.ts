@@ -1,7 +1,8 @@
 import { View } from "./View";
-import { Rect } from "./Rect";
+import { Rect, Insets } from "./Rect";
 import { DeviceOrientation } from "./Device";
 import { Releasable } from "./Releasable";
+import { NavigationBar } from "./NavigationBar";
 
 interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -24,6 +25,8 @@ export class ViewController implements Releasable {
 
     title?: string
     readonly view: View
+    readonly safeAreaInsets: Insets
+
     loadView(): void { }
     viewDidLoad(): void { }
     viewWillAppear(): void { }
@@ -45,5 +48,9 @@ export class ViewController implements Releasable {
 
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
     readonly navigationController?: NavigationControllerInterface
+
+    readonly navigationBar: NavigationBar
+    showNavigationBar(animated: boolean = false): void { }
+    hideNavigationBar(animated: boolean = false): void { }
 
 }

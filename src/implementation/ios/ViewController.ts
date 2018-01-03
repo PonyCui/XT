@@ -1,7 +1,8 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
+import { NavigationBar } from './NavigationBar';
 import { Color } from "../../interface/Color";
-import { Rect } from "../../interface/Rect";
+import { Rect, InsetsMake, Insets } from "../../interface/Rect";
 import { DeviceOrientation } from "../../interface/Device";
 import { Releasable } from "../../interface/Releasable";
 
@@ -57,6 +58,10 @@ export class ViewController implements Releasable {
 
     public set view(value: View) {
         XTRViewController.xtr_setViewObjectRef(value.objectRef, this.objectRef);
+    }
+
+    public get safeAreaInsets(): Insets {
+        return XTRViewController.xtr_safeAreaInsets(this.objectRef);
     }
 
     loadView(): void {
@@ -124,5 +129,29 @@ export class ViewController implements Releasable {
     }
 
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
+
+    public set navigationBar(value: NavigationBar) {
+        XTRViewController.xtr_setNavigationBarObjectRef(value.objectRef, this.objectRef)
+    }
+
+    public get navigationBar(): NavigationBar {
+        let ref = XTRViewController.xtr_navigationBar(this.objectRef)
+        if (typeof ref !== "string") {
+            this.navigationBar = new NavigationBar();
+            ref = XTRViewController.xtr_navigationBar(this.objectRef)
+        }
+        return new NavigationBar(ref)
+    }
+
+    showNavigationBar(animated: boolean = false): void {
+        if (this.navigationBar === undefined) {
+            this.navigationBar = new NavigationBar()
+        }
+        XTRViewController.xtr_showNavigationBarObjectRef(animated, this.objectRef)
+    }
+
+    hideNavigationBar(animated: boolean = false): void {
+        XTRViewController.xtr_hideNavigationBar(animated, this.objectRef)
+    }
 
 }

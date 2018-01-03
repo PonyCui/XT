@@ -38,6 +38,15 @@
     return @"XTRListView";
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.tableFooterView = [UIView new];
+    }
+    return self;
+}
+
 - (void)dealloc {
     self.delegate = nil;
     self.dataSource = nil;
@@ -81,8 +90,9 @@
     }
     if ([[cell contentView] viewWithTag:1000] == nil) {
         if (self.scriptObject != nil) {
-            UIView *innerView = [[self.scriptObject xtr_invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]] toView];
-            if (innerView != nil) {
+            NSString *innerViewRef = [self.scriptObject xtr_invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]].toString;
+            UIView *innerView = [XTMemoryManager find:innerViewRef];
+            if ([innerView isKindOfClass:[UIView class]]) {
                 innerView.tag = 1000;
                 innerView.frame = cell.contentView.bounds;
                 innerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -97,8 +107,7 @@
             [self.scriptObject xtr_invokeMethod:@"handleRenderItem"
                                         withArguments:@[
                                                         @(indexPath.row),
-                                                        [JSValue fromObject:fakeCell
-                                                                    context:self.context] ?: [NSNull null]
+                                                        (fakeCell.objectUUID ?: [NSNull null]),
                                                         ]];
         }
     }

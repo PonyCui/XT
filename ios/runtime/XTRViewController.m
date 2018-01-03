@@ -10,12 +10,17 @@
 #import "XTRUtils.h"
 #import "XTRContext.h"
 #import "XTRNavigationController.h"
+#import "XTRNavigationBar.h"
 #import "XTRView.h"
 #import <objc/runtime.h>
 #import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRViewController ()
 
+@property (nonatomic, assign) UIStatusBarStyle originalStatusBarStyle;
+@property (nonatomic, strong) XTRNavigationBar *navigationBar;
+@property (nonatomic, assign) BOOL navigationBarHidden;
+@property (nonatomic, strong) UIView *innerView;
 @property (nonatomic, weak) JSContext *context;
 
 @end
@@ -41,13 +46,29 @@
 }
 #endif
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+        _navigationBarHidden = YES;
+    }
+    return self;
+}
+
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
 + (NSString *)xtr_view:(NSString *)objectRef {
     UIViewController *obj = [XTMemoryManager find:objectRef];
-    if ([obj isKindOfClass:[UIViewController class]]) {
+    if ([obj isKindOfClass:[XTRViewController class]]) {
+        XTRView *view = (id)[(XTRViewController *)obj innerView];
+        if ([view isKindOfClass:[XTRView class]]) {
+            return view.objectUUID;
+        }
+    }
+    else if ([obj isKindOfClass:[UIViewController class]]) {
         XTRView *view = (id)obj.view;
         if ([view isKindOfClass:[XTRView class]]) {
             return view.objectUUID;
@@ -60,8 +81,31 @@
     UIViewController *obj = [XTMemoryManager find:objectRef];
     UIView *view = [XTMemoryManager find:viewRef];
     if ([obj isKindOfClass:[UIViewController class]] && [view isKindOfClass:[UIView class]]) {
-        obj.view = view;
+        obj.view = [UIView new];
+        obj.view.backgroundColor = view.backgroundColor ?: [UIColor whiteColor];
+        [obj.view addSubview:view];
+        if ([obj isKindOfClass:[XTRViewController class]]) {
+            [(XTRViewController *)obj setInnerView:view];
+        }
     }
+}
+
++ (NSDictionary *)xtr_safeAreaInsets:(NSString *)objectRef {
+    XTRViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRViewController class]]) {
+        CGFloat topLength = obj.topLayoutGuide.length;
+        if (@available(iOS 11.0, *)) {
+            topLength = obj.view.safeAreaInsets.top;
+        }
+        if (obj.navigationBar != nil && !obj.navigationBarHidden) {
+            topLength += 44.0;
+        }
+        if (!obj.navigationBar.translucent) {
+            topLength = 0;
+        }
+        return [JSValue fromInsets:UIEdgeInsetsMake(topLength, 0, 0, 0)];
+    }
+    return [JSValue fromInsets:UIEdgeInsetsZero];
 }
 
 + (NSString *)xtr_parentViewController:(NSString *)objectRef {
@@ -143,6 +187,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationItem.hidesBackButton = YES;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
@@ -153,6 +198,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    self.navigationItem.hidesBackButton = NO;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
@@ -165,10 +211,15 @@
 }
 
 static UINavigationController *tmpNavigationController;
+static BOOL onPanning;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    self.navigationItem.hidesBackButton = YES;
     tmpNavigationController = self.navigationController;
+    if (!onPanning) {
+        [self viewWillForceDisappear:animated];
+    }
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
@@ -179,6 +230,7 @@ static UINavigationController *tmpNavigationController;
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    self.navigationItem.hidesBackButton = NO;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
@@ -188,12 +240,41 @@ static UINavigationController *tmpNavigationController;
     if (self.shouldRestoreNavigationBar && self.navigationController == nil) {
         tmpNavigationController.navigationBar.hidden = NO;
         tmpNavigationController.navigationBar.alpha = 1.0;
+        [[UIApplication sharedApplication] setStatusBarStyle:self.originalStatusBarStyle];
     }
     tmpNavigationController = nil;
 }
 
+- (void)viewWillForceDisappear:(BOOL)animated {
+    if ([self.navigationController.childViewControllers indexOfObject:self] == NSNotFound && self.shouldRestoreNavigationBar && animated) {
+        tmpNavigationController.navigationBar.hidden = NO;
+        [UIView animateWithDuration:0.25 animations:^{
+            tmpNavigationController.navigationBar.alpha = 1.0;
+        }];
+    }
+}
+
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
+    if (self.navigationBar != nil && !self.navigationBarHidden) {
+        CGFloat topLength = self.topLayoutGuide.length + 44.0;
+        if (@available(iOS 11.0, *)) {
+            topLength = self.view.safeAreaInsets.top + 44.0;
+        }
+        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, topLength);
+        if (self.navigationBar.translucent) {
+            self.innerView.frame = self.view.bounds;
+        }
+        else {
+            self.innerView.frame = CGRectMake(0,
+                                              topLength,
+                                              self.view.bounds.size.width,
+                                              self.view.bounds.size.height - topLength);
+        }
+    }
+    else {
+        self.innerView.frame = self.view.bounds;
+    }
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
@@ -248,10 +329,90 @@ static UINavigationController *tmpNavigationController;
 }
 
 - (void)onPopGesture:(UIPanGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        onPanning = YES;
+    }
+    else if (sender.state == UIGestureRecognizerStateEnded) {
+        onPanning = NO;
+    }
     CGFloat progress = [sender locationInView:self.view.window].x / self.view.window.bounds.size.width;
     if (![tmpNavigationController.childViewControllers containsObject:self] && self.shouldRestoreNavigationBar) {
         tmpNavigationController.navigationBar.hidden = NO;
         tmpNavigationController.navigationBar.alpha = progress;
+    }
+}
+
+- (void)setNavigationBar:(XTRNavigationBar *)navigationBar {
+    if (_navigationBar != nil) {
+        [_navigationBar removeFromSuperview];
+    }
+    _navigationBar = navigationBar;
+    if (_navigationBar != nil) {
+        _navigationBar.viewController = self;
+        [self.view addSubview:_navigationBar];
+    }
+    [self viewWillLayoutSubviews];
+}
+
+- (void)setNavigationBarLightContent:(BOOL)navigationBarLightContent {
+    _navigationBarLightContent = navigationBarLightContent;
+    [[UIApplication sharedApplication]
+     setStatusBarStyle:_navigationBarLightContent ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault];
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return self.navigationBarLightContent ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+}
+
++ (NSString *)xtr_navigationBar:(NSString *)objectRef {
+    XTRViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRViewController class]]) {
+        return obj.navigationBar.objectUUID;
+    }
+    return nil;
+}
+
++ (void)xtr_setNavigationBar:(NSString *)barRef objectRef:(NSString *)objectRef {
+    XTRNavigationBar *bar = [XTMemoryManager find:barRef];
+    XTRViewController *obj = [XTMemoryManager find:objectRef];
+    if ([bar isKindOfClass:[XTRNavigationBar class]] && [obj isKindOfClass:[XTRViewController class]]) {
+        obj.navigationBar = bar;
+    }
+}
+
++ (void)xtr_showNavigationBar:(BOOL)animated objectRef:(NSString *)objectRef {
+    XTRViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRViewController class]]) {
+        obj.navigationBarHidden = NO;
+        obj.navigationBar.shouldShowBackBarButtonItem = [obj.navigationController.childViewControllers indexOfObject:obj] != 0;
+        if (animated) {
+            [UIView animateWithDuration:0.25 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:8.0 options:kNilOptions animations:^{
+                obj.navigationBar.alpha = 1.0;
+                [obj viewWillLayoutSubviews];
+            } completion:nil];
+        }
+        else {
+            obj.navigationBar.alpha = 1.0;
+            [obj viewWillLayoutSubviews];
+        }
+    }
+}
+
++ (void)xtr_hideNavigationBar:(BOOL)animated objectRef:(NSString *)objectRef {
+    XTRViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTRViewController class]]) {
+        obj.navigationBarHidden = YES;
+        if (animated) {
+            [UIView animateWithDuration:0.25 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:8.0 options:kNilOptions animations:^{
+                obj.navigationBar.alpha = 0.0;
+                [obj viewWillLayoutSubviews];
+            } completion:nil];
+        }
+        else {
+            obj.navigationBar.alpha = 0.0;
+            [obj viewWillLayoutSubviews];
+        }
     }
 }
 

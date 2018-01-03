@@ -15,6 +15,7 @@ export class ListCell extends View {
     currentItem?: ListItem
     onSelected?: () => void
     onRender?: () => void
+    context?: any
 
     constructor(ref: any) {
         super(ref || XTRListCell)
@@ -45,6 +46,7 @@ export class ListCell extends View {
 export class ListView extends ScrollView {
 
     protected registedClasses: { [key: string]: typeof ListCell } = {}
+    protected registedContexts: { [key: string]: any } = {}
 
     constructor(ref: any) {
         super(ref || XTRListView)
@@ -63,8 +65,9 @@ export class ListView extends ScrollView {
 
     renderItem?: (cell: ListCell, item: ListItem) => void
 
-    register(clazz: typeof ListCell, reuseIdentifier: string) {
+    register(clazz: typeof ListCell, reuseIdentifier: string, context: any = undefined) {
         this.registedClasses[reuseIdentifier] = clazz;
+        this.registedContexts[reuseIdentifier] = context;
     }
 
     reloadData() {
@@ -78,19 +81,22 @@ export class ListView extends ScrollView {
         return 0.0
     }
 
-    requestRowCell(rowIndex: number): ListCell {
+    requestRowCell(rowIndex: number): string {
         if (this.items[rowIndex] !== undefined) {
             if (this.registedClasses[this.items[rowIndex].reuseIdentifier] !== undefined) {
                 const clazz: typeof ListCell = this.registedClasses[this.items[rowIndex].reuseIdentifier];
                 const cell = new clazz(undefined);
                 cell.reuseIdentifier = this.items[rowIndex].reuseIdentifier || "Cell";
-                return cell;
+                cell.context = this.registedContexts[this.items[rowIndex].reuseIdentifier];
+                return cell.objectRef;
             }
         }
-        return new ListCell(undefined);
+        return new ListCell(undefined).objectRef;
     }
 
-    handleRenderItem(rowIndex: number, cell: ListCell): void {
+    handleRenderItem(rowIndex: number, cellRef: string): void {
+        if (typeof cellRef !== "string") { return }
+        const cell = new ListCell(cellRef)
         cell.currentItem = this.items[rowIndex];
         this.renderItem && this.renderItem(cell, this.items[rowIndex]);
         cell.onRender && cell.onRender();

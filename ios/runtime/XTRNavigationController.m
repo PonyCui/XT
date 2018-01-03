@@ -118,6 +118,10 @@
     return @[];
 }
 
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return [self.childViewControllers lastObject];
+}
+
 #pragma mark - ViewController callbacks
 
 - (void)viewDidLoad {

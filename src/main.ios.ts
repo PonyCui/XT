@@ -78,6 +78,11 @@ import { ViewController as IViewController } from './interface/ViewController'
 import { ViewController as MViewController } from './implementation/ios/ViewController'
 export class ViewController extends MViewController { }
 
+import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from './interface/NavigationBar'
+import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './implementation/ios/NavigationBar'
+export class NavigationBar extends MNavigationBar { }
+export class NavigationBarButtonItem extends MNavigationBarButtonItem { }
+
 import { NavigationController as INavigationController } from './interface/NavigationController'
 import { NavigationController as MNavigationController } from './implementation/ios/NavigationController'
 export class NavigationController extends MNavigationController { }

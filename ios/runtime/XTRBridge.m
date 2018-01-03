@@ -14,6 +14,7 @@
 #import "XTRWindow.h"
 #import "XTRApplicationDelegate.h"
 #import "XTRViewController.h"
+#import "XTRNavigationBar.h"
 #import "XTRNavigationController.h"
 #import "XTRScreen.h"
 #import "XTRImage.h"
@@ -182,6 +183,7 @@ static NSString *globalBridgeScript;
                               [XTRView class],
                               [XTRWindow class],
                               [XTRViewController class],
+                              [XTRNavigationBar class],
                               [XTRNavigationController class],
                               [XTRScreen class],
                               [XTRImage class],

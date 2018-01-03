@@ -18,6 +18,7 @@
 @interface JSValue (XTRUtils)
 
 + (nonnull NSDictionary *)fromRect:(CGRect)rect;
++ (nonnull NSDictionary *)fromInsets:(UIEdgeInsets)insets;
 + (nonnull NSDictionary *)fromSize:(CGSize)size;
 + (nonnull NSDictionary *)fromPoint:(CGPoint)point;
 + (nonnull NSDictionary *)fromTransform:(CGAffineTransform)transform;
