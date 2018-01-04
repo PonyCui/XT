@@ -394,9 +394,14 @@
 + (NSString *)xtr_window:(NSString *)objectRef {
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
-        XTRWindow *window = (id)obj.window;
-        if ([window isKindOfClass:[XTRWindow class]]) {
-            return window.objectUUID;
+        id window = (id)obj.window;
+        if ([window conformsToProtocol:@protocol(XTRComponent)]) {
+            return [window objectUUID];
+        }
+        else if ([window isKindOfClass:[UIWindow class]]) {
+            XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:window];
+            [XTMemoryManager add:managedObject];
+            return managedObject.objectUUID;
         }
     }
     return nil;

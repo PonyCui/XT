@@ -36,7 +36,7 @@ export class Button extends View {
     }
 
     public set image(value: Image | undefined) {
-        XTRButton.xtr_setImageObjectRef(typeof value === "string" ? value : "", this.objectRef);
+        XTRButton.xtr_setImageObjectRef(value ? value.objectRef : "", this.objectRef);
     }
 
     public get color(): Color {

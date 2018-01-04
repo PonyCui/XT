@@ -85,8 +85,8 @@
 }
 
 + (void)xtr_endEditing:(NSString *)objectRef {
-    XTRWindow *window = [XTMemoryManager find:objectRef];
-    if ([window isKindOfClass:[XTRWindow class]]) {
+    UIWindow *window = [XTMemoryManager find:objectRef];
+    if ([window isKindOfClass:[UIWindow class]]) {
         [window endEditing:YES];
     }
 }

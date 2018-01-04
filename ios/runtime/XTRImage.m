@@ -91,7 +91,7 @@
             }
         }
         if ([targetData isKindOfClass:[NSData class]]) {
-            UIImage *targetImage = [UIImage imageWithData:targetData];
+            UIImage *targetImage = [UIImage imageWithData:targetData scale:scale];
             if (targetImage != nil) {
                 XTRImage *obj = [[XTRImage alloc] initWithImage:targetImage];
                 XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];

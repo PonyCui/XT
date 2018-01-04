@@ -36,3 +36,5 @@ export class Window extends View {
     }
 
 }
+
+(window as any)._Window = Window

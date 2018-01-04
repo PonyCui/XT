@@ -244,7 +244,7 @@ export class View implements Releasable {
     public get window(): any | undefined {
         const ref = XTRView.xtr_window(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref);
+        return new (window as any)._Window(ref);
     }
 
     removeFromSuperview() {

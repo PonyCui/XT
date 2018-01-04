@@ -37,7 +37,6 @@
 + (NSString *)create {
     XTRScrollView *view = [[XTRScrollView alloc] initWithFrame:CGRectZero];
     view.delegate = view;
-    [view setContentSize:CGSizeMake(0, 2000)];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];
     view.context = [JSContext currentContext];

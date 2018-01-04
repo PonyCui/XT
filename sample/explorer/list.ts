@@ -4,6 +4,9 @@ import { ScrollViewSample } from "./scrollview";
 import { ListViewSample } from "./listview";
 import { ImageViewSample } from "./imageview";
 import { LabelSample } from "./label";
+import { TextViewSample } from "./textview";
+import { ButtonSample } from "./button";
+import { TextFieldSample } from "./textfield";
 
 
 class Header extends XT.ListCell {
@@ -221,7 +224,32 @@ export class List extends XT.ViewController {
                 name: "TextView",
                 action: () => {
                     if (this.navigationController) {
-                        this.navigationController.pushViewController(new ViewSample())
+                        this.navigationController.pushViewController(new TextViewSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
+                name: "交互组件",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Button",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new ButtonSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "TextField",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new TextFieldSample())
                     }
                 },
             },
