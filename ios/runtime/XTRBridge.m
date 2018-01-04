@@ -46,6 +46,7 @@
 @interface XTRBridge ()
 
 @property (nonatomic, strong) XTRContext *context;
+@property (nonatomic, copy) NSDictionary<NSString *, NSData *> * _Nonnull assets;
 @property (nonatomic, weak) XTRApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
 @property (nonatomic, copy) NSArray *pluginInstances;

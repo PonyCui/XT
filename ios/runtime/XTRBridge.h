@@ -17,7 +17,7 @@ typedef void(^XTRBridgeFailureBlock)(NSError * _Nonnull error);
 @interface XTRBridge : NSObject
 
 @property (nonatomic, readonly) XTRContext * _Nonnull context;
-@property (nonatomic, copy) NSDictionary<NSString *, NSData *> * _Nonnull assets;
+@property (nonatomic, readonly) NSDictionary<NSString *, NSData *> * _Nonnull assets;
 @property (nonatomic, strong) UIApplication * _Nullable application;
 @property (nonatomic, weak) XTRViewController * _Nullable keyViewController;
 @property (nonatomic, weak) UIWindow * _Nullable keyWindow;

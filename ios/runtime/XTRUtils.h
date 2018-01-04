@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@class XTRImage, XTRLayoutConstraint, XTRFont;
+@class XTRFont;
 
 @interface XTRUtils : NSObject
 
@@ -26,14 +26,5 @@
 + (nonnull NSDictionary *)fromColor:(nonnull UIColor *)color;
 - (nullable UIColor *)toColor;
 + (nullable JSValue *)fromObject:(nullable id)object context:(nonnull JSContext *)context;
-- (nullable UIView *)toView;
-- (nullable UIWindow *)toWindow;
-- (nullable UIViewController *)toViewController;
-- (nullable UINavigationController *)toNavigationController;
-- (nullable XTRImage *)toImage;
-- (nullable XTRFont *)toFont;
-- (nullable XTRLayoutConstraint *)toLayoutConstraint;
-- (NSLayoutAttribute)toLayoutAttribute;
-- (NSLayoutRelation)toLayoutRelation;
 
 @end
