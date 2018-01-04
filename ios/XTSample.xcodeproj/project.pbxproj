@@ -41,6 +41,7 @@
 		90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689F401FAAB1FF007EF1D3 /* sample.min.js */; };
 		909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */; };
 		909009E21FFDE2AA00B27F2D /* sample.xtassets in Resources */ = {isa = PBXBuildFile; fileRef = 909009E11FFDE2AA00B27F2D /* sample.xtassets */; };
+		909009E51FFE108100B27F2D /* XTRHRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 909009E41FFE108100B27F2D /* XTRHRView.m */; };
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
 		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
@@ -119,6 +120,8 @@
 		909009DC1FFC87BC00B27F2D /* XTRNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRNavigationBar.h; sourceTree = "<group>"; };
 		909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRNavigationBar.m; sourceTree = "<group>"; };
 		909009E11FFDE2AA00B27F2D /* sample.xtassets */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sample.xtassets; path = ../../dist/sample.xtassets; sourceTree = "<group>"; };
+		909009E31FFE108100B27F2D /* XTRHRView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRHRView.h; sourceTree = "<group>"; };
+		909009E41FFE108100B27F2D /* XTRHRView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRHRView.m; sourceTree = "<group>"; };
 		90A76FE51F7A647000CB3EA5 /* FOOView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOView.h; sourceTree = "<group>"; };
 		90A76FE61F7A647000CB3EA5 /* FOOView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOView.m; sourceTree = "<group>"; };
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
@@ -266,6 +269,8 @@
 				90689F201FA99FE4007EF1D3 /* XTRViewController.m */,
 				90689F211FA99FE4007EF1D3 /* XTRWindow.h */,
 				90689F221FA99FE4007EF1D3 /* XTRWindow.m */,
+				909009E31FFE108100B27F2D /* XTRHRView.h */,
+				909009E41FFE108100B27F2D /* XTRHRView.m */,
 			);
 			path = runtime;
 			sourceTree = "<group>";
@@ -464,6 +469,7 @@
 				90689F2C1FA99FE4007EF1D3 /* XTRDevice.m in Sources */,
 				90689F321FA99FE4007EF1D3 /* XTRListCell.m in Sources */,
 				90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */,
+				909009E51FFE108100B27F2D /* XTRHRView.m in Sources */,
 				909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */,
 				90689F2D1FA99FE4007EF1D3 /* XTRFont.m in Sources */,
 				90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */,

@@ -22,8 +22,7 @@ export class ListCell extends View {
     readonly currentItem?: ListItem
     readonly contentView: View
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
-    onSelected?: () => void
-    onRender?: () => void
+    didHighlighted(highlighted: boolean) { }
     didSelected() { }
     didRender() { }
 

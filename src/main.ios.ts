@@ -115,6 +115,10 @@ import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
 import { TextMeasurer as MTextMeasurer } from './implementation/ios/TextMeasurer'
 export class TextMeasurer extends MTextMeasurer { }
 
+import { HRView as IHRView } from './interface/HRView'
+import { HRView as MHRView } from './implementation/ios/HRView'
+export class HRView extends MHRView { }
+ 
 declare var module: any;
 declare var XT: any;
 if (typeof XT === "object") {

@@ -458,8 +458,7 @@ export class ListCell extends View {
     readonly contentView: View
     readonly context?: any
     selectionStyle: ListSelectionStyle
-    onSelected?: () => void
-    onRender?: () => void
+    didHighlighted(highlighted: boolean): void
     didSelected(): void
     didRender(): void
 }
@@ -764,6 +763,20 @@ export class TextMeasurer {
 
 }
 
+export enum HRViewPosition {
+    Top,
+    Middle,
+    Bottom,
+    Left,
+    VMiddle,
+    Right,
+}
+
+export class HRView extends View {
+    position: HRViewPosition
+    color: Color
+}
+
 declare global {
     const XT: {
         Releasable: Releasable,
@@ -825,5 +838,6 @@ declare global {
         TextView: typeof TextView,
         TextMeasureParams: TextMeasureParams,
         TextMeasurer: typeof TextMeasurer,
+        HRView: typeof HRView,
     };
 }

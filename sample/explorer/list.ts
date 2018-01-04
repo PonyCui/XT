@@ -8,7 +8,6 @@ class Header extends XT.ListCell {
     constructor() {
         super()
         this.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.selectionStyle = XT.ListSelectionStyle.None
         this.setupLogoImageView()
         this.setupLabel();
     }
@@ -46,10 +45,11 @@ class SectionHeader extends XT.ListCell {
         this.addSubview(this.content)
         this.titleLabel.font = XT.Font.boldSystemFontOfSize(14)
         this.content.addSubview(this.titleLabel)
-        this.onRender = () => {
-            if (this.currentItem) {
-                this.titleLabel.text = this.currentItem.name
-            }
+    }
+
+    didRender() {
+        if (this.currentItem) {
+            this.titleLabel.text = this.currentItem.name
         }
     }
 
@@ -62,29 +62,48 @@ class SectionHeader extends XT.ListCell {
 
 class Cell extends XT.ListCell {
 
+    content = new XT.View()
     titleLabel = new XT.Label()
+    bottomLine = new XT.HRView()
 
     constructor() {
         super()
-        this.setupLabel()
+        this.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.content.backgroundColor = XT.Color.whiteColor
+        this.addSubview(this.content)
+        this.titleLabel.textColor = XT.Color.grayColor
+        this.titleLabel.font = XT.Font.systemFontOfSize(13)
+        this.content.addSubview(this.titleLabel)
+        this.bottomLine.color = new XT.Color(0xda / 0xff, 0xda / 0xff, 0xda / 0xff)
+        this.content.addSubview(this.bottomLine)
     }
 
-    setupLabel() {
-        this.addSubview(this.titleLabel)
-        this.onRender = () => {
-            if (this.currentItem) {
-                this.titleLabel.text = this.currentItem.name
-            }
+    didHighlighted(value) {
+        if (value) {
+            this.content.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         }
-        this.onSelected = () => {
-            if (this.currentItem) {
-                this.currentItem.action()
-            }
+        else {
+            this.content.backgroundColor = XT.Color.whiteColor
+        }
+    }
+
+    didRender() {
+        if (this.currentItem) {
+            this.titleLabel.text = this.currentItem.name
+            this.bottomLine.hidden = this.currentItem.isSectionLast === true
+        }
+    }
+
+    didSelected() {
+        if (this.currentItem) {
+            this.currentItem.action()
         }
     }
 
     layoutSubviews() {
-        this.titleLabel.frame = { ...this.bounds, x: 15 }
+        this.content.frame = XT.RectMake(15, 0, this.bounds.width - 30, 44)
+        this.titleLabel.frame = {...this.content.bounds, x: 15}
+        this.bottomLine.frame = XT.RectMake(15, this.bounds.height - 1, this.content.bounds.width - 30, 1)
     }
 
 }
@@ -134,16 +153,37 @@ export class List extends XT.ViewController {
                 rowHeight: () => 52,
                 name: "视图容器",
             },
-            // {
-            //     reuseIdentifier: "Cell",
-            //     rowHeight: () => 44,
-            //     title: "XT.Button",
-            //     action: () => {
-            //         if (this.navigationController) {
-            //             this.navigationController.pushViewController(new List())
-            //         }
-            //     },
-            // },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "View",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new List())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "ScrollView",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new List())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "ListView",
+                isSectionLast: true,
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new List())
+                    }
+                },
+            },
         ]
         this.listView.reloadData()
     }

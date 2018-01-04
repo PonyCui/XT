@@ -129,11 +129,35 @@
         if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
             XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
             if (fakeCell.scriptObject != nil) {
-                [fakeCell.scriptObject xtr_invokeMethod:@"handleSelected" withArguments:@[]];
+                [fakeCell.scriptObject xtr_invokeMethod:@"didSelected" withArguments:@[]];
             }
         }
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell != nil) {
+        if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
+            XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
+            if (fakeCell.scriptObject != nil) {
+                [fakeCell.scriptObject xtr_invokeMethod:@"didHighlighted" withArguments:@[@(YES)]];
+            }
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell != nil) {
+        if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
+            XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
+            if (fakeCell.scriptObject != nil) {
+                [fakeCell.scriptObject xtr_invokeMethod:@"didHighlighted" withArguments:@[@(NO)]];
+            }
+        }
+    }
 }
 
 #pragma mark - View callbacks

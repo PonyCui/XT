@@ -90,3 +90,6 @@ export class Device extends IDevice { }
 
 import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
 export class TextMeasurer extends ITextMeasurer { }
+
+import { HRView as IHRView } from './interface/HRView'
+export class HRView extends IHRView { }
