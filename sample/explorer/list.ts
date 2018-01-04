@@ -1,4 +1,8 @@
 /// <reference path="../../src/xt.d.ts" />
+import { ViewSample } from "./view";
+import { ScrollViewSample } from "./scrollview";
+import { ListViewSample } from "./listview";
+
 
 class Header extends XT.ListCell {
 
@@ -159,7 +163,7 @@ export class List extends XT.ViewController {
                 name: "View",
                 action: () => {
                     if (this.navigationController) {
-                        this.navigationController.pushViewController(new List())
+                        this.navigationController.pushViewController(new ViewSample())
                     }
                 },
             },
@@ -169,7 +173,7 @@ export class List extends XT.ViewController {
                 name: "ScrollView",
                 action: () => {
                     if (this.navigationController) {
-                        this.navigationController.pushViewController(new List())
+                        this.navigationController.pushViewController(new ScrollViewSample())
                     }
                 },
             },
@@ -180,7 +184,7 @@ export class List extends XT.ViewController {
                 isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
-                        this.navigationController.pushViewController(new List())
+                        this.navigationController.pushViewController(new ListViewSample())
                     }
                 },
             },

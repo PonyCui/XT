@@ -25,7 +25,7 @@ export class ScrollView extends View {
     }
 
     public set contentSize(value: Size) {
-        XTRScrollView.xtr_setContentSizeObjectRef(value, false, this.objectRef)
+        XTRScrollView.xtr_setContentSizeObjectRef(value, this.objectRef)
     }
 
     public get isDirectionalLockEnabled(): boolean {
