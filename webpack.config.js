@@ -2,6 +2,7 @@ var path = require('path')
 var webpack = require('webpack')
 var WebpackShellPlugin = require('webpack-shell-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var XTCarPlugin = require('./xtcar/index')
 
 module.exports = function (env) {
     var setting = {
@@ -36,6 +37,9 @@ module.exports = function (env) {
             new CopyWebpackPlugin([
                 { from: 'sample/assets', to: 'assets' }
             ]),
+            new XTCarPlugin(
+                { entry: ['./sample/assets'], filename: 'sample.xtassets' }
+            ),
         ],
     }
     if (env && env.devandroid) {

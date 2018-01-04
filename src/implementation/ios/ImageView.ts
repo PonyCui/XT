@@ -17,8 +17,6 @@ export class Image implements Releasable {
         return this
     }
 
-    static assetsPath = "assets/"
-
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         XTRImage.xtr_fromURLSuccessFailure(url, (ref: string) => {
             if (success) {
@@ -30,17 +28,7 @@ export class Image implements Releasable {
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, [], (ref: string) => {
-            if (success) {
-                success(new Image(ref))
-            }
-        }, (message: string) => {
-            failure && failure(new Error(message));
-        });
-    }
-
-    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsPathScalesSuccessFailure(named, this.assetsPath, typeof scales === "number" ? [scales] : scales, (ref: string) => {
+        XTRImage.xtr_fromAssetsSuccessFailure(named, (ref: string) => {
             if (success) {
                 success(new Image(ref))
             }

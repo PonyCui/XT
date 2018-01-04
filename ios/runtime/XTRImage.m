@@ -70,51 +70,45 @@
     }
 }
 
-+ (void)xtr_fromAssets:(NSString *)named path:(NSString *)path scales:(JSValue *)scales success:(JSValue *)success failure:(JSValue *)failure {
-    if ([[success context] isKindOfClass:[XTRContext class]]) {
-        NSURL *sourceURL = [[(XTRContext *)success.context bridge] sourceURL];
-        if (sourceURL != nil) {
-            CGFloat scale = 1.0;
-            NSString *subfix = @".png";
-            for (NSNumber *value in [scales toArray]) {
-                if ([value isKindOfClass:[NSNumber class]]) {
-                    if ([UIScreen mainScreen].scale == [value floatValue] && [value floatValue] > 1) {
-                        subfix = [NSString stringWithFormat:@"@%dx.png", (int)[value floatValue]];
-                        scale = [value floatValue];
-                    }
-                    else {
-                        subfix = [NSString stringWithFormat:@"@%dx.png", (int)[value floatValue]];
-                        scale = [value floatValue];
-                    }
++ (void)xtr_fromAssets:(NSString *)named success:(JSValue *)success failure:(JSValue *)failure {
+    static NSInteger scaleOptions[2] = {3, 2};
+    XTRContext *context = (id)[JSContext currentContext];
+    if ([context isKindOfClass:[XTRContext class]]) {
+        NSData *targetData;
+        NSInteger scale = (NSInteger)[UIScreen mainScreen].scale;
+        if (context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]] != nil) {
+            targetData = context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]];
+        }
+        else {
+            for (NSInteger i = 0; i < 2; i++) {
+                scale = scaleOptions[i];
+                if (context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]] != nil) {
+                    targetData = context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]];
+                    break;
                 }
             }
-            NSURL *imageURL = [[sourceURL URLByDeletingLastPathComponent]
-                               URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@%@", path, named, subfix]];
-            if ([imageURL.scheme isEqualToString:@"file"]) {
-                if ([[NSFileManager defaultManager] fileExistsAtPath:imageURL.path]) {
-                    [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];
-                    return;
+        }
+        if ([targetData isKindOfClass:[NSData class]]) {
+            UIImage *targetImage = [UIImage imageWithData:targetData];
+            if (targetImage != nil) {
+                XTRImage *obj = [[XTRImage alloc] initWithImage:targetImage];
+                XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+                obj.objectUUID = managedObject.objectUUID;
+                [XTMemoryManager add:managedObject];
+                if (success != nil) {
+                    [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
                 }
             }
             else {
-                [self xtr_fromURL:imageURL.absoluteString scale:scale success:success failure:failure];
-                return;
+                if (failure) {
+                    [failure xtr_callWithArguments:@[@"Image decode fail."]];
+                }
             }
         }
-    }
-    UIImage *image = [UIImage imageNamed:named];
-    if (image != nil) {
-        XTRImage *obj = [[XTRImage alloc] initWithImage:image];
-        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
-        obj.objectUUID = managedObject.objectUUID;
-        [XTMemoryManager add:managedObject];
-        if (success != nil) {
-            [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
-        }
-    }
-    else {
-        if (failure) {
-            [failure xtr_callWithArguments:@[@"Image not found."]];
+        else {
+            if (failure) {
+                [failure xtr_callWithArguments:@[@"Image not found."]];
+            }
         }
     }
 }

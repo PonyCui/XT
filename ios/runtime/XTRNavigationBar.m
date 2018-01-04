@@ -242,7 +242,7 @@ static UIImage *backButtonImage;
 - (void)setTranslucent:(BOOL)translucent {
     _translucent = translucent;
     self.blurView.hidden = !translucent;
-    [self.innerView setShadowImage:(translucent ? [UIImage new] : nil)];
+    [self.innerView setShadowImage:[UIImage new]];
 }
 
 - (void)setLightContent:(BOOL)lightContent {

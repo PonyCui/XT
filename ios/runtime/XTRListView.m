@@ -42,6 +42,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableFooterView = [UIView new];
     }
     return self;

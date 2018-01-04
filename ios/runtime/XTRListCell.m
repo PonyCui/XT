@@ -12,6 +12,8 @@
 
 @interface XTRListCell ()
 
+@property (nonatomic, assign) NSInteger selectionStyle;
+
 @end
 
 @implementation XTRListCell
@@ -50,6 +52,7 @@
 + (void)xtr_setSelectionStyle:(NSInteger)selectionStyle objectRef:(NSString *)objectRef {
     XTRListCell *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRListCell class]]) {
+        view.selectionStyle = selectionStyle;
         UITableViewCell *realCell = view.realCell;
         if (realCell == nil) {
             return;
@@ -63,6 +66,11 @@
                 break;
         }
     }
+}
+
+- (void)setRealCell:(UITableViewCell *)realCell {
+    _realCell = realCell;
+    [XTRListCell xtr_setSelectionStyle:self.selectionStyle objectRef:self.objectUUID];
 }
 
 @end

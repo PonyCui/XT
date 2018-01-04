@@ -40,6 +40,7 @@
 		90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F221FA99FE4007EF1D3 /* XTRWindow.m */; };
 		90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689F401FAAB1FF007EF1D3 /* sample.min.js */; };
 		909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */; };
+		909009E21FFDE2AA00B27F2D /* sample.xtassets in Resources */ = {isa = PBXBuildFile; fileRef = 909009E11FFDE2AA00B27F2D /* sample.xtassets */; };
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
 		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
@@ -117,6 +118,7 @@
 		90689F401FAAB1FF007EF1D3 /* sample.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = sample.min.js; path = ../../dist/sample.min.js; sourceTree = "<group>"; };
 		909009DC1FFC87BC00B27F2D /* XTRNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRNavigationBar.h; sourceTree = "<group>"; };
 		909009DD1FFC87BC00B27F2D /* XTRNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRNavigationBar.m; sourceTree = "<group>"; };
+		909009E11FFDE2AA00B27F2D /* sample.xtassets */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sample.xtassets; path = ../../dist/sample.xtassets; sourceTree = "<group>"; };
 		90A76FE51F7A647000CB3EA5 /* FOOView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOView.h; sourceTree = "<group>"; };
 		90A76FE61F7A647000CB3EA5 /* FOOView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOView.m; sourceTree = "<group>"; };
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				90BB25581FBC3C4800286398 /* Applicationize */,
 				90BB255D1FBC3C4800286398 /* Modulize */,
 				90689F401FAAB1FF007EF1D3 /* sample.min.js */,
+				909009E11FFDE2AA00B27F2D /* sample.xtassets */,
 				90A76FE51F7A647000CB3EA5 /* FOOView.h */,
 				90A76FE61F7A647000CB3EA5 /* FOOView.m */,
 				9057080D1F4EB2AF00D5EC05 /* Main.storyboard */,
@@ -378,6 +381,7 @@
 				90689F231FA99FE4007EF1D3 /* xt.ios.min.js in Resources */,
 				905708111F4EB2AF00D5EC05 /* Assets.xcassets in Resources */,
 				90689F411FAAB1FF007EF1D3 /* sample.min.js in Resources */,
+				909009E21FFDE2AA00B27F2D /* sample.xtassets in Resources */,
 				9057080F1F4EB2AF00D5EC05 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

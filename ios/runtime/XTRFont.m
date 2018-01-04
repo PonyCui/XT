@@ -25,7 +25,38 @@
     }
     else {
         if ([UIDevice currentDevice].systemVersion.floatValue >= 8.2) {
-            obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:[fontWeight toDouble]];
+            switch ([fontWeight toInt32]) {
+                case 100:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightUltraLight];
+                    break;
+                case 200:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightThin];
+                    break;
+                case 300:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightLight];
+                    break;
+                case 400:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightRegular];
+                    break;
+                case 500:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightMedium];
+                    break;
+                case 600:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightSemibold];
+                    break;
+                case 700:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightBold];
+                    break;
+                case 800:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightHeavy];
+                    break;
+                case 900:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightBlack];
+                    break;
+                default:
+                    obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightRegular];
+                    break;
+            }
         }
         else {
             if ([fontWeight toDouble] >= 700) {
