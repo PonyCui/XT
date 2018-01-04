@@ -16,6 +16,21 @@ class ListCellSample extends XT.ListCell {
         }
     }
 
+    didHighlighted(value) {
+        this.backgroundColor = value ? new XT.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : XT.Color.whiteColor
+    }
+
+    didSelected() {
+        if (this.context instanceof XT.ViewController) {
+            if (this.context.navigationController) {
+                const nextViewController = new XT.ViewController()
+                nextViewController.navigationBar.title = this.currentItem.name
+                nextViewController.showNavigationBar()
+                this.context.navigationController.pushViewController(nextViewController)
+            }
+        }
+    }
+
     layoutSubviews() {
         super.layoutSubviews()
         this.titleLabel.frame = this.bounds
@@ -44,7 +59,7 @@ export class ListViewSample extends XT.ViewController {
     }
 
     addTestCases() {
-        this.contentView.register(ListCellSample, "Cell")
+        this.contentView.register(ListCellSample, "Cell", this)
         let mockDatas: XT.ListItem[] = []
         for (let index = 0; index < 10000; index++) {
             mockDatas.push({

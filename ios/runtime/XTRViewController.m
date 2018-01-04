@@ -295,6 +295,7 @@ static BOOL onPanning;
 
 - (void)willMoveToParentViewController:(id)parent {
     [super willMoveToParentViewController:parent];
+    self.navigationBar.shouldShowBackBarButtonItem = [self.navigationController.childViewControllers indexOfObject:self] != 0;
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {
