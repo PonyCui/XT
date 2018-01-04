@@ -42,13 +42,15 @@
             if (error == nil && data != nil) {
                 UIImage *image = [UIImage imageWithData:data scale:scale];
                 if (image != nil) {
-                    XTRImage *obj = [[XTRImage alloc] initWithImage:image];
-                    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
-                    obj.objectUUID = managedObject.objectUUID;
-                    [XTMemoryManager add:managedObject];
-                    if (success != nil) {
-                        [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""] asyncResult:nil];
-                    }
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        XTRImage *obj = [[XTRImage alloc] initWithImage:image];
+                        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
+                        obj.objectUUID = managedObject.objectUUID;
+                        [XTMemoryManager add:managedObject];
+                        if (success != nil) {
+                            [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""] asyncResult:nil];
+                        }
+                    }];
                 }
                 else {
                     if (failure) {

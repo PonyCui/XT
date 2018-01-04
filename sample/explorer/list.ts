@@ -2,6 +2,8 @@
 import { ViewSample } from "./view";
 import { ScrollViewSample } from "./scrollview";
 import { ListViewSample } from "./listview";
+import { ImageViewSample } from "./imageview";
+import { LabelSample } from "./label";
 
 
 class Header extends XT.ListCell {
@@ -185,6 +187,41 @@ export class List extends XT.ViewController {
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new ListViewSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
+                name: "内容组件",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "ImageView",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new ImageViewSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Label",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new LabelSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "TextView",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new ViewSample())
                     }
                 },
             },
