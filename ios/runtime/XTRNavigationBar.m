@@ -73,7 +73,6 @@ static UIImage *backButtonImage;
 - (void)setupBackItem {
     UIButton *customView = [UIButton buttonWithType:UIButtonTypeSystem];
     customView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    customView.contentEdgeInsets = UIEdgeInsetsMake(0, -6, 0, 0);
     [customView setImage:backButtonImage forState:UIControlStateNormal];
     [customView addTarget:self action:@selector(onBack) forControlEvents:UIControlEventTouchUpInside];
     customView.frame = CGRectMake(0, 0, 44, 44);

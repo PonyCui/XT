@@ -88,6 +88,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        cell.backgroundColor = [UIColor clearColor];
     }
     if ([[cell contentView] viewWithTag:1000] == nil) {
         if (self.scriptObject != nil) {

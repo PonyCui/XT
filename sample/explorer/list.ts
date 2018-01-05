@@ -21,7 +21,6 @@ class Header extends XT.ListCell {
 
     constructor() {
         super()
-        this.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.setupLogoImageView()
         this.setupLabel();
     }
