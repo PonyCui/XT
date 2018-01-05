@@ -11,8 +11,6 @@ export class ListCell extends View {
     currentItem?: ListItem
     reuseIdentifier: string = ""
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
-    onSelected?: () => void
-    onRender?: () => void
     selectionView: View = new View();
     contentView: View = new View();
     _isBusy = false
@@ -30,7 +28,6 @@ export class ListCell extends View {
         this.onTap = () => {
             this.highligted = true
             this.selectionView.hidden = false
-            this.onSelected && this.onSelected();
             this.didSelected();
             setTimeout(() => {
                 View.animationWithDuration(0.15, () => {
@@ -44,7 +41,6 @@ export class ListCell extends View {
                 this.selectionView.hidden = false
             }
             else if (state == InteractionState.Ended) {
-                this.onSelected && this.onSelected();
                 this.didSelected();
                 View.animationWithDuration(0.15, () => {
                     this.highligted = false
@@ -69,10 +65,12 @@ export class ListCell extends View {
     }
 
     public set highligted(value: boolean) {
+        this.didHighlighted(value)
         if (this.selectionStyle == ListSelectionStyle.None) { return }
         this.selectionView.alpha = value ? 1.0 : 0.0;
     }
 
+    didHighlighted(highlighted: boolean) { }
     didSelected() { }
     didRender() { }
 
@@ -206,7 +204,6 @@ export class ListView extends ScrollView {
             cell._isBusy = true;
             cell.currentItem = row.item;
             this.renderItem && this.renderItem(cell, row.item);
-            cell.onRender && cell.onRender();
             cell.didRender();
             if (this._reusingCells.indexOf(cell) < 0) {
                 this._reusingCells.push(cell);

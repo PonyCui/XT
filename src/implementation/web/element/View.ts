@@ -124,15 +124,15 @@ export class ViewElement extends BaseElement {
         return maskPath
     }
 
-    private backgroundColor?: Color;
+    private backgroundColor: Color = Color.clearColor;
 
-    public xtr_backgroundColor(): Color | undefined {
+    public xtr_backgroundColor(): Color {
         return this.backgroundColor
     }
 
-    public xtr_setBackgroundColor(value: Color | undefined) {
+    public xtr_setBackgroundColor(value: Color) {
         this.backgroundColor = value;
-        if (this.backgroundColor !== undefined) {
+        if (this.backgroundColor.a > 0) {
             this.backgroundObject.setAttribute('visibility', 'inherit');
             this.backgroundObject.setAttribute('fill', 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')')
             if (this.backgroundObject.parentNode === null) {
@@ -212,26 +212,24 @@ export class ViewElement extends BaseElement {
         }
     }
 
-    private borderColor?: Color;
+    private borderColor: Color = Color.clearColor;
 
-    public xtr_borderColor(): Color | undefined {
+    public xtr_borderColor(): Color {
         return this.borderColor
     }
 
-    public xtr_setBorderColor(value: Color | undefined) {
+    public xtr_setBorderColor(value: Color) {
         this.borderColor = value;
-        if (this.borderColor !== undefined) {
-            this.backgroundObject.setAttribute('stroke', 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')')
-        }
+        this.backgroundObject.setAttribute('stroke', 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')')
     }
 
-    private shadowColor?: Color;
+    private shadowColor: Color = Color.clearColor;
 
-    public xtr_shadowColor(): Color | undefined {
+    public xtr_shadowColor(): Color {
         return this.shadowColor
     }
 
-    public xtr_setShadowColor(value: Color | undefined) {
+    public xtr_setShadowColor(value: Color) {
         this.shadowColor = value;
         this.resetFilter();
     }
@@ -306,11 +304,11 @@ export class ViewElement extends BaseElement {
 
     private tag: number = 0;
 
-    public xtr_tag(): number | undefined {
+    public xtr_tag(): number {
         return this.tag
     }
 
-    public xtr_setTag(value: number | undefined) {
+    public xtr_setTag(value: number) {
         this.tag = value || 0
     }
 

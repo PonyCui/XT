@@ -12,7 +12,7 @@ export class Device {
 
     static current: Device = new Device()
 
-    name: string = navigator.vendor
+    deviceName: string = navigator.vendor
     systemName: string = navigator.platform
     systemVersion: string = ""
     xtRuntimeVersion: string = "0.0.1"

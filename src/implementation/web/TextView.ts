@@ -47,11 +47,11 @@ export class TextView extends View {
         this.nativeObject.xtr_setText(value);
     }
 
-    public get font(): Font | undefined {
+    public get font(): Font {
         return this.nativeObject.xtr_font();
     }
 
-    public set font(value: Font | undefined) {
+    public set font(value: Font) {
         this.nativeObject.xtr_setFont(value);
     }
 

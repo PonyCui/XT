@@ -41,7 +41,7 @@ export class LabelElement extends ViewElement {
     private text: string
 
     public xtr_text(): string {
-        return this.text;
+        return this.text || "";
     }
 
     public xtr_setText(value: string) {

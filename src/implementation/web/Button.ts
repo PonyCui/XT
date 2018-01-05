@@ -95,13 +95,13 @@ export class Button extends View {
 
     public onTouchUpInside?: () => void = undefined;
 
-    private _color: Color | undefined = undefined
+    private _color: Color = this.tintColor
 
-    public get color(): Color | undefined {
-        return this._color;
+    public get color(): Color {
+        return this._color || this.tintColor;
     }
 
-    public set color(value: Color | undefined) {
+    public set color(value: Color) {
         this._color = value;
         this.titleLabel.textColor = value || this.tintColor;
     }

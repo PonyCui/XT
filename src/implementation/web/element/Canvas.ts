@@ -28,89 +28,79 @@ export class CanvasElement extends ViewElement {
         this.actions && this.actions.forEach(action => action())
     }
 
-    public xtr_globalAlpha(): number | undefined {
-        return this.ctx.globalAlpha
+    public xtr_globalAlpha(): number {
+        return this.ctx.globalAlpha || 1.0
     }
 
-    public xtr_setGlobalAlpha(value: number | undefined) {
+    public xtr_setGlobalAlpha(value: number) {
         this.doAction(() => {
-            this.ctx.globalAlpha = value || 1.0
+            this.ctx.globalAlpha = value
         })
     }
 
-    private fillStyle: Color | undefined;
+    private fillStyle: Color = Color.clearColor;
 
-    public xtr_fillStyle(): Color | undefined {
+    public xtr_fillStyle(): Color {
         return this.fillStyle
     }
 
-    public xtr_setFillStyle(value: Color | undefined) {
+    public xtr_setFillStyle(value: Color) {
         this.fillStyle = value
         this.doAction(() => {
-            if (value) {
-                this.ctx.fillStyle = 'rgba(' + (value.r * 255).toFixed(0) + ', ' + (value.g * 255).toFixed(0) + ', ' + (value.b * 255).toFixed(0) + ', ' + value.a.toString() + ')'
-            }
-            else {
-                this.ctx.fillStyle = "transparent"
-            }
+            this.ctx.fillStyle = 'rgba(' + (value.r * 255).toFixed(0) + ', ' + (value.g * 255).toFixed(0) + ', ' + (value.b * 255).toFixed(0) + ', ' + value.a.toString() + ')'
         })
     }
 
-    private strokeStyle: Color | undefined;
+    private strokeStyle: Color = Color.clearColor;
 
-    public xtr_strokeStyle(): Color | undefined {
+    public xtr_strokeStyle(): Color {
         return this.strokeStyle
     }
 
-    public xtr_setStrokeStyle(value: Color | undefined) {
+    public xtr_setStrokeStyle(value: Color) {
         this.strokeStyle = value;
         this.doAction(() => {
-            if (value) {
-                this.ctx.strokeStyle = 'rgba(' + (value.r * 255).toFixed(0) + ', ' + (value.g * 255).toFixed(0) + ', ' + (value.b * 255).toFixed(0) + ', ' + value.a.toString() + ')'
-            }
-            else {
-                this.ctx.strokeStyle = "transparent"
-            }
+            this.ctx.strokeStyle = 'rgba(' + (value.r * 255).toFixed(0) + ', ' + (value.g * 255).toFixed(0) + ', ' + (value.b * 255).toFixed(0) + ', ' + value.a.toString() + ')'
         })
     }
 
-    public xtr_lineCap(): string | undefined {
-        return this.ctx.lineCap
+    public xtr_lineCap(): string {
+        return this.ctx.lineCap || "butt"
     }
 
-    public xtr_setLineCap(value: string | undefined) {
+    public xtr_setLineCap(value: string) {
         this.doAction(() => {
-            this.ctx.lineCap = value || "butt"
+            this.ctx.lineCap = value
         })
     }
 
-    public xtr_lineJoin(): string | undefined {
-        return this.ctx.lineJoin
+    public xtr_lineJoin(): string {
+        return this.ctx.lineJoin || "miter"
     }
 
-    public xtr_setLineJoin(value: string | undefined) {
+    public xtr_setLineJoin(value: string) {
         this.doAction(() => {
-            this.ctx.lineJoin = value || "miter"
+            this.ctx.lineJoin = value
         })
     }
 
-    public xtr_lineWidth(): number | undefined {
-        return this.ctx.lineWidth
+    public xtr_lineWidth(): number {
+        return this.ctx.lineWidth || 1
     }
 
-    public xtr_setLineWidth(value: number | undefined) {
+    public xtr_setLineWidth(value: number) {
         this.doAction(() => {
-            this.ctx.lineWidth = value || 1
+            this.ctx.lineWidth = value
         })
     }
 
-    public xtr_miterLimit(): number | undefined {
-        return this.ctx.miterLimit
+    public xtr_miterLimit(): number {
+        return this.ctx.miterLimit || 10
     }
 
-    public xtr_setMiterLimit(value: number | undefined) {
+    public xtr_setMiterLimit(value: number) {
         this.doAction(() => {
-            this.ctx.miterLimit = value || 10
+            this.ctx.miterLimit = value
         })
     }
 

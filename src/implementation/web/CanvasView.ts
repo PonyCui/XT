@@ -12,59 +12,59 @@ export class CanvasView extends View {
         this.userInteractionEnabled = true
     }
 
-    public get globalAlpha(): number | undefined {
+    public get globalAlpha(): number {
         return this.nativeObject.xtr_globalAlpha()
     }
 
-    public set globalAlpha(value: number | undefined) {
+    public set globalAlpha(value: number) {
         this.nativeObject.xtr_setGlobalAlpha(value)
     }
 
-    public get fillStyle(): Color | undefined {
+    public get fillStyle(): Color {
         return this.nativeObject.xtr_fillStyle()
     }
 
-    public set fillStyle(value: Color | undefined) {
+    public set fillStyle(value: Color) {
         this.nativeObject.xtr_setFillStyle(value)
     }
 
-    public get strokeStyle(): Color | undefined {
+    public get strokeStyle(): Color {
         return this.nativeObject.xtr_strokeStyle()
     }
 
-    public set strokeStyle(value: Color | undefined) {
+    public set strokeStyle(value: Color) {
         this.nativeObject.xtr_setStrokeStyle(value)
     }
 
-    public get lineCap(): string | undefined {
+    public get lineCap(): string {
         return this.nativeObject.xtr_lineCap()
     }
 
-    public set lineCap(value: string | undefined) {
+    public set lineCap(value: string) {
         this.nativeObject.xtr_setLineCap(value)
     }
 
-    public get lineJoin(): string | undefined {
+    public get lineJoin(): string {
         return this.nativeObject.xtr_lineJoin()
     }
 
-    public set lineJoin(value: string | undefined) {
+    public set lineJoin(value: string) {
         this.nativeObject.xtr_setLineJoin(value)
     }
 
-    public get lineWidth(): number | undefined {
+    public get lineWidth(): number {
         return this.nativeObject.xtr_lineWidth()
     }
 
-    public set lineWidth(value: number | undefined) {
+    public set lineWidth(value: number) {
         this.nativeObject.xtr_setLineWidth(value)
     }
 
-    public get miterLimit(): number | undefined {
+    public get miterLimit(): number {
         return this.nativeObject.xtr_miterLimit()
     }
 
-    public set miterLimit(value: number | undefined) {
+    public set miterLimit(value: number) {
         this.nativeObject.xtr_setMiterLimit(value)
     }
 

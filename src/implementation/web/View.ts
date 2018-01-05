@@ -18,11 +18,11 @@ declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
-    
+
     retain(): this {
         return this
     }
-    
+
     release(): this {
         return this
     }
@@ -132,12 +132,12 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.nativeObject.xtr_setClipsToBounds(value);
     }
 
-    public get backgroundColor(): Color | undefined {
+    public get backgroundColor(): Color {
         return this.nativeObject.xtr_backgroundColor()
     }
 
-    public set backgroundColor(value: Color | undefined) {
-        if (View._animationEnabled && this.backgroundColor && value) {
+    public set backgroundColor(value: Color) {
+        if (View._animationEnabled && this.backgroundColor) {
             if (this.backgroundColor.a != value.a) { View.addAnimation(this, "backgroundColorA", this.backgroundColor.a, value.a); }
             if (this.backgroundColor.r != value.r) { View.addAnimation(this, "backgroundColorR", this.backgroundColor.r, value.r); }
             if (this.backgroundColor.g != value.g) { View.addAnimation(this, "backgroundColorG", this.backgroundColor.g, value.g); }
@@ -193,11 +193,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.nativeObject.xtr_setHidden(value);
     }
 
-    public get contentMode(): number | undefined {
+    public get contentMode(): number {
         return this.nativeObject.xtr_contentMode();
     }
 
-    public set contentMode(value: number | undefined) {
+    public set contentMode(value: number) {
         this.nativeObject.xtr_setContentMode(value);
     }
 
@@ -261,12 +261,12 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.nativeObject.xtr_setBorderWidth(value);
     }
 
-    public get borderColor(): Color | undefined {
+    public get borderColor(): Color {
         return this.nativeObject.xtr_borderColor()
     }
 
-    public set borderColor(value: Color | undefined) {
-        if (View._animationEnabled && this.borderColor && value) {
+    public set borderColor(value: Color) {
+        if (View._animationEnabled && this.borderColor) {
             if (this.borderColor.a != value.a) { View.addAnimation(this, "borderColorA", this.borderColor.a, value.a); }
             if (this.borderColor.r != value.r) { View.addAnimation(this, "borderColorR", this.borderColor.r, value.r); }
             if (this.borderColor.g != value.g) { View.addAnimation(this, "borderColorG", this.borderColor.g, value.g); }
@@ -277,34 +277,26 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     private set borderColorA(value: number) {
-        if (this.borderColor) {
-            this.borderColor = new Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
-        }
+        this.borderColor = new Color(this.borderColor.r, this.borderColor.g, this.borderColor.b, value);
     }
 
     private set borderColorR(value: number) {
-        if (this.borderColor) {
-            this.borderColor = new Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
-        }
+        this.borderColor = new Color(value, this.borderColor.g, this.borderColor.b, this.borderColor.a);
     }
 
     private set borderColorG(value: number) {
-        if (this.borderColor) {
-            this.borderColor = new Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
-        }
+        this.borderColor = new Color(this.borderColor.r, value, this.borderColor.b, this.borderColor.a);
     }
 
     private set borderColorB(value: number) {
-        if (this.borderColor) {
-            this.borderColor = new Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
-        }
+        this.borderColor = new Color(this.borderColor.r, this.borderColor.g, value, this.borderColor.a);
     }
 
-    public get shadowColor(): Color | undefined {
+    public get shadowColor(): Color {
         return this.nativeObject.xtr_shadowColor()
     }
 
-    public set shadowColor(value: Color | undefined) {
+    public set shadowColor(value: Color) {
         this.nativeObject.xtr_setShadowColor(value);
     }
 
@@ -334,11 +326,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
 
     // Mark: View Hierarchy
 
-    public get tag(): number | undefined {
+    public get tag(): number {
         return this.nativeObject.xtr_tag();
     }
 
-    public set tag(value: number | undefined) {
+    public set tag(value: number) {
         this.nativeObject.xtr_setTag(value);
     }
 

@@ -134,6 +134,10 @@ export class ScrollView extends View {
         this.resetIndicator();
     }
 
+    setContentOffset(value: Point, animated: boolean): void {
+        this.contentOffset = value;
+    }
+
     private _contentSize: Size = SizeZero
 
     public get contentSize() {
