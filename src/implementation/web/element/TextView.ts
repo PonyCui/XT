@@ -105,7 +105,7 @@ export class TextViewElement extends ViewElement {
 
     public xtr_setFont(value: Font | undefined) {
         this.font = value || Font.systemFontOfSize(14.0)
-        this.inputObject.style.fontSize = this.font.pointSize.toString() + "pt"
+        this.inputObject.style.fontSize = this.font.pointSize.toString() + "px"
         this.inputObject.style.fontFamily = this.font.familyName || "Arial";
         this.inputObject.style.fontWeight = this.font.fontWeight;
         this.inputObject.style.fontStyle = this.font.fontStyle;

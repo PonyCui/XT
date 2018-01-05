@@ -12,8 +12,8 @@ export class Button extends View {
     private imageView: ImageView = new ImageView();
     private titleLabel: Label = new Label();
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(rect, _isChild)
+    constructor() {
+        super()
         this.titleLabel.numberOfLines = 1;
         this.titleLabel.textAlignment = TextAlignment.Center
         this.titleLabel.lineBreakMode = LineBreakMode.TruncatingTail

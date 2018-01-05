@@ -18,27 +18,21 @@ declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
+    
     retain(): this {
-        throw new Error("Method not implemented.");
+        return this
     }
+    
     release(): this {
-        throw new Error("Method not implemented.");
-    }
-
-    addOwner(owner: any): this {
-        return this;
+        return this
     }
 
     nativeObject: any;
     viewDelegate: any;
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        if (_isChild) { return; }
-        this.nativeObject = new ViewElement(rect || RectZero, this);
-        setImmediate(() => { this.init(); });
+    constructor(nativeClazz: any = ViewElement, arg0?: any, arg1?: any, arg2?: any) {
+        this.nativeObject = new nativeClazz(this, arg0, arg1, arg2)
     }
-
-    init() { }
 
     // Mark: View Geometry
 
@@ -469,8 +463,10 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                 if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).nativeObject.objectUUID] = item.firstItem as any }
                 if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).nativeObject.objectUUID] = item.secondItem as any }
             })
+            let constraints = this._constraints.map(item => (item as any).toALObject())
+            AutoLayout.VisualFormat.parse("HV:|[_]|", { extended: true }).forEach((it: any) => constraints.push(it))
             const view = new AutoLayout.View({
-                constraints: this._constraints.map(item => (item as any).toALObject()),
+                constraints,
                 width: this.bounds.width,
                 height: this.bounds.height,
             });

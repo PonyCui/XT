@@ -8,8 +8,8 @@ export class CustomViewElement extends ViewElement {
     private factoryObject?: CustomViewFactory
     private firstElement?: HTMLElement
 
-    constructor(className: string, frame: Rect, scriptObject: any) {
-        super(frame, scriptObject)
+    constructor(scriptObject: any, className: string) {
+        super(scriptObject)
         this.loadCustomView(className)
     }
 

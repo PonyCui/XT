@@ -12,14 +12,13 @@ export class ViewElement extends BaseElement {
     clipPathObject?: SVGClipPathElement = undefined
     filterObject?: SVGFilterElement = undefined
 
-    constructor(frame: Rect, scriptObject: any) {
+    constructor(scriptObject: any) {
         super(scriptObject);
         this.nativeObject.setAttribute('id', this.objectUUID);
         this.backgroundObject.setAttribute('visibility', 'hidden');
         this.loadContent();
         if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }
         this.nativeObject.appendChild(this.containerObject);
-        this.xtr_setFrame(frame)
     }
 
     protected loadContent() { }

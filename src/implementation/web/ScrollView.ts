@@ -18,12 +18,22 @@ export class ScrollView extends View {
     private readonly verticalScrollIndicator: View = new View();;
     private scroller: any;
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.nativeObject = new ScrollViewElement(rect || RectZero, this);
+    constructor() {
+        super(ScrollViewElement)
         this.userInteractionEnabled = true;
-        setImmediate(() => { this.init(); });
+        this.clipsToBounds = true;
+        this.innerView.userInteractionEnabled = true;
+        super.addSubview(this.innerView);
+        this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
+        this.horizonalScrollIndicator.cornerRadius = 1.0;
+        this.horizonalScrollIndicator.alpha = 0.0;
+        super.addSubview(this.horizonalScrollIndicator);
+        this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
+        this.verticalScrollIndicator.cornerRadius = 1.0;
+        this.verticalScrollIndicator.alpha = 0.0;
+        super.addSubview(this.verticalScrollIndicator);
+        this.resetScroller();
+        this.setupTouches();
     }
 
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
@@ -43,23 +53,6 @@ export class ScrollView extends View {
             }
         }
         return target
-    }
-
-    init() {
-        super.init();
-        this.clipsToBounds = true;
-        this.innerView.userInteractionEnabled = true;
-        super.addSubview(this.innerView);
-        this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
-        this.horizonalScrollIndicator.cornerRadius = 1.0;
-        this.horizonalScrollIndicator.alpha = 0.0;
-        super.addSubview(this.horizonalScrollIndicator);
-        this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
-        this.verticalScrollIndicator.cornerRadius = 1.0;
-        this.verticalScrollIndicator.alpha = 0.0;
-        super.addSubview(this.verticalScrollIndicator);
-        this.resetScroller();
-        this.setupTouches();
     }
 
     private setupTouches() {
@@ -263,7 +256,7 @@ export class ScrollView extends View {
 
     private _tracking = false;
     private _indicatorHidingTimer: number = 0
-    private _restoreInteractiveChildrenTimer: number = 0
+    private _restoreInteractiveChildrenTimer: any = 0
     private _indicatorShowed = false;
 
     private resetIndicator() {

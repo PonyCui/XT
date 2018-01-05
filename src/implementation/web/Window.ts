@@ -12,12 +12,9 @@ export class Window extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.nativeObject = new WindowElement(rect || RectZero, this);
+    constructor() {
+        super(WindowElement)
         this.userInteractionEnabled = true
-        setImmediate(() => { this.init(); });
     }
 
     private _rootViewController?: ViewController

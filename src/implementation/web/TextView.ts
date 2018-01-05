@@ -12,19 +12,12 @@ export class TextView extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.nativeObject = new TextViewElement(rect || RectZero, this);
+    constructor() {
+        super(TextViewElement)
         this.userInteractionEnabled = true;
         this.onTap = () => {
             this.focus();
         }
-        setImmediate(() => { this.init(); });
-    }
-
-    init() {
-        super.init();
         this.clipsToBounds = true;
     }
 

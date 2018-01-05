@@ -17,8 +17,8 @@ export class ListCell extends View {
     contentView: View = new View();
     _isBusy = false
 
-    init() {
-        super.init();
+    constructor() {
+        super();
         this.selectionView.backgroundColor = new Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
         this.selectionView.alpha = 0.0;
         this.selectionView.hidden = true;
@@ -80,8 +80,8 @@ export class ListCell extends View {
 
 export class ListView extends ScrollView {
 
-    init() {
-        super.init();
+    constructor() {
+        super()
         this.alwaysBounceVertical = true;
     }
 

@@ -2,7 +2,7 @@ var path = require('path')
 var webpack = require('webpack')
 var WebpackShellPlugin = require('webpack-shell-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var XTCarPlugin = require('./xtcar/index')
+var XTCarPlugin = require('./xtassets/index')
 
 module.exports = function (env) {
     var setting = {
@@ -13,7 +13,6 @@ module.exports = function (env) {
             filename: "[name].js",
             path: __dirname + "/dist"
         },
-        devtool: "source-map",
         resolve: {
             extensions: [".xtml", ".ts", ".js"]
         },
@@ -34,9 +33,6 @@ module.exports = function (env) {
             new WebpackShellPlugin({
                 onBuildExit: ['cp dist/sample.min.js android/app/src/main/assets/sample.min.js']
             }),
-            new CopyWebpackPlugin([
-                { from: 'sample/assets', to: 'assets' }
-            ]),
             new XTCarPlugin(
                 { entry: ['./sample/assets'], filename: 'sample.xtassets' }
             ),
@@ -90,10 +86,6 @@ module.exports = function (env) {
                 output: { comments: false },
             }),
         ];
-    }
-    if (env && env.test) {
-        setting.entry = { "tests": "./src/tests.ts" };
-        setting.plugins = undefined;
     }
     return setting;
 };

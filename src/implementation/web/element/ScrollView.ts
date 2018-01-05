@@ -4,8 +4,8 @@ import { PointZero } from "../../../main.ios";
 
 export class ScrollViewElement extends ViewElement {
 
-    constructor(frame: Rect, scriptObject: any) {
-        super(frame, scriptObject)
+    constructor(scriptObject: any) {
+        super(scriptObject)
     }
 
     private contentOffset: Point = PointZero

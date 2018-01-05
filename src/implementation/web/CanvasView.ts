@@ -7,12 +7,9 @@ export class CanvasView extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.nativeObject = new CanvasElement(rect || RectZero, this);
+    constructor() {
+        super(CanvasElement)
         this.userInteractionEnabled = true
-        setImmediate(() => { this.init(); });
     }
 
     public get globalAlpha(): number | undefined {

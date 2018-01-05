@@ -5,8 +5,8 @@ export class WindowElement extends ViewElement {
 
     static _allowDefault = false;
 
-    constructor(frame: Rect, scriptObject: any) {
-        super(frame, scriptObject)
+    constructor(scriptObject: any) {
+        super(scriptObject)
         this.setupTouches();
     }
 

@@ -57,7 +57,7 @@ export class LabelElement extends ViewElement {
 
     public xtr_setFont(value: Font | undefined) {
         this.font = value || Font.systemFontOfSize(14.0)
-        this.spanObject.style.fontSize = this.font.pointSize.toString() + "pt"
+        this.spanObject.style.fontSize = this.font.pointSize.toString() + "px"
         this.spanObject.style.fontFamily = this.font.familyName || "Arial";
         this.spanObject.style.fontWeight = this.font.fontWeight;
         this.spanObject.style.fontStyle = this.font.fontStyle;

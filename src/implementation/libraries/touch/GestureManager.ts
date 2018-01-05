@@ -33,7 +33,7 @@ export interface GestureOwner {
 export class GestureManager {
 
     static activeGesture: GestureRecongnizer | undefined
-    static activeTimerHanders: number[] = []
+    static activeTimerHanders: any[] = []
     static touchCalled = false;
 
     static onTrigger(gestureRecongnizer: GestureRecongnizer): boolean {

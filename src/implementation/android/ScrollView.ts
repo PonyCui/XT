@@ -252,7 +252,7 @@ export class ScrollView extends View {
 
     private _tracking = false;
     private _indicatorHidingTimer: number = 0
-    private _restoreInteractiveChildrenTimer: number = 0
+    private _restoreInteractiveChildrenTimer: any = 0
     private _indicatorShowed = false;
 
     private resetIndicator() {

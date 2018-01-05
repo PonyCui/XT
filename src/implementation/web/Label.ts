@@ -28,11 +28,8 @@ export class Label extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.nativeObject = new LabelElement(rect || RectZero, this);
-        setImmediate(() => { this.init(); });
+    constructor() {
+        super(LabelElement)
     }
 
     public get text(): string {

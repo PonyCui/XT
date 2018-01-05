@@ -8,12 +8,9 @@ export class CustomView extends View {
 
     nativeObject: any;
 
-    constructor(className: string, rect?: Rect, _isChild: boolean = false) {
-        super(undefined, true)
-        if (_isChild) { return; }
-        this.nativeObject = new CustomViewElement(className, rect || RectZero, this);
+    constructor(className: string) {
+        super(CustomViewElement, className)
         this.userInteractionEnabled = true
-        setImmediate(() => { this.init(); });
     }
 
     public get props(): any {
