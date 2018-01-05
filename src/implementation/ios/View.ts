@@ -412,20 +412,20 @@ export class View implements Releasable {
         return this._onPan;
     }
 
-    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point, translation?: Point) => void) | undefined) {
         this._onPan = value;
         XTRView.xtr_activePan(this.objectRef);
     }
 
-    handlePan(state: number, viewLocation: Point, absLocation: Point) {
+    handlePan(state: number, viewLocation: Point, absLocation: Point, velocity: Point, translation: Point) {
         if (state === 1) {
-            this.onPan && this.onPan(InteractionState.Began, viewLocation, absLocation);
+            this.onPan && this.onPan(InteractionState.Began, viewLocation, absLocation, velocity, translation);
         }
         else if (state === 2) {
-            this.onPan && this.onPan(InteractionState.Changed, viewLocation, absLocation);
+            this.onPan && this.onPan(InteractionState.Changed, viewLocation, absLocation, velocity, translation);
         }
         else if (state === 3 || state === 4 || state === 5) {
-            this.onPan && this.onPan(InteractionState.Ended, viewLocation, absLocation);
+            this.onPan && this.onPan(InteractionState.Ended, viewLocation, absLocation, velocity, translation);
         }
     }
 
@@ -434,7 +434,9 @@ export class View implements Releasable {
         XTRView.xtr_animationWithDurationAnimationCompletion(duration, animations, completion);
     }
 
-    static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) { }
+    static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) {
+        XTRView.xtr_animationWithBouncinessAndSpeedDampingVelocityAnimationCompletion(0.50, damping, velocity, animations, completion);
+    }
 
     static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) {
         XTRView.xtr_animationWithBouncinessAndSpeedDampingVelocityAnimationCompletion(duration, damping, velocity, animations, completion);

@@ -1,19 +1,17 @@
 /// <reference path="../../src/xt.d.ts" />
 
-export class TextFieldSample extends XT.ViewController {
+export class TapSample extends XT.ViewController {
 
     contentView = new XT.ScrollView()
 
     viewDidLoad() {
         super.viewDidLoad()
         this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.navigationBar.title = "TextField"
+        this.navigationBar.title = "Tap & Double Tap"
         this.showNavigationBar()
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.contentView.alwaysBounceVertical = true
         this.view.addSubview(this.contentView)
-        this.view.onTap = () => {
-            this.view.window.endEditing()
-        }
         this.addTestCases()
     }
 
@@ -23,13 +21,13 @@ export class TextFieldSample extends XT.ViewController {
     }
 
     addTestCases() {
-        this.addRegularTextField()
-        this.addAdditionalViewTextField()
-        this.addPasswrdTextField()
-        this.contentView.contentSize = XT.SizeMake(0, 360)
+        this.addTapView()
+        this.addDoubleTapView()
+        this.addBothTapView()
+        this.contentView.contentSize = XT.SizeMake(0, 480)
     }
 
-    addRegularTextField() {
+    addTapView() {
         const wrapper = new XT.View()
         wrapper.frame = XT.RectMake(15, 0, 999, 120)
         const summary = new XT.Label()
@@ -37,48 +35,45 @@ export class TextFieldSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Regular TextField \nframe = {0, 66, 200, 36}"
+        summary.text = "View - Single Tap \nTry to tap it."
         wrapper.addSubview(summary)
         // Sample Code {
-        const view = new XT.TextField()
-        view.frame = XT.RectMake(0, 66, 200, 36)
-        view.backgroundColor = XT.Color.whiteColor
-        view.font = XT.Font.systemFontOfSize(14)
-        view.textAlignment = XT.TextAlignment.Center
-        view.clearButtonMode = XT.TextFieldViewMode.WhileEditing
-        view.placeholder = "Tap to input text."
+        const view = new XT.View()
+        view.frame = XT.RectMake(0, 66, 44, 44)
+        view.backgroundColor = XT.Color.grayColor
+        view.userInteractionEnabled = true
+        view.onTap = () => {
+            view.backgroundColor = XT.Color.greenColor
+        }
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)
     }
 
-    addAdditionalViewTextField() {
+    addDoubleTapView() {
         const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 120, 999, 240)
+        wrapper.frame = XT.RectMake(15, 120, 999, 120)
         const summary = new XT.Label()
         summary.frame = XT.RectMake(0, 8, 999, 44)
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Additional View TextField \nframe = {0, 66, 200, 36}"
+        summary.text = "View - Double Tap \nTry to tap it."
         wrapper.addSubview(summary)
         // Sample Code {
-        const view = new XT.TextField()
-        view.frame = XT.RectMake(0, 66, 200, 36)
-        view.backgroundColor = XT.Color.whiteColor
-        view.font = XT.Font.systemFontOfSize(14)
-        view.placeholder = "Input with additional view."
-        const leftView = new XT.View()
-        leftView.backgroundColor = XT.Color.grayColor
-        leftView.frame = XT.RectMake(0, 0, 15, 36)
-        view.leftView = leftView
-        view.leftViewMode = XT.TextFieldViewMode.Always
+        const view = new XT.View()
+        view.frame = XT.RectMake(0, 66, 44, 44)
+        view.backgroundColor = XT.Color.grayColor
+        view.userInteractionEnabled = true
+        view.onDoubleTap = () => {
+            view.backgroundColor = XT.Color.greenColor
+        }
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)
     }
 
-    addPasswrdTextField() {
+    addBothTapView() {
         const wrapper = new XT.View()
         wrapper.frame = XT.RectMake(15, 240, 999, 120)
         const summary = new XT.Label()
@@ -86,17 +81,19 @@ export class TextFieldSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Password TextField, Return Key = Go \nframe = {0, 66, 200, 36}"
+        summary.text = "View - Single Tap & Double Tap \nTry to tap it."
         wrapper.addSubview(summary)
         // Sample Code {
-        const view = new XT.TextField()
-        view.frame = XT.RectMake(0, 66, 200, 36)
-        view.backgroundColor = XT.Color.whiteColor
-        view.font = XT.Font.systemFontOfSize(14)
-        view.textAlignment = XT.TextAlignment.Center
-        view.placeholder = "Input Password Here."
-        view.secureTextEntry = true
-        view.returnKeyType = XT.ReturnKeyType.Go
+        const view = new XT.View()
+        view.frame = XT.RectMake(0, 66, 44, 44)
+        view.backgroundColor = XT.Color.grayColor
+        view.userInteractionEnabled = true
+        view.onTap = () => {
+            view.backgroundColor = XT.Color.redColor
+        }
+        view.onDoubleTap = () => {
+            view.backgroundColor = XT.Color.greenColor
+        }
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)

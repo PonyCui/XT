@@ -117,7 +117,7 @@
     return managedObject.objectUUID;
 }
 
-+ (NSArray *)xtr_constraintsWithVisualFormat:(JSValue *)format views:(JSValue *)argViews {
++ (NSArray *)xtr_constraintsWithVisualFormat:(NSString *)format views:(JSValue *)argViews {
     NSMutableDictionary *views = [NSMutableDictionary dictionary];
     [[argViews toDictionary] enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         UIView *toView = [XTMemoryManager find:obj];
@@ -126,7 +126,7 @@
             [views setObject:toView forKey:key];
         }
     }];
-    NSArray *nativeConstraints = [NSLayoutConstraint constraintsWithVisualFormat:[format toString]
+    NSArray *nativeConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format
                                                                          options:kNilOptions
                                                                          metrics:nil
                                                                            views:[views copy]];

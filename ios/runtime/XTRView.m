@@ -580,15 +580,7 @@
     UIView *obj = [XTMemoryManager find:objectRef];
     XTRLayoutConstraint *constraint = [XTMemoryManager find:valueRef];
     if ([obj isKindOfClass:[UIView class]] && [constraint isKindOfClass:[XTRLayoutConstraint class]]) {
-        if (constraint) {
-            if ([constraint.innerObject.firstItem isKindOfClass:[UIView class]]) {
-                [constraint.innerObject.firstItem setTranslatesAutoresizingMaskIntoConstraints:NO];
-            }
-            if ([constraint.innerObject.secondItem isKindOfClass:[UIView class]]) {
-                [constraint.innerObject.secondItem setTranslatesAutoresizingMaskIntoConstraints:NO];
-            }
-            [obj addConstraint:constraint.innerObject];
-        }
+        [obj addConstraint:constraint.innerObject];
     }
 }
 
@@ -720,11 +712,14 @@
 - (void)handlePan:(UIPanGestureRecognizer *)sender {
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"handlePan" withArguments:@[
-                                                                @(sender.state),
-                                                                [JSValue fromPoint:[sender locationInView:self]],
-                                                                [JSValue fromPoint:[sender locationInView:self.window]],
-                                                              ]];
+        [scriptObject invokeMethod:@"handlePan"
+                     withArguments:@[
+                                        @(sender.state),
+                                        [JSValue fromPoint:[sender locationInView:self]],
+                                        [JSValue fromPoint:[sender locationInView:self.window]],
+                                        [JSValue fromPoint:[sender velocityInView:nil]],
+                                        [JSValue fromPoint:[sender translationInView:nil]],
+                                    ]];
     }
 }
 

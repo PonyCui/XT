@@ -94,7 +94,11 @@ export class LayoutConstraint implements Releasable {
     }
 
     static constraintsWithVisualFormat(format: string, views: { [key: string]: View }): LayoutConstraint[] {
-        return XTRLayoutConstraint.xtr_constraintsWithVisualFormatViews(format, views).map((ref: string) => {
+        const viewsRef: any = {};
+        for (const key in views) {
+            viewsRef[key] = views[key].objectRef
+        }
+        return XTRLayoutConstraint.xtr_constraintsWithVisualFormatViews(format, viewsRef).map((ref: string) => {
             return new LayoutConstraint(ref)
         });
     }

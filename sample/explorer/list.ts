@@ -7,6 +7,11 @@ import { LabelSample } from "./label";
 import { TextViewSample } from "./textview";
 import { ButtonSample } from "./button";
 import { TextFieldSample } from "./textfield";
+import { TapSample } from "./tap";
+import { LongPressSample } from "./longpress";
+import { PanSample } from "./pan";
+import { FrameLayoutSample } from "./framelayout";
+import { AutoLayoutSample } from "./autolayout";
 
 
 class Header extends XT.ListCell {
@@ -250,6 +255,66 @@ export class List extends XT.ViewController {
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new TextFieldSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
+                name: "手势",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Tap & Double Tap",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new TapSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "LongPress",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new LongPressSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Pan",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new PanSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
+                name: "布局",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "FrameLayout",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new FrameLayoutSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "AutoLayout",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new AutoLayoutSample())
                     }
                 },
             },
