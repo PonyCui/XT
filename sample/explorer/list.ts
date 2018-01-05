@@ -122,6 +122,27 @@ class Cell extends XT.ListCell {
 
 }
 
+class Footer extends XT.ListCell {
+
+    titleLabel = new XT.Label()
+
+    constructor() {
+        super()
+        this.titleLabel.font = XT.Font.systemFontOfSize(12)
+        this.titleLabel.textAlignment = XT.TextAlignment.Center
+        this.titleLabel.textColor = new XT.Color(0x6b / 0xff, 0x6b / 0xff, 0x6b / 0xff)
+        this.titleLabel.numberOfLines = 1
+        this.titleLabel.text = "UED Opensource"
+        this.addSubview(this.titleLabel)
+    }
+
+    layoutSubviews() {
+        super.layoutSubviews()
+        this.titleLabel.frame = this.bounds
+    }
+
+}
+
 export class List extends XT.ViewController {
 
     listView = new XT.ListView()
@@ -142,6 +163,7 @@ export class List extends XT.ViewController {
         this.listView.register(Header, "Header", this)
         this.listView.register(SectionHeader, "SectionHeader", this)
         this.listView.register(Cell, "Cell", this)
+        this.listView.register(Footer, "Footer", this)
         this.view.addSubview(this.listView)
     }
 
@@ -227,6 +249,7 @@ export class List extends XT.ViewController {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
                 name: "TextView",
+                isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new TextViewSample())
@@ -252,6 +275,7 @@ export class List extends XT.ViewController {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
                 name: "TextField",
+                isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new TextFieldSample())
@@ -287,6 +311,7 @@ export class List extends XT.ViewController {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
                 name: "Pan",
+                isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new PanSample())
@@ -312,12 +337,17 @@ export class List extends XT.ViewController {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
                 name: "AutoLayout",
+                isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new AutoLayoutSample())
                     }
                 },
             },
+            {
+                reuseIdentifier: "Footer",
+                rowHeight: () => 66,
+            }
         ]
         this.listView.reloadData()
     }

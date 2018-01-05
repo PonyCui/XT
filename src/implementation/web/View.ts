@@ -526,7 +526,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     static SwipeDirection = SwipeDirection
 
     gestureRecongnizers: GestureRecongnizer[] = []
-    userInteractionEnabled: boolean = false
+    userInteractionEnabled: boolean = true
     multipleTouchEnabled: boolean = false
 
     hitTest(point: { x: number; y: number; }): Touchable | undefined {

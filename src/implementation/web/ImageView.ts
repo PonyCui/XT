@@ -6,19 +6,32 @@ import { ImageRenderingMode } from "../../interface/ImageView";
 import { ImageViewElement } from "./element/ImageView";
 import { Releasable } from "../../interface/Releasable";
 
+const scaleOptions = [3, 2]
+
 export class Image implements Releasable {
+
     retain(): this {
-        throw new Error("Method not implemented.");
-    }
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
-    
-    addOwner(owner: any): this {
         return this
     }
 
-    static assetsPath = "assets/"
+    release(): this {
+        return this
+    }
+
+    static assets: { [key: string]: string }
+
+    static loadAssets(url: string) {
+        const request = new XMLHttpRequest()
+        request.open('GET', url, false)
+        request.onload = (e) => {
+            if (request.status < 400 && request.readyState == 4) {
+                try {
+                    this.assets = JSON.parse(request.response)
+                } catch (error) { }
+            }
+        }
+        request.send()
+    }
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         const request = new XMLHttpRequest()
@@ -55,24 +68,26 @@ export class Image implements Releasable {
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        this.fromURL(this.assetsPath + named + "@2x.png", success, failure);
-    }
-
-    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        let scale: number | undefined = undefined;
-        if (typeof scales === "number") {
-            scale = scales
+        let targetData: string | undefined;
+        let scale = Math.ceil(window.devicePixelRatio)
+        if (this.assets[named + "@" + scale.toFixed(0) + "x.png"]) {
+            targetData = this.assets[named + "@" + scale.toFixed(0) + "x.png"]
         }
-        else if (scales instanceof Array) {
-            scales.forEach(it => { if (it == Math.ceil(devicePixelRatio)) { scale = it } })
-            if (scale === undefined) {
-                scale = scales[0]
+        else {
+            for (let index = 0; index < scaleOptions.length; index++) {
+                scale = scaleOptions[index];
+                if (this.assets[named + "@" + scale.toFixed(0) + "x.png"]) {
+                    targetData = this.assets[named + "@" + scale.toFixed(0) + "x.png"]
+                    break;
+                }
             }
         }
-        let subfix: string;
-        if (scale == undefined || scale == 1.0) { subfix = "" }
-        else { subfix = "@" + scale.toFixed(0) + "x" }
-        this.fromURL(this.assetsPath + named + subfix + ".png", success, failure);
+        if (targetData) {
+            this.fromBase64(targetData, scale, success)
+        }
+        else {
+            if (failure) { failure(new Error("Image not found.")) }
+        }
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {

@@ -23,7 +23,7 @@ export class TextMeasurer {
             measureSpan.style.top = "-10000000px"
             document.body.appendChild(measureSpan);
         }
-        measureSpan.style.fontSize = params.font.pointSize.toString() + "pt";
+        measureSpan.style.fontSize = params.font.pointSize.toString() + "px";
         measureSpan.style.fontFamily = params.font.familyName || "Arial";
         measureSpan.style.fontWeight = params.font.fontWeight;
         measureSpan.style.fontStyle = params.font.fontStyle;
@@ -36,7 +36,7 @@ export class TextMeasurer {
             measureSpan.style.whiteSpace = "nowrap";
             measureSpan.style.maxWidth = null;
             measureSpan.innerText = text;
-            return RectMake(0.0, 0.0, Math.min(params.inRect.width, measureSpan.offsetWidth), measureSpan.offsetHeight)
+            return RectMake(0.0, 0.0, Math.min(params.inRect.width, Math.ceil(measureSpan.offsetWidth + 1)), Math.ceil(measureSpan.offsetHeight))
         }
         else {
             measureSpan.style.display = "block";
@@ -45,7 +45,7 @@ export class TextMeasurer {
             measureSpan.style.whiteSpace = "pre-wrap"
             measureSpan.style.maxWidth = params.inRect.width.toString() + "px";
             measureSpan.innerText = text;
-            return RectMake(0.0, 0.0, Math.min(params.inRect.width, measureSpan.offsetWidth), Math.min(params.inRect.height, measureSpan.offsetHeight))
+            return RectMake(0.0, 0.0, Math.min(params.inRect.width, Math.ceil(measureSpan.offsetWidth + 1)), Math.min(params.inRect.height, Math.ceil(measureSpan.offsetHeight)))
         }
         return RectZero
     }
