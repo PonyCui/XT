@@ -16,7 +16,7 @@ class ListCellSample extends XT.ListCell {
         }
     }
 
-    didHighlighted(value) {
+    didHighlighted(value: boolean) {
         this.backgroundColor = value ? new XT.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : XT.Color.whiteColor
     }
 
@@ -24,7 +24,9 @@ class ListCellSample extends XT.ListCell {
         if (this.context instanceof XT.ViewController) {
             if (this.context.navigationController) {
                 const nextViewController = new XT.ViewController()
-                nextViewController.navigationBar.title = this.currentItem.name
+                if (this.currentItem) {
+                    nextViewController.navigationBar.title = this.currentItem.name
+                }
                 nextViewController.showNavigationBar()
                 this.context.navigationController.pushViewController(nextViewController)
             }

@@ -7,6 +7,12 @@ import { ImageViewElement } from "./element/ImageView";
 import { Releasable } from "../../interface/Releasable";
 
 export class Image implements Releasable {
+    retain(): this {
+        throw new Error("Method not implemented.");
+    }
+    release(): this {
+        throw new Error("Method not implemented.");
+    }
     
     addOwner(owner: any): this {
         return this

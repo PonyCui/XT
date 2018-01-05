@@ -15,6 +15,12 @@ export interface NavigationControllerInterface extends ViewController {
 }
 
 export class ViewController implements Releasable {
+    retain(): this {
+        throw new Error("Method not implemented.");
+    }
+    release(): this {
+        throw new Error("Method not implemented.");
+    }
     
     addOwner(owner: any): this {
         return this

@@ -5,6 +5,7 @@ import { Color } from "../../interface/Color";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { LayoutConstraint } from "./LayoutConstraint";
 import { Releasable } from '../../interface/Releasable';
+const AutoLayout = require("autolayout");
 
 export class View implements Releasable {
 
@@ -305,30 +306,74 @@ export class View implements Releasable {
 
     setNeedsLayout() { XTRView.xtr_setNeedsLayout(this.objectRef) }
     layoutIfNeeded() { XTRView.xtr_layoutIfNeeded(this.objectRef) }
-    layoutSubviews() { }
+    layoutSubviews() {
+        if (this._constraints.length > 0) {
+            let viewMapping: { [key: string]: View } = {}
+            this._constraints.forEach(item => {
+                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).objectRef] = item.firstItem as any }
+                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).objectRef] = item.secondItem as any }
+            })
+            let constraints = this._constraints.map(item => (item as any).toALObject())
+            AutoLayout.VisualFormat.parse("HV:|[_]|", { extended: true }).forEach((it: any) => constraints.push(it))
+            const view = new AutoLayout.View({
+                constraints,
+                width: this.bounds.width,
+                height: this.bounds.height,
+            });
+            for (const layoutID in view.subViews) {
+                const value = view.subViews[layoutID];
+                if (viewMapping[layoutID] !== undefined) {
+                    const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
+                    if (intrinsticSize !== undefined && intrinsticSize !== null) {
+                        value.intrinsicWidth = intrinsticSize.width;
+                        value.intrinsicHeight = intrinsticSize.height;
+                    }
+                }
+            }
+            for (const layoutID in view.subViews) {
+                const value = view.subViews[layoutID];
+                if (viewMapping[layoutID] !== undefined) {
+                    if (viewMapping[layoutID] == this) { continue; }
+                    viewMapping[layoutID].frame = {
+                        x: value.left,
+                        y: value.top,
+                        width: value.width,
+                        height: value.height,
+                    }
+                }
+            }
+        }
+    }
 
     // Mark: View LayoutConstraint
 
+    private _constraints: LayoutConstraint[] = [];
+
     public get constraints(): LayoutConstraint[] {
-        return XTRView.xtr_constraints(this.objectRef).map((ref: string) => {
-            return new LayoutConstraint(ref)
-        });
+        return this._constraints.slice();
     }
 
-    addConstraint(constraint: LayoutConstraint) {
-        XTRView.xtr_addConstraintObjectRef(constraint.objectRef, this.objectRef);
+    public intrinsicContentSize(width?: number): Size | undefined {
+        return undefined;// this.nativeObject.xtr_intrinsicContentSize(width || Infinity);
     }
 
-    addConstraints(constraints: LayoutConstraint[]) {
-        XTRView.xtr_addConstraintsObjectRef(constraints.map(it => it.objectRef), this.objectRef);
+    public addConstraint(constraint: LayoutConstraint) {
+        this._constraints.push(constraint);
     }
 
-    removeConstraint(constraint: LayoutConstraint) {
-        XTRView.xtr_removeConstraintObjectRef(constraint.objectRef, this.objectRef);
+    public addConstraints(constraints: LayoutConstraint[]) {
+        constraints.forEach(constraint => this._constraints.push(constraint));
     }
 
-    removeAllConstraints() {
-        XTRView.xtr_removeAllConstraints(this.objectRef);
+    public removeConstraint(constraint: LayoutConstraint) {
+        const idx = this._constraints.indexOf(constraint);
+        if (idx >= 0) {
+            this._constraints.splice(idx, 1);
+        }
+    }
+
+    public removeAllConstraints() {
+        this._constraints = [];
     }
 
     // Mark: View Interactive

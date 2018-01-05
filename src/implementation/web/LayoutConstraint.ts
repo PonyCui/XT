@@ -35,7 +35,7 @@ export class LayoutConstraint extends ILayoutConstraint implements Releasable {
 
     static constraintsWithVisualFormat(format: string, views: { [key: string]: View | any }): LayoutConstraint[] {
         try {
-            const result = AutoLayout.VisualFormat.parse(format);
+            const result = AutoLayout.VisualFormat.parse(format, {extended: true});
             return result.map((item: any) => {
                 return LayoutConstraint.fromALObject(item, views)
             })

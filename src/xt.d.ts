@@ -342,7 +342,7 @@ export class LayoutConstraint implements Releasable {
     readonly multiplier: number;
     priority: number;
     constructor(firstItem?: View, firstAttr?: LayoutAttribute, relation?: LayoutRelation, secondItem?: View, secondAttr?: LayoutAttribute, constant?: number, multiplier?: number)
-    static constraintsWithVisualFormat(format: string, views: { [key: string]: View }): LayoutConstraint[]
+    static constraintsWithVisualFormat(format: string, views?: { [key: string]: View } | Object): LayoutConstraint[]
 }
 
 export class ApplicationDelegate {

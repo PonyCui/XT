@@ -12,7 +12,9 @@ export class TextFieldSample extends XT.ViewController {
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.view.addSubview(this.contentView)
         this.view.onTap = () => {
-            this.view.window.endEditing()
+            if (this.view.window) {
+                this.view.window.endEditing()
+            }
         }
         this.addTestCases()
     }

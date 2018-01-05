@@ -49,15 +49,6 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-- (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
-    if ([[self nextResponder] isKindOfClass:[UIViewController class]]) {
-        [super setTranslatesAutoresizingMaskIntoConstraints:YES];
-    }
-    else {
-        [super setTranslatesAutoresizingMaskIntoConstraints:translatesAutoresizingMaskIntoConstraints];
-    }
-}
-
 + (NSDictionary *)xtr_frame:(NSString *)objectRef {
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {

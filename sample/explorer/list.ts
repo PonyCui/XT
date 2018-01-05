@@ -92,7 +92,7 @@ class Cell extends XT.ListCell {
         this.content.addSubview(this.bottomLine)
     }
 
-    didHighlighted(value) {
+    didHighlighted(value: boolean) {
         if (value) {
             this.content.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         }

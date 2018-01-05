@@ -18,6 +18,12 @@ declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
+    retain(): this {
+        throw new Error("Method not implemented.");
+    }
+    release(): this {
+        throw new Error("Method not implemented.");
+    }
 
     addOwner(owner: any): this {
         return this;
