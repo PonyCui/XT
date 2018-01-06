@@ -29,7 +29,7 @@ export class TapSample extends XT.ViewController {
 
     addTapView() {
         const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 0, 999, 120)
+        wrapper.frame = XT.RectMake(15, 0, 999, 160)
         const summary = new XT.Label()
         summary.frame = XT.RectMake(0, 8, 999, 44)
         summary.font = XT.Font.systemFontOfSize(11)
@@ -52,7 +52,7 @@ export class TapSample extends XT.ViewController {
 
     addDoubleTapView() {
         const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 120, 999, 120)
+        wrapper.frame = XT.RectMake(15, 160, 999, 160)
         const summary = new XT.Label()
         summary.frame = XT.RectMake(0, 8, 999, 44)
         summary.font = XT.Font.systemFontOfSize(11)
@@ -75,7 +75,7 @@ export class TapSample extends XT.ViewController {
 
     addBothTapView() {
         const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 240, 999, 120)
+        wrapper.frame = XT.RectMake(15, 320, 999, 160)
         const summary = new XT.Label()
         summary.frame = XT.RectMake(0, 8, 999, 44)
         summary.font = XT.Font.systemFontOfSize(11)

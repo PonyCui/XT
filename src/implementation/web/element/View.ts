@@ -277,6 +277,10 @@ export class ViewElement extends BaseElement {
     private resetFilter() {
         if (this.shadowOpacity > 0.0) {
             const filterObject = this.filterObject || document.createElementNS("http://www.w3.org/2000/svg", "filter");
+            filterObject.setAttribute("x", "-500%")
+            filterObject.setAttribute("y", "-500%")
+            filterObject.setAttribute("width", "1000%")
+            filterObject.setAttribute("height", "1000%")
             filterObject.setAttribute('id', this.objectUUID + ".filter");
             filterObject.innerHTML = '';
             if (this.shadowColor !== undefined) {
