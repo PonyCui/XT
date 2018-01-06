@@ -2,7 +2,7 @@
 
 export class PanSample extends XT.ViewController {
 
-    contentView = new XT.ScrollView()
+    contentView = new XT.View()
 
     viewDidLoad() {
         super.viewDidLoad()
@@ -35,23 +35,26 @@ export class PanSample extends XT.ViewController {
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.View()
-        view.frame = XT.RectMake(120, 120, 44, 44)
+        view.frame = XT.RectMake(120, 120, 66, 66)
         view.backgroundColor = XT.Color.grayColor
         view.cornerRadius = 22
         view.userInteractionEnabled = true
+        view.transform = new XT.TransformMatrix(1.5, 0.0, 0.0, 1.5, 1.0, 1.0)
         view.onPan = (state, viewLocation, absLocation, velocity, translation) => {
             if (state == XT.InteractionState.Began) {
                 view.backgroundColor = XT.Color.greenColor
             }
             else if (state == XT.InteractionState.Changed) {
                 if (translation) {
-                    view.transform = new XT.TransformMatrix(1.25, 0.0, 0.0, 1.25, translation.x, translation.y)
+                    view.transform = new XT.TransformMatrix(1.5, 0.0, 0.0, 1.5, translation.x, translation.y)
                 }
             }
             else if (state == XT.InteractionState.Ended) {
-                XT.View.animationWithBouncinessAndSpeed(0.80, 16.0, () => {
+                XT.View.animationWithDuration(0.35, () => {
                     view.backgroundColor = XT.Color.grayColor
-                    view.transform = new XT.TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+                })
+                XT.View.animationWithBouncinessAndSpeed(8, 16.0, () => {
+                    view.transform = new XT.TransformMatrix(1.5, 0.0, 0.0, 1.5, 1.0, 1.0)
                 })
             }
         }

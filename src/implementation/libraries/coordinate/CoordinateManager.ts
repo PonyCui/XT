@@ -61,7 +61,7 @@ export function convertPointToChildView(point: { x: number, y: number }, parent:
                     let m = point.x - frame.x - newMatrix.tx;
                     let n = point.y - frame.y - newMatrix.ty;
                     let x = (n - m * newMatrix.c / newMatrix.d) / (newMatrix.a - newMatrix.b * newMatrix.c / newMatrix.a)
-                    let y = -(m - n * newMatrix.b / newMatrix.a) / (newMatrix.d - newMatrix.c * newMatrix.b / newMatrix.d)
+                    let y = (m - n * newMatrix.b / newMatrix.a) / (newMatrix.d - newMatrix.c * newMatrix.b / newMatrix.d)
                     curPoint = { x: x, y: y }
                 }
             }

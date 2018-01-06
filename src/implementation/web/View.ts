@@ -624,7 +624,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
             }
             value && value();
         };
-        this.gestureRecongnizers.push(tapGesture);
+        this.gestureRecongnizers.unshift(tapGesture);
     }
 
     public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
@@ -653,7 +653,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.gestureRecongnizers.push(longPressGesture);
     }
 
-    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void) | undefined) {
+    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point, translation?: Point) => void) | undefined) {
         this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof PanGestureRecognizer))
         const panGesture = new PanGestureRecognizer();
         panGesture.owner = this
@@ -673,7 +673,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, viewLocation, absLocation, panGesture.velocity);
+            value && value(interactionState, viewLocation, absLocation, panGesture.velocity, panGesture.translation);
         };
         this.gestureRecongnizers.push(panGesture);
     }

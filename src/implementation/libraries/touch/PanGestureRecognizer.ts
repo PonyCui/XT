@@ -9,16 +9,20 @@ export class PanGestureRecognizer implements GestureRecongnizer {
     state: GestureRecognizerState = GestureRecognizerState.Possible
     deceteMovement = 10;
     velocity: { x: number, y: number } = { x: 0, y: 0 }
+    translation: { x: number, y: number } = { x: 0, y: 0 }
     fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: { x: number, y: number }) => void
 
     private recognized = false
+    private touchStartRawPoint?: { x: number, y: number }
     private touchStartPoint?: { x: number, y: number }[]
     private touchPreviousPoint?: { x: number, y: number }
     private touchPreviousTimestamp?: number = undefined
 
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
+        this.touchStartRawPoint = touches[0].rawLocation
+        this.translation = { x: 0, y: 0 }
         this.touchStartPoint = touches.map(t => t.locationInView(owner as any))
-        this.touchPreviousPoint = {x: this.touchStartPoint[0].x, y: this.touchStartPoint[0].y}
+        this.touchPreviousPoint = { x: this.touchStartPoint[0].x, y: this.touchStartPoint[0].y }
         this.touchPreviousTimestamp = touches[0].timestamp
         this.recognized = false
         this.state = GestureRecognizerState.Possible
@@ -36,8 +40,11 @@ export class PanGestureRecognizer implements GestureRecongnizer {
                 x: (viewLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
                 y: (viewLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
             }
-            this.touchPreviousPoint = {x: viewLocation.x, y: viewLocation.y}
+            this.touchPreviousPoint = { x: viewLocation.x, y: viewLocation.y }
             this.touchPreviousTimestamp = touches[0].timestamp / 1000
+            if (this.touchStartRawPoint) {
+                this.translation = { x: touches[0].rawLocation.x - this.touchStartRawPoint.x, y: touches[0].rawLocation.y - this.touchStartRawPoint.y }
+            }
             this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
         }
         else if (this.touchStartPoint) {
@@ -52,7 +59,7 @@ export class PanGestureRecognizer implements GestureRecongnizer {
             }
             else {
                 const viewLocation = touches[0].locationInView(owner as any)
-                this.touchPreviousPoint = {x: viewLocation.x, y: viewLocation.y}
+                this.touchPreviousPoint = { x: viewLocation.x, y: viewLocation.y }
                 this.touchPreviousTimestamp = touches[0].timestamp / 1000
             }
         }
@@ -68,7 +75,10 @@ export class PanGestureRecognizer implements GestureRecongnizer {
                     x: (viewLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
                     y: (viewLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
                 }
-                this.fire && this.fire(this.state, touches[0].locationInView(owner as any), touches[0].rawLocation)
+                if (this.touchStartRawPoint) {
+                    this.translation = { x: touches[0].rawLocation.x - this.touchStartRawPoint.x, y: touches[0].rawLocation.y - this.touchStartRawPoint.y }
+                }
+                this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
                 releaseBlock && releaseBlock();
                 this.touchStartPoint = undefined;
             }
@@ -82,7 +92,15 @@ export class PanGestureRecognizer implements GestureRecongnizer {
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.state = GestureRecognizerState.Cancelled
-        this.fire && this.fire(this.state, undefined, undefined)
+        const viewLocation = touches[0].locationInView(owner as any)
+        this.velocity = {
+            x: (viewLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+            y: (viewLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+        }
+        if (this.touchStartRawPoint) {
+            this.translation = { x: touches[0].rawLocation.x - this.touchStartRawPoint.x, y: touches[0].rawLocation.y - this.touchStartRawPoint.y }
+        }
+        this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
         this.touchStartPoint = undefined;
         return false
     }

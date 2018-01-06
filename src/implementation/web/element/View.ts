@@ -15,6 +15,7 @@ export class ViewElement extends BaseElement {
     constructor(scriptObject: any) {
         super(scriptObject);
         this.nativeObject.setAttribute('id', this.objectUUID);
+        this.nativeObject.style.transformOrigin = "center";
         this.backgroundObject.setAttribute('visibility', 'hidden');
         this.loadContent();
         if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }

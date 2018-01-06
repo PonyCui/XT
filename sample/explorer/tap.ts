@@ -39,7 +39,7 @@ export class TapSample extends XT.ViewController {
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.View()
-        view.frame = XT.RectMake(0, 66, 44, 44)
+        view.frame = XT.RectMake(0, 66, 66, 66)
         view.backgroundColor = XT.Color.grayColor
         view.userInteractionEnabled = true
         view.onTap = () => {
@@ -62,7 +62,7 @@ export class TapSample extends XT.ViewController {
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.View()
-        view.frame = XT.RectMake(0, 66, 44, 44)
+        view.frame = XT.RectMake(0, 66, 66, 66)
         view.backgroundColor = XT.Color.grayColor
         view.userInteractionEnabled = true
         view.onDoubleTap = () => {
@@ -85,7 +85,7 @@ export class TapSample extends XT.ViewController {
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.View()
-        view.frame = XT.RectMake(0, 66, 44, 44)
+        view.frame = XT.RectMake(0, 66, 66, 66)
         view.backgroundColor = XT.Color.grayColor
         view.userInteractionEnabled = true
         view.onTap = () => {

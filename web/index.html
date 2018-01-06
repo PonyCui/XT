@@ -8,13 +8,10 @@
 
 <body style="margin: 0; overflow-y: hidden; "></body>
 
-<script src="runtime/xt.web.min.js"></script>
-
+<script src="/dist/xt.web.min.js?nocache"></script>
 <script>
     XT.Image.loadAssets("/dist/sample.xtassets?t=" + new Date().toString())
-    var child = document.createElement("script")
-    child.src = "/dist/sample.min.js?t=" + new Date().toString()
-    document.body.appendChild(child);
 </script>
+<script src="/dist/sample.min.js?nocache"></script>
 
 </html>
