@@ -5,6 +5,7 @@ class AppDelegate extends XT.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
         this.window = new XT.Window();
+        this.window.backgroundColor = XT.Color.yellowColor
         this.window.rootViewController = new XT.NavigationController(new List())
         this.window.makeKeyAndVisible();
     }

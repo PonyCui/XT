@@ -193,7 +193,22 @@ export class ListView extends ScrollView {
                 break;
             }
         }
-        const visibleCells: ListCell[] = visibleRows.filter(row => this._reusingCells.filter(cell => cell.currentItem === row.item).length == 0).map(row => {
+        let renderingRows: {
+            minY: number;
+            maxY: number;
+            item: ListItem;
+        }[] = []
+        visibleRows.forEach(row => {
+            var found = false
+            this._reusingCells.forEach(cell => {
+                if (cell.currentItem === row.item) {
+                    cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
+                    found = true
+                }
+            })
+            if (!found) { renderingRows.push(row) }
+        })
+        const visibleCells: ListCell[] = renderingRows.map(row => {
             const cell = this._reusingCells.filter(cell => {
                 return !cell._isBusy && cell.reuseIdentifier === row.item.reuseIdentifier
             })[0] ||

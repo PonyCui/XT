@@ -11,6 +11,9 @@ export class WindowElement extends ViewElement {
     }
 
     setupTouches() {
+        (document.body as any).onresize = () => {
+            this.scriptObject.frame = {...this.xtr_frame(), width: window.outerWidth, height: window.outerHeight}
+        }
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         });

@@ -39,7 +39,7 @@ export class ViewElement extends BaseElement {
     }
 
     public xtr_bounds(): Rect {
-        return { x: 0, y: 0, width: this.frame.width, height: this.frame.height };
+        return { x: 0, y: 0, width: Math.max(0, this.frame.width), height: Math.max(0, this.frame.height) };
     }
 
     public xtr_setBounds(value: Rect) { }

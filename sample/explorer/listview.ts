@@ -17,7 +17,7 @@ class ListCellSample extends XT.ListCell {
     }
 
     didHighlighted(value: boolean) {
-        this.backgroundColor = value ? new XT.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : XT.Color.whiteColor
+        this.backgroundColor = value ? new XT.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : XT.Color.clearColor
     }
 
     didSelected() {

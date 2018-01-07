@@ -58,12 +58,12 @@ export class ImageViewSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 182, 129}"
+        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 100, 100}"
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.ImageView()
-        view.frame = XT.RectMake(0, 66, 182, 129)
-        XT.Image.fromURL('http://img5.dwstatic.com/www/1512/313433690773/1515031232199.jpg', (it) => {
+        view.frame = XT.RectMake(0, 66, 100, 100)
+        XT.Image.fromURL('http://www.httpbin.org/image/png', (it) => {
             view.image = it
         })
         // } Sample Code 
@@ -79,13 +79,13 @@ export class ImageViewSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 300, 129} \ncontentMode=ScaleToFill"
+        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 200, 100} \ncontentMode=ScaleToFill"
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.ImageView()
-        view.frame = XT.RectMake(0, 66, 300, 129)
+        view.frame = XT.RectMake(0, 66, 200, 100)
         view.contentMode = XT.ContentMode.ScaleToFill
-        XT.Image.fromURL('http://img5.dwstatic.com/www/1512/313433690773/1515031232199.jpg', (it) => {
+        XT.Image.fromURL('http://www.httpbin.org/image/png', (it) => {
             view.image = it
         })
         // } Sample Code 
@@ -101,13 +101,13 @@ export class ImageViewSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 300, 129} \ncontentMode=ScaleAspectFit"
+        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 200, 100} \ncontentMode=ScaleAspectFit"
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.ImageView()
-        view.frame = XT.RectMake(0, 66, 300, 129)
+        view.frame = XT.RectMake(0, 66, 200, 100)
         view.contentMode = XT.ContentMode.ScaleAspectFit
-        XT.Image.fromURL('http://img5.dwstatic.com/www/1512/313433690773/1515031232199.jpg', (it) => {
+        XT.Image.fromURL('http://www.httpbin.org/image/png', (it) => {
             view.image = it
         })
         // } Sample Code 
@@ -123,14 +123,14 @@ export class ImageViewSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 300, 129} \ncontentMode=ScaleAspectFill clipsToBounds=true"
+        summary.text = "Load Remote Image to ImageView \nframe = {0, 66, 200, 100} \ncontentMode=ScaleAspectFill clipsToBounds=true"
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.ImageView()
-        view.frame = XT.RectMake(0, 66, 300, 129)
+        view.frame = XT.RectMake(0, 66, 200, 100)
         view.contentMode = XT.ContentMode.ScaleAspectFill
         view.clipsToBounds = true
-        XT.Image.fromURL('http://img5.dwstatic.com/www/1512/313433690773/1515031232199.jpg', (it) => {
+        XT.Image.fromURL('http://www.httpbin.org/image/png', (it) => {
             view.image = it
         })
         // } Sample Code 
