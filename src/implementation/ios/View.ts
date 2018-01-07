@@ -475,16 +475,15 @@ export class View implements Releasable {
     }
 
     // Mark: View Animation
+
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
         XTRView.xtr_animationWithDurationAnimationCompletion(duration, animations, completion);
     }
 
-    static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void) {
-        XTRView.xtr_animationWithBouncinessAndSpeedDampingVelocityAnimationCompletion(0.50, damping, velocity, animations, completion);
-    }
+    static springAnimationDuration = 0.5
 
-    static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) {
-        XTRView.xtr_animationWithBouncinessAndSpeedDampingVelocityAnimationCompletion(duration, damping, velocity, animations, completion);
+    static animationWithBouncinessAndSpeed(bounciness: number, velocity: number, animations: () => void, completion?: () => void) {
+        XTRView.xtr_animationWithBouncinessBouncinessVelocityAnimationCompletion(this.springAnimationDuration, bounciness, velocity, animations, completion);
     }
 
 }

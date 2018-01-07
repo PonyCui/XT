@@ -241,8 +241,8 @@ export class View implements Releasable {
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void): void
     static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void): void
+    static springAnimationDuration: number
     static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void): void
-    static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void): void // iOS Only
 }
 
 export class Color {

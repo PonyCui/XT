@@ -11,6 +11,7 @@
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
 #import "XTRWindow.h"
+#import <pop/POP.h>
 #import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRView ()
@@ -728,11 +729,12 @@
     }];
 }
 
-+ (void)xtr_animationWithBouncinessAndSpeed:(CGFloat)duration
-                                    damping:(CGFloat)damping
-                                   velocity:(CGFloat)velocity
-                                  animation:(JSValue *)animation
-                                 completion:(JSValue *)completion {
++ (void)xtr_animationWithBounciness:(CGFloat)duration
+                         bounciness:(CGFloat)bounciness
+                           velocity:(CGFloat)velocity
+                          animation:(JSValue *)animation
+                         completion:(JSValue *)completion {
+    CGFloat damping = 1.0 - (bounciness / 100.0);
     [UIView animateWithDuration:duration
                           delay:0.0
          usingSpringWithDamping:damping

@@ -85,11 +85,11 @@
 + (void)xtr_animationWithDuration:(CGFloat)duration
                         animation:(JSValue *)animation
                        completion:(JSValue *)completion;
-+ (void)xtr_animationWithBouncinessAndSpeed:(CGFloat)duration
-                                    damping:(CGFloat)damping
-                                   velocity:(CGFloat)velocity
-                                  animation:(JSValue *)animation
-                                 completion:(JSValue *)completion;
++ (void)xtr_animationWithBounciness:(CGFloat)duration
+                         bounciness:(CGFloat)bounciness
+                           velocity:(CGFloat)velocity
+                          animation:(JSValue *)animation
+                         completion:(JSValue *)completion;
 
 @end
 
