@@ -12,6 +12,8 @@ import { LongPressSample } from "./longpress";
 import { PanSample } from "./pan";
 import { FrameLayoutSample } from "./framelayout";
 import { AutoLayoutSample } from "./autolayout";
+import { LinearAnimationSample } from "./linearanimation";
+import { SpringAnimationSample } from "./springanimation";
 
 
 class Header extends XT.ListCell {
@@ -344,9 +346,34 @@ export class List extends XT.ViewController {
                 },
             },
             {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
+                name: "动画",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Linear Animation",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new LinearAnimationSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Spring Animation",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new SpringAnimationSample())
+                    }
+                },
+            },
+            {
                 reuseIdentifier: "Footer",
                 rowHeight: () => 66,
-            }
+            },
         ]
         this.listView.reloadData()
     }

@@ -509,6 +509,11 @@ export class TransformMatrix {
     static postTranslate(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix
     static postRotate(matrix: TransformMatrix, angle: number): TransformMatrix
     static concat(preMatrix: TransformMatrix, postMatrix: TransformMatrix): TransformMatrix
+    isIdentity(): boolean
+    postScale(x?: number, y?: number): TransformMatrix
+    postTranslate(x?: number, y?: number): TransformMatrix
+    postRotate(angle: number): TransformMatrix
+    concat(postMatrix: TransformMatrix): TransformMatrix
 }
 
 export class Window extends View {

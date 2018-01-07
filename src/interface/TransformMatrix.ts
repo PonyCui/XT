@@ -291,8 +291,12 @@ export class TransformMatrix {
         return { scale: { x: scaleX, y: scaleY }, degree: Math.atan2(B, A) / (Math.PI / 180), translate: { x: matrix.tx, y: matrix.ty } }
     }
 
-    static isIdentity(matrix: TransformMatrix) {
+    static isIdentity(matrix: TransformMatrix): boolean {
         return matrix.a == 1 && matrix.b == 0 && matrix.c == 0 && matrix.d == 1 && matrix.tx == 0 && matrix.ty == 0
+    }
+
+    isIdentity(): boolean {
+        return TransformMatrix.isIdentity(this)
     }
 
     static setScale(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
@@ -302,6 +306,10 @@ export class TransformMatrix {
         obj.scale((x || unMatrix.scale.x), (y || unMatrix.scale.y), 1.0)
         obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+    }
+
+    setScale(x?: number, y?: number): TransformMatrix {
+        return TransformMatrix.setScale(this, x, y)
     }
 
     static postScale(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
@@ -314,6 +322,10 @@ export class TransformMatrix {
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
     }
 
+    postScale(x?: number, y?: number): TransformMatrix {
+        return TransformMatrix.postScale(this, x, y)
+    }
+
     static setTranslate(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
         const obj = new TransformMatrixAlgorithm()
         const unMatrix = this.unmatrix(matrix)
@@ -321,6 +333,10 @@ export class TransformMatrix {
         obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
         obj.translate(x || unMatrix.translate.x, y || unMatrix.translate.y, 0.0)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+    }
+
+    setTranslate(x?: number, y?: number): TransformMatrix {
+        return TransformMatrix.setTranslate(this, x, y)
     }
 
     static postTranslate(matrix: TransformMatrix, x?: number, y?: number): TransformMatrix {
@@ -333,6 +349,10 @@ export class TransformMatrix {
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
     }
 
+    postTranslate(x?: number, y?: number): TransformMatrix {
+        return TransformMatrix.postTranslate(this, x, y)
+    }
+
     static setRotate(matrix: TransformMatrix, angle: number): TransformMatrix {
         const obj = new TransformMatrixAlgorithm()
         const unMatrix = this.unmatrix(matrix)
@@ -340,6 +360,10 @@ export class TransformMatrix {
         obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
         obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+    }
+
+    setRotate(angle: number): TransformMatrix {
+        return TransformMatrix.setRotate(this, angle)
     }
 
     static postRotate(matrix: TransformMatrix, angle: number): TransformMatrix {
@@ -350,6 +374,10 @@ export class TransformMatrix {
         obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
         obj.rotate(-angle)
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+    }
+
+    postRotate(angle: number): TransformMatrix {
+        return TransformMatrix.postRotate(this, angle)
     }
 
     static concat(preMatrix: TransformMatrix, postMatrix: TransformMatrix): TransformMatrix {
@@ -364,5 +392,8 @@ export class TransformMatrix {
         return new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
     }
 
+    concat(postMatrix: TransformMatrix): TransformMatrix {
+        return TransformMatrix.concat(this, postMatrix)
+    }
 
 }

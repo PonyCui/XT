@@ -2,7 +2,7 @@ import { TransformMatrix } from "../../../interface/TransformMatrix";
 
 export interface CoordinateOwner {
 
-    transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number }
+    transform?: { a: number, b: number, c: number, d: number, tx: number, ty: number } | any
     frame: { x: number, y: number, width: number, height: number }
     _originOffset?: { x: number, y: number }
     superview: CoordinateOwner | undefined
