@@ -50,7 +50,8 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
 
     private fun loadComponents() {
         val components: List<XTRComponentExport> = listOf(
-            XTRImage.Companion
+                XTRImage.Companion,
+                XTRApplication.Companion
         )
         components.forEach {
             val obj = it.exports(xtrContext)

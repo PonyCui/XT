@@ -33,20 +33,17 @@ export class Application {
         return this.nativeObject.xtr_keyWindow;
     }
 
+    objectRef: any
+
     constructor(t: any, delegate: ApplicationDelegate, nativeObject?: any) {
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-            return;
-        }
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.nativeObject = XTRApplication.create(this);
-        XTRAppRef = this;
-        (window as any).XTRObjCreater.store(this);
-        this.nativeObject.xtr_setDelegate(delegate);
-        this.delegate = delegate;
+        this.objectRef = XTRApplication.create()
+        // XTRAppRef = this;
+        // (window as any).XTRObjCreater.store(this);
+        // this.nativeObject.xtr_setDelegate(delegate);
+        // this.delegate = delegate;
     }
 
     static sharedApplication(): Application | undefined {
