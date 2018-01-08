@@ -81,8 +81,8 @@ export class Window extends View {
     //     this.rootViewController && this.rootViewController.keyboardWillHide(duration)
     // }
 
-    // endEditing(): void {
-    //     this.nativeObject.xtr_endEditing();
-    // }
+    endEditing(): void {
+        this.nativeObject.xtr_endEditing();
+    }
 
 }

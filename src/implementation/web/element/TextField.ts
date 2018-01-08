@@ -39,11 +39,17 @@ export class TextFieldElement extends ViewElement {
         this.inputObject.style.color = "black"
         this.inputObject.style.fontSize = "14px"
         this.inputObject.addEventListener("focus", () => {
+            this.editing = true
+            this.resetContentRects()
+            this.inputObject.dispatchEvent(new Event("setting"));
             if (this.scriptObject.didBeginEditing) {
                 this.scriptObject.didBeginEditing();
             }
         })
         this.inputObject.addEventListener("blur", () => {
+            this.editing = false
+            this.resetContentRects()
+            this.inputObject.dispatchEvent(new Event("setting"));
             if (this.scriptObject.didEndEditing) {
                 this.scriptObject.didEndEditing();
             }

@@ -10,6 +10,12 @@ export class WindowElement extends ViewElement {
         this.setupTouches();
     }
 
+    xtr_endEditing() {
+        if (document.activeElement) {
+            (document.activeElement as any).blur()
+        }
+    }
+
     setupTouches() {
         (document.body as any).onresize = () => {
             this.scriptObject.frame = {...this.xtr_frame(), width: window.outerWidth, height: window.outerHeight}
