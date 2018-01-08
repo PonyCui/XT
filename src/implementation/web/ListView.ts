@@ -9,11 +9,13 @@ import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureR
 export class ListCell extends View {
 
     currentItem?: ListItem
+
     reuseIdentifier: string = ""
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     selectionView: View = new View();
     contentView: View = new View();
     _isBusy = false
+    context?: any
 
     constructor() {
         super();
@@ -84,11 +86,13 @@ export class ListView extends ScrollView {
     }
 
     private reuseMapping: { [key: string]: typeof ListCell } = {};
+    private reuseContexts: { [key: string]: any } = {};
 
     public renderItem?: (cell: ListCell, item: ListItem) => void
 
-    public register(clazz: typeof ListCell, reuseIdentifier: string) {
+    public register(clazz: typeof ListCell, reuseIdentifier: string, context: any) {
         this.reuseMapping[reuseIdentifier] = clazz;
+        this.reuseContexts[reuseIdentifier] = context;
     }
 
     private _items: ListItem[] = [];
@@ -215,6 +219,7 @@ export class ListView extends ScrollView {
                 (this.reuseMapping[row.item.reuseIdentifier] !== undefined ? new this.reuseMapping[row.item.reuseIdentifier]() : undefined) ||
                 new ListCell()
             cell.reuseIdentifier = row.item.reuseIdentifier
+            cell.context = this.reuseContexts[row.item.reuseIdentifier]
             cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
             cell._isBusy = true;
             cell.currentItem = row.item;

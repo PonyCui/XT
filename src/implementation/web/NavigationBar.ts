@@ -12,7 +12,17 @@ export class NavigationBarButtonItem {
 
 export class NavigationBar extends View {
 
-    title: string
+    private _title: string = ""
+
+    public get title(): string {
+        return this._title
+    }
+
+    public set title(value: string) {
+        this._title = value
+        document.title = value
+    }
+
     translucent: boolean
     lightContent: boolean
     setLeftBarButtonItem(navigationItem?: NavigationBarButtonItem): void { }

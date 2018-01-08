@@ -1,6 +1,6 @@
 import { BaseElement } from './Element'
 import { Rect, RectEqual, Point, RectMake, Size } from '../../../interface/Rect';
-import { TransformMatrix } from '../../../interface/TransformMatrix';
+import { TransformMatrix, TransformMatrixAlgorithm } from '../../../interface/TransformMatrix';
 import { Color } from '../../../interface/Color';
 
 export class ViewElement extends BaseElement {
@@ -15,7 +15,6 @@ export class ViewElement extends BaseElement {
     constructor(scriptObject: any) {
         super(scriptObject);
         this.nativeObject.setAttribute('id', this.objectUUID);
-        this.nativeObject.style.transformOrigin = "center";
         this.backgroundObject.setAttribute('visibility', 'hidden');
         this.loadContent();
         if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }
@@ -71,7 +70,20 @@ export class ViewElement extends BaseElement {
     }
 
     private resetTransform() {
-        this.nativeObject.setAttribute('transform', 'matrix(' + this.transform.a + ', ' + this.transform.b + ', ' + this.transform.c + ', ' + this.transform.d + ', ' + (this.transform.tx + this.frame.x) + ', ' + (this.transform.ty + this.frame.y) + ')')
+        if (!this.transform.isIdentity()) {
+            const obj = new TransformMatrixAlgorithm()
+            const unMatrix = TransformMatrix.unmatrix(this.transform)
+            obj.translate(-this.frame.width / 2.0, -this.frame.height / 2.0, 0.0)
+            obj.rotate(-(unMatrix.degree * Math.PI / 180))
+            obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
+            obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
+            obj.translate(this.frame.width / 2.0, this.frame.height / 2.0, 0.0)
+            const newTransform = new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+            this.nativeObject.setAttribute('transform', 'matrix(' + newTransform.a + ', ' + newTransform.b + ', ' + newTransform.c + ', ' + newTransform.d + ', ' + (newTransform.tx + this.frame.x) + ', ' + (newTransform.ty + this.frame.y) + ')')
+        }
+        else {
+            this.nativeObject.setAttribute('transform', 'matrix(' + this.transform.a + ', ' + this.transform.b + ', ' + this.transform.c + ', ' + this.transform.d + ', ' + (this.transform.tx + this.frame.x) + ', ' + (this.transform.ty + this.frame.y) + ')')
+        }
         this.backgroundObject.setAttribute('width', this.frame.width.toString())
         this.backgroundObject.setAttribute('height', this.frame.height.toString())
     }

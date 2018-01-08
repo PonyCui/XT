@@ -55,9 +55,9 @@ export class GestureManager {
 
     static onTouchesBegan(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            if (this.activeGesture.owner == owner) {
-                this.activeGesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
-            }
+            // if (this.activeGesture.owner == owner) {
+            //     this.activeGesture.touchesBegan(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
+            // }
             if (!this.activeGesture.cancellable) {
                 return;
             }

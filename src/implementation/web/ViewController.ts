@@ -27,7 +27,16 @@ export class ViewController implements Releasable {
 
     vcID: string = performance.now().toString();
 
-    title?: string = undefined
+    private _title: string = ""
+
+    public get title(): string {
+        return this._title
+    }
+
+    public set title(value: string) {
+        this._title = value
+        this.navigationBar.title = value
+    }
 
     constructor() {
         this.loadView()

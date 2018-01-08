@@ -11,7 +11,6 @@
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
 #import "XTRWindow.h"
-#import <pop/POP.h>
 #import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRView ()

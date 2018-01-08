@@ -28,6 +28,7 @@
 @interface XTRNavigationBar : XTRView<XTRComponent, XTRNavigationBarExport>
 
 @property (nonatomic, weak) XTRViewController *viewController;
+@property (nonatomic, readonly) UINavigationItem *innerItem;
 @property (nonatomic, assign) BOOL shouldShowBackBarButtonItem;
 @property (nonatomic, assign) BOOL translucent;
 @property (nonatomic, assign) BOOL lightContent;

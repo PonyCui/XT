@@ -47,7 +47,7 @@ export class ListViewSample extends XT.ViewController {
     viewDidLoad() {
         super.viewDidLoad()
         this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.navigationBar.title = "ListView"
+        this.title = "ListView"
         this.showNavigationBar()
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.contentView.alwaysBounceVertical = true

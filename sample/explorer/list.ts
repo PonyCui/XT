@@ -149,8 +149,8 @@ export class List extends XT.ViewController {
     listView = new XT.ListView()
 
     viewDidLoad() {
+        this.title = "UI Explorer"
         this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.navigationBar.title = "UI Explorer"
         this.showNavigationBar()
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.setupListView()

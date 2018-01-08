@@ -355,6 +355,13 @@ static BOOL onPanning;
     [self viewWillLayoutSubviews];
 }
 
+- (void)setTitle:(NSString *)title {
+    [super setTitle:title];
+    if (self.navigationBar) {
+        self.navigationBar.innerItem.title = title;
+    }
+}
+
 - (void)setNavigationBarLightContent:(BOOL)navigationBarLightContent {
     _navigationBarLightContent = navigationBarLightContent;
     [[UIApplication sharedApplication]

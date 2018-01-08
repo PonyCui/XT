@@ -251,6 +251,13 @@ static UIImage *backButtonImage;
     self.viewController.navigationBarLightContent = lightContent;
 }
 
+- (void)setViewController:(XTRViewController *)viewController {
+    _viewController = viewController;
+    if (viewController.title != nil) {
+        self.innerItem.title = viewController.title;
+    }
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.blurView.frame = self.bounds;

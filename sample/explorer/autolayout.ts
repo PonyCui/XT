@@ -81,7 +81,7 @@ export class AutoLayoutSample extends XT.ViewController {
     viewDidLoad() {
         super.viewDidLoad()
         this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.navigationBar.title = "AutoLayout"
+        this.title = "AutoLayout"
         this.showNavigationBar()
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.view.addSubview(this.contentView)

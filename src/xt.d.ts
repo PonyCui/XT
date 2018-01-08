@@ -526,6 +526,7 @@ export class ViewController implements Releasable {
     retain(): this;
     release(): this;
     addOwner(owner: any): this
+    title: string
     readonly view: View
     readonly safeAreaInsets: Insets
     loadView(): void

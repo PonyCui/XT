@@ -1,4 +1,4 @@
-class TransformMatrixAlgorithm {
+export class TransformMatrixAlgorithm {
 
     props: number[] = []
 

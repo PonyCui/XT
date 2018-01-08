@@ -57,7 +57,7 @@ export class ScrollView extends View {
 
     private setupTouches() {
         this.userInteractionEnabled = true
-        this.onPan = (state, viewLocation) => {
+        this.onPan = (state, viewLocation, absLocation, velocity) => {
             if (state === InteractionState.Began) {
                 if (!viewLocation) { return }
                 this._indicatorShowed = false;
@@ -86,17 +86,15 @@ export class ScrollView extends View {
                     })
                 }
             }
-            else if (state === InteractionState.Ended) {
+            else if (state === InteractionState.Ended || state === InteractionState.Cancelled) {
                 this._tracking = false;
                 this.decelarating = true;
                 clearTimeout(this._indicatorHidingTimer);
                 this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
                 this.scroller.doTouchEnd(this.touchTimestamp)
-            }
-            else if (state === InteractionState.Cancelled) {
-                this._tracking = false;
-                clearTimeout(this._indicatorHidingTimer);
-                this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+                if (!this.scroller.__isDecelerating) {
+                    this.innerView.userInteractionEnabled = true;
+                }
             }
         }
     }
@@ -237,7 +235,7 @@ export class ScrollView extends View {
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 150);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 32);
     }
 
     wheelScroll(deltaPoint: { x: number, y: number }): void {
