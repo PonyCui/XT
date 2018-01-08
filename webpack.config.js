@@ -30,12 +30,15 @@ module.exports = function (env) {
                 minimize: true,
                 output: { comments: false },
             }),
-            new WebpackShellPlugin({
-                onBuildExit: ['cp dist/sample.min.js android/app/src/main/assets/sample.min.js']
-            }),
             new XTCarPlugin(
                 { entry: ['./sample/assets'], filename: 'sample.xtassets' }
             ),
+            new WebpackShellPlugin({
+                onBuildExit: ['cp dist/sample.min.js android/app/src/main/assets/sample.min.js']
+            }),
+            // new WebpackShellPlugin({
+            //     onBuildExit: ['cp dist/sample.xtassets android/app/src/main/assets/sample.xtassets']
+            // }),
         ],
     }
     if (env && env.devandroid) {

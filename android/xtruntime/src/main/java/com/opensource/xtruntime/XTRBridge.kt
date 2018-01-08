@@ -6,6 +6,7 @@ import android.util.Log
 import com.eclipsesource.v8.Releasable
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONObject
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -30,6 +31,8 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
 
     val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
     val xtrBreakpoint: XTRBreakpoint
+    var xtrAssets: JSONObject? = null
+        private set
     var xtrApplication: XTRApplication.InnerObject? = null
     var xtrSourceURL: String? = null
         set(value) {
@@ -46,32 +49,13 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     }
 
     private fun loadComponents() {
-        val components: List<XTRComponent> = listOf(
-                XTRApplicationDelegate(),
-                XTRApplication(),
-                XTRWindow(),
-                XTRView(),
-                XTRViewController(),
-                XTRNavigationController(),
-                XTRImageView(),
-                XTRImage(),
-                XTRLabel(),
-                XTRButton(),
-                XTRScrollView(),
-                XTRTextField(),
-                XTRTextView(),
-                XTRCanvasView(),
-                XTRCustomView(),
-                XTRScreen(),
-                XTRDevice(),
-                XTRTextMeasurer()
+        val components: List<XTRComponentExport> = listOf(
+            XTRImage.Companion
         )
-        components.forEach { component ->
-            component.xtrContext = xtrContext
-            component.v8Object()?.let {
-                xtrContext.v8Runtime.add(component.name, it)
-                it.release()
-            }
+        components.forEach {
+            val obj = it.exports(xtrContext)
+            xtrContext.v8Runtime.add(it.name, obj)
+            obj.release()
         }
     }
 
@@ -107,6 +91,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                 if (sourceURL.startsWith("file:///android_asset/")) {
                     sourceURL.replace("file:///android_asset/", "").let {
                         try {
+                            this.loadAssets()
                             val inputStream = appContext.assets.open(it)
                             val byteArray = ByteArray(inputStream.available())
                             inputStream.read(byteArray)
@@ -127,6 +112,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
             else if (sourceURL.startsWith("http://") || sourceURL.startsWith("https://")) {
                 Thread(Thread.currentThread().threadGroup, {
                     try {
+                        loadAssets()
                         val req = Request.Builder().url(sourceURL).method("GET", null).build()
                         val res = OkHttpClient().newCall(req).execute()
                         val script = res.body()?.string() ?: return@Thread
@@ -145,6 +131,24 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                 Log.w("XTRBridge", "Unknown sourceURL type >>> $sourceURL")
             }
             return
+        }
+    }
+
+    private fun loadAssets() {
+        xtrSourceURL?.let { sourceURL ->
+            if (sourceURL.startsWith("file://")) {
+                if (sourceURL.startsWith("file:///android_asset/")) {
+                    sourceURL.replace("file:///android_asset/", "").replace(".min.js", ".xtassets").let {
+                        try {
+                            val inputStream = appContext.assets.open(it)
+                            val byteArray = ByteArray(inputStream.available())
+                            inputStream.read(byteArray)
+                            inputStream.close()
+                            this.xtrAssets = JSONObject(String(byteArray))
+                        } catch (e: Exception) {}
+                    }
+                }
+            }
         }
     }
 

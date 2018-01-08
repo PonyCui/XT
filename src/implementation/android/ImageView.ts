@@ -9,41 +9,60 @@ export enum ImageRenderingMode {
 }
 
 export class Image implements Releasable {
+
     retain(): this {
-        throw new Error("Method not implemented.");
+        XTMemoryManager.retain(this.objectRef)
+        return this
     }
     release(): this {
-        throw new Error("Method not implemented.");
+        XTMemoryManager.release(this.objectRef)
+        return this
     }
 
-    addOwner(owner: any): this {
-        return this;
-    }
+    constructor(public objectRef: any) { }
 
     readonly size: Size;
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
-    static assetsPath = "assets/"
-
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromURL(url, success, failure || function () { })
+        XTRImage.xtr_fromURL(url, (imageRef?: string) => {
+            if (typeof imageRef === "string") {
+                success(new Image(imageRef))
+            }
+        }, () => {
+            if (failure) {
+                failure(new Error())
+            }
+        })
     }
 
     static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        this.fromAssetsWithScales(named, [], success, failure || function () { })
-    }
-
-    static fromAssetsWithScales(named: string, scales: number[] | number, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssets(named, this.assetsPath, typeof scales === "number" ? [scales] : scales, success, failure || function () { })
+        XTRImage.xtr_fromAssets(named, (imageRef?: string) => {
+            if (typeof imageRef === "string") {
+                success(new Image(imageRef))
+            }
+        }, () => {
+            if (failure) {
+                failure(new Error())
+            }
+        })
     }
 
     static fromBase64(value: string, scale: number, success: (image: Image) => void) {
-        XTRImage.xtr_fromBase64(value, scale, success)
+        XTRImage.xtr_fromBase64(value, scale, (imageRef?: string) => {
+            if (typeof imageRef === "string") {
+                success(new Image(imageRef))
+            }
+        })
     }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        return XTRImage.xtr_imageWithImageRenderingMode(this, renderingMode);
+        const imageRef =  XTRImage.xtr_imageWithImageRenderingMode(this.objectRef, renderingMode)
+        if (typeof imageRef === "string") {
+            return new Image(imageRef)
+        }
+        return this;
     }
 
 }

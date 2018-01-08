@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.os.Handler
 import com.eclipsesource.v8.*
+import com.opensource.xtmem.XTMemoryManager
 import com.opensource.xtpolyfill.XTPolyfill
 import java.util.*
 
@@ -17,6 +18,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     private val v8Releasable: MutableList<Releasable> = mutableListOf()
 
     init {
+        XTMemoryManager.attachContext(v8Runtime)
         XTPolyfill.addPolyfills(v8Runtime)
         XTPolyfill.exceptionHandler = {
             handleException(it)
@@ -53,10 +55,10 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     fun evaluateScript(script: String): Any? {
         if (v8Runtime.isReleased) { return null }
         return try {
-            return v8Runtime.executeScript(script)
+            v8Runtime.executeScript(script)
         } catch (e: Exception) {
             handleException(e)
-            return null
+            null
         }
     }
 
@@ -104,6 +106,31 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
             handleException(e)
             null
         }
+    }
+
+    companion object {
+
+        fun callWithArgument(func: V8Value?, argument: Any?): Any? {
+            (func as? V8Function)?.takeIf { !it.runtime.isReleased }?.let {
+                try {
+                    var args: V8Array? = null
+                    argument?.let { argument ->
+                        val v8Array = V8Array(it.runtime)
+                        (argument as? Int)?.let { v8Array.push(it) }
+                        (argument as? String)?.let { v8Array.push(it) }
+                        (argument as? V8Value)?.let { v8Array.push(it) }
+                        (argument as? Double)?.let { v8Array.push(it) }
+                        (argument as? Boolean)?.let { v8Array.push(it) }
+                        args = v8Array
+                    }
+                    val result = it.call(null, args)
+                    args?.release()
+                    return result
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+            return null
+        }
+
     }
 
 }

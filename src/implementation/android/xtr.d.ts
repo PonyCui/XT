@@ -1,3 +1,4 @@
 /// <reference path="../xtr.d.ts" />
 
-declare let XTRAppRef: any
+declare var XTRAppRef: any
+declare var XTMemoryManager: any

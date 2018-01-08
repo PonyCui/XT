@@ -12,6 +12,7 @@
 @protocol XTRComponent <NSObject>
 
 @property (nonatomic, copy) NSString *objectUUID;
+
 + (NSString *)name;
 
 @end
