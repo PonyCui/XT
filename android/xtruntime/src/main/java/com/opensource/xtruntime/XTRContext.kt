@@ -18,6 +18,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     private val v8Releasable: MutableList<Releasable> = mutableListOf()
 
     init {
+        v8Runtime.executeScript("var objectRefs = {}")
         XTMemoryManager.attachContext(v8Runtime)
         XTPolyfill.addPolyfills(v8Runtime)
         XTPolyfill.exceptionHandler = {
@@ -110,17 +111,46 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
 
     companion object {
 
-        fun callWithArgument(func: V8Value?, argument: Any?): Any? {
+        fun invokeMethod(scriptObject: V8Object?, method: String, arguments: List<Any>? = null): Any? {
+            scriptObject?.takeIf { !it.runtime.isReleased }?.let {
+                try {
+                    var args: V8Array? = null
+                    arguments?.let { arguments ->
+                        val v8Array = V8Array(it.runtime)
+                        arguments.forEach { argument ->
+                            (argument as? Int)?.let { v8Array.push(it) }
+                            (argument as? String)?.let { v8Array.push(it) }
+                            (argument as? V8Value)?.let { v8Array.push(it) }
+                            (argument as? Double)?.let { v8Array.push(it) }
+                            (argument as? Boolean)?.let { v8Array.push(it) }
+                        }
+                        args = v8Array
+                    }
+                    val result = it.executeFunction(method, args)
+                    args?.release()
+                    return result
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+            return null
+        }
+
+        fun callWithArgument(func: V8Value?, argument: Any? = null): Any? {
+            return this.callWithArguments(func, if (argument != null) kotlin.collections.listOf(argument) else null)
+        }
+
+        fun callWithArguments(func: V8Value?, arguments: List<Any>? = null): Any? {
             (func as? V8Function)?.takeIf { !it.runtime.isReleased }?.let {
                 try {
                     var args: V8Array? = null
-                    argument?.let { argument ->
+                    arguments?.let { arguments ->
                         val v8Array = V8Array(it.runtime)
-                        (argument as? Int)?.let { v8Array.push(it) }
-                        (argument as? String)?.let { v8Array.push(it) }
-                        (argument as? V8Value)?.let { v8Array.push(it) }
-                        (argument as? Double)?.let { v8Array.push(it) }
-                        (argument as? Boolean)?.let { v8Array.push(it) }
+                        arguments.forEach { argument ->
+                            (argument as? Int)?.let { v8Array.push(it) }
+                            (argument as? String)?.let { v8Array.push(it) }
+                            (argument as? V8Value)?.let { v8Array.push(it) }
+                            (argument as? Double)?.let { v8Array.push(it) }
+                            (argument as? Boolean)?.let { v8Array.push(it) }
+                        }
                         args = v8Array
                     }
                     val result = it.call(null, args)

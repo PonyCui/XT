@@ -35,6 +35,7 @@ dependencies {
     compile 'com.facebook.rebound:rebound:0.3.8'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile 'com.github.yyued:XT-Polyfill:205a034f87'
+    compile 'com.github.yyued:XT-Mem:0.0.4'
 }
 repositories {
     mavenCentral()

@@ -19,7 +19,11 @@ import java.util.*
 /**
  * Created by cuiminghui on 2017/9/6.
  */
-class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRComponentInstance() {
+class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRComponentInstance {
+
+    override var objectUUID: String? = null
+
+    var size: XTRSize = XTRSize(bitmap.width.toDouble() / scale.toDouble(), bitmap.height.toDouble() / scale.toDouble())
 
     companion object: XTRComponentExport() {
 
@@ -139,12 +143,6 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
             }
             return null
         }
-
-    }
-
-    class InnerObject(val bitmap: Bitmap, val scale: Int, val size: XTRSize, val renderingMode: Int, override var scriptObject: V8Object? = null): XTRObject {
-
-        override val objectUUID: String = UUID.randomUUID().toString()
 
     }
 

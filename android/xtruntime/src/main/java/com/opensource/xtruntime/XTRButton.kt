@@ -1,181 +1,170 @@
 package com.opensource.xtruntime
 
+import android.content.Context
+import android.util.AttributeSet
 import android.view.MotionEvent
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
+import com.opensource.xtmem.XTManagedObject
+import com.opensource.xtmem.XTMemoryManager
 
 /**
  * Created by cuiminghui on 2017/9/8.
  */
-class XTRButton: XTRComponent() {
+class XTRButton @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
 
-    override val name: String = "XTRButton"
+    var imageView: XTRImageView = XTMemoryManager.find(XTRImageView.create()) as XTRImageView
+    var titleLabel: XTRLabel = XTMemoryManager.find(XTRLabel.create()) as XTRLabel
 
-    override fun v8Object(): V8Object? {
-        val v8Object = V8Object(xtrContext.v8Runtime)
-        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
-        return v8Object
+    init {
+        XTRView.xtr_addSubview(imageView.objectUUID ?: "", this.objectUUID ?: "")
     }
 
-    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
-        XTRUtils.toRect(rect)?.let {
-            view.frame = it
-        }
-        return view.requestV8Object(xtrContext.v8Runtime)
+    private var isVertical = false
+
+    private var inset = 0.0
+
+    override fun tintColorDidChange() {
+        super.tintColorDidChange()
+//        this.titleLabel.xtr_setTextColor(this.xtr_tintColorXTRTypes())
     }
 
-    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
+    override fun layoutSubviews() {
+        super.layoutSubviews()
+        resetContents()
+    }
 
-        lateinit var imageView: XTRImageView.InnerObject
-        lateinit var titleLabel: XTRLabel.InnerObject
+    private fun resetContents() {
+        val scale = resources.displayMetrics.density
+        val imageWidth = (this.imageView.image?.size?.width ?: 0.0)
+        val imageHeight = (this.imageView.image?.size?.height ?: 0.0)
+        val textSize = this.titleLabel.intrinsicContentSize(this.width.toDouble() / scale  - imageWidth - inset) ?: XTRSize(0.0, 0.0)
+        val textWidth = textSize.width
+        val textHeight = textSize.height
+        if (isVertical) {
+            val contentHeight = imageHeight + inset + textHeight
+            imageView.frame = XTRRect(
+                    (this.bounds.width - imageWidth) / 2.0,
+                    (this.bounds.height - contentHeight) / 2.0,
+                    imageWidth,
+                    imageHeight
+            )
+            titleLabel.frame = XTRRect(
+                    (this.bounds.width - textWidth) / 2.0,
+                    (this.bounds.height - contentHeight) / 2.0 + imageHeight + inset,
+                    textWidth,
+                    textHeight
+            )
+        }
+        else {
+            val contentWidth = imageWidth + inset + textWidth
+            imageView.frame = XTRRect(
+                    (this.bounds.width - contentWidth) / 2.0,
+                    (this.bounds.height - imageHeight) / 2.0,
+                    imageWidth,
+                    imageHeight
+            )
+            titleLabel.frame = XTRRect(
+                    (this.bounds.width - contentWidth) / 2.0 + imageWidth + inset,
+                    (this.bounds.height - textHeight) / 2.0,
+                    textWidth,
+                    textHeight
+            )
+        }
+    }
 
-        init {
-            (XTRUtils.toView(scriptObject.get("imageView")) as? XTRImageView.InnerObject)?.let {
-                imageView = it
+    companion object: XTRComponentExport() {
+
+        override val name: String = "XTRButton"
+
+        override fun exports(context: XTRContext): V8Object {
+            val exports = V8Object(context.v8Runtime)
+            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_title", "xtr_title", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setTitle", "xtr_setTitle", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setFont", "xtr_setFont", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setImage", "xtr_setImage", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_color", "xtr_color", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setColor", "xtr_setColor", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_vertical", "xtr_vertical", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setVertical", "xtr_setVertical", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_inset", "xtr_inset", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setInset", "xtr_setInset", arrayOf(Double::class.java, String::class.java))
+            return exports
+        }
+
+        fun create(): String {
+            val view = XTRButton(XTRView.context.appContext)
+            val managedObject = XTManagedObject(view)
+            view.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
+        }
+
+        fun xtr_title(objectRef: String): String {
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
+                return@let XTRLabel.xtr_text(it.objectUUID ?: "")
+            } ?: ""
+        }
+
+        fun xtr_setTitle(value: String, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
+                XTRLabel.xtr_setText(value, it.objectUUID ?: "")
             }
-            (XTRUtils.toView(scriptObject.get("titleLabel")) as? XTRLabel.InnerObject)?.let {
-                titleLabel = it
+        }
+
+        fun xtr_font(objectRef: String): String {
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
+                return@let XTRLabel.xtr_font(it.objectUUID ?: "")
+            } ?: ""
+        }
+
+        fun xtr_setFont(fontRef: String, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
+                XTRLabel.xtr_setFont(fontRef, it.objectUUID ?: "")
             }
         }
 
-        override fun requestV8Object(runtime: V8): V8Object {
-            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
-            v8Object.registerJavaMethod(this, "xtr_title", "xtr_title", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setTitle", "xtr_setTitle", arrayOf(String::class.java))
-            v8Object.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setFont", "xtr_setFont", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setImage", "xtr_setImage", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_color", "xtr_color", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setColor", "xtr_setColor", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_vertical", "xtr_vertical", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setVertical", "xtr_setVertical", arrayOf(Boolean::class.java))
-            v8Object.registerJavaMethod(this, "xtr_inset", "xtr_inset", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setInset", "xtr_setInset", arrayOf(Double::class.java))
-            return v8Object
+        fun xtr_image(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.imageView?.let {
+                return@let XTRImageView.xtr_image(it.objectUUID ?: "")
+            } ?: null
         }
 
-        fun xtr_title(): String? {
-            return this.titleLabel.xtr_text()
-        }
-
-        fun xtr_setTitle(value: String) {
-            this.titleLabel.xtr_setText(value)
-            resetContents()
-        }
-
-        fun xtr_font(): V8Value {
-            return XTRUtils.fromObject(xtrContext, this.titleLabel.xtr_font()) as? V8Object ?: V8.getUndefined()
-        }
-
-        fun xtr_setFont(value: V8Object) {
-            this.titleLabel.xtr_setFont(value)
-            resetContents()
-        }
-
-        fun xtr_image(): Any? {
-            return this.imageView.xtr_image()
-        }
-
-        fun xtr_setImage(value: V8Object) {
+        fun xtr_setImage(imageRef: String, objectRef: String) {
             this.imageView.xtr_setImage(value)
             resetContents()
         }
 
-        fun xtr_color(): V8Value {
+        fun xtr_color(objectRef: String): V8Value {
             return XTRUtils.fromObject(xtrContext, this.xtr_tintColor()) as? V8Object ?: V8.getUndefined()
         }
 
-        fun xtr_setColor(value: V8Object) {
+        fun xtr_setColor(value: V8Object, objectRef: String) {
             this.xtr_setTintColor(value)
         }
 
-        private var isVertical = false
-
-        fun xtr_vertical(): Boolean {
+        fun xtr_vertical(objectRef: String): Boolean {
             return this.isVertical
         }
 
-        fun xtr_setVertical(value: Boolean) {
+        fun xtr_setVertical(value: Boolean, objectRef: String) {
             this.isVertical = value
             resetContents()
         }
 
-        private var inset = 0.0
-
-        fun xtr_inset(): Double {
+        fun xtr_inset(objectRef: String): Double {
             return this.inset
         }
 
-        fun xtr_setInset(value: Double) {
+        fun xtr_setInset(value: Double, objectRef: String) {
             this.inset = value
             resetContents()
-        }
-
-        override fun tintColorDidChange() {
-            super.tintColorDidChange()
-            this.titleLabel.xtr_setTextColor(this.xtr_tintColorXTRTypes())
-        }
-
-        override fun layoutSubviews() {
-            super.layoutSubviews()
-            resetContents()
-        }
-
-        private fun resetContents() {
-            val scale = resources.displayMetrics.density
-            val imageWidth = (this.imageView.image?.size?.width ?: 0.0)
-            val imageHeight = (this.imageView.image?.size?.height ?: 0.0)
-            val textBounds = this.titleLabel.xtr_textRectForBounds(
-                    XTRRect(
-                            0.0,
-                            0.0,
-                            this.width.toDouble() / scale  - imageWidth - inset,
-                            this.height.toDouble() / scale
-                    )
-            )
-            val textWidth = textBounds.width
-            val textHeight = textBounds.height
-            if (isVertical) {
-                val contentHeight = imageHeight + inset + textHeight
-                imageView.xtr_setFrame(
-                        XTRRect(
-                                (this.bounds.width - imageWidth) / 2.0,
-                                (this.bounds.height - contentHeight) / 2.0,
-                                imageWidth,
-                                imageHeight
-                        )
-                )
-                titleLabel.xtr_setFrame(
-                        XTRRect(
-                                (this.bounds.width - textWidth) / 2.0,
-                                (this.bounds.height - contentHeight) / 2.0 + imageHeight + inset,
-                                textWidth,
-                                textHeight
-                        )
-                )
-            }
-            else {
-                val contentWidth = imageWidth + inset + textWidth
-                imageView.xtr_setFrame(
-                        XTRRect(
-                                (this.bounds.width - contentWidth) / 2.0,
-                                (this.bounds.height - imageHeight) / 2.0,
-                                imageWidth,
-                                imageHeight
-                        )
-                )
-                titleLabel.xtr_setFrame(
-                        XTRRect(
-                                (this.bounds.width - contentWidth) / 2.0 + imageWidth + inset,
-                                (this.bounds.height - textHeight) / 2.0,
-                                textWidth,
-                                textHeight
-                        )
-                )
-            }
         }
 
     }

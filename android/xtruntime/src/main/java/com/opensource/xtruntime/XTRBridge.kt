@@ -33,7 +33,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     val xtrBreakpoint: XTRBreakpoint
     var xtrAssets: JSONObject? = null
         private set
-    var xtrApplication: XTRApplication.InnerObject? = null
+//    var xtrApplication: XTRApplication.InnerObject? = null
     var xtrSourceURL: String? = null
         set(value) {
             field = value
@@ -51,7 +51,8 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     private fun loadComponents() {
         val components: List<XTRComponentExport> = listOf(
                 XTRImage.Companion,
-                XTRApplication.Companion
+                XTRApplication.Companion,
+                XTRApplicationDelegate.Companion
         )
         components.forEach {
             val obj = it.exports(xtrContext)
@@ -100,7 +101,6 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                             val script = String(byteArray)
                             xtrContext.evaluateScript(script)
                             xtrContext.evaluateScript("XTRAppRef")?.let {
-                                xtrApplication = XTRUtils.toApplication(it)
                                 (it as? Releasable)?.release()
                             }
                             handler.post {
@@ -120,7 +120,6 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                         handler.post {
                             xtrContext.evaluateScript(script)
                             xtrContext.evaluateScript("XTRAppRef")?.let {
-                                xtrApplication = XTRUtils.toApplication(it)
                                 (it as? Releasable)?.release()
                             }
                             completionBlock?.invoke()

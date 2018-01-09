@@ -28,37 +28,43 @@ export enum SwipeDirection {
 }
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
+
     retain(): this {
-        throw new Error("Method not implemented.");
+        XTMemoryManager.retain(this.objectRef)
+        return this
     }
+
     release(): this {
-        throw new Error("Method not implemented.");
+        XTMemoryManager.release(this.objectRef)
+        return this
     }
 
-    addOwner(owner: any): this {
-        return this;
-    }
+    public objectRef: any;
 
-    nativeObject: any;
-
-    public get objectUUID(): string {
-        return "" + this.nativeObject.objectUUID
-    }
-
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
+    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
+        if (typeof ref === "string") {
+            if (objectRefs[ref]) {
+                return objectRefs[ref]
+            }
+            this.objectRef = ref
+        }
+        else if (typeof ref === "function") {
+            let args = [];
+            for (let index = 0; index < arguments.length; index++) {
+                if (index > 0) {
+                    args.push(arguments[index])
+                }
+            }
+            this.objectRef = ref.apply(this, args)
+        }
+        else if (typeof ref === "object") {
+            this.objectRef = (ref as any).create()
         }
         else {
-            this.nativeObject = XTRView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); })
+            this.objectRef = XTRView.create()
         }
+        objectRefs[this.objectRef] = this;
     }
-
-    init() { }
 
     // Mark: View Geometry
 

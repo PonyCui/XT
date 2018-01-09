@@ -60,12 +60,12 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
     }
 
     open fun onBridgeReady() {
-        bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
-            bridge?.xtrApplication?.delegate?.window?.let {
-                setContentView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-            }
-        }
-        bridge?.xtrApplication?.delegate?.applicationDidFinishLaunchingWithOptions()
+//        bridge?.xtrApplication?.delegate?.windowMakeKeyAndVisibleRunnable = {
+//            bridge?.xtrApplication?.delegate?.window?.let {
+//                setContentView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+//            }
+//        }
+//        bridge?.xtrApplication?.delegate?.applicationDidFinishLaunchingWithOptions()
     }
 
     private fun setupKeyboardHeightProvider() {
@@ -101,7 +101,7 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                     XTRDevice.current?.orientation = newOrientation
                     orientationChangeInvokeTimerTask?.cancel()
                     orientationChangeInvokeTimerTask = timerTask {
-                        bridge?.xtrApplication?.delegate?.window?.orientationChanged()
+//                        bridge?.xtrApplication?.delegate?.window?.orientationChanged()
                     }
                     bridge?.xtrContext?.sharedTimer?.schedule(orientationChangeInvokeTimerTask , 500)
                 }
@@ -112,10 +112,10 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
         if (height > 0) {
-            bridge?.xtrApplication?.delegate?.window?.keyboardWillShow(height)
+//            bridge?.xtrApplication?.delegate?.window?.keyboardWillShow(height)
         }
         else {
-            bridge?.xtrApplication?.delegate?.window?.keyboardWillHide()
+//            bridge?.xtrApplication?.delegate?.window?.keyboardWillHide()
         }
     }
 
@@ -137,12 +137,12 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
     }
 
     override fun onBackPressed() {
-        (bridge?.xtrApplication?.delegate?.window?.rootViewController as? XTRNavigationController.InnerObject)?.let {
-            if (it.childViewControllers.size > 1) {
-                it.xtr_popViewController(true)
-                return
-            }
-        }
+//        (bridge?.xtrApplication?.delegate?.window?.rootViewController as? XTRNavigationController.InnerObject)?.let {
+//            if (it.childViewControllers.size > 1) {
+//                it.xtr_popViewController(true)
+//                return
+//            }
+//        }
         super.onBackPressed()
     }
 

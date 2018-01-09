@@ -5,19 +5,10 @@ let sharedApplication: Application | undefined = undefined;
 
 export class ApplicationDelegate {
 
-    nativeObject: any
+    objectRef: any
 
-    constructor(nativeObject?: any) {
-        this.nativeObject = nativeObject || XTRApplicationDelegate.create(this);
-        (window as any).XTRObjCreater.store(this);
-    }
-
-    public get window(): Window | undefined {
-        return this.nativeObject.xtr_window();
-    }
-
-    public set window(value: Window | undefined) {
-        this.nativeObject.xtr_setWindow(value);
+    constructor() {
+        this.objectRef = XTRApplicationDelegate.create()
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
@@ -26,24 +17,21 @@ export class ApplicationDelegate {
 
 export class Application {
 
-    nativeObject: any;
     delegate: ApplicationDelegate
-
-    public get keyWindow(): Window | undefined {
-        return this.nativeObject.xtr_keyWindow;
-    }
 
     objectRef: any
 
-    constructor(t: any, delegate: ApplicationDelegate, nativeObject?: any) {
+    constructor(t: any, delegate: ApplicationDelegate) {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
         this.objectRef = XTRApplication.create()
-        // XTRAppRef = this;
-        // (window as any).XTRObjCreater.store(this);
-        // this.nativeObject.xtr_setDelegate(delegate);
-        // this.delegate = delegate;
+        this.delegate = delegate
+        this.delegate.applicationDidFinishLaunchingWithOptions(this, new Object())
+    }
+
+    public get keyWindow(): Window | undefined {
+        return undefined;
     }
 
     static sharedApplication(): Application | undefined {
@@ -79,13 +67,3 @@ if ((window as any).XTRObjCreater === undefined) {
 if ((window as any).XTRObjClasses === undefined) {
     (window as any).XTRObjClasses = [];
 }
-
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.toString().indexOf("com.opensource.xtruntime.XTRApplication$InnerObject") === 0) {
-        return new Application(undefined, undefined as any, view);
-    }
-    else if (view.toString().indexOf("com.opensource.xtruntime.XTRApplicationDelegate$InnerObject") === 0) {
-        return new ApplicationDelegate(view);
-    }
-    return undefined;
-})

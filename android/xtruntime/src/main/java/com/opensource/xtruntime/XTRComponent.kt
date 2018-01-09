@@ -15,9 +15,9 @@ abstract class XTRComponentExport {
 
 }
 
-abstract class XTRComponentInstance {
+interface XTRComponentInstance {
 
-    var objectUUID: String? = null
+    var objectUUID: String?
 
 }
 

@@ -33,6 +33,10 @@ class XTRUtils {
             return v8Object
         }
 
+        fun fromIntColor(target: Int, runtime: V8): V8Object {
+            return fromColor(fromIntColor(target), runtime)
+        }
+
         fun fromIntColor(target: Int): XTRColor {
             return XTRColor(Color.red(target).toDouble() / 255.0, Color.green(target).toDouble() / 255.0, Color.blue(target).toDouble() / 255.0, Color.alpha(target).toDouble() / 255.0)
         }
@@ -159,22 +163,6 @@ class XTRUtils {
             (target as? XTRViewController.InnerObject)?.let { return it }
             (target as? V8Object)?.let {
                 return XTRObject.requestNativeObject(it) as? XTRViewController.InnerObject
-            }
-            return null
-        }
-
-        fun toApplication(target: Any?): XTRApplication.InnerObject? {
-            (target as? XTRApplication.InnerObject)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRObject.requestNativeObject(it) as? XTRApplication.InnerObject
-            }
-            return null
-        }
-
-        fun toApplicationDelegate(target: Any?): XTRApplicationDelegate.InnerObject? {
-            (target as? XTRApplicationDelegate.InnerObject)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRObject.requestNativeObject(it) as? XTRApplicationDelegate.InnerObject
             }
             return null
         }
