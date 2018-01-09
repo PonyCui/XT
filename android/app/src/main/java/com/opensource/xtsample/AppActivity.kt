@@ -3,7 +3,7 @@ package com.opensource.xtsample
 import android.os.Bundle
 import com.opensource.xtruntime.XTRActivity
 import com.opensource.xtruntime.XTRBridge
-import com.opensource.xtruntime.XTRCustomView
+//import com.opensource.xtruntime.XTRCustomView
 
 class AppActivity : XTRActivity() {
 
@@ -14,7 +14,7 @@ class AppActivity : XTRActivity() {
     }
 
     fun registerViews() {
-        XTRCustomView.registerClass(FOOView::class.java.name, "FOOView")
+//        XTRCustomView.registerClass(FOOView::class.java.name, "FOOView")
     }
 
     fun loadRemote() {

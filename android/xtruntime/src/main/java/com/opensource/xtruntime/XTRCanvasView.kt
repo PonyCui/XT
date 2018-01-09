@@ -1,36 +1,26 @@
 package com.opensource.xtruntime
 
+import android.content.Context
 import android.graphics.*
+import android.util.AttributeSet
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
+import com.opensource.xtmem.XTManagedObject
+import com.opensource.xtmem.XTMemoryManager
 
 /**
  * Created by cuiminghui on 2017/9/22.
  */
-class XTRCanvasView: XTRComponent() {
-
-    override val name: String = "XTRCanvasView"
-
-    override fun v8Object(): V8Object? {
-        val v8Object = V8Object(xtrContext.v8Runtime)
-        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
-        return v8Object
-    }
-
-    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
-        XTRUtils.toRect(rect)?.let {
-            view.frame = it
-        }
-        return view.requestV8Object(xtrContext.v8Runtime)
-    }
+class XTRCanvasView @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
 
     class State(var globalAlpha: Double = 1.0,
-                var fillStyle: XTRColor? = null,
-                var strokeStyle: XTRColor? = null,
-                var lineCap: String? = null,
-                var lineJoin: String? = null,
+                var fillStyle: XTRColor = XTRColor(0.0, 0.0, 0.0, 0.0),
+                var strokeStyle: XTRColor = XTRColor(0.0, 0.0, 0.0, 0.0),
+                var lineCap: String = "",
+                var lineJoin: String = "",
                 var lineWidth: Double = 1.0,
                 var miterLimit: Double = 0.0,
                 var currentTransform: Matrix = Matrix()) {
@@ -39,434 +29,474 @@ class XTRCanvasView: XTRComponent() {
         }
     }
 
-    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext) : XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
+    private var actions: List<(canvas: Canvas) -> Unit> = listOf()
+    private var currentState = State()
+    private var fakeState = State()
+    private var stateStack: List<State> = listOf()
+    private var currentPath = Path()
+    private var drawingPath = Path()
+    private var currentPaint = Paint()
+    private val scale = resources.displayMetrics.density
 
-        private var actions: List<(canvas: Canvas) -> Unit> = listOf()
-        private var currentState = State()
-        private var fakeState = State()
-        private var stateStack: List<State> = listOf()
-        private var currentPath = Path()
-        private var drawingPath = Path()
-        private var currentPaint = Paint()
-        private val scale = resources.displayMetrics.density
+    override fun drawContent(canvas: Canvas?) {
+        super.drawContent(canvas)
+        canvas?.takeIf { it.width > 0 && it.height > 0 }?.let { canvas ->
+            stateStack = listOf()
+            currentState = State()
+            fakeState = State()
+            currentPath.reset()
+            drawingPath.reset()
+            currentPaint.reset()
+            actions.forEach { it.invoke(canvas) }
+        }
+    }
 
+    companion object: XTRComponentExport() {
 
-        override fun requestV8Object(runtime: V8): V8Object {
-            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
-            v8Object.registerJavaMethod(this, "xtr_globalAlpha", "xtr_globalAlpha", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setGlobalAlpha", "xtr_setGlobalAlpha", arrayOf(Double::class.java))
-            v8Object.registerJavaMethod(this, "xtr_fillStyle", "xtr_fillStyle", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setFillStyle", "xtr_setFillStyle", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_strokeStyle", "xtr_strokeStyle", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setStrokeStyle", "xtr_setStrokeStyle", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_lineCap", "xtr_lineCap", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setLineCap", "xtr_setLineCap", arrayOf(String::class.java))
-            v8Object.registerJavaMethod(this, "xtr_lineJoin", "xtr_lineJoin", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setLineJoin", "xtr_setLineJoin", arrayOf(String::class.java))
-            v8Object.registerJavaMethod(this, "xtr_lineWidth", "xtr_lineWidth", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setLineWidth", "xtr_setLineWidth", arrayOf(Double::class.java))
-            v8Object.registerJavaMethod(this, "xtr_miterLimit", "xtr_miterLimit", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_setMiterLimit", "xtr_setMiterLimit", arrayOf(Double::class.java))
-            v8Object.registerJavaMethod(this, "xtr_rect", "xtr_rect", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_fillRect", "xtr_fillRect", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_strokeRect", "xtr_strokeRect", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_fill", "xtr_fill", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_stroke", "xtr_stroke", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_beginPath", "xtr_beginPath", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_moveTo", "xtr_moveTo", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_closePath", "xtr_closePath", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_lineTo", "xtr_lineTo", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_quadraticCurveTo", "xtr_quadraticCurveTo", arrayOf(V8Object::class.java, V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_bezierCurveTo", "xtr_bezierCurveTo", arrayOf(V8Object::class.java, V8Object::class.java, V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_arc", "xtr_arc", arrayOf(V8Object::class.java, Double::class.java, Double::class.java, Double::class.java, Boolean::class.java))
-            v8Object.registerJavaMethod(this, "xtr_isPointInPath", "xtr_isPointInPath", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_postScale", "xtr_postScale", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_postRotate", "xtr_postRotate", arrayOf(Double::class.java))
-            v8Object.registerJavaMethod(this, "xtr_postTranslate", "xtr_postTranslate", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_postTransform", "xtr_postTransform", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_setCanvasTransform", "xtr_setCanvasTransform", arrayOf(V8Object::class.java))
-            v8Object.registerJavaMethod(this, "xtr_save", "xtr_save", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_restore", "xtr_restore", arrayOf())
-            v8Object.registerJavaMethod(this, "xtr_clear", "xtr_clear", arrayOf())
-            return v8Object
+        override val name: String = "XTRCanvasView"
+
+        override fun exports(context: XTRContext): V8Object {
+            val exports = V8Object(context.v8Runtime)
+            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_globalAlpha", "xtr_globalAlpha", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setGlobalAlpha", "xtr_setGlobalAlpha", arrayOf(Double::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_fillStyle", "xtr_fillStyle", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setFillStyle", "xtr_setFillStyle", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_strokeStyle", "xtr_strokeStyle", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setStrokeStyle", "xtr_setStrokeStyle", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_lineCap", "xtr_lineCap", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setLineCap", "xtr_setLineCap", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_lineJoin", "xtr_lineJoin", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setLineJoin", "xtr_setLineJoin", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_lineWidth", "xtr_lineWidth", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setLineWidth", "xtr_setLineWidth", arrayOf(Double::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_miterLimit", "xtr_miterLimit", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setMiterLimit", "xtr_setMiterLimit", arrayOf(Double::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_rect", "xtr_rect", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_fillRect", "xtr_fillRect", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_strokeRect", "xtr_strokeRect", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_fill", "xtr_fill", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_stroke", "xtr_stroke", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_beginPath", "xtr_beginPath", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_moveTo", "xtr_moveTo", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_closePath", "xtr_closePath", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_lineTo", "xtr_lineTo", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_quadraticCurveTo", "xtr_quadraticCurveTo", arrayOf(V8Object::class.java, V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_bezierCurveTo", "xtr_bezierCurveTo", arrayOf(V8Object::class.java, V8Object::class.java, V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_arc", "xtr_arc", arrayOf(V8Object::class.java, Double::class.java, Double::class.java, Double::class.java, Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_isPointInPath", "xtr_isPointInPath", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_postScale", "xtr_postScale", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_postRotate", "xtr_postRotate", arrayOf(Double::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_postTranslate", "xtr_postTranslate", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_postTransform", "xtr_postTransform", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_setCanvasTransform", "xtr_setCanvasTransform", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_save", "xtr_save", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_restore", "xtr_restore", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_clear", "xtr_clear", arrayOf(String::class.java))
+            return exports
         }
 
-        fun xtr_globalAlpha(): Double {
-            return fakeState.globalAlpha
+        fun create(): String {
+            val view = XTRCanvasView(XTRView.context.appContext)
+            val managedObject = XTManagedObject(view)
+            view.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
         }
 
-        fun xtr_setGlobalAlpha(value: Double) {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_globalAlpha(objectRef: String): Double {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.fakeState?.globalAlpha ?: 0.0
+        }
+
+        fun xtr_setGlobalAlpha(value: Double, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.globalAlpha = value
+                    view.currentState.globalAlpha = value
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.globalAlpha = value
+            view.fakeState.globalAlpha = value
         }
 
-        fun xtr_fillStyle(): V8Value {
-            return XTRUtils.fromObject(xtrContext, fakeState.fillStyle) as? V8Object ?: V8.getUndefined()
+        fun xtr_fillStyle(objectRef: String): V8Value {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.let {
+                return@let XTRUtils.fromColor(it.fakeState.fillStyle, context.v8Runtime)
+            } ?: V8.getUndefined()
         }
 
-        fun xtr_setFillStyle(value: V8Object) {
+        fun xtr_setFillStyle(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             val fillStyle = XTRUtils.toColor(value) ?: return
-            this.actions.toMutableList()?.let { actions ->
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.fillStyle = fillStyle
+                    view.currentState.fillStyle = fillStyle
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.fillStyle = fillStyle
+            view.fakeState.fillStyle = fillStyle
         }
 
-        fun xtr_strokeStyle(): V8Value {
-            return XTRUtils.fromObject(xtrContext, fakeState.strokeStyle) as? V8Object ?: V8.getUndefined()
+        fun xtr_strokeStyle(objectRef: String): V8Value {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.let {
+                return@let XTRUtils.fromColor(it.fakeState.strokeStyle, context.v8Runtime)
+            } ?: V8.getUndefined()
         }
 
-        fun xtr_setStrokeStyle(value: V8Object) {
+        fun xtr_setStrokeStyle(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             val strokeStyle = XTRUtils.toColor(value) ?: return
-            this.actions.toMutableList()?.let { actions ->
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.strokeStyle = strokeStyle
+                    view.currentState.strokeStyle = strokeStyle
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.strokeStyle = strokeStyle
+            view.fakeState.strokeStyle = strokeStyle
         }
 
-        fun xtr_lineCap(): String? {
-            return fakeState.lineCap
+        fun xtr_lineCap(objectRef: String): String {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.fakeState?.lineCap ?: ""
         }
 
-        fun xtr_setLineCap(value: String) {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_setLineCap(value: String, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.lineCap = value
+                    view.currentState.lineCap = value
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.lineCap = value
+            view.fakeState.lineCap = value
         }
 
-        fun xtr_lineJoin(): String? {
-            return fakeState.lineJoin
+        fun xtr_lineJoin(objectRef: String): String {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.fakeState?.lineJoin ?: ""
         }
 
-        fun xtr_setLineJoin(value: String) {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_setLineJoin(value: String, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.lineJoin = value
+                    view.currentState.lineJoin = value
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.lineJoin = value
+            view.fakeState.lineJoin = value
         }
 
-        fun xtr_lineWidth(): Double {
-            return fakeState.lineWidth
+        fun xtr_lineWidth(objectRef: String): Double {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.fakeState?.lineWidth ?: 0.0
         }
 
-        fun xtr_setLineWidth(value: Double) {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_setLineWidth(value: Double, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.lineWidth = value
+                    view.currentState.lineWidth = value
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.lineWidth = value
+            view.fakeState.lineWidth = value
         }
 
-        fun xtr_miterLimit(): Double {
-            return fakeState.miterLimit
+        fun xtr_miterLimit(objectRef: String): Double {
+            return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.fakeState?.miterLimit ?: 0.0
         }
 
-        fun xtr_setMiterLimit(value: Double) {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_setMiterLimit(value: Double, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentState.miterLimit = value
+                    view.currentState.miterLimit = value
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            fakeState.miterLimit = value
+            view.fakeState.miterLimit = value
         }
 
-        fun xtr_rect(value: V8Object) {
+        fun xtr_rect(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toRect(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentPath.reset()
-                        currentPath.addRect(
+                        view.currentPath.reset()
+                        view.currentPath.addRect(
                                 RectF(
-                                        it.x.toFloat() * scale,
-                                        it.y.toFloat() * scale,
-                                        (it.x + it.width).toFloat() * scale,
-                                        (it.y + it.height).toFloat() * scale
+                                        it.x.toFloat() * view.scale,
+                                        it.y.toFloat() * view.scale,
+                                        (it.x + it.width).toFloat() * view.scale,
+                                        (it.y + it.height).toFloat() * view.scale
                                 ), Path.Direction.CCW)
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
             }
         }
 
-        fun xtr_fillRect(value: V8Object) {
-            xtr_rect(value)
-            xtr_fill()
+        fun xtr_fillRect(value: V8Object, objectRef: String) {
+            xtr_rect(value, objectRef)
+            xtr_fill(objectRef)
         }
 
-        fun xtr_strokeRect(value: V8Object) {
-            xtr_rect(value)
-            xtr_stroke()
+        fun xtr_strokeRect(value: V8Object, objectRef: String) {
+            xtr_rect(value, objectRef)
+            xtr_stroke(objectRef)
         }
 
-        fun xtr_fill() {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_fill(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { currentCanvas ->
-                    currentPaint.reset()
-                    currentPaint.color = (currentState.fillStyle ?: XTRColor(0.0, 0.0, 0.0, 1.0)).intColor()
-                    currentPaint.alpha = (currentState.globalAlpha * 255.0).toInt()
-                    if (!currentState.currentTransform.isIdentity) {
-                        drawingPath.reset()
-                        drawingPath.addPath(currentPath)
-                        drawingPath.transform(currentState.currentTransform)
-                        currentCanvas.drawPath(drawingPath, currentPaint)
+                    view.currentPaint.reset()
+                    view.currentPaint.color = view.currentState.fillStyle.intColor()
+                    view.currentPaint.alpha = (view.currentState.globalAlpha * 255.0).toInt()
+                    if (!view.currentState.currentTransform.isIdentity) {
+                        view.drawingPath.reset()
+                        view.drawingPath.addPath(view.currentPath)
+                        view.drawingPath.transform(view.currentState.currentTransform)
+                        currentCanvas.drawPath(view.drawingPath, view.currentPaint)
                         return@add
                     }
-                    currentCanvas.drawPath(currentPath, currentPaint)
+                    currentCanvas.drawPath(view.currentPath, view.currentPaint)
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            invalidate()
+            view.invalidate()
         }
 
-        fun xtr_stroke() {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_stroke(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { currentCanvas ->
-                    currentPaint.reset()
-                    currentPaint.color = (currentState.strokeStyle ?: XTRColor(0.0, 0.0, 0.0, 1.0)).intColor()
-                    currentPaint.alpha = (currentState.globalAlpha * 255.0).toInt()
-                    currentPaint.style = Paint.Style.STROKE
-                    when (currentState.lineCap) {
-                        "butt" -> currentPaint.strokeCap = Paint.Cap.BUTT
-                        "round" -> currentPaint.strokeCap = Paint.Cap.ROUND
-                        "square" -> currentPaint.strokeCap = Paint.Cap.SQUARE
+                    view.currentPaint.reset()
+                    view.currentPaint.color = view.currentState.strokeStyle.intColor()
+                    view.currentPaint.alpha = (view.currentState.globalAlpha * 255.0).toInt()
+                    view.currentPaint.style = Paint.Style.STROKE
+                    when (view.currentState.lineCap) {
+                        "butt" -> view.currentPaint.strokeCap = Paint.Cap.BUTT
+                        "round" -> view.currentPaint.strokeCap = Paint.Cap.ROUND
+                        "square" -> view.currentPaint.strokeCap = Paint.Cap.SQUARE
                     }
-                    when (currentState.lineJoin) {
-                        "bevel" -> currentPaint.strokeJoin = Paint.Join.BEVEL
-                        "miter" -> currentPaint.strokeJoin = Paint.Join.MITER
-                        "round" -> currentPaint.strokeJoin = Paint.Join.ROUND
+                    when (view.currentState.lineJoin) {
+                        "bevel" -> view.currentPaint.strokeJoin = Paint.Join.BEVEL
+                        "miter" -> view.currentPaint.strokeJoin = Paint.Join.MITER
+                        "round" -> view.currentPaint.strokeJoin = Paint.Join.ROUND
                     }
-                    currentPaint.strokeWidth = (currentState.lineWidth * scale).toFloat()
-                    currentPaint.strokeMiter = (currentState.miterLimit * scale).toFloat()
-                    if (!currentState.currentTransform.isIdentity) {
-                        drawingPath.reset()
-                        drawingPath.addPath(currentPath)
-                        drawingPath.transform(currentState.currentTransform)
-                        currentCanvas.drawPath(drawingPath, currentPaint)
+                    view.currentPaint.strokeWidth = (view.currentState.lineWidth * view.scale).toFloat()
+                    view.currentPaint.strokeMiter = (view.currentState.miterLimit * view.scale).toFloat()
+                    if (!view.currentState.currentTransform.isIdentity) {
+                        view.drawingPath.reset()
+                        view.drawingPath.addPath(view.currentPath)
+                        view.drawingPath.transform(view.currentState.currentTransform)
+                        currentCanvas.drawPath(view.drawingPath, view.currentPaint)
                         return@add
                     }
-                    currentCanvas.drawPath(currentPath, currentPaint)
+                    currentCanvas.drawPath(view.currentPath, view.currentPaint)
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
-            invalidate()
+            view.invalidate()
         }
 
-        fun xtr_beginPath() {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_beginPath(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentPath.reset()
+                    view.currentPath.reset()
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_moveTo(value: V8Object) {
+        fun xtr_moveTo(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toPoint(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentPath.moveTo((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                        view.currentPath.moveTo((it.x * view.scale).toFloat(), (it.y * view.scale).toFloat())
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
             }
         }
 
-        fun xtr_closePath() {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_closePath(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentPath.close()
+                    view.currentPath.close()
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_lineTo(value: V8Object) {
+        fun xtr_lineTo(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toPoint(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentPath.lineTo((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                        view.currentPath.lineTo((it.x * view.scale).toFloat(), (it.y * view.scale).toFloat())
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
             }
         }
 
-        fun xtr_quadraticCurveTo(argCpPoint: V8Object, argXyPoint: V8Object) {
+        fun xtr_quadraticCurveTo(argCpPoint: V8Object, argXyPoint: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             val cpPoint = XTRUtils.toPoint(argCpPoint) ?: return
             val xyPoint = XTRUtils.toPoint(argXyPoint) ?: return
-            this.actions.toMutableList()?.let { actions ->
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentPath.quadTo((cpPoint.x * scale).toFloat(), (cpPoint.y * scale).toFloat(), (xyPoint.x * scale).toFloat(), (xyPoint.y * scale).toFloat())
+                    view.currentPath.quadTo((cpPoint.x * view.scale).toFloat(), (cpPoint.y * view.scale).toFloat(), (xyPoint.x * view.scale).toFloat(), (xyPoint.y * view.scale).toFloat())
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_bezierCurveTo(argCp1Point: V8Object, argCp2Point: V8Object, argXyPoint: V8Object) {
+        fun xtr_bezierCurveTo(argCp1Point: V8Object, argCp2Point: V8Object, argXyPoint: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             val cp1Point = XTRUtils.toPoint(argCp1Point) ?: return
             val cp2Point = XTRUtils.toPoint(argCp2Point) ?: return
             val xyPoint = XTRUtils.toPoint(argXyPoint) ?: return
-            this.actions.toMutableList()?.let { actions ->
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentPath.cubicTo((cp1Point.x * scale).toFloat(), (cp1Point.y * scale).toFloat(), (cp2Point.x * scale).toFloat(), (cp2Point.y * scale).toFloat(), (xyPoint.x * scale).toFloat(), (xyPoint.y * scale).toFloat())
+                    view.currentPath.cubicTo((cp1Point.x * view.scale).toFloat(), (cp1Point.y * view.scale).toFloat(), (cp2Point.x * view.scale).toFloat(), (cp2Point.y * view.scale).toFloat(), (xyPoint.x * view.scale).toFloat(), (xyPoint.y * view.scale).toFloat())
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_arc(argPoint: V8Object, r: Double, sAngle: Double, eAngle: Double, counterclockwise: Boolean) {
+        fun xtr_arc(argPoint: V8Object, r: Double, sAngle: Double, eAngle: Double, counterclockwise: Boolean, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             val point = XTRUtils.toPoint(argPoint) ?: return
-            this.actions.toMutableList()?.let { actions ->
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    currentPath.addArc(
-                            RectF(((point.x - r) * scale).toFloat(), ((point.y - r) * scale).toFloat(), ((point.x + r) * scale).toFloat(), ((point.y + r) * scale).toFloat()),
+                    view.currentPath.addArc(
+                            RectF(((point.x - r) * view.scale).toFloat(), ((point.y - r) * view.scale).toFloat(), ((point.x + r) * view.scale).toFloat(), ((point.y + r) * view.scale).toFloat()),
                             if (counterclockwise) ((eAngle / (2 * Math.PI)) * 360f).toFloat() else ((sAngle / (2 * Math.PI)) * 360f).toFloat(),
                             if (counterclockwise) ((sAngle / (2 * Math.PI)) * 360f).toFloat() - ((eAngle / (2 * Math.PI)) * 360f).toFloat() + 360f else ((eAngle / (2 * Math.PI)) * 360f).toFloat() - ((sAngle / (2 * Math.PI)) * 360f).toFloat()
                     )
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_isPointInPath(value: V8Object): Boolean {
+        fun xtr_isPointInPath(value: V8Object, objectRef: String): Boolean {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return false
             XTRUtils.toPoint(value)?.let {
-                actions.forEach { it.invoke(Canvas()) }
+                view.actions.forEach { it.invoke(Canvas()) }
                 val r = Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE)
-                if (!currentState.currentTransform.isIdentity) {
-                    drawingPath.reset()
-                    drawingPath.addPath(currentPath)
-                    drawingPath.transform(currentState.currentTransform)
-                    r.setPath(drawingPath, Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE))
+                if (!view.currentState.currentTransform.isIdentity) {
+                    view.drawingPath.reset()
+                    view.drawingPath.addPath(view.currentPath)
+                    view.drawingPath.transform(view.currentState.currentTransform)
+                    r.setPath(view.drawingPath, Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE))
                 }
                 else {
-                    r.setPath(currentPath, Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE))
+                    r.setPath(view.currentPath, Region(0, 0, Int.MAX_VALUE, Int.MAX_VALUE))
                 }
-                return r.contains((it.x * scale).toInt(), (it.y * scale).toInt())
+                return r.contains((it.x * view.scale).toInt(), (it.y * view.scale).toInt())
             }
             return false
         }
 
-        fun xtr_postScale(value: V8Object) {
+        fun xtr_postScale(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toPoint(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentState.currentTransform.postScale(it.x.toFloat(), it.y.toFloat())
+                        view.currentState.currentTransform.postScale(it.x.toFloat(), it.y.toFloat())
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
             }
         }
 
-        fun xtr_postRotate(value: Double) {
+        fun xtr_postRotate(value: Double, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             value.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentState.currentTransform.postRotate(((it / (2 * Math.PI)) * 360f).toFloat())
+                        view.currentState.currentTransform.postRotate(((it / (2 * Math.PI)) * 360f).toFloat())
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
             }
         }
 
-        fun xtr_postTranslate(value: V8Object) {
+        fun xtr_postTranslate(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toPoint(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentState.currentTransform.postTranslate((it.x * scale).toFloat(), (it.y * scale).toFloat())
+                        view.currentState.currentTransform.postTranslate((it.x * view.scale).toFloat(), (it.y * view.scale).toFloat())
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
 
             }
         }
 
-        fun xtr_postTransform(value: V8Object) {
+        fun xtr_postTransform(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toTransform(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentState.currentTransform.postConcat(it.toNativeMatrix())
+                        view.currentState.currentTransform.postConcat(it.toNativeMatrix())
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
 
             }
         }
 
-        fun xtr_setCanvasTransform(value: V8Object) {
+        fun xtr_setCanvasTransform(value: V8Object, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
             XTRUtils.toTransform(value)?.let {
-                this.actions.toMutableList()?.let { actions ->
+                view.actions.toMutableList()?.let { actions ->
                     actions.add { _ ->
-                        currentState.currentTransform = it.toNativeMatrix()
+                        view.currentState.currentTransform = it.toNativeMatrix()
                     }
-                    this.actions = actions.toList()
+                    view.actions = actions.toList()
                 }
             }
         }
 
-        fun xtr_save() {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_save(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    val mutable = stateStack.toMutableList()
-                    mutable.add(currentState)
-                    stateStack = mutable.toList()
-                    currentState = currentState.copy()
+                    val mutable = view.stateStack.toMutableList()
+                    mutable.add(view.currentState)
+                    view.stateStack = mutable.toList()
+                    view.currentState = view.currentState.copy()
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_restore() {
-            this.actions.toMutableList()?.let { actions ->
+        fun xtr_restore(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions.toMutableList()?.let { actions ->
                 actions.add { _ ->
-                    if (stateStack.isNotEmpty()) {
-                        val mutable = stateStack.toMutableList()
+                    if (view.stateStack.isNotEmpty()) {
+                        val mutable = view.stateStack.toMutableList()
                         val lastObject = mutable[mutable.size - 1]
                         mutable.removeAt(mutable.size - 1)
-                        stateStack = mutable.toList()
-                        currentState = lastObject
+                        view.stateStack = mutable.toList()
+                        view.currentState = lastObject
                     }
                 }
-                this.actions = actions.toList()
+                view.actions = actions.toList()
             }
         }
 
-        fun xtr_clear() {
-            actions = listOf()
-            invalidate()
-        }
-
-        override fun drawContent(canvas: Canvas?) {
-            super.drawContent(canvas)
-            canvas?.takeIf { it.width > 0 && it.height > 0 }?.let { canvas ->
-                stateStack = listOf()
-                currentState = State()
-                fakeState = State()
-                currentPath.reset()
-                drawingPath.reset()
-                currentPaint.reset()
-                actions.forEach { it.invoke(canvas) }
-            }
+        fun xtr_clear(objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTRCanvasView ?: return
+            view.actions = listOf()
+            view.invalidate()
         }
 
     }

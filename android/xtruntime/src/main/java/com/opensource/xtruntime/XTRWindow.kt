@@ -20,45 +20,45 @@ class XTRWindow @JvmOverloads constructor(
     
     var subWindows: List<XTRWindow> = listOf()
 
-    internal var rootViewController: XTRViewController.InnerObject? = null
-        set(value) {
-            field?.let {
-                it.view?.xtr_removeFromSuperview()
-            }
-            field = value
-            field?.let {
-                it.view?.let {
-                    this.xtr_addSubview(it)
-                    it.frame = this.bounds
-                }
-            }
-        }
+//    internal var rootViewController: XTRViewController.InnerObject? = null
+//        set(value) {
+//            field?.let {
+//                it.view?.xtr_removeFromSuperview()
+//            }
+//            field = value
+//            field?.let {
+//                it.view?.let {
+//                    this.xtr_addSubview(it)
+//                    it.frame = this.bounds
+//                }
+//            }
+//        }
 
 
     fun keyboardWillShow(height: Int) {
-        xtrContext.invokeMethod(scriptObject, "handleKeyboardShow", listOf(
-                XTRRect(0.0, 0.0, this.bounds.width, height.toDouble() / resources.displayMetrics.density),
-                0.15
-        ))
+//        xtrContext.invokeMethod(scriptObject, "handleKeyboardShow", listOf(
+//                XTRRect(0.0, 0.0, this.bounds.width, height.toDouble() / resources.displayMetrics.density),
+//                0.15
+//        ))
     }
 
     fun keyboardWillHide() {
-        xtrContext.invokeMethod(scriptObject, "handleKeyboardHide", listOf(
-                0.0
-        ))
-        firstResponder?.let {
-            (it as? XTRTextField.InnerObject)?.xtr_blur()
-            (it as? XTRTextView.InnerObject)?.xtr_blur()
-        }
+//        xtrContext.invokeMethod(scriptObject, "handleKeyboardHide", listOf(
+//                0.0
+//        ))
+//        firstResponder?.let {
+//            (it as? XTRTextField.InnerObject)?.xtr_blur()
+//            (it as? XTRTextView.InnerObject)?.xtr_blur()
+//        }
     }
 
     fun orientationChanged() {
-        xtrContext.invokeMethod(scriptObject, "handleOrientationChange", null)
+//        xtrContext.invokeMethod(scriptObject, "handleOrientationChange", null)
     }
 
     override fun layoutSubviews() {
         super.layoutSubviews()
-        rootViewController?.view?.frame = this.bounds
+//        rootViewController?.view?.frame = this.bounds
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -69,47 +69,47 @@ class XTRWindow @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        when (event?.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                val pid = event.getPointerId(0).toString()
-                val timestamp = System.nanoTime() / 1000000
-                val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-                xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
-            }
-            MotionEvent.ACTION_MOVE -> {
-                val timestamp = System.nanoTime() / 1000000
-                val points = V8Object(xtrContext.v8Runtime)
-                (0 until event.pointerCount).forEach { pointerID ->
-                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-                    (XTRUtils.fromObject(xtrContext, point) as? V8Object)?.let {
-                        points.add(pointerID.toString(), it)
-                        it.release()
-                    }
-                }
-                xtrContext.invokeMethod(scriptObject, "handlePointersMove", listOf(timestamp, points))
-                points.release()
-            }
-            MotionEvent.ACTION_UP -> {
-                val pid = event.getPointerId(0).toString()
-                val timestamp = System.nanoTime() / 1000000
-                val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-                xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
-            }
-//                MotionEvent.ACTION_POINTER_DOWN -> {
-//                    val pointerID = event.actionIndex
-//                    val pid = event.getPointerId(pointerID).toString()
-//                    val timestamp = System.nanoTime() / 1000000
+//        when (event?.actionMasked) {
+//            MotionEvent.ACTION_DOWN -> {
+//                val pid = event.getPointerId(0).toString()
+//                val timestamp = System.nanoTime() / 1000000
+//                val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
+//                xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
+//            }
+//            MotionEvent.ACTION_MOVE -> {
+//                val timestamp = System.nanoTime() / 1000000
+//                val points = V8Object(xtrContext.v8Runtime)
+//                (0 until event.pointerCount).forEach { pointerID ->
 //                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-//                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
+//                    (XTRUtils.fromObject(xtrContext, point) as? V8Object)?.let {
+//                        points.add(pointerID.toString(), it)
+//                        it.release()
+//                    }
 //                }
-//                MotionEvent.ACTION_POINTER_UP -> {
-//                    val pointerID = event.actionIndex
-//                    val pid = event.getPointerId(pointerID).toString()
-//                    val timestamp = System.nanoTime() / 1000000
-//                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-//                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
-//                }
-        }
+//                xtrContext.invokeMethod(scriptObject, "handlePointersMove", listOf(timestamp, points))
+//                points.release()
+//            }
+//            MotionEvent.ACTION_UP -> {
+//                val pid = event.getPointerId(0).toString()
+//                val timestamp = System.nanoTime() / 1000000
+//                val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
+//                xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
+//            }
+////                MotionEvent.ACTION_POINTER_DOWN -> {
+////                    val pointerID = event.actionIndex
+////                    val pid = event.getPointerId(pointerID).toString()
+////                    val timestamp = System.nanoTime() / 1000000
+////                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
+////                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
+////                }
+////                MotionEvent.ACTION_POINTER_UP -> {
+////                    val pointerID = event.actionIndex
+////                    val pid = event.getPointerId(pointerID).toString()
+////                    val timestamp = System.nanoTime() / 1000000
+////                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
+////                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
+////                }
+//        }
         return true
     }
 
@@ -138,13 +138,14 @@ class XTRWindow @JvmOverloads constructor(
 
 
         fun xtr_rootViewController(): Any? {
-            return XTRUtils.fromObject(xtrContext, rootViewController)
+            return null
+//            return XTRUtils.fromObject(xtrContext, rootViewController)
         }
 
         fun xtr_setRootViewController(value: V8Object) {
-            XTRUtils.toViewController(value)?.let {
-                rootViewController = it
-            }
+//            XTRUtils.toViewController(value)?.let {
+//                rootViewController = it
+//            }
         }
 
         fun xtr_makeKeyAndVisible() {
@@ -152,14 +153,14 @@ class XTRWindow @JvmOverloads constructor(
         }
 
         fun xtr_setStatusBarHidden(hidden: Boolean) {
-            this.systemUiVisibility = if (hidden) View.SYSTEM_UI_FLAG_FULLSCREEN else 0
+//            this.systemUiVisibility = if (hidden) View.SYSTEM_UI_FLAG_FULLSCREEN else 0
         }
 
         fun xtr_endEditing() {
-            firstResponder?.let {
-                (it as? XTRTextField.InnerObject)?.xtr_blur()
-                (it as? XTRTextView.InnerObject)?.xtr_blur()
-            }
+//            firstResponder?.let {
+//                (it as? XTRTextField.InnerObject)?.xtr_blur()
+//                (it as? XTRTextView.InnerObject)?.xtr_blur()
+//            }
         }
 
         var firstResponder: Any? = null

@@ -137,34 +137,42 @@ class XTRButton @JvmOverloads constructor(
         }
 
         fun xtr_setImage(imageRef: String, objectRef: String) {
-            this.imageView.xtr_setImage(value)
-            resetContents()
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.let {
+                XTRImageView.xtr_setImage(imageRef, it.imageView.objectUUID ?: "")
+                it.resetContents()
+            }
         }
 
         fun xtr_color(objectRef: String): V8Value {
-            return XTRUtils.fromObject(xtrContext, this.xtr_tintColor()) as? V8Object ?: V8.getUndefined()
+            return XTRUtils.fromColor((XTMemoryManager.find(objectRef) as? XTRButton)?.tintColor ?: XTRColor(0.0, 0.0, 0.0, 0.0), context.v8Runtime)
         }
 
         fun xtr_setColor(value: V8Object, objectRef: String) {
-            this.xtr_setTintColor(value)
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.let {
+                it.tintColor = XTRUtils.toColor(value)
+            }
         }
 
         fun xtr_vertical(objectRef: String): Boolean {
-            return this.isVertical
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.isVertical ?: false
         }
 
         fun xtr_setVertical(value: Boolean, objectRef: String) {
-            this.isVertical = value
-            resetContents()
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.let {
+                it.isVertical = value
+                it.resetContents()
+            }
         }
 
         fun xtr_inset(objectRef: String): Double {
-            return this.inset
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.inset ?: 0.0
         }
 
         fun xtr_setInset(value: Double, objectRef: String) {
-            this.inset = value
-            resetContents()
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.let {
+                it.inset = value
+                it.resetContents()
+            }
         }
 
     }

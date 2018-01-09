@@ -121,19 +121,6 @@ class XTRUtils {
             return v8Object
         }
 
-        fun toFont(target: Any?): XTRFont? {
-            (target as? XTRFont)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRFont(
-                        (it.get("pointSize") as? Int)?.toDouble() ?: it.get("pointSize") as? Double ?: 14.0,
-                        it.get("familyName") as? String,
-                        it.get("fontWeight") as? String ?: "400",
-                        it.get("fontStyle") as? String ?: "normal"
-                )
-            }
-            return null
-        }
-
         fun fromFont(target: XTRFont, runtime: V8): V8Object {
             val v8Object = V8Object(runtime)
             v8Object.add("pointSize", target.pointSize)
@@ -141,38 +128,6 @@ class XTRUtils {
             v8Object.add("fontWeight", target.fontWeight)
             v8Object.add("fontStyle", target.fontStyle)
             return v8Object
-        }
-
-        fun toView(target: Any?): View? {
-            (target as? View)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRObject.requestNativeObject(it) as? View
-            }
-            return null
-        }
-
-        fun toWindow(target: Any?): XTRWindow.InnerObject? {
-            (target as? XTRWindow.InnerObject)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRObject.requestNativeObject(it) as? XTRWindow.InnerObject
-            }
-            return null
-        }
-
-        fun toViewController(target: Any?): XTRViewController.InnerObject? {
-            (target as? XTRViewController.InnerObject)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRObject.requestNativeObject(it) as? XTRViewController.InnerObject
-            }
-            return null
-        }
-
-        fun toImage(target: Any?): XTRImage.InnerObject? {
-            (target as? XTRImage.InnerObject)?.let { return it }
-            (target as? V8Object)?.let {
-                return XTRObject.requestNativeObject(it) as? XTRImage.InnerObject
-            }
-            return null
         }
 
         fun fromArray(target: Any?): List<Any>? {
