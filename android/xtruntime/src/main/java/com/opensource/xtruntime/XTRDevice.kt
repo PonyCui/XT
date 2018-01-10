@@ -25,7 +25,7 @@ class XTRDevice: XTRComponent() {
     override val name: String = "XTRDevice"
 
     override fun v8Object(): V8Object? {
-        val v8Object = V8Object(xtrContext.v8Runtime)
+        val v8Object = V8Object(xtrContext.runtime)
         v8Object.registerJavaMethod(this, "xtr_current", "xtr_current", arrayOf())
         return v8Object
     }
@@ -34,7 +34,7 @@ class XTRDevice: XTRComponent() {
         if (current == null) {
             current = InnerObject(xtrContext)
         }
-        val v8Object = V8Object(xtrContext.v8Runtime)
+        val v8Object = V8Object(xtrContext.runtime)
         v8Object.registerJavaMethod(current, "xtr_name", "xtr_name", arrayOf())
         v8Object.registerJavaMethod(current, "xtr_systemName", "xtr_systemName", arrayOf())
         v8Object.registerJavaMethod(current, "xtr_systemVersion", "xtr_systemVersion", arrayOf())

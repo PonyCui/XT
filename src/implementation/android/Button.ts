@@ -13,24 +13,8 @@ export class Button extends View {
     readonly imageView = new ImageView()
     readonly titleLabel = new Label()
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
-        if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRButton.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); })
-        }
-    }
-
-    init() {
-        super.init();
-        this.addSubview(this.imageView);
-        this.addSubview(this.titleLabel);
+    constructor() {
+        super(XTRButton)
         this.setupTouches();
     }
 
@@ -138,13 +122,3 @@ export class Button extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.toString().indexOf("com.opensource.xtruntime.XTRButton$InnerObject") === 0) {
-        return new Label(undefined, view);
-    }
-    return undefined;
-})

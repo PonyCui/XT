@@ -15,9 +15,7 @@ import okhttp3.*
 import org.json.JSONObject
 import java.net.URI
 import java.net.URLEncoder
-import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.timerTask
 
 /**
  * Created by cuiminghui on 2017/9/20.
@@ -58,7 +56,7 @@ class XTRDebug {
             val editText = EditText(bridge.appContext)
             editText.setTextColor(Color.BLACK)
             editText.setSingleLine(true)
-            editText.text.append(bridge.xtrSourceURL ?: "")
+            editText.text.append(bridge.sourceURL ?: "")
             builder.setView(editText)
             builder.setPositiveButton("Continue", { _, _ ->
                 val text = editText.text.toString()
@@ -66,7 +64,7 @@ class XTRDebug {
                     resetSourceURLViaPinCode(activity, bridge, text)
                 }
                 else {
-                    bridge.xtrSourceURL = text
+                    bridge.sourceURL = text
                     sendConnectedMessage(bridge)
                 }
             })
@@ -87,7 +85,7 @@ class XTRDebug {
                             files.split("\n").forEach {
                                 if (it.endsWith("android.min.js")) {
                                     Handler(bridge.appContext.mainLooper).post {
-                                        bridge.xtrSourceURL = it
+                                        bridge.sourceURL = it
                                         dialog.hide()
                                         sendConnectedMessage(bridge)
                                     }
@@ -117,7 +115,7 @@ class XTRDebug {
                                         files.split("\n").forEach {
                                             if (it.endsWith("android.min.js")) {
                                                 Handler(bridge.appContext.mainLooper).post {
-                                                    bridge.xtrSourceURL = it
+                                                    bridge.sourceURL = it
                                                     dialog.hide()
                                                     sendConnectedMessage(bridge)
                                                 }
@@ -143,7 +141,7 @@ class XTRDebug {
                 try {
                     val request = Request.Builder()
                             .cacheControl(CacheControl.Builder().noCache().build())
-                            .url(URI(bridge.xtrSourceURL).resolve("/connected/Android_OS_" + Build.VERSION.SDK_INT).toString())
+                            .url(URI(bridge.sourceURL).resolve("/connected/Android_OS_" + Build.VERSION.SDK_INT).toString())
                             .get()
                             .build()
                     OkHttpClient().newCall(request).execute()
@@ -158,9 +156,9 @@ class XTRDebug {
 class XTRBreakpoint(val bridge: XTRBridge) {
 
     init {
-        val v8Object = V8Object(bridge.xtrContext.v8Runtime)
+        val v8Object = V8Object(bridge.xtrContext.runtime)
         v8Object.registerJavaMethod(this, "breaking", "breaking", arrayOf(String::class.java, V8Function::class.java))
-        bridge.xtrContext.v8Runtime.add("XTRBreakpointInstance", v8Object)
+        bridge.xtrContext.runtime.add("XTRBreakpointInstance", v8Object)
         bridge.xtrContext.evaluateScript("var XTRBreakpoint = function(id, eval) { XTRBreakpointInstance.breaking(id, eval) };")
         v8Object.release()
     }
@@ -173,7 +171,7 @@ class XTRBreakpoint(val bridge: XTRBridge) {
             try {
                 val request = Request.Builder()
                         .cacheControl(CacheControl.Builder().noCache().build())
-                        .url(URI(bridge.xtrSourceURL).resolve("/breakpoint/" + URLEncoder.encode(((id as? String) ?: ""))).toString())
+                        .url(URI(bridge.sourceURL).resolve("/breakpoint/" + URLEncoder.encode(((id as? String) ?: ""))).toString())
                         .get()
                         .build()
                 val response = client.newCall(request).execute()
@@ -182,13 +180,13 @@ class XTRBreakpoint(val bridge: XTRBridge) {
                     break
                 }
                 else {
-                    val params = V8Array(bridge.xtrContext.v8Runtime)
+                    val params = V8Array(bridge.xtrContext.runtime)
                     result?.let { params.push(it) }
                     try {
                         val evalResult = eval.call(null, params)
                         val request = Request.Builder()
                                 .cacheControl(CacheControl.Builder().noCache().build())
-                                .url(URI(bridge.xtrSourceURL).resolve("/evalresult/" + URLEncoder.encode(evalResult.toString())).toString())
+                                .url(URI(bridge.sourceURL).resolve("/evalresult/" + URLEncoder.encode(evalResult.toString())).toString())
                                 .get()
                                 .build()
                         client.newCall(request).execute()

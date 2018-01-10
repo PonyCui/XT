@@ -26,18 +26,8 @@ export class Label extends View {
 
     nativeObject: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
-        if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRLabel.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); })
-        }
+    constructor() {
+        super(XTRLabel)
     }
 
     public get text(): string {
@@ -101,13 +91,3 @@ export class Label extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.toString().indexOf("com.opensource.xtruntime.XTRLabel$InnerObject") === 0) {
-        return new Label(undefined, view);
-    }
-    return undefined;
-})

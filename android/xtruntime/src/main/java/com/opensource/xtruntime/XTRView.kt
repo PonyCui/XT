@@ -17,18 +17,138 @@ import com.facebook.rebound.SpringConfig
 import com.facebook.rebound.SpringSystem
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
-import java.util.*
-import kotlin.concurrent.timerTask
-import kotlin.math.abs
+import java.lang.Math.abs
+import java.lang.ref.WeakReference
 
 /**
  * Created by cuiminghui on 2017/9/1.
  */
+
+class XTRViewAnimationProperty<T>(val aniKey: String, val fromValue: T, val toValue: T, val onValue: (value: T) -> Unit)
+
+class XTRViewAnimator {
+
+    companion object {
+
+        var animationEnabled = false
+        var animationProps: Map<String, XTRViewAnimationProperty<Any>> = mapOf()
+        var animatingHandlers: Map<String, () -> Unit> = mapOf()
+
+        fun addAnimation(aniProp: XTRViewAnimationProperty<Any>) {
+            animatingHandlers[aniProp.aniKey]?.invoke()
+            (aniProp.fromValue as? Float)?.let { fromValue ->
+                (aniProp.toValue as? Float)?.let { toValue ->
+                    if (abs(fromValue - toValue) < 0.001) {
+                        return
+                    }
+                }
+            }
+            if (aniProp.fromValue == aniProp.toValue) {
+                return
+            }
+            val mutableMap = animationProps.toMutableMap()
+            mutableMap[aniProp.aniKey] = aniProp
+            animationProps = mutableMap.toMap()
+        }
+
+        fun animationWithDuration(duration: Double, animations: () -> Unit, completion: () -> Unit) {
+            val duration = duration as? Double ?: return
+            animationEnabled = true
+            animations()
+            animationEnabled = false
+            var completed = false
+            val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+            val animators = animationProps.values.map { aniProp ->
+                var animator: ValueAnimator? = null
+                (aniProp.fromValue as? Float)?.let {
+                    animator = ValueAnimator.ofFloat(aniProp.fromValue as Float, aniProp.toValue as Float)
+                }
+                animator?.duration = (duration * 1000).toLong()
+                animator?.addUpdateListener {
+                    (it.animatedValue as? Float)?.let {
+                        aniProp.onValue(it)
+                    }
+                }
+                animator?.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationEnd(p0: Animator?) {
+                        animator?.removeAllListeners()
+                        animator?.removeAllUpdateListeners()
+                        if (!completed) {
+                            completed = true
+                            completion()
+                        }
+                    }
+                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator?) {}
+                })
+                animatingHandlers[aniProp.aniKey] = {
+                    animator?.removeAllListeners()
+                    animator?.removeAllUpdateListeners()
+                    animator?.cancel()
+                }
+                return@map animator
+            }
+            animationProps = mapOf()
+            XTRViewAnimator.animatingHandlers?.let {
+                val mutable = it.toMutableMap()
+                mutable.putAll(animatingHandlers)
+                XTRViewAnimator.animatingHandlers = mutable.toMap()
+            }
+            animators.forEach { it?.start() }
+        }
+
+        fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: () -> Unit, completion: () -> Unit) {
+            val bounciness = bounciness as? Double ?: return
+            val speed = speed as? Double ?: return
+            animationEnabled = true
+            animations()
+            animationEnabled = false
+            var completed = false
+            val animatingHandlers = mutableMapOf<String, () -> Unit> ()
+            val springSystem = SpringSystem.create()
+            animationProps.values.forEach { aniProp ->
+                val spring = springSystem.createSpring()
+                spring.springConfig = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
+                (aniProp.fromValue as? Float)?.let {
+                    spring.currentValue = (aniProp.fromValue as Float).toDouble()
+                }
+                spring.addListener(object : SimpleSpringListener() {
+                    override fun onSpringUpdate(spring: Spring?) {
+                        spring?.currentValue?.toFloat()?.let {
+                            aniProp.onValue(it)
+                        }
+                    }
+                    override fun onSpringAtRest(spring: Spring?) {
+                        spring?.removeAllListeners()
+                        spring?.destroy()
+                        if (!completed) {
+                            completed = true
+                            completion()
+                        }
+                    }
+
+                })
+                animatingHandlers[aniProp.aniKey] = {
+                    spring.removeAllListeners()
+                    spring.destroy()
+                }
+                spring.endValue = (aniProp.toValue as Float).toDouble()
+            }
+            animationProps = mapOf()
+            XTRViewAnimator.animatingHandlers = animatingHandlers.toMap()
+        }
+
+    }
+
+}
+
 open class XTRView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), XTRComponentInstance {
 
     override var objectUUID: String? = null
+    internal var viewDelegate: WeakReference<XTRViewController>? = null
 
     fun scriptObject(): V8Object? {
         return XTRView.context.evaluateScript("objectRefs['$objectUUID']") as? V8Object
@@ -59,6 +179,29 @@ open class XTRView @JvmOverloads constructor(
 
     var frame: XTRRect? = null
         set(value) {
+            if (value != null && XTRViewAnimator.animationEnabled) {
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, value.x.toFloat() as Any, { x ->
+                    this.frame?.let {
+                        this.frame = XTRRect((x as Float).toDouble(), it.y, it.width, it.height)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.frame.y", (this.frame?.y ?: 0.0).toFloat() as Any, value.y.toFloat() as Any, { y ->
+                    this.frame?.let {
+                        this.frame = XTRRect(it.x, (y as Float).toDouble(), it.width, it.height)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.frame.width", (this.frame?.width ?: 0.0).toFloat() as Any, value.width.toFloat() as Any, { width ->
+                    this.frame?.let {
+                        this.frame = XTRRect(it.x, it.y, (width as Float).toDouble(), it.height)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.frame.height", (this.frame?.height ?: 0.0).toFloat() as Any, value.height.toFloat() as Any, { height ->
+                    this.frame?.let {
+                        this.frame = XTRRect(it.x, it.y, it.width, (height as Float).toDouble())
+                    }
+                }))
+                return
+            }
             field = value
             requestLayout()
         }
@@ -81,7 +224,27 @@ open class XTRView @JvmOverloads constructor(
     }
 
     var transformMatrix: XTRMatrix = XTRMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
-        private set(value) {
+        set(value) {
+            if (XTRViewAnimator.animationEnabled) {
+                val oldValue = transformMatrix.unMatrix()
+                val newValue = value.unMatrix()
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.transform.scale.x", oldValue.scale.x.toFloat() as Any, newValue.scale.x.toFloat() as Any, { scaleX ->
+                    transformMatrix = transformMatrix.setScale((scaleX as Float).toDouble(), null)
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.transform.scale.y", oldValue.scale.y.toFloat() as Any, newValue.scale.y.toFloat() as Any, { scaleY ->
+                    transformMatrix = transformMatrix.setScale(null, (scaleY as Float).toDouble())
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.transform.rotate", oldValue.degree.toFloat() as Any, newValue.degree.toFloat() as Any, { value ->
+                    transformMatrix = transformMatrix.setRotate((value as Float).toDouble())
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.transform.translate.x", oldValue.translate.x.toFloat() as Any, newValue.translate.x.toFloat() as Any, { translateX ->
+                    transformMatrix = transformMatrix.setTranslate((translateX as Float).toDouble(), null)
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.transform.translate.y", oldValue.translate.y.toFloat() as Any, newValue.translate.y.toFloat() as Any, { translateY ->
+                    transformMatrix = transformMatrix.setTranslate(null, (translateY as Float).toDouble())
+                }))
+                return
+            }
             field = value
             invalidate()
         }
@@ -109,8 +272,41 @@ open class XTRView @JvmOverloads constructor(
 
     // Mark: View Rendering
 
+    override fun setAlpha(alpha: Float) {
+        if (XTRViewAnimator.animationEnabled) {
+            XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.alpha", this.alpha as Any, alpha as Any, {
+                this.alpha = it as Float
+            }))
+            return
+        }
+        super.setAlpha(alpha)
+    }
+
     var backgroundColor: XTRColor = XTRColor(0.0, 0.0, 0.0, 0.0)
         set(value) {
+            if (XTRViewAnimator.animationEnabled) {
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.backgroundColor.r", (this.backgroundColor.r).toFloat() as Any, value.r.toFloat() as Any, { r ->
+                    this.backgroundColor?.let {
+                        this.backgroundColor = XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.backgroundColor.g", (this.backgroundColor.g).toFloat() as Any, value.g.toFloat() as Any, { g ->
+                    this.backgroundColor?.let {
+                        this.backgroundColor = XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.backgroundColor.b", (this.backgroundColor.b).toFloat() as Any, value.b.toFloat() as Any, { b ->
+                    this.backgroundColor?.let {
+                        this.backgroundColor = XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.backgroundColor.a", (this.backgroundColor.a).toFloat() as Any, value.a.toFloat() as Any, { a ->
+                    this.backgroundColor?.let {
+                        this.backgroundColor = XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
+                    }
+                }))
+                return
+            }
             field = value
             setBackgroundColor(value.intColor())
             invalidate()
@@ -143,6 +339,12 @@ open class XTRView @JvmOverloads constructor(
 
     var cornerRadius: Double = 0.0
         set(value) {
+            if (XTRViewAnimator.animationEnabled) {
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.cornerRadius", this.cornerRadius.toFloat() as Any, value.toFloat() as Any, {
+                    this.cornerRadius = (it as Float).toDouble()
+                }))
+                return
+            }
             field = Math.max(0.0, value)
             resetPath()
             invalidate()
@@ -150,12 +352,41 @@ open class XTRView @JvmOverloads constructor(
 
     var borderWidth: Double = 0.0
         set(value) {
+            if (XTRViewAnimator.animationEnabled) {
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.borderWidth", this.borderWidth.toFloat() as Any, value.toFloat() as Any, {
+                    this.borderWidth = (it as Float).toDouble()
+                }))
+                return
+            }
             field = value
             invalidate()
         }
 
     var borderColor: XTRColor = XTRColor(0.0, 0.0, 0.0, 0.0)
         set(value) {
+            if (XTRViewAnimator.animationEnabled) {
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.borderColor.r", (this.borderColor.r).toFloat() as Any, value.r.toFloat() as Any, { r ->
+                    this.borderColor?.let {
+                        this.borderColor = XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.borderColor.g", (this.borderColor.g).toFloat() as Any, value.g.toFloat() as Any, { g ->
+                    this.borderColor?.let {
+                        this.borderColor = XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.borderColor.b", (this.borderColor.b).toFloat() as Any, value.b.toFloat() as Any, { b ->
+                    this.borderColor?.let {
+                        this.borderColor = XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                    }
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.borderColor.a", (this.borderColor.a).toFloat() as Any, value.a.toFloat() as Any, { a ->
+                    this.borderColor?.let {
+                        this.borderColor = XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
+                    }
+                }))
+                return
+            }
             field = value
             invalidate()
         }
@@ -265,12 +496,12 @@ open class XTRView @JvmOverloads constructor(
     }
 
     open fun layoutSubviews() {
-//        viewDelegate?.viewWillLayoutSubviews()
+        viewDelegate?.get()?.viewWillLayoutSubviews()
         scriptObject()?.let {
             XTRContext.invokeMethod(it, "layoutSubviews")
             it.release()
         }
-//        viewDelegate?.viewDidLayoutSubviews()
+        viewDelegate?.get()?.viewDidLayoutSubviews()
     }
 
     open fun intrinsicContentSize(width: Double): XTRSize? {
@@ -288,7 +519,7 @@ open class XTRView @JvmOverloads constructor(
 
         override fun exports(context: XTRContext): V8Object {
             this.context = context
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_clipsToBounds", "xtr_clipsToBounds", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setClipsToBounds", "xtr_setClipsToBounds", arrayOf(Boolean::class.java, String::class.java))
@@ -303,6 +534,8 @@ open class XTRView @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_setBackgroundColor", "xtr_setBackgroundColor", arrayOf(V8Object::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_hidden", "xtr_hidden", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setHidden", "xtr_setHidden", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_tag", "xtr_tag", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setTag", "xtr_setTag", arrayOf(Int::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_opaque", "xtr_opaque", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setOpaque", "xtr_setOpaque", arrayOf(Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_tintColor", "xtr_tintColor", arrayOf(String::class.java))
@@ -331,6 +564,8 @@ open class XTRView @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_intrinsicContentSize", "xtr_intrinsicContentSize", arrayOf(Double::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_userInteractionEnabled", "xtr_userInteractionEnabled", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setUserInteractionEnabled", "xtr_setUserInteractionEnabled", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_animationWithDuration", "xtr_animationWithDuration", arrayOf(Double::class.java, V8Function::class.java, V8Function::class.java))
+            exports.registerJavaMethod(this, "xtr_animationWithBouncinessAndSpeed", "xtr_animationWithBouncinessAndSpeed", arrayOf(Double::class.java, Double::class.java, V8Function::class.java, V8Function::class.java))
             return exports
         }
 
@@ -363,116 +598,38 @@ open class XTRView @JvmOverloads constructor(
 
         fun xtr_setAlpha(alpha: Double, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? View)?.let {
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.alpha", this.alpha as Any, alpha.toFloat() as Any, {
-//                        this.alpha = it as Float
-//                    }))
-//                    return
-//                }
                 it.alpha = alpha.toFloat()
             }
         }
 
         fun xtr_frame(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-                return@let XTRUtils.fromRect(it.frame ?: XTRRect(0.0, 0.0, (it.width / it.resources.displayMetrics.density).toDouble(), (it.height / it.resources.displayMetrics.density).toDouble()), context.v8Runtime)
-            } ?: XTRUtils.fromRect(XTRRect(0.0,0.0,0.0,0.0), context.v8Runtime)
+                return@let XTRUtils.fromRect(it.frame ?: XTRRect(0.0, 0.0, (it.width / it.resources.displayMetrics.density).toDouble(), (it.height / it.resources.displayMetrics.density).toDouble()), context.runtime)
+            } ?: XTRUtils.fromRect(XTRRect(0.0,0.0,0.0,0.0), context.runtime)
         }
 
         fun xtr_setFrame(value: V8Object, objectRef: String) {
             XTRUtils.toRect(value)?.let { frame ->
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, it.x.toFloat() as Any, { x ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect((x as Float).toDouble(), it.y, it.width, it.height)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.frame.y", (this.frame?.y ?: 0.0).toFloat() as Any, it.y.toFloat() as Any, { y ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect(it.x, (y as Float).toDouble(), it.width, it.height)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.frame.width", (this.frame?.width ?: 0.0).toFloat() as Any, it.width.toFloat() as Any, { width ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect(it.x, it.y, (width as Float).toDouble(), it.height)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.frame.height", (this.frame?.height ?: 0.0).toFloat() as Any, it.height.toFloat() as Any, { height ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect(it.x, it.y, it.width, (height as Float).toDouble())
-//                        }
-//                    }))
-//                    return@let
-//                }
                 (XTMemoryManager.find(objectRef) as? XTRView)?.let {
                     it.frame = frame
                 }
             }
         }
 
-//        fun xtr_setFrame(value: XTRRect) {
-//            value?.let {
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, it.x.toFloat() as Any, { x ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect((x as Float).toDouble(), it.y, it.width, it.height)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.frame.y", (this.frame?.y ?: 0.0).toFloat() as Any, it.y.toFloat() as Any, { y ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect(it.x, (y as Float).toDouble(), it.width, it.height)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.frame.width", (this.frame?.width ?: 0.0).toFloat() as Any, it.width.toFloat() as Any, { width ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect(it.x, it.y, (width as Float).toDouble(), it.height)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.frame.height", (this.frame?.height ?: 0.0).toFloat() as Any, it.height.toFloat() as Any, { height ->
-//                        this.frame?.let {
-//                            this.frame = XTRRect(it.x, it.y, it.width, (height as Float).toDouble())
-//                        }
-//                    }))
-//                    return@let
-//                }
-//                frame = it
-//            }
-//        }
-
         fun xtr_bounds(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-                return@let XTRUtils.fromRect(it.bounds, context.v8Runtime)
-            } ?: XTRUtils.fromRect(XTRRect(0.0,0.0,0.0,0.0), context.v8Runtime)
+                return@let XTRUtils.fromRect(it.bounds, context.runtime)
+            } ?: XTRUtils.fromRect(XTRRect(0.0,0.0,0.0,0.0), context.runtime)
         }
 
         fun xtr_transform(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-                return@let XTRUtils.fromTransform(it.transformMatrix, context.v8Runtime)
-            } ?: XTRUtils.fromTransform(XTRMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0), context.v8Runtime)
+                return@let XTRUtils.fromTransform(it.transformMatrix, context.runtime)
+            } ?: XTRUtils.fromTransform(XTRMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0), context.runtime)
         }
 
         fun xtr_setTransform(value: V8Object, objectRef: String) {
             XTRUtils.toTransform(value)?.let { transformMatrix ->
-//                if (animationEnabled) {
-//                    val oldValue = transformMatrix.unMatrix()
-//                    val newValue = it.unMatrix()
-//                    addAnimation(AnimationProp("$objectUUID.transform.scale.x", oldValue.scale.x.toFloat() as Any, newValue.scale.x.toFloat() as Any, { scaleX ->
-//                        transformMatrix = transformMatrix.setScale((scaleX as Float).toDouble(), null)
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.transform.scale.y", oldValue.scale.y.toFloat() as Any, newValue.scale.y.toFloat() as Any, { scaleY ->
-//                        transformMatrix = transformMatrix.setScale(null, (scaleY as Float).toDouble())
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.transform.rotate", oldValue.degree.toFloat() as Any, newValue.degree.toFloat() as Any, { value ->
-//                        transformMatrix = transformMatrix.setRotate((value as Float).toDouble())
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.transform.translate.x", oldValue.translate.x.toFloat() as Any, newValue.translate.x.toFloat() as Any, { translateX ->
-//                        transformMatrix = transformMatrix.setTranslate((translateX as Float).toDouble(), null)
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.transform.translate.y", oldValue.translate.y.toFloat() as Any, newValue.translate.y.toFloat() as Any, { translateY ->
-//                        transformMatrix = transformMatrix.setTranslate(null, (translateY as Float).toDouble())
-//                    }))
-//                    return@let
-//                }
                 (XTMemoryManager.find(objectRef) as? XTRView)?.let {
                     it.transformMatrix = transformMatrix
                 }
@@ -481,35 +638,12 @@ open class XTRView @JvmOverloads constructor(
 
         fun xtr_backgroundColor(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-                return@let XTRUtils.fromColor(it.backgroundColor, context.v8Runtime)
-            } ?: XTRUtils.fromColor(XTRColor(0.0, 0.0, 0.0, 0.0), context.v8Runtime)
+                return@let XTRUtils.fromColor(it.backgroundColor, context.runtime)
+            } ?: XTRUtils.fromColor(XTRColor(0.0, 0.0, 0.0, 0.0), context.runtime)
         }
 
         fun xtr_setBackgroundColor(value: V8Object, objectRef: String) {
             XTRUtils.toColor(value)?.let { color ->
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.backgroundColor.r", (this.backgroundColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
-//                        this.backgroundColor?.let {
-//                            this.backgroundColor = XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.backgroundColor.g", (this.backgroundColor?.g ?: 0.0).toFloat() as Any, it.g.toFloat() as Any, { g ->
-//                        this.backgroundColor?.let {
-//                            this.backgroundColor = XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.backgroundColor.b", (this.backgroundColor?.b ?: 0.0).toFloat() as Any, it.b.toFloat() as Any, { b ->
-//                        this.backgroundColor?.let {
-//                            this.backgroundColor = XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.backgroundColor.a", (this.backgroundColor?.a ?: 0.0).toFloat() as Any, it.a.toFloat() as Any, { a ->
-//                        this.backgroundColor?.let {
-//                            this.backgroundColor = XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
-//                        }
-//                    }))
-//                    return@let
-//                }
                 (XTMemoryManager.find(objectRef) as? XTRView)?.let {
                     it.backgroundColor = color
                 }
@@ -538,8 +672,8 @@ open class XTRView @JvmOverloads constructor(
 
         fun xtr_tintColor(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-                return@let XTRUtils.fromColor(it.tintColor ?: XTRColor(0.0, 0.0, 0.0, 0.0), context.v8Runtime)
-            } ?: XTRUtils.fromColor(XTRColor(0.0, 0.0, 0.0, 0.0), context.v8Runtime)
+                return@let XTRUtils.fromColor(it.tintColor ?: XTRColor(0.0, 0.0, 0.0, 0.0), context.runtime)
+            } ?: XTRUtils.fromColor(XTRColor(0.0, 0.0, 0.0, 0.0), context.runtime)
         }
 
         fun xtr_setTintColor(value: V8Object, objectRef: String) {
@@ -558,12 +692,6 @@ open class XTRView @JvmOverloads constructor(
 
         fun xtr_setCornerRadius(value: Double, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.cornerRadius", this.cornerRadius.toFloat() as Any, value.toFloat() as Any, {
-//                        this.cornerRadius = (it as Float).toDouble()
-//                    }))
-//                    return
-//                }
                 it.cornerRadius = value
             }
         }
@@ -574,47 +702,18 @@ open class XTRView @JvmOverloads constructor(
 
         fun xtr_setBorderWidth(value: Double, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.borderWidth", this.borderWidth.toFloat() as Any, value.toFloat() as Any, {
-//                        this.borderWidth = (it as Float).toDouble()
-//                    }))
-//                    return
-//                }
                 it.borderWidth = value
             }
         }
 
         fun xtr_borderColor(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRView)?.let {
-                return@let XTRUtils.fromColor(it.borderColor, context.v8Runtime)
-            } ?: XTRUtils.fromColor(XTRColor(0.0, 0.0, 0.0, 0.0), context.v8Runtime)
+                return@let XTRUtils.fromColor(it.borderColor, context.runtime)
+            } ?: XTRUtils.fromColor(XTRColor(0.0, 0.0, 0.0, 0.0), context.runtime)
         }
 
         fun xtr_setBorderColor(value: V8Object, objectRef: String) {
             XTRUtils.toColor(value)?.let { color ->
-//                if (animationEnabled) {
-//                    addAnimation(AnimationProp("$objectUUID.borderColor.r", (this.borderColor?.r ?: 0.0).toFloat() as Any, it.r.toFloat() as Any, { r ->
-//                        this.borderColor?.let {
-//                            this.borderColor = XTRColor((r as Float).toDouble(), it.g, it.b, it.a)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.borderColor.g", (this.borderColor?.g ?: 0.0).toFloat() as Any, it.g.toFloat() as Any, { g ->
-//                        this.borderColor?.let {
-//                            this.borderColor = XTRColor(it.r, (g as Float).toDouble(), it.b, it.a)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.borderColor.b", (this.borderColor?.b ?: 0.0).toFloat() as Any, it.b.toFloat() as Any, { b ->
-//                        this.borderColor?.let {
-//                            this.borderColor = XTRColor(it.r, it.g, (b as Float).toDouble(), it.a)
-//                        }
-//                    }))
-//                    addAnimation(AnimationProp("$objectUUID.borderColor.a", (this.borderColor?.a ?: 0.0).toFloat() as Any, it.a.toFloat() as Any, { a ->
-//                        this.borderColor?.let {
-//                            this.borderColor = XTRColor(it.r, it.g, it.b, (a as Float).toDouble())
-//                        }
-//                    }))
-//                    return@let
-//                }
                 (XTMemoryManager.find(objectRef) as? XTRView)?.let {
                     it.borderColor = color
                 }
@@ -623,13 +722,21 @@ open class XTRView @JvmOverloads constructor(
 
         // Mark: View Hierarchy
 
+        fun xtr_tag(objectRef: String): Int {
+            return (XTMemoryManager.find(objectRef) as? XTRView)?.mTag ?: 0
+        }
+
+        fun xtr_setTag(value: Int, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRView)?.mTag = value
+        }
+
         fun xtr_superview(objectRef: String): String? {
             return (XTMemoryManager.find(objectRef) as? View)?.let { (it.parent as? XTRComponentInstance)?.objectUUID }
         }
 
         fun xtr_subviews(objectRef: String): V8Array? {
             return (XTMemoryManager.find(objectRef) as? ViewGroup)?.let {
-                val v8Array = V8Array(context.v8Runtime)
+                val v8Array = V8Array(context.runtime)
                 (0 until it.childCount).mapNotNull { idx ->
                     return@mapNotNull (it.getChildAt(idx) as? XTRComponentInstance)?.objectUUID
                 }.forEach { v8Array.push(it) }
@@ -704,15 +811,6 @@ open class XTRView @JvmOverloads constructor(
             (subview as? XTRView)?.didMoveToSuperview()
             (subview as? XTRView)?.didMoveToWindow()
         }
-
-//        fun xtr_addSubview(view: XTRView.InnerObject) {
-//            view.willMoveToSuperview(this)
-//            view.willMoveToWindow(xtr_windowObject())
-//            addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-//            didAddSubview(view)
-//            view.didMoveToSuperview()
-//            view.didMoveToWindow()
-//        }
 
         fun xtr_insertSubviewBelow(subviewRef: String, siblingSubviewRef: String, objectRef: String) {
             val view = XTMemoryManager.find(objectRef) as? ViewGroup ?: return
@@ -792,7 +890,7 @@ open class XTRView @JvmOverloads constructor(
 
         open fun xtr_intrinsicContentSize(width: Double, objectRef: String): V8Value {
             val view = XTMemoryManager.find(objectRef) as? XTRView ?: return V8.getUndefined()
-            return view.intrinsicContentSize(width)?.let { XTRUtils.fromSize(it, context.v8Runtime) } ?: V8.getUndefined()
+            return view.intrinsicContentSize(width)?.let { XTRUtils.fromSize(it, context.runtime) } ?: V8.getUndefined()
         }
 
         // Mark: View Interactive
@@ -807,316 +905,28 @@ open class XTRView @JvmOverloads constructor(
             }
         }
 
+        fun xtr_animationWithDuration(value: Double, animationBlock: V8Function, completionBlock: V8Function) {
+            val animationBlock = animationBlock.twin()
+            val completionBlock = completionBlock.twin()
+            XTRViewAnimator.animationWithDuration(value, {
+                animationBlock.call(null, null)
+            }, {
+                completionBlock.call(null, null)
+                XTRContext.release(animationBlock, completionBlock)
+            })
+        }
 
-//        var sharedHandler: android.os.Handler? = null
-//        var animationEnabled = false
-//        var animationProps: Map<String, AnimationProp<Any>> = mapOf()
-//        var animatingHandlers: Map<String, () -> Unit> = mapOf()
-//
-//        fun addAnimation(aniProp: AnimationProp<Any>) {
-//            XTRView.animatingHandlers[aniProp.aniKey]?.invoke()
-//            (aniProp.fromValue as? Float)?.let { fromValue ->
-//                (aniProp.toValue as? Float)?.let { toValue ->
-//                    if (abs(fromValue - toValue) < 0.001) {
-//                        return
-//                    }
-//                }
-//            }
-//            if (aniProp.fromValue == aniProp.toValue) {
-//                return
-//            }
-//            val mutableMap = animationProps.toMutableMap()
-//            mutableMap[aniProp.aniKey] = aniProp
-//            animationProps = mutableMap.toMap()
-//        }
+        fun xtr_animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animationBlock: V8Function, completionBlock: V8Function) {
+            val animationBlock = animationBlock.twin()
+            val completionBlock = completionBlock.twin()
+            XTRViewAnimator.animationWithBouncinessAndSpeed(bounciness, speed, {
+                animationBlock.call(null, null)
+            }, {
+                completionBlock.call(null, null)
+                XTRContext.release(animationBlock, completionBlock)
+            })
+        }
 
     }
-
-//    class AnimationProp<T>(val aniKey: String, val fromValue: T, val toValue: T, val onValue: (value: T) -> Unit)
-//
-//    override val name: String = "XTRView"
-//
-//    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.v8Runtime)
-//        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
-//        v8Object.registerJavaMethod(this, "animationWithDuration", "animationWithDuration", arrayOf(Double::class.java, V8Function::class.java, V8Function::class.java))
-//        v8Object.registerJavaMethod(this, "animationWithTensionAndFriction", "animationWithTensionAndFriction", arrayOf(Double::class.java, Double::class.java, V8Function::class.java, V8Function::class.java))
-//        v8Object.registerJavaMethod(this, "animationWithBouncinessAndSpeed", "animationWithBouncinessAndSpeed", arrayOf(Double::class.java, Double::class.java, V8Function::class.java, V8Function::class.java))
-//        return v8Object
-//    }
-//
-//    fun createScriptObject(rect: V8Object, scriptObject: V8Object): V8Object {
-//        val view = InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext)
-//        XTRUtils.toRect(rect)?.let {
-//            view.frame = it
-//        }
-//        return view.requestV8Object(xtrContext.v8Runtime)
-//    }
-//
-//    fun animationWithDuration(duration: Double, animations: V8Function, completion: V8Function) {
-//        val duration = duration as? Double ?: return
-//        val completion = completion.twin()
-//        animationEnabled = true
-//        xtrContext.callWithArguments(animations, null)
-//        if (animationProps.values.isEmpty()) {
-//            completion.release()
-//        }
-//        animationEnabled = false
-//        var completed = false
-//        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-//        val animators = animationProps.values.map { aniProp ->
-//            var animator: ValueAnimator? = null
-//            (aniProp.fromValue as? Float)?.let {
-//                animator = ValueAnimator.ofFloat(aniProp.fromValue as Float, aniProp.toValue as Float)
-//            }
-//            animator?.duration = (duration * 1000).toLong()
-//            animator?.addUpdateListener {
-//                (it.animatedValue as? Float)?.let {
-//                    aniProp.onValue(it)
-//                }
-//            }
-//            animator?.addListener(object : Animator.AnimatorListener {
-//                override fun onAnimationRepeat(p0: Animator?) {}
-//                override fun onAnimationEnd(p0: Animator?) {
-//                    animator?.removeAllListeners()
-//                    animator?.removeAllUpdateListeners()
-//                    if (!completed) {
-//                        completed = true
-//                        xtrContext.callWithArguments(completion, null)
-//                    }
-//                    if (!completion.runtime.isReleased) {
-//                        completion.release()
-//                    }
-//                }
-//                override fun onAnimationCancel(p0: Animator?) {
-//                    if (!completion.runtime.isReleased) {
-//                        completion.release()
-//                    }
-//                }
-//                override fun onAnimationStart(p0: Animator?) {}
-//            })
-//            animatingHandlers[aniProp.aniKey] = {
-//                animator?.removeAllListeners()
-//                animator?.removeAllUpdateListeners()
-//                animator?.cancel()
-//            }
-//            return@map animator
-//        }
-//        animationProps = mapOf()
-//        XTRView.animatingHandlers?.let {
-//            val mutable = it.toMutableMap()
-//            mutable.putAll(animatingHandlers)
-//            XTRView.animatingHandlers = mutable.toMap()
-//        }
-//        animators.forEach { it?.start() }
-//    }
-//
-//    fun animationWithDuration(duration: Double, animations: () -> Unit, completion: () -> Unit) {
-//        val duration = duration as? Double ?: return
-//        animationEnabled = true
-//        animations()
-//        animationEnabled = false
-//        var completed = false
-//        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-//        val animators = animationProps.values.map { aniProp ->
-//            var animator: ValueAnimator? = null
-//            (aniProp.fromValue as? Float)?.let {
-//                animator = ValueAnimator.ofFloat(aniProp.fromValue as Float, aniProp.toValue as Float)
-//            }
-//            animator?.duration = (duration * 1000).toLong()
-//            animator?.addUpdateListener {
-//                (it.animatedValue as? Float)?.let {
-//                    aniProp.onValue(it)
-//                }
-//            }
-//            animator?.addListener(object : Animator.AnimatorListener {
-//                override fun onAnimationRepeat(p0: Animator?) {}
-//                override fun onAnimationEnd(p0: Animator?) {
-//                    animator?.removeAllListeners()
-//                    animator?.removeAllUpdateListeners()
-//                    if (!completed) {
-//                        completed = true
-//                        completion()
-//                    }
-//                }
-//                override fun onAnimationCancel(p0: Animator?) {}
-//                override fun onAnimationStart(p0: Animator?) {}
-//            })
-//            animatingHandlers[aniProp.aniKey] = {
-//                animator?.removeAllListeners()
-//                animator?.removeAllUpdateListeners()
-//                animator?.cancel()
-//            }
-//            return@map animator
-//        }
-//        animationProps = mapOf()
-//        XTRView.animatingHandlers?.let {
-//            val mutable = it.toMutableMap()
-//            mutable.putAll(animatingHandlers)
-//            XTRView.animatingHandlers = mutable.toMap()
-//        }
-//        animators.forEach { it?.start() }
-//    }
-//
-//    fun animationWithTensionAndFriction(tension: Double, friction: Double, animations: V8Function, completion: V8Function) {
-//        val tension = tension as? Double ?: return
-//        val friction = friction as? Double ?: return
-//        val completion = completion.twin()
-//        animationEnabled = true
-//        xtrContext.callWithArguments(animations, null)
-//        if (animationProps.values.isEmpty()) {
-//            completion.release()
-//        }
-//        animationEnabled = false
-//        var completed = false
-//        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-//        val springSystem = SpringSystem.create()
-//        animationProps.values.forEach { aniProp ->
-//            val spring = springSystem.createSpring()
-//            spring.springConfig = SpringConfig.fromOrigamiTensionAndFriction(tension, friction)
-//            (aniProp.fromValue as? Float)?.let {
-//                spring.currentValue = (aniProp.fromValue as Float).toDouble()
-//            }
-//            spring.addListener(object : SimpleSpringListener() {
-//                override fun onSpringUpdate(spring: Spring?) {
-//                    spring?.currentValue?.toFloat()?.let {
-//                        aniProp.onValue(it)
-//                    }
-//                }
-//                override fun onSpringAtRest(spring: Spring?) {
-//                    spring?.removeAllListeners()
-//                    spring?.destroy()
-//                    if (!completed) {
-//                        completed = true
-//                        xtrContext.callWithArguments(completion, null)
-//                    }
-//                    if (!animations.runtime.isReleased) {
-//                        animations.release()
-//                        completion.release()
-//                    }
-//                }
-//            })
-//            animatingHandlers[aniProp.aniKey] = {
-//                spring.removeAllListeners()
-//                spring.destroy()
-//            }
-//            spring.endValue = (aniProp.toValue as Float).toDouble()
-//        }
-//        animationProps = mapOf()
-//        XTRView.animatingHandlers = animatingHandlers.toMap()
-//    }
-//
-//    fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: V8Function, completion: V8Function) {
-//        val bounciness = bounciness as? Double ?: return
-//        val speed = speed as? Double ?: return
-//        val completion = completion.twin()
-//        animationEnabled = true
-//        xtrContext.callWithArguments(animations, null)
-//        if (animationProps.values.isEmpty()) {
-//            completion.release()
-//        }
-//        animationEnabled = false
-//        var completed = false
-//        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-//        val springSystem = SpringSystem.create()
-//        animationProps.values.forEach { aniProp ->
-//            val spring = springSystem.createSpring()
-//            spring.springConfig = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
-//            (aniProp.fromValue as? Float)?.let {
-//                spring.currentValue = (aniProp.fromValue as Float).toDouble()
-//            }
-//            spring.addListener(object : SimpleSpringListener() {
-//                override fun onSpringUpdate(spring: Spring?) {
-//                    spring?.currentValue?.toFloat()?.let {
-//                        aniProp.onValue(it)
-//                    }
-//                }
-//                override fun onSpringAtRest(spring: Spring?) {
-//                    spring?.removeAllListeners()
-//                    spring?.destroy()
-//                    if (!completed) {
-//                        completed = true
-//                        xtrContext.callWithArguments(completion, null)
-//                    }
-//                    if (!animations.runtime.isReleased) {
-//                        animations.release()
-//                        completion.release()
-//                    }
-//                }
-//
-//            })
-//            animatingHandlers[aniProp.aniKey] = {
-//                spring.removeAllListeners()
-//                spring.destroy()
-//            }
-//            spring.endValue = (aniProp.toValue as Float).toDouble()
-//        }
-//        animationProps = mapOf()
-//        XTRView.animatingHandlers = animatingHandlers.toMap()
-//    }
-//
-//    fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: () -> Unit, completion: () -> Unit) {
-//        val bounciness = bounciness as? Double ?: return
-//        val speed = speed as? Double ?: return
-//        animationEnabled = true
-//        animations()
-//        animationEnabled = false
-//        var completed = false
-//        val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-//        val springSystem = SpringSystem.create()
-//        animationProps.values.forEach { aniProp ->
-//            val spring = springSystem.createSpring()
-//            spring.springConfig = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
-//            (aniProp.fromValue as? Float)?.let {
-//                spring.currentValue = (aniProp.fromValue as Float).toDouble()
-//            }
-//            spring.addListener(object : SimpleSpringListener() {
-//                override fun onSpringUpdate(spring: Spring?) {
-//                    spring?.currentValue?.toFloat()?.let {
-//                        aniProp.onValue(it)
-//                    }
-//                }
-//                override fun onSpringAtRest(spring: Spring?) {
-//                    spring?.removeAllListeners()
-//                    spring?.destroy()
-//                    if (!completed) {
-//                        completed = true
-//                        completion()
-//                    }
-//                }
-//
-//            })
-//            animatingHandlers[aniProp.aniKey] = {
-//                spring.removeAllListeners()
-//                spring.destroy()
-//            }
-//            spring.endValue = (aniProp.toValue as Float).toDouble()
-//        }
-//        animationProps = mapOf()
-//        XTRView.animatingHandlers = animatingHandlers.toMap()
-//    }
-//
-//    @Suppress("CanBeParameter", "unused")
-//    open class InnerObject(override var scriptObject: V8Object?, protected val xtrContext: XTRContext): FrameLayout(xtrContext.appContext), XTRObject {
-//
-//        internal var viewDelegate: XTRViewController.InnerObject? = null
-//        override val objectUUID: String = UUID.randomUUID().toString()
-//
-//        init {
-//            if (sharedHandler == null){
-//                sharedHandler = android.os.Handler(context.mainLooper)
-//            }
-//            clipChildren = false
-//            setWillNotDraw(false)
-//        }
-//
-//        override fun requestV8Object(runtime: V8): V8Object {
-//            val v8Object = super.requestV8Object(runtime)
-//            return v8Object
-//        }
-//
-//
-//
-//    }
 
 }

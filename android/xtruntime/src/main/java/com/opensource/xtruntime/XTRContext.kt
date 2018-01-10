@@ -4,6 +4,7 @@ import android.os.Handler
 import com.eclipsesource.v8.*
 import com.opensource.xtmem.XTMemoryManager
 import com.opensource.xtpolyfill.XTPolyfill
+import java.lang.ref.WeakReference
 import java.util.*
 
 /**
@@ -11,16 +12,15 @@ import java.util.*
  */
 class XTRContext(private val thread: Thread, val appContext: android.content.Context) {
 
-    var xtrBridge: XTRBridge? = null
-    val v8Runtime: V8 = V8.createV8Runtime()
+    var bridge: WeakReference<XTRBridge>? = null
+    val runtime: V8 = V8.createV8Runtime()
     val sharedTimer = Timer()
     private val handler = Handler()
     private val v8Releasable: MutableList<Releasable> = mutableListOf()
 
     init {
-        v8Runtime.executeScript("var objectRefs = {}")
-        XTMemoryManager.attachContext(v8Runtime)
-        XTPolyfill.addPolyfills(v8Runtime)
+        XTMemoryManager.attachContext(runtime)
+        XTPolyfill.addPolyfills(runtime)
         XTPolyfill.exceptionHandler = {
             handleException(it)
         }
@@ -47,16 +47,16 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         sharedTimer.cancel()
         v8Releasable.forEach { it.release() }
         try {
-            v8Runtime.release(true)
+            runtime.release(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     fun evaluateScript(script: String): Any? {
-        if (v8Runtime.isReleased) { return null }
+        if (runtime.isReleased) { return null }
         return try {
-            v8Runtime.executeScript(script)
+            runtime.executeScript(script)
         } catch (e: Exception) {
             handleException(e)
             null
@@ -64,7 +64,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     }
 
     fun invokeMethod(scriptObject: V8Object?, method: String, arguments: List<Any>?, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
-        if (v8Runtime.isReleased) { return null }
+        if (runtime.isReleased) { return null }
         if (scriptObject == null) {
             return V8.getUndefined()
         }
@@ -88,7 +88,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     }
 
     fun callWithArguments(func: V8Function, arguments: List<Any>?, asyncResult: ((value: Any?) -> Unit)? = null): Any? {
-        if (v8Runtime.isReleased) { return null }
+        if (runtime.isReleased) { return null }
         return try {
             if (Thread.currentThread() != thread) {
                 handler.post {
@@ -159,6 +159,10 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
                 } catch (e: Exception) { e.printStackTrace() }
             }
             return null
+        }
+
+        fun release(vararg v8Objects: V8Object) {
+            v8Objects.forEach { if (!it.runtime.isReleased) { it.release() } }
         }
 
     }

@@ -1,11 +1,8 @@
 package com.opensource.xtruntime
 
-import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
-import java.util.*
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -21,7 +18,7 @@ class XTRApplicationDelegate: XTRComponentInstance {
         override val name: String = "XTRApplicationDelegate"
 
         override fun exports(context: XTRContext): V8Object {
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             return exports
         }

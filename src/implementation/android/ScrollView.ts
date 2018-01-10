@@ -33,7 +33,7 @@ export class ScrollView extends View {
     }
 
     init() {
-        super.init();
+        // super.init();
         this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.horizonalScrollIndicator.cornerRadius = 1.0;
         this.horizonalScrollIndicator.alpha = 0.0;

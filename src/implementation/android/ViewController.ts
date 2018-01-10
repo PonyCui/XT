@@ -15,43 +15,51 @@ export interface NavigationControllerInterface extends ViewController {
 }
 
 export class ViewController implements Releasable {
+
     retain(): this {
-        throw new Error("Method not implemented.");
+        XTMemoryManager.retain(this.objectRef)
+        return this
     }
+
     release(): this {
-        throw new Error("Method not implemented.");
+        XTMemoryManager.release(this.objectRef)
+        return this
     }
 
-    addOwner(owner: any): this {
-        return this;
-    }
+    public objectRef: any;
 
-    nativeObject: any;
-
-    public get objectUUID(): string {
-        return "" + this.nativeObject.objectUUID
-    }
-
-    constructor(nativeObject?: any, isChild: boolean = false) {
-        if (isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
+    constructor(ref: string | Object | Function | undefined, ...args: any[]) {
+        if (typeof ref === "string") {
+            if (objectRefs[ref]) {
+                return objectRefs[ref]
+            }
+            this.objectRef = ref;
+        }
+        else if (typeof ref === "function") {
+            let args = [];
+            for (let index = 0; index < arguments.length; index++) {
+                if (index > 0) {
+                    args.push(arguments[index])
+                }
+            }
+            this.objectRef = ref.apply(this, args)
+        }
+        else if (typeof ref === "object") {
+            this.objectRef = (ref as any).create()
         }
         else {
-            this.nativeObject = XTRViewController.createScriptObject(this);
-            (window as any).XTRObjCreater.store(this);
-            this.loadView();
+            this.objectRef = XTRViewController.create()
         }
+        objectRefs[this.objectRef] = this;
+        this.loadView()
     }
 
     public get view() {
-        return this.nativeObject.xtr_view();
+        return new View(XTRViewController.xtr_view(this.objectRef));
     }
 
     public set view(value: View) {
-        this.nativeObject.xtr_setView(value);
-        (this as any).viewRef = value;
+        XTRViewController.xtr_setView(value.objectRef, this.objectRef);
     }
 
     loadView(): void {
@@ -70,88 +78,90 @@ export class ViewController implements Releasable {
     viewDidLayoutSubviews(): void { }
 
     public get parentViewController(): ViewController | undefined {
-        return this.nativeObject.xtr_parentViewController();
+        const ref = XTRViewController.xtr_parentViewController(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new ViewController(ref);
     }
 
     public get childViewControllers(): ViewController[] {
-        const value = this.nativeObject.xtr_childViewControllers()
-        let arr = [];
-        for (let index = 0; index < value.length; index++) {
-            arr.push(value[index]);
-        }
-        return arr;
+        return XTRViewController.xtr_childViewControllers(this.objectRef).map((ref: string) => {
+            return new ViewController(ref)
+        });
     }
 
     addChildViewController(childController: ViewController): void {
-        this.nativeObject.xtr_addChildViewController(childController);
+        XTRViewController.xtr_addChildViewController(childController.objectRef, this.objectRef);
     }
 
     removeFromParentViewController(): void {
-        this.nativeObject.xtr_removeFromParentViewController();
+        XTRViewController.xtr_removeFromParentViewController(this.objectRef);
+    }
+
+    _willMoveToParentViewController(parent?: string): void {
+        this.willMoveToParentViewController(
+            typeof parent === "string" ? new ViewController(parent) : undefined
+        )
     }
 
     willMoveToParentViewController(parent?: ViewController): void { }
+
+    _didMoveToParentViewController(parent?: string): void {
+        this.didMoveToParentViewController(
+            typeof parent === "string" ? new ViewController(parent) : undefined
+        )
+    }
+
     didMoveToParentViewController(parent?: ViewController): void { }
 
-    public get navigationController(): NavigationControllerInterface | undefined {
-        return this.nativeObject.xtr_navigationController();
-    }
+    // public get navigationController(): NavigationControllerInterface | undefined {
+    //     return this.nativeObject.xtr_navigationController();
+    // }
 
-    keyboardWillShow(frame: Rect, duration: number): void {
-        this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))
-    }
+    // keyboardWillShow(frame: Rect, duration: number): void {
+    //     this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))
+    // }
 
-    keyboardWillHide(duration: number): void {
-        this.childViewControllers.slice().forEach(t => t.keyboardWillHide(duration))
-    }
+    // keyboardWillHide(duration: number): void {
+    //     this.childViewControllers.slice().forEach(t => t.keyboardWillHide(duration))
+    // }
 
-    supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
+    // supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
-    orientationDidChange(sender: any) {
-        this.childViewControllers.slice().forEach(t => t.orientationDidChange(sender))
-        if (this.supportOrientations.indexOf(Device.current.orientation) >= 0) {
-            if (this.parentViewController && (this.parentViewController as any).className === "NavigationController") {
-                if (Device.current.orientation === DeviceOrientation.Portrait) {
-                    if (!this.parentViewController) { return; }
-                    const superViewFrame = this.parentViewController.view.frame;
-                    this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
-                    this.view.transform = new TransformMatrix()
-                    sender.handleStatusBarHidden && sender.handleStatusBarHidden(false);
-                }
-                else if (Device.current.orientation === DeviceOrientation.LandscapeLeft) {
-                    sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
-                    setTimeout(() => {
-                        if (!this.parentViewController) { return; }
-                        const superViewFrame = this.parentViewController.view.frame;
-                        View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-                            this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-                            this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), -90 * Math.PI / 180)
-                        });
-                    }, 500)
-                }
-                else if (Device.current.orientation === DeviceOrientation.LandscapeRight) {
-                    sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
-                    setTimeout(() => {
-                        if (!this.parentViewController) { return; }
-                        const superViewFrame = this.parentViewController.view.frame;
-                        View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-                            this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-                            this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), 90 * Math.PI / 180)
-                        });
-                    }, 500)
-                }
-            }
-        }
-    }
+    // orientationDidChange(sender: any) {
+    //     this.childViewControllers.slice().forEach(t => t.orientationDidChange(sender))
+    //     if (this.supportOrientations.indexOf(Device.current.orientation) >= 0) {
+    //         if (this.parentViewController && (this.parentViewController as any).className === "NavigationController") {
+    //             if (Device.current.orientation === DeviceOrientation.Portrait) {
+    //                 if (!this.parentViewController) { return; }
+    //                 const superViewFrame = this.parentViewController.view.frame;
+    //                 this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
+    //                 this.view.transform = new TransformMatrix()
+    //                 sender.handleStatusBarHidden && sender.handleStatusBarHidden(false);
+    //             }
+    //             else if (Device.current.orientation === DeviceOrientation.LandscapeLeft) {
+    //                 sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
+    //                 setTimeout(() => {
+    //                     if (!this.parentViewController) { return; }
+    //                     const superViewFrame = this.parentViewController.view.frame;
+    //                     View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+    //                         this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
+    //                         this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), -90 * Math.PI / 180)
+    //                     });
+    //                 }, 500)
+    //             }
+    //             else if (Device.current.orientation === DeviceOrientation.LandscapeRight) {
+    //                 sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
+    //                 setTimeout(() => {
+    //                     if (!this.parentViewController) { return; }
+    //                     const superViewFrame = this.parentViewController.view.frame;
+    //                     View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
+    //                         this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
+    //                         this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), 90 * Math.PI / 180)
+    //                     });
+    //                 }, 500)
+    //             }
+    //         }
+    //     }
+    // }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((target: any) => {
-    if (target.toString().indexOf("com.opensource.xtruntime.XTRViewController$InnerObject") === 0) {
-        return new ViewController(target);
-    }
-    return undefined;
-})

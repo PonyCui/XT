@@ -3,9 +3,7 @@ package com.opensource.xtruntime
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
 
@@ -81,7 +79,7 @@ class XTRImageView @JvmOverloads constructor(
         override val name: String = "XTRImageView"
 
         override fun exports(context: XTRContext): V8Object {
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setImage", "xtr_setImage", arrayOf(String::class.java, String::class.java))

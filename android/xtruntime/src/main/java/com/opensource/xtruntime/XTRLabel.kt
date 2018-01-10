@@ -3,7 +3,6 @@ package com.opensource.xtruntime
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.os.Build
 import android.os.Handler
 import android.text.TextUtils
@@ -173,7 +172,7 @@ class XTRLabel @JvmOverloads constructor(
         override val name: String = "XTRLabel"
 
         override fun exports(context: XTRContext): V8Object {
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setText", "xtr_setText", arrayOf(String::class.java, String::class.java))
@@ -222,7 +221,7 @@ class XTRLabel @JvmOverloads constructor(
         }
 
         fun xtr_textColor(objectRef: String): V8Value {
-            return XTRUtils.fromIntColor((XTMemoryManager.find(objectRef) as? XTRLabel)?.textView?.currentTextColor ?: Color.BLACK, context.v8Runtime)
+            return XTRUtils.fromIntColor((XTMemoryManager.find(objectRef) as? XTRLabel)?.textView?.currentTextColor ?: Color.BLACK, context.runtime)
         }
 
         fun xtr_setTextColor(value: V8Object, objectRef: String) {
@@ -279,7 +278,7 @@ class XTRLabel @JvmOverloads constructor(
                         MeasureSpec.makeMeasureSpec((it.height * view.resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST)
                 )
             }
-            return XTRUtils.fromRect(XTRRect(0.0, 0.0, view.textView.measuredWidth.toDouble() / view.resources.displayMetrics.density, view.textView.measuredHeight.toDouble() / view.resources.displayMetrics.density), context.v8Runtime)
+            return XTRUtils.fromRect(XTRRect(0.0, 0.0, view.textView.measuredWidth.toDouble() / view.resources.displayMetrics.density, view.textView.measuredHeight.toDouble() / view.resources.displayMetrics.density), context.runtime)
         }
 
     }

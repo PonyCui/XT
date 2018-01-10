@@ -2,8 +2,6 @@ package com.opensource.xtruntime
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
-import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
@@ -81,7 +79,7 @@ class XTRButton @JvmOverloads constructor(
         override val name: String = "XTRButton"
 
         override fun exports(context: XTRContext): V8Object {
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_title", "xtr_title", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setTitle", "xtr_setTitle", arrayOf(String::class.java, String::class.java))
@@ -144,7 +142,7 @@ class XTRButton @JvmOverloads constructor(
         }
 
         fun xtr_color(objectRef: String): V8Value {
-            return XTRUtils.fromColor((XTMemoryManager.find(objectRef) as? XTRButton)?.tintColor ?: XTRColor(0.0, 0.0, 0.0, 0.0), context.v8Runtime)
+            return XTRUtils.fromColor((XTMemoryManager.find(objectRef) as? XTRButton)?.tintColor ?: XTRColor(0.0, 0.0, 0.0, 0.0), context.runtime)
         }
 
         fun xtr_setColor(value: V8Object, objectRef: String) {

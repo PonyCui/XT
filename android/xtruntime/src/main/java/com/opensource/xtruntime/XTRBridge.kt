@@ -3,46 +3,46 @@ package com.opensource.xtruntime
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.util.Log
-import com.eclipsesource.v8.Releasable
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import java.lang.ref.WeakReference
 
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-class XTRBridge(val appContext: android.content.Context, val bridgeScript: String? = null, val completionBlock: (() -> Unit)? = null, val failureBlock: ((e: Exception) -> Unit)? = null) {
+class XTRBridge(val appContext: android.content.Context, val completionBlock: ((bridge: XTRBridge) -> Unit)? = null, val failureBlock: ((e: Exception) -> Unit)? = null) {
 
     companion object {
 
-        fun createWithAssets(appContext: android.content.Context, assetsName: String, completionBlock: (() -> Unit)? = null): XTRBridge {
-            val bridge = XTRBridge(appContext, null, completionBlock)
-            bridge.xtrSourceURL = "file:///android_asset/$assetsName"
+        fun createWithAssets(appContext: android.content.Context, assetsName: String, completionBlock: ((bridge: XTRBridge) -> Unit)? = null): XTRBridge {
+            val bridge = XTRBridge(appContext, completionBlock)
+            bridge.sourceURL = "file:///android_asset/$assetsName"
             return bridge
         }
 
-        fun createWithSourceURL(appContext: android.content.Context, sourceURL: String?, completionBlock: (() -> Unit)? = null, failureBlock: ((e: Exception) -> Unit)? = null): XTRBridge {
-            val bridge = XTRBridge(appContext, null, completionBlock, failureBlock)
-            bridge.xtrSourceURL = sourceURL
+        fun createWithSourceURL(appContext: android.content.Context, sourceURL: String?, completionBlock: ((bridge: XTRBridge) -> Unit)? = null, failureBlock: ((e: Exception) -> Unit)? = null): XTRBridge {
+            val bridge = XTRBridge(appContext, completionBlock, failureBlock)
+            bridge.sourceURL = sourceURL
             return bridge
         }
 
     }
 
     val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
-    val xtrBreakpoint: XTRBreakpoint
-    var xtrAssets: JSONObject? = null
+    val breakpoint: XTRBreakpoint
+    var assets: JSONObject? = null
         private set
-//    var xtrApplication: XTRApplication.InnerObject? = null
-    var xtrSourceURL: String? = null
+    var sourceURL: String? = null
         set(value) {
             field = value
             loadScript()
         }
+    var keyWindow: XTRWindow? = null
 
     init {
-        xtrContext.xtrBridge = this
-        xtrBreakpoint = XTRBreakpoint(this)
+        xtrContext.bridge = WeakReference(this)
+        breakpoint = XTRBreakpoint(this)
         loadComponents()
         loadRuntime()
         loadPlugins()
@@ -52,12 +52,25 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         val components: List<XTRComponentExport> = listOf(
                 XTRImage.Companion,
                 XTRApplication.Companion,
-                XTRApplicationDelegate.Companion
+                XTRApplicationDelegate.Companion,
+                XTRView.Companion,
+                XTRWindow.Companion,
+                XTRViewController.Companion
         )
         components.forEach {
             val obj = it.exports(xtrContext)
-            xtrContext.v8Runtime.add(it.name, obj)
+            xtrContext.runtime.add(it.name, obj)
             obj.release()
+        }
+    }
+
+    private fun loadRuntime() {
+        xtrContext.evaluateScript("let XT = {}; let objectRefs = {};")
+        xtrContext.appContext.assets.open("xt.android.min.js")?.let {
+            val byteArray = ByteArray(it.available())
+            it.read(byteArray)
+            String(byteArray)?.let { xtrContext.evaluateScript(it) }
+            it.close()
         }
     }
 
@@ -75,20 +88,10 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
         }
     }
 
-    private fun loadRuntime() {
-        xtrContext.evaluateScript("let XT = {};")
-        xtrContext.appContext.assets.open("xt.android.min.js")?.let {
-            val byteArray = ByteArray(it.available())
-            it.read(byteArray)
-            String(byteArray)?.let { xtrContext.evaluateScript(it) }
-            it.close()
-        }
-    }
-
     fun loadScript() {
         val handler = Handler()
         xtrContext.evaluateScript("let XTRAppRef = null;")
-        xtrSourceURL?.let { sourceURL ->
+        sourceURL?.let { sourceURL ->
             if (sourceURL.startsWith("file://")) {
                 if (sourceURL.startsWith("file:///android_asset/")) {
                     sourceURL.replace("file:///android_asset/", "").let {
@@ -100,11 +103,8 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                             inputStream.close()
                             val script = String(byteArray)
                             xtrContext.evaluateScript(script)
-                            xtrContext.evaluateScript("XTRAppRef")?.let {
-                                (it as? Releasable)?.release()
-                            }
                             handler.post {
-                                completionBlock?.invoke()
+                                completionBlock?.invoke(this)
                             }
                         } catch (e: java.lang.Exception) { handler.post { failureBlock?.invoke(e) };  e.printStackTrace() }
                     }
@@ -119,10 +119,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                         val script = res.body()?.string() ?: return@Thread
                         handler.post {
                             xtrContext.evaluateScript(script)
-                            xtrContext.evaluateScript("XTRAppRef")?.let {
-                                (it as? Releasable)?.release()
-                            }
-                            completionBlock?.invoke()
+                            completionBlock?.invoke(this)
                         }
                     } catch (e: Exception) { handler.post { failureBlock?.invoke(e) }; e.printStackTrace() }
                 }, "XTREval").start()
@@ -135,7 +132,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
     }
 
     private fun loadAssets() {
-        xtrSourceURL?.let { sourceURL ->
+        sourceURL?.let { sourceURL ->
             if (sourceURL.startsWith("file://")) {
                 if (sourceURL.startsWith("file:///android_asset/")) {
                     sourceURL.replace("file:///android_asset/", "").replace(".min.js", ".xtassets").let {
@@ -144,7 +141,7 @@ class XTRBridge(val appContext: android.content.Context, val bridgeScript: Strin
                             val byteArray = ByteArray(inputStream.available())
                             inputStream.read(byteArray)
                             inputStream.close()
-                            this.xtrAssets = JSONObject(String(byteArray))
+                            this.assets = JSONObject(String(byteArray))
                         } catch (e: Exception) {}
                     }
                 }

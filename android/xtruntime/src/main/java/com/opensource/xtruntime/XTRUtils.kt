@@ -1,8 +1,6 @@
 package com.opensource.xtruntime
 
 import android.graphics.Color
-import android.os.Handler
-import android.view.View
 import com.eclipsesource.v8.*
 
 /**
@@ -161,14 +159,14 @@ class XTRUtils {
             (target as? Float)?.let { return it.toDouble() }
             (target as? Double)?.let { return it }
             (target as? String)?.let { return it }
-            (target as? XTRColor)?.let { return fromColor(it, context.v8Runtime) }
-            (target as? XTRRect)?.let { return fromRect(it, context.v8Runtime) }
-            (target as? XTRPoint)?.let { return fromPoint(it, context.v8Runtime) }
-            (target as? XTRMatrix)?.let { return fromTransform(it, context.v8Runtime) }
-            (target as? XTRSize)?.let { return fromSize(it, context.v8Runtime) }
-            (target as? XTRFont)?.let { return fromFont(it, context.v8Runtime) }
+            (target as? XTRColor)?.let { return fromColor(it, context.runtime) }
+            (target as? XTRRect)?.let { return fromRect(it, context.runtime) }
+            (target as? XTRPoint)?.let { return fromPoint(it, context.runtime) }
+            (target as? XTRMatrix)?.let { return fromTransform(it, context.runtime) }
+            (target as? XTRSize)?.let { return fromSize(it, context.runtime) }
+            (target as? XTRFont)?.let { return fromFont(it, context.runtime) }
             (target as? List<Any>)?.let {
-                val v8Array = V8Array(context.v8Runtime)
+                val v8Array = V8Array(context.runtime)
                 it.forEach {
                     val item = fromObject(context, it)
                     (item as? Boolean)?.let { v8Array.push(it) }
@@ -181,7 +179,7 @@ class XTRUtils {
                 return v8Array
             }
             (target as? Map<String, Any>)?.let {
-                val v8Object = V8Object(context.v8Runtime)
+                val v8Object = V8Object(context.runtime)
                 it.entries.forEach { entry ->
                     val item = fromObject(context, entry.value)
                     (item as? Boolean)?.let { v8Object.add(entry.key, it) }
@@ -197,11 +195,11 @@ class XTRUtils {
                 target?.scriptObject?.takeIf { !it.isReleased }?.let {
                     return it.twin()
                 }
-                (context.v8Runtime.get("window") as? V8Object)?.let { window ->
+                (context.runtime.get("window") as? V8Object)?.let { window ->
                     (window.get("XTRObjCreater") as? V8Object)?.let { creater ->
                         (creater.get("create") as? V8Function)?.let { createFunc ->
-                            val params = V8Array(context.v8Runtime)
-                            val v8Object = target.requestV8Object(context.v8Runtime)
+                            val params = V8Array(context.runtime)
+                            val v8Object = target.requestV8Object(context.runtime)
                             params.push(v8Object)
                             val result = (createFunc.call(creater, params) as? V8Object)
                             v8Object.release()

@@ -56,7 +56,7 @@ class XTRCanvasView @JvmOverloads constructor(
         override val name: String = "XTRCanvasView"
 
         override fun exports(context: XTRContext): V8Object {
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_globalAlpha", "xtr_globalAlpha", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setGlobalAlpha", "xtr_setGlobalAlpha", arrayOf(Double::class.java, String::class.java))
@@ -121,7 +121,7 @@ class XTRCanvasView @JvmOverloads constructor(
 
         fun xtr_fillStyle(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.let {
-                return@let XTRUtils.fromColor(it.fakeState.fillStyle, context.v8Runtime)
+                return@let XTRUtils.fromColor(it.fakeState.fillStyle, context.runtime)
             } ?: V8.getUndefined()
         }
 
@@ -139,7 +139,7 @@ class XTRCanvasView @JvmOverloads constructor(
 
         fun xtr_strokeStyle(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTRCanvasView)?.let {
-                return@let XTRUtils.fromColor(it.fakeState.strokeStyle, context.v8Runtime)
+                return@let XTRUtils.fromColor(it.fakeState.strokeStyle, context.runtime)
             } ?: V8.getUndefined()
         }
 

@@ -12,7 +12,7 @@
 //    override val name: String = "XTRScrollView"
 //
 //    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.v8Runtime)
+//        val v8Object = V8Object(xtrContext.runtime)
 //        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
 //        return v8Object
 //    }
@@ -24,7 +24,7 @@
 //            view.frame = it
 //        }
 //        innerViewObject.release()
-//        return view.requestV8Object(xtrContext.v8Runtime)
+//        return view.requestV8Object(xtrContext.runtime)
 //    }
 //
 //    class InnerObject(val innerView: XTRView.InnerObject, scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {

@@ -13,13 +13,13 @@
 //    override val name: String = "XTRNavigationController"
 //
 //    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.v8Runtime)
+//        val v8Object = V8Object(xtrContext.runtime)
 //        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java))
 //        return v8Object
 //    }
 //
 //    fun createScriptObject(scriptObject: V8Object): V8Object {
-//        return XTRNavigationController.InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
+//        return XTRNavigationController.InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.runtime)
 //    }
 //
 //    open class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRViewController.InnerObject(scriptObject, xtrContext) {

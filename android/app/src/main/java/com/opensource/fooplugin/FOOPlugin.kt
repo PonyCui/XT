@@ -9,9 +9,9 @@ import com.opensource.xtruntime.XTRContext
 class FOOPlugin(xtrContext: XTRContext) {
 
     init {
-        val v8Object = V8Object(xtrContext.v8Runtime)
+        val v8Object = V8Object(xtrContext.runtime)
         v8Object.registerJavaMethod(this, "sayHello", "sayHello", arrayOf())
-        xtrContext.v8Runtime.add("FOOPlugin", v8Object)
+        xtrContext.runtime.add("FOOPlugin", v8Object)
         v8Object.release()
     }
 

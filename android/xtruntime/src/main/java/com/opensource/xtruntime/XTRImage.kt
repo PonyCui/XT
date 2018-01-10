@@ -11,9 +11,7 @@ import com.opensource.xtmem.XTMemoryManager
 import java.io.File
 import java.io.InputStream
 import java.lang.ref.WeakReference
-import java.net.URI
 import java.net.URL
-import java.util.*
 
 
 /**
@@ -33,7 +31,7 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
         override fun exports(context: XTRContext): V8Object {
             this.context = WeakReference(context)
             installCache(context.appContext)
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "xtr_fromURL", "xtr_fromURL", arrayOf(String::class.java, V8Function::class.java, V8Function::class.java))
             exports.registerJavaMethod(this, "xtr_fromAssets", "xtr_fromAssets", arrayOf(String::class.java, V8Function::class.java, V8Function::class.java))
             exports.registerJavaMethod(this, "xtr_fromBase64", "xtr_fromBase64", arrayOf(String::class.java, Int::class.java, V8Function::class.java))
@@ -95,7 +93,7 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
 
         fun xtr_fromAssets(named: String, success: V8Function, failure: V8Function) {
             this.context?.get()?.let { ctx ->
-                ctx.xtrBridge?.xtrAssets?.let { assets ->
+                ctx.bridge?.get()?.assets?.let { assets ->
                     var targetData: String? = null
                     var scale = Math.ceil(ctx.appContext.resources.displayMetrics.density.toDouble()).toInt()
                     assets.optString("$named@${scale}x.png", null)?.let {

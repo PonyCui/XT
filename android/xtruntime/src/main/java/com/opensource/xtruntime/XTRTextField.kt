@@ -26,7 +26,7 @@
 //    override val name: String = "XTRTextField"
 //
 //    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.v8Runtime)
+//        val v8Object = V8Object(xtrContext.runtime)
 //        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java, V8Object::class.java))
 //        return v8Object
 //    }
@@ -36,7 +36,7 @@
 //        XTRUtils.toRect(rect)?.let {
 //            view.frame = it
 //        }
-//        return view.requestV8Object(xtrContext.v8Runtime)
+//        return view.requestV8Object(xtrContext.runtime)
 //    }
 //
 //    class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {

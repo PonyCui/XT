@@ -1,7 +1,6 @@
 package com.opensource.xtruntime
 
 import android.graphics.Typeface
-import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
@@ -35,7 +34,7 @@ class XTRFont(val pointSize: Double, val fontWeight: String, val fontStyle: Stri
         override val name: String = "XTRFont"
 
         override fun exports(context: XTRContext): V8Object {
-            val exports = V8Object(context.v8Runtime)
+            val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf(Double::class.java, String::class.java, String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_familyName", "xtr_familyName", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_pointSize", "xtr_pointSize", arrayOf(String::class.java))

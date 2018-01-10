@@ -1,175 +1,182 @@
-//package com.opensource.xtruntime
-//
-//import com.eclipsesource.v8.V8
-//import com.eclipsesource.v8.V8Array
-//import com.eclipsesource.v8.V8Object
-//import java.util.*
-//
-///**
-// * Created by cuiminghui on 2017/9/5.
-// */
-//open class XTRViewController: XTRComponent() {
-//
-//    override val name: String = "XTRViewController"
-//
-//    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.v8Runtime)
-//        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java))
-//        return v8Object
-//    }
-//
-//    fun createScriptObject(scriptObject: V8Object): V8Object {
-//        return InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.v8Runtime)
-//    }
-//
-//    open class InnerObject(override var scriptObject: V8Object?, protected val xtrContext: XTRContext): XTRObject {
-//
-//        override val objectUUID: String = UUID.randomUUID().toString()
-//
-//        override fun requestV8Object(runtime: V8): V8Object {
-//            val v8Object = super.requestV8Object(runtime)
-//            v8Object.registerJavaMethod(this, "xtr_view", "xtr_view", arrayOf())
-//            v8Object.registerJavaMethod(this, "xtr_setView", "xtr_setView", arrayOf(V8Object::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_parentViewController", "xtr_parentViewController", arrayOf())
-//            v8Object.registerJavaMethod(this, "xtr_childViewControllers", "xtr_childViewControllers", arrayOf())
-//            v8Object.registerJavaMethod(this, "xtr_addChildViewController", "xtr_addChildViewController", arrayOf(V8Object::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_removeFromParentViewController", "xtr_removeFromParentViewController", arrayOf())
-//            v8Object.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf())
-//            return v8Object
-//        }
-//
-//        var view: XTRView.InnerObject? = null
-//            set(value) {
-//                field?.let {
-//                    it.viewDelegate = null
-//                }
-//                field = value
-//                field?.let {
-//                    it.viewDelegate = this
-//                }
-//            }
-//
-//        fun xtr_view(): Any? {
-//            view?.let {
-//                return XTRUtils.fromObject(xtrContext, it)
-//            }
-//            return V8.getUndefined()
-//        }
-//
-//        fun xtr_setView(value: V8Object) {
-//            (XTRUtils.toView(value) as? XTRView.InnerObject)?.let {
-//                this.view = it
-//                viewDidLoad()
-//            }
-//        }
-//
-//        var parentViewController: XTRViewController.InnerObject? = null
-//            protected set
-//
-//        var childViewControllers: List<XTRViewController.InnerObject> = listOf()
-//            protected set
-//
-//        fun xtr_parentViewController(): Any? {
-//            return XTRUtils.fromObject(xtrContext, parentViewController)
-//        }
-//
-//        fun xtr_childViewControllers(): V8Array? {
-//            return XTRUtils.fromObject(xtrContext, childViewControllers) as? V8Array
-//        }
-//
-//        fun xtr_addChildViewController(childController: V8Object) {
-//            XTRUtils.toViewController(childController)?.let { childController ->
-//                if (childController.parentViewController == null) {
-//                    childController.willMoveToParentViewController(this)
-//                    childViewControllers.toMutableList()?.let {
-//                        it.add(childController)
-//                        childController.parentViewController = this
-//                        childViewControllers = it.toList()
-//                    }
-//                    childController.didMoveToParentViewController(this)
-//                }
-//            }
-//        }
-//
-//        fun xtr_addChildViewController(childController: XTRViewController.InnerObject) {
-//            if (childController.parentViewController == null) {
-//                childController.willMoveToParentViewController(this)
-//                childViewControllers.toMutableList()?.let {
-//                    it.add(childController)
-//                    childController.parentViewController = this
-//                    childViewControllers = it.toList()
-//                }
-//                childController.didMoveToParentViewController(this)
-//            }
-//        }
-//
-//        fun xtr_removeFromParentViewController() {
-//            parentViewController?.let { parentViewController ->
-//                willMoveToParentViewController(null)
-//                parentViewController.childViewControllers.toMutableList()?.let {
-//                    it.remove(this)
-//                    parentViewController.childViewControllers = it.toList()
-//                }
-//                didMoveToParentViewController(null)
-//            }
-//            parentViewController = null
-//        }
-//
-//        fun xtr_navigationController(): Any? {
-//            var current: XTRViewController.InnerObject? = this
-//            while (current != null) {
-//                (current as? XTRNavigationController.InnerObject)?.let {
-//                    return XTRUtils.fromObject(xtrContext, it)
-//                }
-//                current = current.parentViewController
-//            }
-//            return V8.getUndefined()
-//        }
-//
-//        fun willMoveToParentViewController(parent: XTRViewController.InnerObject?) {
-//            parent?.let {
-//                xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", listOf(it))
-//                return
-//            }
-//            xtrContext.invokeMethod(scriptObject, "willMoveToParentViewController", null)
-//        }
-//
-//        fun didMoveToParentViewController(parent: XTRViewController.InnerObject?) {
-//            parent?.let {
-//                xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", listOf(it))
-//                return
-//            }
-//            xtrContext.invokeMethod(scriptObject, "didMoveToParentViewController", null)
-//        }
-//
-//        open fun viewDidLoad() {
-//            xtrContext.invokeMethod(scriptObject, "viewDidLoad", null)
-//        }
-//
-//        open fun viewWillAppear() {
-//            xtrContext.invokeMethod(scriptObject, "viewWillAppear", null)
-//        }
-//
-//        open fun viewDidAppear() {
-//            xtrContext.invokeMethod(scriptObject, "viewDidAppear", null)
-//        }
-//
-//        open fun viewWillDisappear() {
-//            xtrContext.invokeMethod(scriptObject, "viewWillDisappear", null)
-//        }
-//
-//        open fun viewDidDisappear() {
-//            xtrContext.invokeMethod(scriptObject, "viewDidDisappear", null)
-//        }
-//
-//        open fun viewWillLayoutSubviews() {
-//            xtrContext.invokeMethod(scriptObject, "viewWillLayoutSubviews", null)
-//        }
-//
-//        open fun viewDidLayoutSubviews() {
-//            xtrContext.invokeMethod(scriptObject, "viewDidLayoutSubviews", null)
-//        }
-//
-//    }
-//
-//}
+package com.opensource.xtruntime
+
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8Object
+import com.opensource.xtmem.XTManagedObject
+import com.opensource.xtmem.XTMemoryManager
+import java.lang.ref.WeakReference
+import java.util.*
+
+/**
+ * Created by cuiminghui on 2017/9/5.
+ */
+open class XTRViewController: XTRFragment(), XTRComponentInstance {
+
+    override var objectUUID: String? = null
+
+    override var view: XTRView? = null
+        set(value) {
+            if (field != null) { return }
+            if (value == null) { return }
+            field = value
+            value.viewDelegate = WeakReference(this)
+        }
+
+    var parentViewController: WeakReference<XTRViewController>? = null
+        protected set
+
+    var childViewControllers: List<XTRViewController> = listOf()
+        protected set
+
+    fun scriptObject(): V8Object? {
+        return XTRView.context.evaluateScript("objectRefs['$objectUUID']") as? V8Object
+    }
+
+    open fun viewDidLoad() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewDidLoad")
+            it.release()
+        }
+    }
+
+    open fun viewWillAppear() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewWillAppear")
+            it.release()
+        }
+    }
+
+    open fun viewDidAppear() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewDidAppear")
+            it.release()
+        }
+    }
+
+    open fun viewWillDisappear() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewWillDisappear")
+            it.release()
+        }
+    }
+
+    open fun viewDidDisappear() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewDidDisappear")
+            it.release()
+        }
+    }
+
+    open fun viewWillLayoutSubviews() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewWillLayoutSubviews")
+            it.release()
+        }
+    }
+
+    open fun viewDidLayoutSubviews() {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "viewDidLayoutSubviews")
+            it.release()
+        }
+    }
+
+    fun willMoveToParentViewController(parent: XTRViewController?) {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "_willMoveToParentViewController", listOf(
+                    parent?.objectUUID ?: V8.getUndefined()
+            ))
+        }
+    }
+
+    fun didMoveToParentViewController(parent: XTRViewController?) {
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "_didMoveToParentViewController", listOf(
+                    parent?.objectUUID ?: V8.getUndefined()
+            ))
+        }
+    }
+
+    companion object: XTRComponentExport() {
+
+        override val name: String = "XTRViewController"
+
+        override fun exports(context: XTRContext): V8Object {
+            val exports = V8Object(context.runtime)
+            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_view", "xtr_view", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setView", "xtr_setView", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_parentViewController", "xtr_parentViewController", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_childViewControllers", "xtr_childViewControllers", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_addChildViewController", "xtr_addChildViewController", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_removeFromParentViewController", "xtr_removeFromParentViewController", arrayOf(String::class.java))
+//            exports.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf())
+            return exports
+        }
+
+        fun create(): String {
+            val viewController = XTRViewController()
+            val managedObject = XTManagedObject(viewController)
+            viewController.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
+        }
+
+        fun xtr_view(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRViewController)?.view?.objectUUID
+        }
+
+        fun xtr_setView(viewRef: String, objectRef: String) {
+            val view = XTMemoryManager.find(viewRef) as? XTRView ?: return
+            val viewController = XTMemoryManager.find(objectRef) as? XTRViewController ?: return
+            viewController.view = view
+            viewController.viewDidLoad()
+        }
+
+        fun xtr_parentViewController(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRViewController)?.parentViewController?.get()?.objectUUID
+        }
+
+        fun xtr_childViewControllers(objectRef: String): V8Array? {
+            return (XTMemoryManager.find(objectRef) as? XTRViewController)?.let {
+                val v8Array = V8Array(XTRView.context.runtime)
+                it.childViewControllers.mapNotNull { it ->
+                    return@mapNotNull it.objectUUID
+                }.forEach { v8Array.push(it) }
+                return@let v8Array
+            }
+        }
+
+        fun xtr_addChildViewController(childControllerRef: String, objectRef: String) {
+            val childController = XTMemoryManager.find(childControllerRef) as? XTRViewController ?: return
+            (XTMemoryManager.find(objectRef) as? XTRViewController)?.let {
+                if (childController.parentViewController == null) {
+                    childController.willMoveToParentViewController(it)
+                    it.childViewControllers.toMutableList()?.let { mutable ->
+                        mutable.add(childController)
+                        childController.parentViewController = WeakReference(it)
+                        it.childViewControllers = mutable.toList()
+                    }
+                    childController.didMoveToParentViewController(it)
+                }
+            }
+        }
+
+        fun xtr_removeFromParentViewController(objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRViewController)?.let {
+                it.parentViewController?.let { parentViewController ->
+                    it.willMoveToParentViewController(null)
+                    parentViewController.get()?.childViewControllers?.toMutableList()?.let { mutable ->
+                        mutable.remove(it)
+                        parentViewController.get()?.childViewControllers = mutable.toList()
+                    }
+                    it.didMoveToParentViewController(null)
+                }
+                it.parentViewController = null
+            }
+        }
+
+    }
+
+}

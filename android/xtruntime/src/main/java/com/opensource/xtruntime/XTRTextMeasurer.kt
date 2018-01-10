@@ -17,7 +17,7 @@
 //
 //    override fun v8Object(): V8Object? {
 //        measureTextView = TextView(xtrContext.appContext)
-//        val v8Object = V8Object(xtrContext.v8Runtime)
+//        val v8Object = V8Object(xtrContext.runtime)
 //        v8Object.registerJavaMethod(this, "measureText", "measureText", arrayOf(String::class.java, V8Object::class.java))
 //        return v8Object
 //    }
@@ -60,7 +60,7 @@
 //                    View.MeasureSpec.makeMeasureSpec((it.height * xtrContext.appContext.resources.displayMetrics.density).toInt(), View.MeasureSpec.AT_MOST)
 //            )
 //            val bounds = XTRRect(0.0, 0.0, measureTextView.measuredWidth.toDouble() / xtrContext.appContext.resources.displayMetrics.density, measureTextView.measuredHeight.toDouble() / xtrContext.appContext.resources.displayMetrics.density)
-//            return XTRUtils.fromRect(bounds, xtrContext.v8Runtime)
+//            return XTRUtils.fromRect(bounds, xtrContext.runtime)
 //        }
 //        return V8.getUndefined()
 //    }

@@ -29,6 +29,8 @@ export enum SwipeDirection {
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
 
+    nativeObject: any;//todo
+
     retain(): this {
         XTMemoryManager.retain(this.objectRef)
         return this
@@ -71,15 +73,15 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     _cachingFrame?: Rect
 
     public get frame(): Rect {
-        return this.nativeObject.xtr_frame();
+        return XTRView.xtr_frame(this.objectRef);
     }
 
     public set frame(value: Rect) {
-        this.nativeObject.xtr_setFrame(value);
+        XTRView.xtr_setFrame(value, this.objectRef);
     }
 
     public get bounds(): Rect {
-        return this.nativeObject.xtr_bounds();
+        return XTRView.xtr_bounds(this.objectRef);
     }
 
     public set bounds(value: Rect) {
@@ -98,65 +100,65 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public get transform(): TransformMatrix {
-        return this.nativeObject.xtr_transform()
+        return XTRView.xtr_transform(this.objectRef)
     }
 
     public set transform(value: TransformMatrix) {
-        this.nativeObject.xtr_setTransform(value)
+        XTRView.xtr_setTransform(value, this.objectRef)
     }
 
     // Mark: View Rendering
 
     public get clipsToBounds(): boolean {
-        return this.nativeObject.xtr_clipsToBounds();
+        return XTRView.xtr_clipsToBounds(this.objectRef);
     }
 
     public set clipsToBounds(value: boolean) {
-        this.nativeObject.xtr_setClipsToBounds(value);
+        XTRView.xtr_setClipsToBounds(value, this.objectRef);
     }
 
     public get backgroundColor(): Color {
-        return this.nativeObject.xtr_backgroundColor();
+        return XTRView.xtr_backgroundColor(this.objectRef);
     }
 
     public set backgroundColor(value: Color) {
-        this.nativeObject.xtr_setBackgroundColor(value);
+        XTRView.xtr_setBackgroundColor(value, this.objectRef);
     }
 
     public get alpha(): number {
-        return this.nativeObject.xtr_alpha();
+        return XTRView.xtr_alpha(this.objectRef);
     }
 
     public set alpha(value: number) {
-        this.nativeObject.xtr_setAlpha(value);
+        XTRView.xtr_setAlpha(value, this.objectRef);
     }
 
 
     public get opaque(): boolean {
-        return this.nativeObject.xtr_opaque();
+        return XTRView.xtr_opaque(this.objectRef);
     }
 
     public set opaque(value: boolean) {
-        this.nativeObject.xtr_setOpaque(value);
+        XTRView.xtr_setOpaque(value, this.objectRef);
     }
 
     public get hidden(): boolean {
-        return this.nativeObject.xtr_hidden();
+        return XTRView.xtr_hidden(this.objectRef);
     }
 
     public set hidden(value: boolean) {
-        this.nativeObject.xtr_setHidden(value);
+        XTRView.xtr_setHidden(value, this.objectRef);
     }
 
     contentMode?: any; // todo
     maskView?: View // todo
 
     public get tintColor(): Color {
-        return this.nativeObject.xtr_tintColor();
+        return XTRView.xtr_tintColor(this.objectRef);
     }
 
     public set tintColor(value: Color) {
-        this.nativeObject.xtr_setTintColor(value);
+        XTRView.xtr_setTintColor(value, this.objectRef);
     }
 
     tintColorDidChange() { }
@@ -166,28 +168,28 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     // Mark: View Layer-Back Rendering
 
     public get cornerRadius(): number {
-        return this.nativeObject.xtr_cornerRadius();
+        return XTRView.xtr_cornerRadius(this.objectRef);
     }
 
     public set cornerRadius(value: number) {
-        this.nativeObject.xtr_setCornerRadius(value);
+        XTRView.xtr_setCornerRadius(value, this.objectRef);
     }
 
 
     public get borderWidth(): number {
-        return this.nativeObject.xtr_borderWidth();
+        return XTRView.xtr_borderWidth(this.objectRef);
     }
 
     public set borderWidth(value: number) {
-        this.nativeObject.xtr_setBorderWidth(value);
+        XTRView.xtr_setBorderWidth(value, this.objectRef);
     }
 
     public get borderColor(): Color {
-        return this.nativeObject.xtr_borderColor();
+        return XTRView.xtr_borderColor(this.objectRef);
     }
 
     public set borderColor(value: Color) {
-        this.nativeObject.xtr_setBorderColor(value);
+        XTRView.xtr_setBorderColor(value, this.objectRef);
     }
 
     shadowColor?: Color; // todo
@@ -198,55 +200,60 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     // Mark: View Hierarchy
 
     public get tag(): number {
-        return this.nativeObject.xtr_tag;
+        return XTRView.xtr_tag(this.objectRef);
     }
 
     public set tag(value: number) {
-        this.nativeObject.xtr_tag = value;
+        XTRView.xtr_setTag(value, this.objectRef);
     }
 
     public get superview(): View | undefined {
-        return this.nativeObject.xtr_superview()
+        const viewRef = XTRView.xtr_superview(this.objectRef)
+        if (typeof viewRef !== "string") { return undefined }
+        return new View(viewRef)
     }
 
     public get subviews(): View[] {
-        return this.nativeObject.xtr_subviews()
+        return XTRView.xtr_subviews(this.objectRef).map((viewRef: any) => {
+            if (typeof viewRef !== "string") { return undefined }
+            return new View(viewRef)
+        })
     }
 
     public get window(): Window | undefined {
-        return this.nativeObject.xtr_window()
+        return XTRView.xtr_window(this.objectRef)
     }
 
     removeFromSuperview() {
-        this.nativeObject.xtr_removeFromSuperview();
+        XTRView.xtr_removeFromSuperview(this.objectRef);
     }
 
     insertSubviewAtIndex(subview: View, atIndex: number) {
-        this.nativeObject.xtr_insertSubviewAtIndex(subview, atIndex)
+        XTRView.xtr_insertSubviewAtIndex(subview.objectRef, atIndex, this.objectRef)
     }
 
     exchangeSubviewAtIndex(index1: number, index2: number) {
-        this.nativeObject.exchangeSubviewAtIndex(index1, index2)
+        XTRView.exchangeSubviewAtIndex(index1, index2, this.objectRef)
     }
 
     addSubview(subview: View) {
-        this.nativeObject.xtr_addSubview(subview)
+        XTRView.xtr_addSubview(subview.objectRef, this.objectRef)
     }
 
     insertSubviewBelow(subview: View, siblingSubview: View) {
-        this.nativeObject.xtr_insertSubviewBelow(subview, siblingSubview);
+        XTRView.xtr_insertSubviewBelow(subview.objectRef, siblingSubview.objectRef, this.objectRef);
     }
 
     insertSubviewAbove(subview: View, siblingSubview: View) {
-        this.nativeObject.xtr_insertSubviewAbove(subview, siblingSubview);
+        XTRView.xtr_insertSubviewAbove(subview.objectRef, siblingSubview.objectRef, this.objectRef);
     }
 
     bringSubviewToFront(subview: View) {
-        this.nativeObject.xtr_bringSubviewToFront(subview)
+        XTRView.xtr_bringSubviewToFront(subview.objectRef, this.objectRef)
     }
 
     sendSubviewToBack(subview: View) {
-        this.nativeObject.xtr_sendSubviewToBack(subview)
+        XTRView.xtr_sendSubviewToBack(subview.objectRef, this.objectRef)
     }
 
     didAddSubview(subview: View) { }
@@ -256,10 +263,14 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     willMoveToWindow(newWindow?: Window) { }
     didMoveToWindow() { }
 
-    isDescendantOfView(view: View) { return this.nativeObject.xtr_isDescendantOfView(view) }
-    viewWithTag(tag: number): View | undefined { return this.nativeObject.xtr_viewWithTag(tag) }
+    isDescendantOfView(view: View) { return XTRView.xtr_isDescendantOfView(view.objectRef, this.objectRef) }
+    viewWithTag(tag: number): View | undefined {
+        const viewRef = XTRView.xtr_viewWithTag(tag, this.objectRef)
+        if (typeof viewRef !== "string") { return undefined }
+        return new View(viewRef)
+    }
 
-    setNeedsLayout() { this.nativeObject.xtr_setNeedsLayout() }
+    setNeedsLayout() { XTRView.xtr_setNeedsLayout(this.objectRef) }
 
     protected recursiveSetNeedLayout() {
         let current: View | undefined = this
@@ -269,7 +280,8 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         }
     }
 
-    layoutIfNeeded() { this.nativeObject.xtr_layoutIfNeeded() }
+    layoutIfNeeded() { XTRView.xtr_layoutIfNeeded(this.objectRef) }
+
     layoutSubviews() {
         if (this._constraints.length > 0) {
             let viewMapping: { [key: string]: View } = {}
@@ -316,7 +328,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {
-        return this.nativeObject.xtr_intrinsicContentSize(width || Infinity);
+        return XTRView.xtr_intrinsicContentSize(width || Infinity);
     }
 
     public addConstraint(constraint: LayoutConstraint) {
@@ -345,11 +357,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     gestureRecongnizers: GestureRecongnizer[] = []
 
     public get userInteractionEnabled(): boolean {
-        return this.nativeObject.xtr_userInteractionEnabled();
+        return XTRView.xtr_userInteractionEnabled(this.objectRef);
     }
 
     public set userInteractionEnabled(value: boolean) {
-        this.nativeObject.xtr_setUserInteractionEnabled(value);
+        XTRView.xtr_setUserInteractionEnabled(value, this.objectRef);
     }
 
     multipleTouchEnabled: boolean = false
@@ -495,27 +507,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
 
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithDuration(duration, animations, completion || function () { });
-    }
-
-    static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithTensionAndFriction(tension, friction, animations, completion || function () { })
+        XTRView.xtr_animationWithDuration(duration, animations, completion || function () { });
     }
 
     static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
-        XTRView.animationWithBouncinessAndSpeed(bounciness, speed, animations, completion || function () { })
+        XTRView.xtr_animationWithBouncinessAndSpeed(bounciness, speed, animations, completion || function () { })
     }
 
-    static animationWithDurationDampingVelocity(duration: number, damping: number, velocity: number, animations: () => void, completion?: () => void) { } // iOS Only
-
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.toString().indexOf("com.opensource.xtruntime.XTRView$InnerObject") === 0) {
-        return new View(undefined, view);
-    }
-    return undefined;
-})
