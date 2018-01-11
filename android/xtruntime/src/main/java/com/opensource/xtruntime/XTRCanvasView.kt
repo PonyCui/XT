@@ -13,8 +13,8 @@ import com.opensource.xtmem.XTMemoryManager
  * Created by cuiminghui on 2017/9/22.
  */
 class XTRCanvasView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance {
 
     class State(var globalAlpha: Double = 1.0,
                 var fillStyle: XTRColor = XTRColor(0.0, 0.0, 0.0, 0.0),
@@ -51,11 +51,11 @@ class XTRCanvasView @JvmOverloads constructor(
         }
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRCanvasView"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_globalAlpha", "xtr_globalAlpha", arrayOf(String::class.java))
@@ -97,7 +97,7 @@ class XTRCanvasView @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRCanvasView(XTRView.context.appContext)
+            val view = XTRCanvasView(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

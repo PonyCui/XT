@@ -17,14 +17,15 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
+import java.lang.ref.WeakReference
 import kotlin.concurrent.timerTask
 
 /**
  * Created by cuiminghui on 2017/9/8.
  */
 class XTRLabel @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance {
 
     val textView: TextView = TextView(context)
     val listener: OnLayoutChangeListener = OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> resetTextViewPosition() }
@@ -75,7 +76,7 @@ class XTRLabel @JvmOverloads constructor(
                     if (r.bottom > this.height) {
                         textView.visibility = View.GONE
                         val handler = Handler()
-                        XTRView.context.sharedTimer.schedule(timerTask {
+                        xtrContext.sharedTimer.schedule(timerTask {
                             handler.post {
                                 textView.maxLines = it
                                 textView.visibility = View.VISIBLE
@@ -108,7 +109,7 @@ class XTRLabel @JvmOverloads constructor(
         }
     }
 
-    var mFont: XTRFont = XTMemoryManager.find(XTRFont.create(14.0, "400", "", "")) as XTRFont
+    var mFont: XTRFont = XTRFont(14.0, "400", "normal", "")
         set(value) {
             field = value
             textView.textSize = value.pointSize.toFloat()
@@ -167,11 +168,11 @@ class XTRLabel @JvmOverloads constructor(
         return XTRSize(this.textView.measuredWidth.toDouble() / this.resources.displayMetrics.density, this.textView.measuredHeight.toDouble() / this.resources.displayMetrics.density)
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRLabel"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf(String::class.java))
@@ -193,7 +194,7 @@ class XTRLabel @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRLabel(XTRView.context.appContext)
+            val view = XTRLabel(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

@@ -144,14 +144,14 @@ class XTRViewAnimator {
 }
 
 open class XTRView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), XTRComponentInstance {
+        val xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : FrameLayout(xtrContext.appContext, attrs, defStyleAttr), XTRComponentInstance {
 
     override var objectUUID: String? = null
     internal var viewDelegate: WeakReference<XTRViewController>? = null
 
     fun scriptObject(): V8Object? {
-        return XTRView.context.evaluateScript("objectRefs['$objectUUID']") as? V8Object
+        return xtrContext.evaluateScript("objectRefs['$objectUUID']") as? V8Object
     }
 
     init {
@@ -513,13 +513,11 @@ open class XTRView @JvmOverloads constructor(
         return false
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRView"
-        lateinit var context: XTRContext
 
-        override fun exports(context: XTRContext): V8Object {
-            this.context = context
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_clipsToBounds", "xtr_clipsToBounds", arrayOf(String::class.java))
@@ -571,7 +569,7 @@ open class XTRView @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRView(this.context.appContext)
+            val view = XTRView(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

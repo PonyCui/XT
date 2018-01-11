@@ -3,16 +3,18 @@ package com.opensource.xtruntime
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
+import java.lang.ref.WeakReference
 
 /**
  * Created by cuiminghui on 2017/9/6.
  */
 class XTRImageView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance {
 
     var image: XTRImage? = null
         internal set
@@ -74,11 +76,11 @@ class XTRImageView @JvmOverloads constructor(
         return image?.size
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRImageView"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf(String::class.java))
@@ -89,7 +91,7 @@ class XTRImageView @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRImageView(XTRView.context.appContext)
+            val view = XTRImageView(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

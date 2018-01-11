@@ -6,13 +6,14 @@ import android.view.MotionEvent
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
+import java.lang.ref.WeakReference
 
 /**
  * Created by cuiminghui on 2017/8/31.
  */
 class XTRWindow @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance {
 
     var rootViewController: XTRViewController? = null
 
@@ -37,56 +38,11 @@ class XTRWindow @JvmOverloads constructor(
 //        xtrContext.invokeMethod(scriptObject, "handleOrientationChange", null)
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-//        when (event?.actionMasked) {
-//            MotionEvent.ACTION_DOWN -> {
-//                val pid = event.getPointerId(0).toString()
-//                val timestamp = System.nanoTime() / 1000000
-//                val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-//                xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
-//            }
-//            MotionEvent.ACTION_MOVE -> {
-//                val timestamp = System.nanoTime() / 1000000
-//                val points = V8Object(xtrContext.runtime)
-//                (0 until event.pointerCount).forEach { pointerID ->
-//                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-//                    (XTRUtils.fromObject(xtrContext, point) as? V8Object)?.let {
-//                        points.add(pointerID.toString(), it)
-//                        it.release()
-//                    }
-//                }
-//                xtrContext.invokeMethod(scriptObject, "handlePointersMove", listOf(timestamp, points))
-//                points.release()
-//            }
-//            MotionEvent.ACTION_UP -> {
-//                val pid = event.getPointerId(0).toString()
-//                val timestamp = System.nanoTime() / 1000000
-//                val point = XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density).toDouble())
-//                xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
-//            }
-////                MotionEvent.ACTION_POINTER_DOWN -> {
-////                    val pointerID = event.actionIndex
-////                    val pid = event.getPointerId(pointerID).toString()
-////                    val timestamp = System.nanoTime() / 1000000
-////                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-////                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
-////                }
-////                MotionEvent.ACTION_POINTER_UP -> {
-////                    val pointerID = event.actionIndex
-////                    val pid = event.getPointerId(pointerID).toString()
-////                    val timestamp = System.nanoTime() / 1000000
-////                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-////                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
-////                }
-//        }
-        return true
-    }
-
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRWindow"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_rootViewController", "xtr_rootViewController", arrayOf(String::class.java))
@@ -98,7 +54,7 @@ class XTRWindow @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRWindow(XTRView.context.appContext)
+            val view = XTRWindow(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

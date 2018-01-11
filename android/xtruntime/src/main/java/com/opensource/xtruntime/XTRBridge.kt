@@ -29,7 +29,7 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
 
     }
 
-    val xtrContext: XTRContext = XTRContext(Thread.currentThread(), appContext)
+    val xtrContext: XTRContext = XTRContext(appContext)
     val breakpoint: XTRBreakpoint
     var assets: JSONObject? = null
         private set
@@ -39,6 +39,7 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
             loadScript()
         }
     var keyWindow: XTRWindow? = null
+    var registeredComponents: Map<String, XTRComponentExport> = mapOf()
 
     init {
         xtrContext.bridge = WeakReference(this)
@@ -50,26 +51,29 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
 
     private fun loadComponents() {
         val components: List<XTRComponentExport> = listOf(
-                XTRImage.Companion,
-                XTRApplication.Companion,
-                XTRApplicationDelegate.Companion,
-                XTRView.Companion,
-                XTRWindow.Companion,
-                XTRViewController.Companion,
-                XTRButton.Companion,
-                XTRImageView.Companion,
-                XTRLabel.Companion,
-                XTRCanvasView.Companion,
-                XTRTextField.Companion,
-                XTRTextView.Companion,
-                XTRDevice.Companion,
-                XTRScreen.Companion
+                XTRImage.JSExports(xtrContext),
+                XTRApplication.JSExports(xtrContext),
+                XTRApplicationDelegate.JSExports(xtrContext),
+                XTRView.JSExports(xtrContext),
+                XTRWindow.JSExports(xtrContext),
+                XTRViewController.JSExports(xtrContext),
+                XTRButton.JSExports(xtrContext),
+                XTRImageView.JSExports(xtrContext),
+                XTRLabel.JSExports(xtrContext),
+                XTRCanvasView.JSExports(xtrContext),
+                XTRTextField.JSExports(xtrContext),
+                XTRTextView.JSExports(xtrContext),
+                XTRDevice.JSExports(xtrContext),
+                XTRScreen.JSExports(xtrContext)
         )
+        val registeredComponents: MutableMap<String, XTRComponentExport> = mutableMapOf()
         components.forEach {
-            val obj = it.exports(xtrContext)
+            val obj = it.exports()
             xtrContext.runtime.add(it.name, obj)
             obj.release()
+            registeredComponents.put(it.name, it)
         }
+        this.registeredComponents = registeredComponents.toMap()
     }
 
     private fun loadRuntime() {

@@ -23,13 +23,11 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
 
     var size: XTRSize = XTRSize(bitmap.width.toDouble() / scale.toDouble(), bitmap.height.toDouble() / scale.toDouble())
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRImage"
-        private var context: WeakReference<XTRContext>? = null
 
-        override fun exports(context: XTRContext): V8Object {
-            this.context = WeakReference(context)
+        override fun exports(): V8Object {
             installCache(context.appContext)
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "xtr_fromURL", "xtr_fromURL", arrayOf(String::class.java, V8Function::class.java, V8Function::class.java))
@@ -92,7 +90,7 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
         private val scaleOptions = listOf(3, 2)
 
         fun xtr_fromAssets(named: String, success: V8Function, failure: V8Function) {
-            this.context?.get()?.let { ctx ->
+            this.context?.let { ctx ->
                 ctx.bridge?.get()?.assets?.let { assets ->
                     var targetData: String? = null
                     var scale = Math.ceil(ctx.appContext.resources.displayMetrics.density.toDouble()).toInt()

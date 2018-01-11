@@ -11,7 +11,7 @@ abstract class XTRComponentExport {
 
     abstract val name: String
 
-    abstract fun exports(context: XTRContext): V8Object
+    abstract fun exports(): V8Object
 
 }
 

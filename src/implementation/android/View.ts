@@ -3,7 +3,7 @@ import { Color } from '../../interface/Color'
 import { Window } from './Window'
 import { TransformMatrix } from '../../interface/TransformMatrix'
 import { LayoutConstraint } from "../../interface/LayoutConstraint";
-import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
+import { Touchable, Touch, Event, TouchManager } from '../libraries/touch/TouchManager';
 import { CoordinateOwner, isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
 import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerState } from '../libraries/touch/GestureManager';
 import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
@@ -383,6 +383,22 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
             }
         }
         return target
+    }
+
+    touchManager = new TouchManager(this)
+
+    handlePointerDown(pid: string, timestamp: number, point: { x: number, y: number }) {
+        console.log(timestamp);
+        
+        this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
+    }
+
+    handlePointersMove(timestamp: number, points: { [key: string]: {x: number, y: number} }) {
+        this.touchManager.handlePointersMove(timestamp, points)
+    }
+
+    handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {
+        this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y)
     }
 
     touchesBegan(touches: Touch[], event: Event): void {

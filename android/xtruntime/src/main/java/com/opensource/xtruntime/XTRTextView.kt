@@ -19,19 +19,21 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
+import java.lang.ref.WeakReference
 
 
 /**
  * Created by cuiminghui on 2017/9/14.
  */
 class XTRTextView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance {
 
+    val XTRTextView: XTRTextView.JSExports = xtrContext?.bridge?.get()?.registeredComponents?.get("XTRTextView") as XTRTextView.JSExports
     val editText = EditText(context)
     val onFocusListener = OnFocusChangeListener { _, _ ->
         if (editText.isFocused) {
-            XTRWindow.firstResponder = this
+//            XTRWindow.firstResponder = this
             val scriptObject = scriptObject() ?: return@OnFocusChangeListener
             (XTRContext.invokeMethod(scriptObject, "handleShouldBeginEditing") as? Boolean)?.takeIf { !it }.let {
                 XTRTextView.xtr_blur(this.objectUUID ?: "")
@@ -66,7 +68,7 @@ class XTRTextView @JvmOverloads constructor(
                     V8.getUndefined()
                 }
                 scriptObject()?.let { scriptObject ->
-                    val v8Object = V8Object(XTRView.context.runtime)
+                    val v8Object = V8Object(xtrContext.runtime)
                     v8Object.add("location", p1)
                     v8Object.add("length", if (p2 > p3) p3 else p2 - p3)
                     (XTRContext.invokeMethod(scriptObject, "handleShouldChange", listOf(
@@ -149,11 +151,11 @@ class XTRTextView @JvmOverloads constructor(
 
     private var clearsOnBeginEditing = false
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRTextView"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf(String::class.java))
@@ -185,7 +187,7 @@ class XTRTextView @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRTextView(XTRView.context.appContext)
+            val view = XTRTextView(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

@@ -1,6 +1,5 @@
 package com.opensource.xtruntime
 
-import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.ViewGroup
@@ -13,8 +12,11 @@ import com.opensource.xtmem.XTMemoryManager
  * Created by cuiminghui on 2017/9/8.
  */
 class XTRButton @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTRView(context, attrs, defStyleAttr), XTRComponentInstance {
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance {
+
+    val XTRLabel: XTRLabel.JSExports = xtrContext?.bridge?.get()?.registeredComponents?.get("XTRLabel") as XTRLabel.JSExports
+    val XTRImageView: XTRImageView.JSExports = xtrContext?.bridge?.get()?.registeredComponents?.get("XTRImageView") as XTRImageView.JSExports
 
     var imageView: XTRImageView = XTMemoryManager.find(XTRImageView.create()) as XTRImageView
     var titleLabel: XTRLabel = XTMemoryManager.find(XTRLabel.create()) as XTRLabel
@@ -78,11 +80,16 @@ class XTRButton @JvmOverloads constructor(
         }
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
+
+        val XTRLabel: XTRLabel.JSExports
+            get() = context?.bridge?.get()?.registeredComponents?.get("XTRLabel") as XTRLabel.JSExports
+        val XTRImageView: XTRImageView.JSExports
+            get() = context?.bridge?.get()?.registeredComponents?.get("XTRImageView") as XTRImageView.JSExports
 
         override val name: String = "XTRButton"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_title", "xtr_title", arrayOf(String::class.java))
@@ -101,7 +108,7 @@ class XTRButton @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTRButton(XTRView.context.appContext)
+            val view = XTRButton(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)

@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import android.os.Bundle
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
@@ -14,6 +15,7 @@ import java.util.*
 open class XTRViewController: XTRFragment(), XTRComponentInstance {
 
     override var objectUUID: String? = null
+    lateinit var xtrContext: XTRContext
 
     override var view: XTRView? = null
         set(value) {
@@ -30,7 +32,7 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
         protected set
 
     fun scriptObject(): V8Object? {
-        return XTRView.context.evaluateScript("objectRefs['$objectUUID']") as? V8Object
+        return xtrContext.evaluateScript("objectRefs['$objectUUID']") as? V8Object
     }
 
     open fun viewDidLoad() {
@@ -98,11 +100,11 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
         }
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRViewController"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
             exports.registerJavaMethod(this, "xtr_view", "xtr_view", arrayOf(String::class.java))
@@ -117,6 +119,7 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
 
         fun create(): String {
             val viewController = XTRViewController()
+            viewController.xtrContext = context
             val managedObject = XTManagedObject(viewController)
             viewController.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)
@@ -140,7 +143,7 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
 
         fun xtr_childViewControllers(objectRef: String): V8Array? {
             return (XTMemoryManager.find(objectRef) as? XTRViewController)?.let {
-                val v8Array = V8Array(XTRView.context.runtime)
+                val v8Array = V8Array(context.runtime)
                 it.childViewControllers.mapNotNull { it ->
                     return@mapNotNull it.objectUUID
                 }.forEach { v8Array.push(it) }

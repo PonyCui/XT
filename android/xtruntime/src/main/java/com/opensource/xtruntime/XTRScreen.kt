@@ -9,29 +9,33 @@ import com.eclipsesource.v8.V8Object
  */
 class XTRScreen {
 
-    companion object : XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRScreen"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "xtr_mainScreen", "xtr_mainScreen", arrayOf())
 
             return exports
         }
 
-        var displayMetrics = DisplayMetrics()
-
-        fun resetScreenInfo(activity: Activity) {
-            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        }
-
         fun xtr_mainScreen(): V8Object {
-            val v8Object = V8Object(XTRView.context.runtime)
+            val v8Object = V8Object(context.runtime)
             v8Object.add("width", displayMetrics.widthPixels.toDouble() / displayMetrics.density.toDouble())
             v8Object.add("height", displayMetrics.heightPixels.toDouble() / displayMetrics.density.toDouble())
             v8Object.add("scale", displayMetrics.density.toDouble())
             return v8Object
+        }
+
+    }
+
+    companion object {
+
+        var displayMetrics = DisplayMetrics()
+
+        fun resetScreenInfo(activity: Activity) {
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
         }
 
     }

@@ -29,11 +29,11 @@ class XTRFont(val pointSize: Double, val fontWeight: String, val fontStyle: Stri
         typeface = Typeface.create(familyName, typefaceStyle)
     }
 
-    companion object: XTRComponentExport() {
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRFont"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf(Double::class.java, String::class.java, String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_familyName", "xtr_familyName", arrayOf(String::class.java))

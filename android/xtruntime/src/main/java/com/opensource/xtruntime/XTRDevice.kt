@@ -6,23 +6,25 @@ import com.eclipsesource.v8.V8Object
 /**
  * Created by cuiminghui on 2017/9/28.
  */
-enum class DeviceOrientation {
-    Unknown,
-    Portrait,
-    PortraitUpsideDown,
-    LandscapeLeft,
-    LandscapeRight,
-    FaceUp,
-    FaceDown,
-}
+
 
 class XTRDevice {
 
-    companion object: XTRComponentExport() {
+    enum class DeviceOrientation {
+        Unknown,
+        Portrait,
+        PortraitUpsideDown,
+        LandscapeLeft,
+        LandscapeRight,
+        FaceUp,
+        FaceDown,
+    }
+
+    class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRDevice"
 
-        override fun exports(context: XTRContext): V8Object {
+        override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "xtr_deviceName", "xtr_deviceName", arrayOf())
             exports.registerJavaMethod(this, "xtr_systemName", "xtr_systemName", arrayOf())
@@ -53,12 +55,14 @@ class XTRDevice {
             return Build.MODEL
         }
 
-        internal var orientation = DeviceOrientation.Unknown
-
         fun xtr_orientation(): Int {
             return orientation.ordinal
         }
 
+    }
+
+    companion object {
+        internal var orientation = DeviceOrientation.Unknown
     }
 
 }

@@ -46,18 +46,4 @@ export class Window extends View {
     //     this.nativeObject.xtr_endEditing();
     // }
 
-    // touchManager = new TouchManager(this)
-
-    // handlePointerDown(pid: string, timestamp: number, point: { x: number, y: number }) {
-    //     this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
-    // }
-
-    // handlePointersMove(timestamp: number, points: { [key: string]: {x: number, y: number} }) {
-    //     this.touchManager.handlePointersMove(timestamp, points)
-    // }
-
-    // handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {
-    //     this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y)
-    // }
-
 }
