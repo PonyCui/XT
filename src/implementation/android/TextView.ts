@@ -7,102 +7,103 @@ import { Rect, RectZero } from '../../interface/Rect';
 
 export class TextView extends View {
 
-    nativeObject: any;
-
     constructor() {
         super(XTRTextView)
     }
 
     public get text(): string {
-        return this.nativeObject.xtr_text();
+        return XTRTextView.xtr_text(this.objectRef);
     }
 
     public set text(value: string) {
-        this.nativeObject.xtr_setText(value);
+        XTRTextView.xtr_setText(value, this.objectRef);
     }
 
-    public get font(): Font | undefined {
-        return this.nativeObject.xtr_font();
+    public get font(): Font {
+        return new Font(XTRTextView.xtr_font(this.objectRef));
     }
 
-    public set font(value: Font | undefined) {
-        this.nativeObject.xtr_setFont(value);
+    public set font(value: Font) {
+        XTRTextView.xtr_setFont(value.objectRef, this.objectRef);
     }
 
     public get textColor(): Color {
-        return this.nativeObject.xtr_textColor();
+        return XTRTextView.xtr_textColor(this.objectRef);
     }
 
     public set textColor(value: Color) {
-        this.nativeObject.xtr_setTextColor(value);
+        XTRTextView.xtr_setTextColor(value, this.objectRef);
     }
 
     public get textAlignment(): TextAlignment {
-        return this.nativeObject.xtr_textAlignment();
+        return XTRTextView.xtr_textAlignment(this.objectRef);
     }
 
     public set textAlignment(value: TextAlignment) {
-        this.nativeObject.xtr_setTextAlignment(value);
+        XTRTextView.xtr_setTextAlignment(value, this.objectRef);
     }
 
     public get editing(): Boolean {
-        return this.nativeObject.xtr_editing();
+        return XTRTextView.xtr_editing(this.objectRef);
     }
 
     public get allowAutocapitalization(): Boolean {
-        return this.nativeObject.xtr_allowAutocapitalization();
+        return XTRTextView.xtr_allowAutocapitalization(this.objectRef);
     }
 
     public set allowAutocapitalization(value: Boolean) {
-        this.nativeObject.xtr_setAllowAutocapitalization(value);
+        XTRTextView.xtr_setAllowAutocapitalization(value, this.objectRef);
     }
 
     public get allowAutocorrection(): Boolean {
-        return this.nativeObject.xtr_allowAutocorrection();
+        return XTRTextView.xtr_allowAutocorrection(this.objectRef);
     }
 
     public set allowAutocorrection(value: Boolean) {
-        this.nativeObject.xtr_setAllowAutocorrection(value);
+        XTRTextView.xtr_setAllowAutocorrection(value, this.objectRef);
     }
 
     public get allowSpellChecking(): Boolean {
-        return this.nativeObject.xtr_allowSpellChecking();
+        return XTRTextView.xtr_allowSpellChecking(this.objectRef);
     }
 
     public set allowSpellChecking(value: Boolean) {
-        this.nativeObject.xtr_setAllowSpellChecking(value);
+        XTRTextView.xtr_setAllowSpellChecking(value, this.objectRef);
     }
 
     public get keyboardType(): KeyboardType {
-        return this.nativeObject.xtr_keyboardType();
+        return XTRTextView.xtr_keyboardType(this.objectRef);
     }
 
     public set keyboardType(value: KeyboardType) {
-        this.nativeObject.xtr_setKeyboardType(value);
+        XTRTextView.xtr_setKeyboardType(value, this.objectRef);
     }
 
     public get returnKeyType(): ReturnKeyType {
-        return this.nativeObject.xtr_returnKeyType();
+        return XTRTextView.xtr_returnKeyType(this.objectRef);
     }
 
     public set returnKeyType(value: ReturnKeyType) {
-        this.nativeObject.xtr_setReturnKeyType(value);
+        XTRTextView.xtr_setReturnKeyType(value, this.objectRef);
     }
 
     public get enablesReturnKeyAutomatically(): Boolean {
-        return this.nativeObject.xtr_enablesReturnKeyAutomatically();
+        return false
     }
 
-    public set enablesReturnKeyAutomatically(value: Boolean) {
-        this.nativeObject.xtr_setEnablesReturnKeyAutomatically(value);
-    }
+    public set enablesReturnKeyAutomatically(value: Boolean) { }
 
     public get secureTextEntry(): Boolean {
-        return this.nativeObject.xtr_secureTextEntry;
+        return XTRTextView.xtr_secureTextEntry(this.objectRef);
     }
 
     public set secureTextEntry(value: Boolean) {
-        this.nativeObject.xtr_setSecureTextEntry(value);
+        if (value) {
+            this.allowAutocapitalization = false
+            this.allowAutocorrection = false
+            this.allowSpellChecking = false
+        }
+        XTRTextView.xtr_setSecureTextEntry(value, this.objectRef);
     }
 
     shouldBeginEditing?: () => Boolean = undefined
@@ -157,12 +158,11 @@ export class TextView extends View {
     }
 
     focus(): void {
-        this.nativeObject.xtr_focus();
+        XTRTextView.xtr_focus(this.objectRef);
     }
 
     blur(): void {
-        if (!this.handleShouldEndEditing()) { return }
-        this.nativeObject.xtr_blur();
+        XTRTextView.xtr_blur(this.objectRef);
     }
 
 }

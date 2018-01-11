@@ -95,10 +95,10 @@ open class XTRActivity: Activity(), KeyboardHeightObserver {
                     1 -> DeviceOrientation.LandscapeLeft
                     2 -> DeviceOrientation.PortraitUpsideDown
                     3 -> DeviceOrientation.LandscapeRight
-                    else -> XTRDevice.current?.orientation ?: DeviceOrientation.Portrait
+                    else -> XTRDevice.orientation
                 }
-                if (newOrientation != XTRDevice.current?.orientation) {
-                    XTRDevice.current?.orientation = newOrientation
+                if (newOrientation != XTRDevice.orientation) {
+                    XTRDevice.orientation = newOrientation
                     orientationChangeInvokeTimerTask?.cancel()
                     orientationChangeInvokeTimerTask = timerTask {
 //                        bridge?.xtrApplication?.delegate?.window?.orientationChanged()

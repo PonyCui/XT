@@ -2,38 +2,28 @@ import { DeviceOrientation } from "../../interface/Device";
 
 export class Device {
 
-    static get current(): Device {
-        return new Device(XTRDevice.xtr_current())
+    public static get deviceName(): string {
+        return XTRDevice.xtr_name()
     }
 
-    private nativeObject: any;
-
-    constructor(nativeObject: any) {
-        this.nativeObject = nativeObject;
+    public static get systemName(): string {
+        return XTRDevice.xtr_systemName()
     }
 
-    public get name(): string {
-        return this.nativeObject.xtr_name()
+    public static get systemVersion(): string {
+        return XTRDevice.xtr_systemVersion()
     }
 
-    public get systemName(): string {
-        return this.nativeObject.xtr_systemName()
+    public static get xtRuntimeVersion(): string {
+        return XTRDevice.xtr_xtRuntimeVersion()
     }
 
-    public get systemVersion(): string {
-        return this.nativeObject.xtr_systemVersion()
+    public static get model(): string {
+        return XTRDevice.xtr_model()
     }
 
-    public get xtRuntimeVersion(): string {
-        return this.nativeObject.xtr_xtRuntimeVersion()
-    }
-
-    public get model(): string {
-        return this.nativeObject.xtr_model()
-    }
-
-    public get orientation(): DeviceOrientation {
-        return this.nativeObject.xtr_orientation()
+    public static get orientation(): DeviceOrientation {
+        return XTRDevice.xtr_orientation()
     }
 
     isiOS(): Boolean { return false }

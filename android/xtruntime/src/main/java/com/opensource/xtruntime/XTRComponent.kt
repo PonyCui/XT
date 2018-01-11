@@ -21,15 +21,3 @@ interface XTRComponentInstance {
 
 }
 
-abstract class XTRComponent {
-
-    open val name: String = ""
-
-    lateinit var xtrContext: XTRContext
-
-    open fun v8Object(): V8Object? {
-        return null
-    }
-
-}
-

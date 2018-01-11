@@ -43,6 +43,22 @@ class XTRFont(val pointSize: Double, val fontWeight: String, val fontStyle: Stri
             return exports
         }
 
+        fun xtr_familyName(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRFont)?.familyName
+        }
+
+        fun xtr_pointSize(objectRef: String): Double {
+            return (XTMemoryManager.find(objectRef) as? XTRFont)?.pointSize ?: 0.0
+        }
+
+        fun xtr_fontWeight(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRFont)?.fontWeight ?: "400"
+        }
+
+        fun xtr_fontStyle(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRFont)?.fontStyle ?: "normal"
+        }
+
         fun create(pointSize: Double, fontWeight: String, fontStyle: String, familyName: String): String {
             val font = XTRFont(pointSize, fontWeight, fontStyle, familyName)
             val managedObject = XTManagedObject(font)

@@ -112,7 +112,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
     companion object {
 
         fun invokeMethod(scriptObject: V8Object?, method: String, arguments: List<Any>? = null): Any? {
-            scriptObject?.takeIf { !it.runtime.isReleased }?.let {
+            scriptObject?.takeIf { !it.isUndefined && !it.runtime.isReleased }?.let {
                 try {
                     var args: V8Array? = null
                     arguments?.let { arguments ->
@@ -162,7 +162,7 @@ class XTRContext(private val thread: Thread, val appContext: android.content.Con
         }
 
         fun release(vararg v8Objects: V8Object) {
-            v8Objects.forEach { if (!it.runtime.isReleased) { it.release() } }
+            v8Objects.forEach { if (!it.isUndefined && !it.runtime.isReleased) { it.release() } }
         }
 
     }

@@ -1,7 +1,9 @@
 package com.opensource.xtruntime
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
+import android.view.ViewGroup
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
@@ -18,7 +20,9 @@ class XTRButton @JvmOverloads constructor(
     var titleLabel: XTRLabel = XTMemoryManager.find(XTRLabel.create()) as XTRLabel
 
     init {
-        XTRView.xtr_addSubview(imageView.objectUUID ?: "", this.objectUUID ?: "")
+        titleLabel.mFont = XTRFont(16.0, "400", "normal", "")
+        addView(titleLabel, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        addView(imageView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 
     private var isVertical = false
@@ -27,7 +31,7 @@ class XTRButton @JvmOverloads constructor(
 
     override fun tintColorDidChange() {
         super.tintColorDidChange()
-//        this.titleLabel.xtr_setTextColor(this.xtr_tintColorXTRTypes())
+        this.titleLabel.textView.setTextColor(this.tintColor?.intColor() ?: Color.BLACK)
     }
 
     override fun layoutSubviews() {

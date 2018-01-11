@@ -440,7 +440,7 @@ open class XTRView @JvmOverloads constructor(
 
     }
 
-    var userInteractionEnabled = false
+    var userInteractionEnabled = true
 
     var mTag: Int = 0
 
@@ -448,6 +448,7 @@ open class XTRView @JvmOverloads constructor(
         scriptObject()?.let {
             XTRContext.invokeMethod(it, "didAddSubview", listOf((subview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
+            (subview as? XTRView)?.tintColorDidChange()
         }
     }
 

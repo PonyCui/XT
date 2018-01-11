@@ -75,27 +75,26 @@ export enum ContentMode {
 
 export class ImageView extends View {
 
-    nativeObject: any;
-
     constructor() {
         super(XTRImageView)
     }
 
     public get image(): Image | undefined {
-        return this.nativeObject.xtr_image();
+        const imageRef = XTRImageView.xtr_image(this.objectRef)
+        return typeof imageRef === "string" ? new Image(imageRef) : undefined;
     }
 
     public set image(value: Image | undefined) {
-        this.nativeObject.xtr_setImage(value);
+        XTRImageView.xtr_setImage(value ? value.objectRef : "", this.objectRef);
         this.recursiveSetNeedLayout()
     }
 
     public get contentMode(): ContentMode {
-        return this.nativeObject.xtr_contentMode();
+        return XTRImageView.xtr_contentMode(this.objectRef);
     }
 
     public set contentMode(value: ContentMode) {
-        this.nativeObject.xtr_setContentMode(value);
+        XTRImageView.xtr_setContentMode(value, this.objectRef);
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {

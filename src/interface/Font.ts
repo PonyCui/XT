@@ -1,15 +1,31 @@
 export class Font {
 
-    readonly familyName?: string;
-    readonly pointSize: number;
-    readonly fontWeight: string = '400';
-    readonly fontStyle: string = 'normal';
+    objectRef: any
 
-    constructor(pointSize: number, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
-        this.pointSize = pointSize;
-        this.fontWeight = fontWeight;
-        this.fontStyle = fontStyle;
-        this.familyName = familyName;
+    constructor(pointSize_ref: number | string, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
+        if (typeof pointSize_ref === "string") {
+            this.objectRef = pointSize_ref
+        }
+        else {
+            this.objectRef = XTRFont.create(pointSize_ref, fontWeight, fontStyle, familyName)
+        }
+    }
+
+    public get familyName(): string | undefined {
+        const value = XTRFont.xtr_familyName(this.objectRef)
+        return typeof value === "string" ? value : undefined
+    }
+    
+    public get pointSize(): number {
+        return XTRFont.xtr_pointSize(this.objectRef)
+    }
+
+    public get fontWeight(): string {
+        return XTRFont.xtr_fontWeight(this.objectRef)
+    }
+
+    public get fontStyle(): string {
+        return XTRFont.xtr_fontStyle(this.objectRef)
     }
 
     static systemFontOfSize(pointSize: number, weight: string = '400'): Font {

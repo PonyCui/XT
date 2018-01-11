@@ -55,7 +55,15 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
                 XTRApplicationDelegate.Companion,
                 XTRView.Companion,
                 XTRWindow.Companion,
-                XTRViewController.Companion
+                XTRViewController.Companion,
+                XTRButton.Companion,
+                XTRImageView.Companion,
+                XTRLabel.Companion,
+                XTRCanvasView.Companion,
+                XTRTextField.Companion,
+                XTRTextView.Companion,
+                XTRDevice.Companion,
+                XTRScreen.Companion
         )
         components.forEach {
             val obj = it.exports(xtrContext)

@@ -16,37 +16,24 @@ enum class DeviceOrientation {
     FaceDown,
 }
 
-class XTRDevice: XTRComponent() {
+class XTRDevice {
 
-    companion object {
-        internal var current: InnerObject? = null
-    }
+    companion object: XTRComponentExport() {
 
-    override val name: String = "XTRDevice"
+        override val name: String = "XTRDevice"
 
-    override fun v8Object(): V8Object? {
-        val v8Object = V8Object(xtrContext.runtime)
-        v8Object.registerJavaMethod(this, "xtr_current", "xtr_current", arrayOf())
-        return v8Object
-    }
-
-    fun xtr_current(): V8Object {
-        if (current == null) {
-            current = InnerObject(xtrContext)
+        override fun exports(context: XTRContext): V8Object {
+            val exports = V8Object(context.runtime)
+            exports.registerJavaMethod(this, "xtr_deviceName", "xtr_deviceName", arrayOf())
+            exports.registerJavaMethod(this, "xtr_systemName", "xtr_systemName", arrayOf())
+            exports.registerJavaMethod(this, "xtr_systemVersion", "xtr_systemVersion", arrayOf())
+            exports.registerJavaMethod(this, "xtr_xtRuntimeVersion", "xtr_xtRuntimeVersion", arrayOf())
+            exports.registerJavaMethod(this, "xtr_model", "xtr_model", arrayOf())
+            exports.registerJavaMethod(this, "xtr_orientation", "xtr_orientation", arrayOf())
+            return exports
         }
-        val v8Object = V8Object(xtrContext.runtime)
-        v8Object.registerJavaMethod(current, "xtr_name", "xtr_name", arrayOf())
-        v8Object.registerJavaMethod(current, "xtr_systemName", "xtr_systemName", arrayOf())
-        v8Object.registerJavaMethod(current, "xtr_systemVersion", "xtr_systemVersion", arrayOf())
-        v8Object.registerJavaMethod(current, "xtr_xtRuntimeVersion", "xtr_xtRuntimeVersion", arrayOf())
-        v8Object.registerJavaMethod(current, "xtr_model", "xtr_model", arrayOf())
-        v8Object.registerJavaMethod(current, "xtr_orientation", "xtr_orientation", arrayOf())
-        return v8Object
-    }
 
-    class InnerObject(val xtrContext: XTRContext) {
-
-        fun xtr_name(): String {
+        fun xtr_deviceName(): String {
             return Build.BRAND
         }
 

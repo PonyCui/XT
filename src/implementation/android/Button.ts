@@ -9,7 +9,6 @@ import { Font } from "../../interface/Font";
 
 export class Button extends View {
 
-    nativeObject: any;
     readonly imageView = new ImageView()
     readonly titleLabel = new Label()
 
@@ -45,52 +44,53 @@ export class Button extends View {
         }
     }
 
-    public get title(): string | undefined {
-        return this.nativeObject.xtr_title();
+    public get title(): string {
+        return XTRButton.xtr_title(this.objectRef);
     }
 
-    public set title(value: string | undefined) {
-        this.nativeObject.xtr_setTitle(value);
+    public set title(value: string) {
+        XTRButton.xtr_setTitle(value, this.objectRef);
     }
 
     public get font(): Font {
-        return this.nativeObject.xtr_font();
+        return new Font(XTRButton.xtr_font(this.objectRef));
     }
 
     public set font(value: Font) {
-        this.nativeObject.xtr_setFont(value);
+        XTRButton.xtr_setFont(value.objectRef);
     }
 
-    public get image(): Image {
-        return this.nativeObject.xtr_image();
+    public get image(): Image | undefined {
+        const imageRef = XTRButton.xtr_image(this.objectRef)
+        return typeof imageRef === "string" ? new Image(imageRef) : undefined;
     }
 
-    public set image(value: Image) {
-        this.nativeObject.xtr_setImage(value);
+    public set image(value: Image | undefined) {
+        XTRButton.xtr_setImage(value ? value.objectRef : "", this.objectRef);
     }
 
     public get color(): Color {
-        return this.nativeObject.xtr_color();
+        return XTRButton.xtr_color(this.objectRef);
     }
 
     public set color(value: Color) {
-        this.nativeObject.xtr_setColor(value);
+        XTRButton.xtr_setColor(value, this.objectRef);
     }
 
     public get vertical(): boolean {
-        return this.nativeObject.xtr_vertical();
+        return XTRButton.xtr_vertical(this.objectRef);
     }
 
     public set vertical(value: boolean) {
-        this.nativeObject.xtr_setVertical(value);
+        XTRButton.xtr_setVertical(value, this.objectRef);
     }
 
     public get inset(): number {
-        return this.nativeObject.xtr_inset();
+        return XTRButton.xtr_inset(this.objectRef);
     }
 
     public set inset(value: number) {
-        this.nativeObject.xtr_setInset(value);
+        XTRButton.xtr_setInset(value, this.objectRef);
     }
 
     willMoveToSuperview(newSuperview: View) {

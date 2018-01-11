@@ -99,8 +99,8 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
                     assets.optString("$named@${scale}x.png", null)?.let {
                         targetData = it
                     } ?: kotlin.run {
-                        scaleOptions.firstOrNull { assets.optString("$named@${scale}x.png", null) != null }?.let {
-                            assets.optString("$named@${it}x.png")
+                        scaleOptions.firstOrNull { return@firstOrNull assets.optString("$named@${it}x.png", null) != null }?.let {
+                            targetData = assets.optString("$named@${it}x.png")
                             scale = it
                         }
                     }
