@@ -34,7 +34,7 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
         return xtrContext.evaluateScript("objectRefs['$objectUUID']") as? V8Object
     }
 
-    open fun requestFragment(): Fragment {
+    open fun requestFragment(): XTRViewController {
         return this
     }
 
@@ -117,6 +117,10 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
             exports.registerJavaMethod(this, "xtr_addChildViewController", "xtr_addChildViewController", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_removeFromParentViewController", "xtr_removeFromParentViewController", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_navigationBar", "xtr_navigationBar", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setNavigationBar", "xtr_setNavigationBar", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_showNavigationBar", "xtr_showNavigationBar", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_hideNavigationBar", "xtr_hideNavigationBar", arrayOf(Boolean::class.java, String::class.java))
             return exports
         }
 
@@ -196,6 +200,23 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
                 }
             }
             return null
+        }
+
+        fun xtr_navigationBar(objectRef: String): String? {
+            return (XTMemoryManager.find(objectRef) as? XTRViewController)?.requestFragment()?.navigationBar?.objectUUID
+        }
+
+        fun xtr_setNavigationBar(navigationBarRef: String, objectRef: String) {
+            val navigationBar = XTMemoryManager.find(navigationBarRef) as? XTRNavigationBar ?: return
+            (XTMemoryManager.find(objectRef) as? XTRViewController)?.requestFragment()?.navigationBar = navigationBar
+        }
+
+        fun xtr_showNavigationBar(value: Boolean, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRViewController)?.requestFragment()?.navigationBarHidden = false
+        }
+
+        fun xtr_hideNavigationBar(value: Boolean, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRViewController)?.requestFragment()?.navigationBarHidden = true
         }
 
     }

@@ -1,7 +1,6 @@
 package com.opensource.xtruntime
 
 import android.app.Activity
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
 import com.eclipsesource.v8.V8Array
@@ -15,7 +14,7 @@ import java.lang.ref.WeakReference
  */
 class XTRNavigationController: XTRViewController() {
 
-    override fun requestFragment(): Fragment {
+    override fun requestFragment(): XTRViewController {
         return childViewControllers.firstOrNull() ?: this
     }
 

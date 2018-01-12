@@ -6,6 +6,7 @@ import { DeviceOrientation } from "../../interface/Device";
 import { Device } from "./Device";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { Releasable } from "../../interface/Releasable";
+import { NavigationBar } from "./NavigationBar";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
@@ -117,6 +118,30 @@ export class ViewController implements Releasable {
         const ref = XTRViewController.xtr_navigationController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new (window as any)._NavigationControllerInterface(undefined, ref);
+    }
+
+    public set navigationBar(value: NavigationBar) {
+        XTRViewController.xtr_setNavigationBar(value.objectRef, this.objectRef)
+    }
+
+    public get navigationBar(): NavigationBar {
+        let ref = XTRViewController.xtr_navigationBar(this.objectRef)
+        if (typeof ref !== "string") {
+            this.navigationBar = new NavigationBar();
+            ref = XTRViewController.xtr_navigationBar(this.objectRef)
+        }
+        return new NavigationBar(ref)
+    }
+
+    showNavigationBar(animated: boolean = false): void {
+        if (this.navigationBar === undefined) {
+            this.navigationBar = new NavigationBar()
+        }
+        XTRViewController.xtr_showNavigationBar(animated, this.objectRef)
+    }
+
+    hideNavigationBar(animated: boolean = false): void {
+        XTRViewController.xtr_hideNavigationBar(animated, this.objectRef)
     }
 
     public get safeAreaInsets(): Insets {

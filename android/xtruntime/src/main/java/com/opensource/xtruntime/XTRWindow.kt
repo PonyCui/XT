@@ -37,7 +37,7 @@ class XTRWindow @JvmOverloads constructor(
 
     class JSExports(val context: XTRContext): XTRComponentExport() {
 
-            override val name: String = "XTRWindow"
+        override val name: String = "XTRWindow"
 
         override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
