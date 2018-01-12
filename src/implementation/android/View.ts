@@ -29,8 +29,6 @@ export enum SwipeDirection {
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
 
-    nativeObject: any;//todo
-
     retain(): this {
         XTMemoryManager.retain(this.objectRef)
         return this
@@ -221,7 +219,9 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public get window(): Window | undefined {
-        return XTRView.xtr_window(this.objectRef)
+        const ref = XTRView.xtr_window(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new (window as any)._Window(ref)
     }
 
     removeFromSuperview() {
@@ -255,6 +255,13 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     sendSubviewToBack(subview: View) {
         XTRView.xtr_sendSubviewToBack(subview.objectRef, this.objectRef)
     }
+
+    private _didAddSubview(subviewRef: View) { this.didAddSubview(new View(subviewRef)) }
+    private _willRemoveSubview(subviewRef: View) { this.willRemoveSubview(new View(subviewRef)) }
+    private _willMoveToSuperview(newSuperviewRef?: View) { this.willMoveToSuperview(newSuperviewRef ? new View(newSuperviewRef) : undefined) }
+    private _didMoveToSuperview() { this.didMoveToSuperview() }
+    private _willMoveToWindow(newWindowRef?: Window) { this.willMoveToWindow(newWindowRef ? new View(newWindowRef) as any : undefined) }
+    private _didMoveToWindow() { this.didMoveToWindow() }
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
@@ -391,7 +398,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
     }
 
-    handlePointersMove(timestamp: number, points: { [key: string]: {x: number, y: number} }) {
+    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }) {
         this.touchManager.handlePointersMove(timestamp, points)
     }
 

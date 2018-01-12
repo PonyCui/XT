@@ -70,7 +70,17 @@ class TestViewController extends XT.ViewController {
                 this.navigationController.pushViewController(new SecondViewController())
             }
         }
-        this.view.addSubview(redView)
+        // this.view.addSubview(redView)
+        const scrollView = new XT.CustomView("FOOView")
+        scrollView.frame = XT.RectMake(44, 44, 300, 300)
+        this.view.addSubview(scrollView)
+        // {
+        //     const v = new XT.View()
+        //     v.frame = XT.RectMake(0, 0, 44, 44)
+        //     v.backgroundColor = XT.Color.redColor
+        //     scrollView.addSubview(v)
+        //     scrollView.contentSize = XT.SizeMake(0, 600)
+        // }
     }
 
 }

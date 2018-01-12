@@ -146,6 +146,18 @@ class XTRUtils {
             return null
         }
 
+        fun fromMap(target: Map<String, Any>, runtime: V8): V8Object {
+            val v8Object = V8Object(runtime)
+            target.entries.forEach { entry ->
+                (entry.value as? Int)?.let { v8Object.add(entry.key, it) }
+                (entry.value as? String)?.let { v8Object.add(entry.key, it) }
+                (entry.value as? V8Value)?.let { v8Object.add(entry.key, it) }
+                (entry.value as? Double)?.let { v8Object.add(entry.key, it) }
+                (entry.value as? Boolean)?.let { v8Object.add(entry.key, it) }
+            }
+            return v8Object
+        }
+
     }
 
 }

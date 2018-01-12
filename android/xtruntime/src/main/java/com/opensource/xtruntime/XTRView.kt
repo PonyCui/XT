@@ -1,8 +1,5 @@
 package com.opensource.xtruntime
 
-import android.animation.Animator
-import android.animation.ValueAnimator
-import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -11,137 +8,9 @@ import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
 import com.eclipsesource.v8.*
-import com.facebook.rebound.SimpleSpringListener
-import com.facebook.rebound.Spring
-import com.facebook.rebound.SpringConfig
-import com.facebook.rebound.SpringSystem
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
-import java.lang.Math.abs
 import java.lang.ref.WeakReference
-
-/**
- * Created by cuiminghui on 2017/9/1.
- */
-
-class XTRViewAnimationProperty<T>(val aniKey: String, val fromValue: T, val toValue: T, val onValue: (value: T) -> Unit)
-
-class XTRViewAnimator {
-
-    companion object {
-
-        var animationEnabled = false
-        var animationProps: Map<String, XTRViewAnimationProperty<Any>> = mapOf()
-        var animatingHandlers: Map<String, () -> Unit> = mapOf()
-
-        fun addAnimation(aniProp: XTRViewAnimationProperty<Any>) {
-            animatingHandlers[aniProp.aniKey]?.invoke()
-            (aniProp.fromValue as? Float)?.let { fromValue ->
-                (aniProp.toValue as? Float)?.let { toValue ->
-                    if (abs(fromValue - toValue) < 0.001) {
-                        return
-                    }
-                }
-            }
-            if (aniProp.fromValue == aniProp.toValue) {
-                return
-            }
-            val mutableMap = animationProps.toMutableMap()
-            mutableMap[aniProp.aniKey] = aniProp
-            animationProps = mutableMap.toMap()
-        }
-
-        fun animationWithDuration(duration: Double, animations: () -> Unit, completion: () -> Unit) {
-            val duration = duration as? Double ?: return
-            animationEnabled = true
-            animations()
-            animationEnabled = false
-            var completed = false
-            val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-            val animators = animationProps.values.map { aniProp ->
-                var animator: ValueAnimator? = null
-                (aniProp.fromValue as? Float)?.let {
-                    animator = ValueAnimator.ofFloat(aniProp.fromValue as Float, aniProp.toValue as Float)
-                }
-                animator?.duration = (duration * 1000).toLong()
-                animator?.addUpdateListener {
-                    (it.animatedValue as? Float)?.let {
-                        aniProp.onValue(it)
-                    }
-                }
-                animator?.addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(p0: Animator?) {}
-                    override fun onAnimationEnd(p0: Animator?) {
-                        animator?.removeAllListeners()
-                        animator?.removeAllUpdateListeners()
-                        if (!completed) {
-                            completed = true
-                            completion()
-                        }
-                    }
-                    override fun onAnimationCancel(p0: Animator?) {}
-                    override fun onAnimationStart(p0: Animator?) {}
-                })
-                animatingHandlers[aniProp.aniKey] = {
-                    animator?.removeAllListeners()
-                    animator?.removeAllUpdateListeners()
-                    animator?.cancel()
-                }
-                return@map animator
-            }
-            animationProps = mapOf()
-            XTRViewAnimator.animatingHandlers?.let {
-                val mutable = it.toMutableMap()
-                mutable.putAll(animatingHandlers)
-                XTRViewAnimator.animatingHandlers = mutable.toMap()
-            }
-            animators.forEach { it?.start() }
-        }
-
-        fun animationWithBouncinessAndSpeed(bounciness: Double, speed: Double, animations: () -> Unit, completion: () -> Unit) {
-            val bounciness = bounciness as? Double ?: return
-            val speed = speed as? Double ?: return
-            animationEnabled = true
-            animations()
-            animationEnabled = false
-            var completed = false
-            val animatingHandlers = mutableMapOf<String, () -> Unit> ()
-            val springSystem = SpringSystem.create()
-            animationProps.values.forEach { aniProp ->
-                val spring = springSystem.createSpring()
-                spring.springConfig = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
-                (aniProp.fromValue as? Float)?.let {
-                    spring.currentValue = (aniProp.fromValue as Float).toDouble()
-                }
-                spring.addListener(object : SimpleSpringListener() {
-                    override fun onSpringUpdate(spring: Spring?) {
-                        spring?.currentValue?.toFloat()?.let {
-                            aniProp.onValue(it)
-                        }
-                    }
-                    override fun onSpringAtRest(spring: Spring?) {
-                        spring?.removeAllListeners()
-                        spring?.destroy()
-                        if (!completed) {
-                            completed = true
-                            completion()
-                        }
-                    }
-
-                })
-                animatingHandlers[aniProp.aniKey] = {
-                    spring.removeAllListeners()
-                    spring.destroy()
-                }
-                spring.endValue = (aniProp.toValue as Float).toDouble()
-            }
-            animationProps = mapOf()
-            XTRViewAnimator.animatingHandlers = animatingHandlers.toMap()
-        }
-
-    }
-
-}
 
 open class XTRView @JvmOverloads constructor(
         val xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -174,6 +43,7 @@ open class XTRView @JvmOverloads constructor(
     var clipsToBounds = false
         set(value) {
             field = value
+            resetPath()
             invalidate()
         }
 
@@ -391,13 +261,13 @@ open class XTRView @JvmOverloads constructor(
             invalidate()
         }
 
-    private val sharedPath = Path()
+    private val outerPath = Path()
     private val sharedPaint = Paint()
 
     private fun resetPath() {
-        sharedPath.reset()
+        outerPath.reset()
         val scale = resources.displayMetrics.density
-        sharedPath.addRoundRect(RectF(0.0f, 0.0f, (bounds.width * scale).toFloat(), (bounds.height * scale).toFloat()), (cornerRadius * scale).toFloat(), (cornerRadius * scale).toFloat(), Path.Direction.CCW)
+        outerPath.addRoundRect(RectF(0.0f, 0.0f, (bounds.width * scale).toFloat(), (bounds.height * scale).toFloat()), (cornerRadius * scale).toFloat(), (cornerRadius * scale).toFloat(), Path.Direction.CCW)
     }
 
 
@@ -414,9 +284,9 @@ open class XTRView @JvmOverloads constructor(
             matrix.postTranslate((this.width / 2.0).toFloat(), (this.height / 2.0).toFloat())
             canvas?.concat(matrix)
         }
-        if (cornerRadius > 0 && clipsToBounds) {
+        if (cornerRadius > 0 || clipsToBounds) {
             canvas?.save()
-            canvas?.clipPath(sharedPath)
+            canvas?.clipPath(outerPath)
             super.draw(canvas)
             drawContent(canvas)
             canvas?.restore()
@@ -430,8 +300,8 @@ open class XTRView @JvmOverloads constructor(
             sharedPaint.isAntiAlias = true
             sharedPaint.style = Paint.Style.STROKE
             sharedPaint.strokeWidth = (borderWidth * resources.displayMetrics.density).toFloat()
-            sharedPaint.color = borderColor?.intColor() ?: Color.TRANSPARENT
-            canvas?.drawPath(sharedPath, sharedPaint)
+            sharedPaint.color = borderColor.intColor()
+            canvas?.drawPath(outerPath, sharedPaint)
         }
         canvas?.restore()
     }
@@ -446,7 +316,7 @@ open class XTRView @JvmOverloads constructor(
 
     fun didAddSubview(subview: View) {
         scriptObject()?.let {
-            XTRContext.invokeMethod(it, "didAddSubview", listOf((subview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTRContext.invokeMethod(it, "_didAddSubview", listOf((subview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
             (subview as? XTRView)?.tintColorDidChange()
         }
@@ -454,36 +324,35 @@ open class XTRView @JvmOverloads constructor(
 
     fun willRemoveSubView(subview: View) {
         scriptObject()?.let {
-            XTRContext.invokeMethod(it, "willRemoveSubview", listOf((subview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTRContext.invokeMethod(it, "_willRemoveSubview", listOf((subview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
         }
     }
 
     fun willMoveToSuperview(newSuperview: View?) {
         scriptObject()?.let {
-            XTRContext.invokeMethod(it, "willMoveToSuperview", listOf((newSuperview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTRContext.invokeMethod(it, "_willMoveToSuperview", listOf((newSuperview as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
         }
     }
 
     fun didMoveToSuperview() {
         scriptObject()?.let {
-            XTRContext.invokeMethod(it, "didMoveToSuperview")
+            XTRContext.invokeMethod(it, "_didMoveToSuperview")
             it.release()
         }
     }
 
     fun willMoveToWindow(newWindow: XTRWindow?) {
-//        newWindow?.let {
-//            xtrContext.invokeMethod(scriptObject, "willMoveToWindow", listOf(it))
-//            return
-//        }
-//        xtrContext.invokeMethod(scriptObject, "willMoveToWindow", null)
+        scriptObject()?.let {
+            XTRContext.invokeMethod(it, "_willMoveToWindow", listOf((newWindow as? XTRComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            it.release()
+        }
     }
 
     fun didMoveToWindow() {
         scriptObject()?.let {
-            XTRContext.invokeMethod(it, "didMoveToWindow")
+            XTRContext.invokeMethod(it, "_didMoveToWindow")
             it.release()
         }
     }
@@ -743,19 +612,8 @@ open class XTRView @JvmOverloads constructor(
             }
         }
 
-//        fun xtr_windowObject(): XTRWindow.InnerObject? {
-//            var current = parent
-//            while (current != null) {
-//                (current as? XTRWindow.InnerObject)?.let {
-//                    return it
-//                }
-//                current = current.parent
-//            }
-//            return null
-//        }
-
         fun xtr_window(objectRef: String): String? {
-            return null
+            return context.bridge?.get()?.keyWindow?.objectUUID
         }
 
         fun xtr_removeFromSuperview(objectRef: String) {
@@ -773,7 +631,7 @@ open class XTRView @JvmOverloads constructor(
             val view = XTMemoryManager.find(objectRef) as? ViewGroup ?: return
             val subview = XTMemoryManager.find(subviewRef) as? View ?: return
             (subview as? XTRView)?.willMoveToSuperview(view)
-//            (subview as? XTRView)?.willMoveToWindow(xtr_windowObject())
+            (subview as? XTRView)?.willMoveToWindow(context?.bridge?.get()?.keyWindow)
             view.addView(subview, atIndex, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             (view as? XTRView)?.didAddSubview(subview)
             (subview as? XTRView)?.didMoveToSuperview()
@@ -804,7 +662,7 @@ open class XTRView @JvmOverloads constructor(
             val view = XTMemoryManager.find(objectRef) as? ViewGroup ?: return
             val subview = XTMemoryManager.find(subviewRef) as? View ?: return
             (subview as? XTRView)?.willMoveToSuperview(view)
-//            (subview as? XTRView)?.willMoveToWindow(xtr_windowObject())
+            (subview as? XTRView)?.willMoveToWindow(context?.bridge?.get()?.keyWindow)
             view.addView(subview, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             (view as? XTRView)?.didAddSubview(subview)
             (subview as? XTRView)?.didMoveToSuperview()

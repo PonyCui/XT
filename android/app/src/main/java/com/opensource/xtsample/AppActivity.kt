@@ -5,13 +5,13 @@ import android.os.Bundle
 import com.opensource.xtruntime.XTRActivity
 import com.opensource.xtruntime.XTRBridge
 import com.opensource.xtruntime.XTRFragment
-
-//import com.opensource.xtruntime.XTRCustomView
+import com.opensource.xtruntime.XTRCustomView
 
 class AppActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        XTRCustomView.registerClass(FOOView::class.java.name, "FOOView")
         val bridge = XTRBridge.createWithAssets(this, "sample.min.js", {
             it.keyWindow?.rootViewController?.requestFragment().let {
                 val transaction = fragmentManager.beginTransaction()

@@ -2,7 +2,6 @@ package com.opensource.xtruntime
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -19,7 +18,6 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
-import java.lang.ref.WeakReference
 
 
 /**

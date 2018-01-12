@@ -76,7 +76,9 @@ class XTRContext(val appContext: android.content.Context) {
                     val result = it.executeFunction(method, args)
                     args?.release()
                     return result
-                } catch (e: Exception) { e.printStackTrace() }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
             return null
         }

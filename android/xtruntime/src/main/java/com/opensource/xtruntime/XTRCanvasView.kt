@@ -1,6 +1,5 @@
 package com.opensource.xtruntime
 
-import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import com.eclipsesource.v8.V8

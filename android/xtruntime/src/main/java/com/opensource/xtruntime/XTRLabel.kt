@@ -1,6 +1,5 @@
 package com.opensource.xtruntime
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
@@ -17,7 +16,6 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
-import java.lang.ref.WeakReference
 import kotlin.concurrent.timerTask
 
 /**

@@ -1,12 +1,9 @@
 package com.opensource.xtruntime
 
-import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
-import java.lang.ref.WeakReference
 
 /**
  * Created by cuiminghui on 2017/8/31.

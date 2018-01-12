@@ -3,11 +3,7 @@ package com.opensource.xtruntime
 import android.app.Activity
 import android.app.Fragment
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.widget.FrameLayout
-import com.eclipsesource.v8.Releasable
-import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject

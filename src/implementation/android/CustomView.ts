@@ -6,19 +6,20 @@ export class CustomView extends View {
     onMessage?: (message: string) => any = undefined
 
     constructor(className: string) {
-        super(XTRCustomView, className)
+        super(XTRCustomView)
+        XTRCustomView.xtr_setClassName(className, this.objectRef)
     }
 
     public get props(): any {
-        return this.nativeObject.xtr_props() || {};
+        return XTRCustomView.xtr_props(this.objectRef) || {};
     }
 
     public set props(value: any) {
-        this.nativeObject.xtr_setProps(value);
+        XTRCustomView.xtr_setProps(value, this.objectRef);
     }
 
     emitMessage(message: any): any {
-        return this.nativeObject.xtr_handleMessage(message);
+        return XTRCustomView.xtr_handleMessage(message, this.objectRef);
     }
 
     handleMessage(message: any): any {

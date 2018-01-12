@@ -1,120 +1,128 @@
-//package com.opensource.xtruntime
-//
-//import android.content.Context
-//import android.view.MotionEvent
-//import android.view.View
-//import android.view.ViewGroup
-//import com.eclipsesource.v8.V8
-//import com.eclipsesource.v8.V8Object
-//import com.eclipsesource.v8.V8Value
-//
-//interface XTRCustomViewProtocol {
-//    fun getProps(): Map<String, Any>
-//    fun setProps(value: Map<String, Any>)
-//    fun onMessage(message: V8Object, customView: XTRCustomView.InnerObject): Any?
-//}
-//
-///**
-// * Created by cuiminghui on 2017/9/27.
-// */
-//class XTRCustomView: XTRComponent()  {
-//
-//    override val name: String = "XTRCustomView"
-//
-//    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.runtime)
-//        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(String::class.java, V8Object::class.java, V8Object::class.java))
-//        return v8Object
-//    }
-//
-//    companion object {
-//
-//        internal var classMapping: Map<String, String> = mapOf()
-//
-//        fun registerClass(viewClass: String, className: String) {
-//            var mutable = classMapping.toMutableMap()
-//            mutable.put(className, viewClass)
-//            classMapping = mutable.toMap()
-//        }
-//
-//    }
-//
-//    fun createScriptObject(className: String, rect: V8Object, scriptObject: V8Object): V8Object {
-//        val view = InnerObject(className, xtrContext.autoRelease(scriptObject.twin()), xtrContext)
-//        XTRUtils.toRect(rect)?.let {
-//            view.frame = it
-//        }
-//        return view.requestV8Object(xtrContext.runtime)
-//    }
-//
-//    class InnerObject(className: String, scriptObject: V8Object, xtrContext: XTRContext): XTRView.InnerObject(scriptObject, xtrContext), XTRObject {
-//
-//        var innerView: View? = null
-//        var innerViewLayoutParams: ViewGroup.LayoutParams = LayoutParams(0, 0)
-//
-//        init {
-//            classMapping[className]?.let {
-//                Class.forName(it)?.let { clazz ->
-//                    if (View::class.java.isAssignableFrom(clazz)) {
-//                        innerView = clazz.getDeclaredConstructor(Context::class.java).newInstance(context) as View
-//                        addView(innerView, innerViewLayoutParams)
-//                    }
-//                }
-//            }
-//        }
-//
-//        override fun requestV8Object(runtime: V8): V8Object {
-//            val v8Object = super<XTRView.InnerObject>.requestV8Object(runtime)
-//            v8Object.registerJavaMethod(this, "xtr_handleMessage", "xtr_handleMessage", arrayOf(V8Object::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_props", "xtr_props", arrayOf())
-//            v8Object.registerJavaMethod(this, "xtr_setProps", "xtr_setProps", arrayOf(V8Object::class.java))
-//            return v8Object
-//        }
-//
-//        override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-//            super.onLayout(changed, left, top, right, bottom)
-//            if (changed) {
-//                innerViewLayoutParams.width = this.width
-//                innerViewLayoutParams.height = this.height
-//                innerView?.requestLayout()
-//            }
-//        }
-//
-//        fun xtr_handleMessage(message: V8Object): Any? {
-//            (innerView as? XTRCustomViewProtocol)?.let {
-//                return XTRUtils.fromObject(xtrContext, it.onMessage(message, this))
-//            }
-//            return V8.getUndefined()
-//        }
-//
-//        fun emitMessage(message: Any?): Any? {
-//            return xtrContext.invokeMethod(scriptObject, "handleMessage", listOf(message ?: V8.getUndefined()))
-//        }
-//
-//        fun xtr_props(): V8Value {
-//            (innerView as? XTRCustomViewProtocol)?.let {
-//                it.getProps()?.let {
-//                    return XTRUtils.fromObject(xtrContext, it) as? V8Value ?: V8.getUndefined()
-//                }
-//            }
-//            return V8.getUndefined()
-//        }
-//
-//        fun xtr_setProps(props: V8Object) {
-//            (innerView as? XTRCustomViewProtocol)?.let { innerView ->
-//                XTRUtils.toMap(props)?.let {
-//                    innerView.setProps(it)
-//                }
-//            }
-//        }
-//
-//        override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-//            if (userInteractionEnabled) {
-//                return super.dispatchTouchEvent(ev)
-//            }
-//            return false
-//        }
-//
-//    }
-//
-//}
+package com.opensource.xtruntime
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import android.view.ViewGroup
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
+import com.opensource.xtmem.XTManagedObject
+import com.opensource.xtmem.XTMemoryManager
+
+/**
+ * Created by cuiminghui on 2017/9/27.
+ */
+
+class XTRCustomView @JvmOverloads constructor(
+        xtrContext: XTRContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : XTRView(xtrContext, attrs, defStyleAttr), XTRComponentInstance  {
+
+    interface Protocol {
+        fun getProps(): Map<String, Any>
+        fun setProps(value: Map<String, Any>)
+        fun onMessage(message: V8Object, customView: XTRCustomView): Any?
+    }
+
+    var innerView: View? = null
+    var innerViewLayoutParams: ViewGroup.LayoutParams = LayoutParams(0, 0)
+
+    private fun setClassName(className: String) {
+        classMapping[className]?.let {
+            Class.forName(it)?.let { clazz ->
+                if (View::class.java.isAssignableFrom(clazz)) {
+                    innerView = clazz.getDeclaredConstructor(Context::class.java).newInstance(context) as View
+                    addView(innerView, innerViewLayoutParams)
+                }
+            }
+        }
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        if (changed) {
+            innerViewLayoutParams.width = this.width
+            innerViewLayoutParams.height = this.height
+            innerView?.requestLayout()
+        }
+    }
+
+    fun emitMessage(message: Any?): Any? {
+        scriptObject()?.let {
+            return XTRContext.invokeMethod(it, "handleMessage", listOf(message ?: V8.getUndefined()))
+        }
+        return null
+    }
+
+    class JSExports(val context: XTRContext): XTRComponentExport() {
+
+        override val name: String = "XTRCustomView"
+
+        override fun exports(): V8Object {
+            val exports = V8Object(context.runtime)
+            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_setClassName", "xtr_setClassName", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_handleMessage", "xtr_handleMessage", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_props", "xtr_props", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setProps", "xtr_setProps", arrayOf(V8Object::class.java, String::class.java))
+            return exports
+        }
+
+        fun create(): String {
+            val view = XTRCustomView(context)
+            val managedObject = XTManagedObject(view)
+            view.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
+        }
+
+        fun xtr_setClassName(className: String, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRCustomView)?.let {
+                it.setClassName(className)
+            }
+        }
+
+        fun xtr_handleMessage(message: V8Object, objectRef: String): Any? {
+            (XTMemoryManager.find(objectRef) as? XTRCustomView)?.let { view ->
+                (view.innerView as? XTRCustomView.Protocol)?.let {
+                    return it.onMessage(message, view)
+                }
+            }
+
+            return V8.getUndefined()
+        }
+
+        fun xtr_props(objectRef: String): V8Value {
+            (XTMemoryManager.find(objectRef) as? XTRCustomView)?.let { view ->
+                (view.innerView as? XTRCustomView.Protocol)?.let {
+                    return XTRUtils.fromMap(it.getProps(), context.runtime)
+                }
+            }
+            return V8.getUndefined()
+        }
+
+        fun xtr_setProps(props: V8Object, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTRCustomView)?.let { view ->
+                (view.innerView as? XTRCustomView.Protocol)?.let { innerView ->
+                    XTRUtils.toMap(props)?.let {
+                        innerView.setProps(it)
+                    }
+                }
+            }
+        }
+
+    }
+
+    companion object {
+
+        internal var classMapping: Map<String, String> = mapOf()
+
+        fun registerClass(viewClass: String, className: String) {
+            var mutable = classMapping.toMutableMap()
+            mutable.put(className, viewClass)
+            classMapping = mutable.toMap()
+        }
+
+    }
+
+}

@@ -12,42 +12,27 @@ export class ScrollView extends View {
 
     onScroll?: (scrollView: ScrollView) => void
 
-    nativeObject: any;
-    private readonly innerView: View = new View();
-    private readonly horizonalScrollIndicator: View = new View();;
-    private readonly verticalScrollIndicator: View = new View();;
+    private readonly innerView: View
+    private readonly horizontalScrollIndicator: View
+    private readonly verticalScrollIndicator: View
     private scroller: any;
 
-    constructor(rect?: Rect, nativeObject?: any, _isChild: boolean = false) {
-        super(undefined, undefined, true);
-        if (_isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRScrollView.createScriptObject(rect || RectZero, this);
-            (window as any).XTRObjCreater.store(this);
-            setImmediate(() => { this.init(); })
-        }
-    }
-
-    init() {
-        // super.init();
-        this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
-        this.horizonalScrollIndicator.cornerRadius = 1.0;
-        this.horizonalScrollIndicator.alpha = 0.0;
-        super.addSubview(this.horizonalScrollIndicator);
+    constructor(ref: any) {
+        super(ref || XTRScrollView);
+        this.innerView = new View(XTRScrollView.xtr_innerView(this.objectRef))
+        this.horizontalScrollIndicator = new View(XTRScrollView.xtr_horizontalScrollIndicator(this.objectRef))
+        this.horizontalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
+        this.horizontalScrollIndicator.cornerRadius = 1.0;
+        this.horizontalScrollIndicator.alpha = 0.0;
+        this.verticalScrollIndicator = new View(XTRScrollView.xtr_verticalScrollIndicator(this.objectRef))
         this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.verticalScrollIndicator.cornerRadius = 1.0;
         this.verticalScrollIndicator.alpha = 0.0;
-        super.addSubview(this.verticalScrollIndicator);
         this.resetScroller();
         this.setupTouches();
     }
 
     private setupTouches() {
-        this.userInteractionEnabled = true
         this.onPan = (state, viewLocation) => {
             if (state === InteractionState.Began) {
                 if (!viewLocation) { return }
@@ -73,7 +58,7 @@ export class ScrollView extends View {
                     this._indicatorShowed = true;
                     View.animationWithDuration(0.15, () => {
                         this.verticalScrollIndicator.alpha = 1.0;
-                        this.horizonalScrollIndicator.alpha = 1.0;
+                        this.horizontalScrollIndicator.alpha = 1.0;
                     })
                 }
             }
@@ -124,16 +109,15 @@ export class ScrollView extends View {
 
     public set contentSize(value: Size) {
         this._contentSize = value;
-        this.nativeObject.xtr_setContentSize(value)
         this.resetScroller();
     }
 
     public get contentOffset() {
-        return this.nativeObject.xtr_contentOffset();
+        return XTRScrollView.xtr_contentOffset(this.objectRef);
     }
 
     public set contentOffset(value: Point) {
-        this.nativeObject.xtr_setContentOffset(value);
+        XTRScrollView.xtr_setContentOffset(value, this.objectRef);
         (this.innerView as any)._originOffset = value;
         this.resetIndicator();
     }
@@ -157,7 +141,6 @@ export class ScrollView extends View {
 
     public set bounces(value: boolean) {
         this._bounces = value;
-        this.nativeObject.xtr_setBounce(value)
         this.resetScroller();
     }
 
@@ -180,7 +163,7 @@ export class ScrollView extends View {
 
     public set showsHorizontalScrollIndicator(value: boolean) {
         this._showsHorizontalScrollIndicator = value;
-        this.horizonalScrollIndicator.hidden = !value;
+        this.horizontalScrollIndicator.hidden = !value;
     }
 
     private _showsVerticalScrollIndicator: boolean = true
@@ -202,7 +185,6 @@ export class ScrollView extends View {
 
     public set alwaysBounceVertical(value: boolean) {
         this._alwaysBounceVertical = value;
-        this.nativeObject.xtr_setAlwaysBounceVertical(value)
         this.resetScroller();
     }
 
@@ -214,7 +196,6 @@ export class ScrollView extends View {
 
     public set alwaysBounceHorizontal(value: boolean) {
         this._alwaysBounceHorizontal = value;
-        this.nativeObject.xtr_setAlwaysBounceHorizontal(value)
         this.resetScroller();
     }
 
@@ -270,17 +251,17 @@ export class ScrollView extends View {
         if (contentSize.width > bounds.width) {
             const xProgress = contentOffset.x / (contentSize.width - bounds.width);
             const xWidth = Math.max(36.0, bounds.width / (contentSize.width / bounds.width))
-            this.horizonalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }
+            this.horizontalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }
         }
         else {
-            this.horizonalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
+            this.horizontalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
         }
     }
     private hideIndicator() {
         if (this._tracking) { return; }
         View.animationWithDuration(0.15, () => {
             this.verticalScrollIndicator.alpha = 0.0;
-            this.horizonalScrollIndicator.alpha = 0.0;
+            this.horizontalScrollIndicator.alpha = 0.0;
         })
     }
 
@@ -289,7 +270,7 @@ export class ScrollView extends View {
     public get subviews(): View[] {
         return this.innerView.subviews;
     }
-    
+
     insertSubviewAtIndex(subview: View, atIndex: number) {
         this.innerView.insertSubviewAtIndex(subview, atIndex);
     }
@@ -339,13 +320,3 @@ export class ScrollView extends View {
     }
 
 }
-
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((view: any) => {
-    if (view.toString().indexOf("com.opensource.xtruntime.XTRScrollView$InnerObject") === 0) {
-        return new ScrollView(undefined, view);
-    }
-    return undefined;
-})

@@ -1,14 +1,12 @@
 package com.opensource.xtruntime
 
 import android.app.Fragment
-import android.os.Bundle
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
 import java.lang.ref.WeakReference
-import java.util.*
 
 /**
  * Created by cuiminghui on 2017/9/5.
