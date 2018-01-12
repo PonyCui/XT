@@ -137,7 +137,9 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
             val view = XTMemoryManager.find(viewRef) as? XTRView ?: return
             val viewController = XTMemoryManager.find(objectRef) as? XTRViewController ?: return
             viewController.view = view
-            viewController.viewDidLoad()
+            view.post {
+                viewController.viewDidLoad()
+            }
         }
 
         fun xtr_parentViewController(objectRef: String): String? {

@@ -12,7 +12,8 @@ import { Color as IColor } from './interface/Color'
 export class Color extends IColor {}
 
 import { Font as IFont } from './interface/Font';
-export class Font extends IFont {}
+import { Font as MFont } from './implementation/android/Font';
+export class Font extends MFont {}
 
 import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from "./interface/ImageView";
 import { Image as MImage, ImageView as MImageView } from "./implementation/android/ImageView";
@@ -108,6 +109,10 @@ export class Device extends MDevice { }
 import { TextMeasurer as ITextMeasurer } from './interface/TextMeasurer';
 import { TextMeasurer as MTextMeasurer } from './implementation/android/TextMeasurer'
 export class TextMeasurer extends MTextMeasurer { }
+
+import { HRView as IHRView } from './interface/HRView'
+import { HRView as MHRView } from './implementation/android/HRView'
+export class HRView extends MHRView { }
 
 declare var module: any;
 declare var XT: any;

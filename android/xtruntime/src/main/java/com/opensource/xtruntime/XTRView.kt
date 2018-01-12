@@ -73,6 +73,7 @@ open class XTRView @JvmOverloads constructor(
                 return
             }
             field = value
+            this.bounds = XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
             requestLayout()
         }
 

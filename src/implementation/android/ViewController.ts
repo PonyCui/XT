@@ -1,6 +1,6 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
-import { Rect, RectMake } from "../../interface/Rect";
+import { Rect, RectMake, Insets, InsetsMake } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { DeviceOrientation } from "../../interface/Device";
 import { Device } from "./Device";
@@ -117,6 +117,10 @@ export class ViewController implements Releasable {
         const ref = XTRViewController.xtr_navigationController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new (window as any)._NavigationControllerInterface(undefined, ref);
+    }
+
+    public get safeAreaInsets(): Insets {
+        return InsetsMake(0, 0, 0, 0);
     }
 
     // keyboardWillShow(frame: Rect, duration: number): void {

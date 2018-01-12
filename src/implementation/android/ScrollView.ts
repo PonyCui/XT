@@ -17,7 +17,7 @@ export class ScrollView extends View {
     private readonly verticalScrollIndicator: View
     private scroller: any;
 
-    constructor(ref: any) {
+    constructor(ref?: any) {
         super(ref || XTRScrollView);
         this.innerView = new View(XTRScrollView.xtr_innerView(this.objectRef))
         this.horizontalScrollIndicator = new View(XTRScrollView.xtr_horizontalScrollIndicator(this.objectRef))
@@ -226,7 +226,7 @@ export class ScrollView extends View {
         clearTimeout(this._indicatorHidingTimer);
         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
         clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 150);
+        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 32);
     }
 
     // Indicators

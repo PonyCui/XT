@@ -5,7 +5,7 @@ import { ImageView, Image } from "./ImageView";
 import { Label } from "./Label";
 import { Color } from "../../interface/Color";
 import { Rect, RectZero } from "../../interface/Rect";
-import { Font } from "../../interface/Font";
+import { Font } from "./Font";
 
 export class Button extends View {
 

@@ -1,5 +1,5 @@
 import { Rect, RectZero } from "../../interface/Rect";
-import { Font } from "../../interface/Font";
+import { Font } from "./Font";
 
 export interface TextMeasureParams {
 
