@@ -12,15 +12,13 @@ class AppActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val bridge = XTRBridge.createWithAssets(this, "sample.min.js", {
-            it.keyWindow?.rootViewController?.let {
+            it.keyWindow?.rootViewController?.requestFragment().let {
                 val transaction = fragmentManager.beginTransaction()
                 transaction.replace(android.R.id.content, it)
                 transaction.commit()
             }
         })
-
     }
 
 //    override fun onCreate(savedInstanceState: Bundle?) {

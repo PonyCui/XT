@@ -82,10 +82,14 @@ class XTRWindow @JvmOverloads constructor(
 
         fun xtr_endEditing() {
 //            firstResponder?.let {
-//                (it as? XTRTextField.InnerObject)?.xtr_blur()
-//                (it as? XTRTextView.InnerObject)?.xtr_blur()
+//                (it as? XTRTextField)?.xtr_blur()
+//                (it as? XTRTextView)?.xtr_blur()
 //            }
         }
+
+    }
+
+    companion object {
 
         var firstResponder: Any? = null
 

@@ -388,8 +388,6 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     touchManager = new TouchManager(this)
 
     handlePointerDown(pid: string, timestamp: number, point: { x: number, y: number }) {
-        console.log(timestamp);
-        
         this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
     }
 

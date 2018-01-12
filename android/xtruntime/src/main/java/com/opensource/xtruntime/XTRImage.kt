@@ -10,7 +10,6 @@ import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
 import java.io.File
 import java.io.InputStream
-import java.lang.ref.WeakReference
 import java.net.URL
 
 
@@ -91,7 +90,7 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
 
         fun xtr_fromAssets(named: String, success: V8Function, failure: V8Function) {
             this.context?.let { ctx ->
-                ctx.bridge?.get()?.assets?.let { assets ->
+                ctx.bridge?.get()?.bundleAssets?.let { assets ->
                     var targetData: String? = null
                     var scale = Math.ceil(ctx.appContext.resources.displayMetrics.density.toDouble()).toInt()
                     assets.optString("$named@${scale}x.png", null)?.let {

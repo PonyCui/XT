@@ -7,52 +7,39 @@ export class NavigationController extends ViewController {
     nativeObject: any;
     className = "NavigationController"
 
-    constructor(rootViewController?: ViewController, nativeObject?: any, isChild: boolean = false) {
-        super(nativeObject, true);
-        if (isChild) { return; }
-        if (nativeObject) {
-            this.nativeObject = nativeObject;
-            (window as any).XTRObjCreater.store(this);
-        }
-        else {
-            this.nativeObject = XTRNavigationController.createScriptObject(this);
-            (window as any).XTRObjCreater.store(this);
-            this.loadView();
-            if (rootViewController) {
-                this.nativeObject.xtr_setViewControllersAnimated([rootViewController], false);
-            }
+    constructor(rootViewController?: ViewController, ref?: any) {
+        super(ref || XTRNavigationController)
+        if (rootViewController) {
+            XTRNavigationController.xtr_setRootViewController(rootViewController.objectRef, this.objectRef);
         }
     }
 
     loadView(): void {
         this.view = new View();
-        this.view.userInteractionEnabled = true;
     }
 
     pushViewController(viewController: ViewController, animated: boolean = true): void {
-        this.nativeObject.xtr_pushViewController(viewController, animated)
+        XTRNavigationController.xtr_pushViewController(viewController.objectRef, animated, this.objectRef)
     }
 
     popViewController(animated: boolean = true): ViewController | undefined {
-        return this.nativeObject.xtr_popViewController(animated)
+        const ref = XTRNavigationController.xtr_popViewController(animated, this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new ViewController(ref);
     }
 
     popToViewController(viewController: ViewController, animated: boolean = true): ViewController[] {
-        return this.nativeObject.xtr_popToViewController(viewController, animated)
+        return XTRNavigationController.xtr_popToViewController(viewController.objectRef, animated, this.objectRef).map((ref: string) => {
+            return new ViewController(ref);
+        })
     }
 
     popToRootViewController(animated: boolean = true): ViewController[] {
-        return this.nativeObject.xtr_popToRootViewController(animated)
+        return XTRNavigationController.xtr_popToViewController(this.childViewControllers[0].objectRef, animated, this.objectRef).map((ref: string) => {
+            return new ViewController(ref);
+        })
     }
 
 }
 
-if ((window as any).XTRObjClasses === undefined) {
-    (window as any).XTRObjClasses = [];
-}
-(window as any).XTRObjClasses.push((target: any) => {
-    if (target.toString().indexOf("com.opensource.xtruntime.XTRNavigationController$InnerObject") === 0) {
-        return new NavigationController(undefined, target);
-    }
-    return undefined;
-})
+(window as any)._NavigationControllerInterface = NavigationController

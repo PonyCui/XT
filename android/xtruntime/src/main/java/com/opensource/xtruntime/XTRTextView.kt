@@ -33,7 +33,7 @@ class XTRTextView @JvmOverloads constructor(
     val editText = EditText(context)
     val onFocusListener = OnFocusChangeListener { _, _ ->
         if (editText.isFocused) {
-//            XTRWindow.firstResponder = this
+            XTRWindow.firstResponder = this
             val scriptObject = scriptObject() ?: return@OnFocusChangeListener
             (XTRContext.invokeMethod(scriptObject, "handleShouldBeginEditing") as? Boolean)?.takeIf { !it }.let {
                 XTRTextView.xtr_blur(this.objectUUID ?: "")

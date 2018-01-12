@@ -113,9 +113,11 @@ export class ViewController implements Releasable {
 
     didMoveToParentViewController(parent?: ViewController): void { }
 
-    // public get navigationController(): NavigationControllerInterface | undefined {
-    //     return this.nativeObject.xtr_navigationController();
-    // }
+    public get navigationController(): NavigationControllerInterface | undefined {
+        const ref = XTRViewController.xtr_navigationController(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new (window as any)._NavigationControllerInterface(undefined, ref);
+    }
 
     // keyboardWillShow(frame: Rect, duration: number): void {
     //     this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))

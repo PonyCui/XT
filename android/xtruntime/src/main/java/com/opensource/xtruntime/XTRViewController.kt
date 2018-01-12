@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import android.app.Fragment
 import android.os.Bundle
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
@@ -26,13 +27,17 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
         }
 
     var parentViewController: WeakReference<XTRViewController>? = null
-        protected set
+        internal set
 
     var childViewControllers: List<XTRViewController> = listOf()
-        protected set
+        internal set
 
     fun scriptObject(): V8Object? {
         return xtrContext.evaluateScript("objectRefs['$objectUUID']") as? V8Object
+    }
+
+    open fun requestFragment(): Fragment {
+        return this
     }
 
     open fun viewDidLoad() {
@@ -113,7 +118,7 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
             exports.registerJavaMethod(this, "xtr_childViewControllers", "xtr_childViewControllers", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_addChildViewController", "xtr_addChildViewController", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_removeFromParentViewController", "xtr_removeFromParentViewController", arrayOf(String::class.java))
-//            exports.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf())
+            exports.registerJavaMethod(this, "xtr_navigationController", "xtr_navigationController", arrayOf(String::class.java))
             return exports
         }
 
@@ -178,6 +183,19 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
                 }
                 it.parentViewController = null
             }
+        }
+
+        fun xtr_navigationController(objectRef: String): String? {
+            (XTMemoryManager.find(objectRef) as? XTRViewController)?.let {
+                var currentParentViewController = it.parentViewController?.get()
+                while (currentParentViewController != null) {
+                    if (currentParentViewController is XTRNavigationController) {
+                        return currentParentViewController.objectUUID
+                    }
+                    currentParentViewController = currentParentViewController.parentViewController?.get()
+                }
+            }
+            return null
         }
 
     }

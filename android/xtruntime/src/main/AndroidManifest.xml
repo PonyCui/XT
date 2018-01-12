@@ -8,6 +8,7 @@
         android:supportsRtl="true">
 
         <activity android:name=".XTRActivity" />
+        <activity android:name=".XTRNavigationController$NextActivity" />
 
     </application>
 

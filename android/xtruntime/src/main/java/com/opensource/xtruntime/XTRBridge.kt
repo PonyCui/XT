@@ -29,16 +29,21 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
 
     }
 
-    val xtrContext: XTRContext = XTRContext(appContext)
-    val breakpoint: XTRBreakpoint
-    var assets: JSONObject? = null
-        private set
     var sourceURL: String? = null
         set(value) {
             field = value
             loadScript()
         }
+
+    val xtrContext: XTRContext = XTRContext(appContext)
+
+    val breakpoint: XTRBreakpoint
+
+    var bundleAssets: JSONObject? = null
+        private set
+
     var keyWindow: XTRWindow? = null
+
     var registeredComponents: Map<String, XTRComponentExport> = mapOf()
 
     init {
@@ -64,7 +69,8 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
                 XTRTextField.JSExports(xtrContext),
                 XTRTextView.JSExports(xtrContext),
                 XTRDevice.JSExports(xtrContext),
-                XTRScreen.JSExports(xtrContext)
+                XTRScreen.JSExports(xtrContext),
+                XTRNavigationController.JSExports(xtrContext)
         )
         val registeredComponents: MutableMap<String, XTRComponentExport> = mutableMapOf()
         components.forEach {
@@ -153,7 +159,7 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
                             val byteArray = ByteArray(inputStream.available())
                             inputStream.read(byteArray)
                             inputStream.close()
-                            this.assets = JSONObject(String(byteArray))
+                            this.bundleAssets = JSONObject(String(byteArray))
                         } catch (e: Exception) {}
                     }
                 }

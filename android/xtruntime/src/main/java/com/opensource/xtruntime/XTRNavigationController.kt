@@ -1,225 +1,142 @@
-//package com.opensource.xtruntime
-//
-//import com.eclipsesource.v8.Releasable
-//import com.eclipsesource.v8.V8
-//import com.eclipsesource.v8.V8Array
-//import com.eclipsesource.v8.V8Object
-//
-///**
-// * Created by cuiminghui on 2017/9/6.
-// */
-//class XTRNavigationController: XTRComponent() {
-//
-//    override val name: String = "XTRNavigationController"
-//
-//    override fun v8Object(): V8Object? {
-//        val v8Object = V8Object(xtrContext.runtime)
-//        v8Object.registerJavaMethod(this, "createScriptObject", "createScriptObject", arrayOf(V8Object::class.java))
-//        return v8Object
-//    }
-//
-//    fun createScriptObject(scriptObject: V8Object): V8Object {
-//        return XTRNavigationController.InnerObject(xtrContext.autoRelease(scriptObject.twin()), xtrContext).requestV8Object(xtrContext.runtime)
-//    }
-//
-//    open class InnerObject(scriptObject: V8Object, xtrContext: XTRContext): XTRViewController.InnerObject(scriptObject, xtrContext) {
-//
-//        private var isAnimating = false
-//
-//        override fun requestV8Object(runtime: V8): V8Object {
-//            val v8Object = super.requestV8Object(runtime)
-//            v8Object.registerJavaMethod(this, "xtr_setViewControllersAnimated", "xtr_setViewControllersAnimated", arrayOf(V8Object::class.java, Boolean::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_pushViewController", "xtr_pushViewController", arrayOf(V8Object::class.java, Boolean::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_popViewController", "xtr_popViewController", arrayOf(Boolean::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_popToViewController", "xtr_popToViewController", arrayOf(V8Object::class.java, Boolean::class.java))
-//            v8Object.registerJavaMethod(this, "xtr_popToRootViewController", "xtr_popToRootViewController", arrayOf(Boolean::class.java))
-//            return v8Object
-//        }
-//
-//        fun xtr_setViewControllersAnimated(viewControllers: V8Object, animated: Boolean) {
-//            childViewControllers.forEach {
-//                it.xtr_removeFromParentViewController()
-//                it.view?.xtr_removeFromSuperview()
-//            }
-//            XTRUtils.fromArray(viewControllers)?.let { it ->
-//                val vcs = it.mapNotNull { return@mapNotNull XTRUtils.toViewController(it) }
-//                vcs.forEach {
-//                    if (it.parentViewController == null) {
-//                        xtr_addChildViewController(it)
-//                        it.view?.let {
-//                            this.view?.xtr_addSubview(it)
-//                        }
-//                        it.view?.frame = this.view?.bounds
-//                    }
-//                }
-//                it.forEach { (it as? Releasable)?.release() }
-//            }
-//        }
-//
-//        fun xtr_pushViewController(viewController: V8Object, animated: Boolean) {
-//            if (isAnimating) {
-//                return
-//            }
-//            isAnimating = true
-//            val isAnimated = animated as? Boolean ?: true
-//            val fromViewController = this.childViewControllers.lastOrNull()
-//            val toViewController = XTRUtils.toViewController(viewController) ?: return
-//            xtr_addChildViewController(toViewController)
-//            toViewController.view?.let { this.view?.xtr_addSubview(it) }
-//            toViewController.view?.frame = this.view?.bounds
-//            if (isAnimated) {
-//                fromViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                toViewController.view?.xtr_setFrame(this.view?.bounds?.let {
-//                    return@let XTRRect(it.width, it.y, it.width, it.height)
-//                } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                XTRView().animationWithBouncinessAndSpeed(1.0, 24.0, {
-//                    fromViewController?.view?.xtr_setFrame(this.view?.bounds?.let {
-//                        return@let XTRRect(-it.width * 0.25, it.y, it.width, it.height)
-//                    } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                    toViewController.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                }, {
-//                    isAnimating = false
-//                })
-//            }
-//            else {
-//                isAnimating = false
-//            }
-//        }
-//
-//        fun xtr_popViewController(animated: Boolean) {
-//            if (isAnimating) {
-//                return
-//            }
-//            isAnimating = true
-//            val isAnimated = animated as? Boolean ?: true
-//            childViewControllers?.takeIf { it.size > 1 }?.lastOrNull()?.let { fromViewController ->
-//                val toViewController = childViewControllers?.takeIf { it.size > 1 }?.get(childViewControllers.size - 2)
-//                if (isAnimated) {
-//                    XTRView().animationWithDuration(0.25, {
-//                        toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                        fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
-//                            return@let XTRRect(it.width, it.y, it.width, it.height)
-//                        } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                    }, {
-//                        fromViewController.xtr_removeFromParentViewController()
-//                        fromViewController.view?.xtr_removeFromSuperview()
-//                        isAnimating = false
-//                    })
-//                }
-//                else {
-//                    toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                    fromViewController.xtr_removeFromParentViewController()
-//                    fromViewController.view?.xtr_removeFromSuperview()
-//                    isAnimating = false
-//                }
-//            }
-//        }
-//
-//        fun xtr_popToViewController(viewController: V8Object, animated: Boolean): V8Array? {
-//            if (isAnimating) {
-//                return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
-//            }
-//            isAnimating = true
-//            val isAnimated = animated as? Boolean ?: true
-//            val toViewController = XTRUtils.toViewController(viewController) ?: return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
-//            val targetViewControllers: MutableList<XTRViewController.InnerObject> = mutableListOf()
-//            var found = false
-//            childViewControllers?.forEach {
-//                if (it == toViewController) {
-//                    found = true
-//                }
-//                else if (found) {
-//                    targetViewControllers.add(it)
-//                }
-//            }
-//            if (isAnimated && targetViewControllers.size > 0) {
-//                targetViewControllers?.forEach {
-//                    if (it == targetViewControllers.lastOrNull()) { return@forEach }
-//                    it.xtr_removeFromParentViewController()
-//                    it.view?.xtr_removeFromSuperview()
-//                }
-//                targetViewControllers.lastOrNull()?.let { fromViewController ->
-//                    XTRView().animationWithDuration(0.25, {
-//                        toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                        fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
-//                            return@let XTRRect(it.width, it.y, it.width, it.height)
-//                        } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                    }, {
-//                        fromViewController.xtr_removeFromParentViewController()
-//                        fromViewController.view?.xtr_removeFromSuperview()
-//                        isAnimating = false
-//                    })
-//                }
-//            }
-//            else {
-//                targetViewControllers?.forEach {
-//                    it.xtr_removeFromParentViewController()
-//                    it.view?.xtr_removeFromSuperview()
-//                }
-//                toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                isAnimating = false
-//            }
-//            return XTRUtils.fromObject(xtrContext, targetViewControllers) as? V8Array
-//        }
-//
-//        fun xtr_popToViewController(viewController: XTRViewController.InnerObject?, animated: Boolean): V8Array? {
-//            if (isAnimating) {
-//                return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
-//            }
-//            isAnimating = true
-//            val isAnimated = animated as? Boolean ?: true
-//            val toViewController = XTRUtils.toViewController(viewController) ?: return XTRUtils.fromObject(xtrContext, listOf<Any>()) as? V8Array
-//            val targetViewControllers: MutableList<XTRViewController.InnerObject> = mutableListOf()
-//            var found = false
-//            childViewControllers?.forEach {
-//                if (it == toViewController) {
-//                    found = true
-//                }
-//                else if (found) {
-//                    targetViewControllers.add(it)
-//                }
-//            }
-//            if (isAnimated && targetViewControllers.size > 0) {
-//                targetViewControllers?.forEach {
-//                    if (it == targetViewControllers.lastOrNull()) { return@forEach }
-//                    it.xtr_removeFromParentViewController()
-//                    it.view?.xtr_removeFromSuperview()
-//                }
-//                targetViewControllers.lastOrNull()?.let { fromViewController ->
-//                    XTRView().animationWithBouncinessAndSpeed(1.0, 16.0, { -> Unit
-//                        toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                        fromViewController.view?.xtr_setFrame(this.view?.bounds?.let {
-//                            return@let XTRRect(it.width, it.y, it.width, it.height)
-//                        } ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                    }, {
-//                        fromViewController.xtr_removeFromParentViewController()
-//                        fromViewController.view?.xtr_removeFromSuperview()
-//                        isAnimating = false
-//                    })
-//                }
-//            }
-//            else {
-//                targetViewControllers?.forEach {
-//                    it.xtr_removeFromParentViewController()
-//                    it.view?.xtr_removeFromSuperview()
-//                }
-//                toViewController?.view?.xtr_setFrame(this.view?.bounds ?: XTRRect(0.0, 0.0, 0.0, 0.0))
-//                isAnimating = false
-//            }
-//            return XTRUtils.fromObject(xtrContext, targetViewControllers) as? V8Array
-//        }
-//
-//        fun xtr_popToRootViewController(animated: Boolean): V8Array? {
-//            return this.xtr_popToViewController(childViewControllers.firstOrNull(), animated)
-//        }
-//
-//        override fun viewWillLayoutSubviews() {
-//            super.viewWillLayoutSubviews()
-//            childViewControllers?.forEach {
-//                it.view?.frame = this.view?.bounds
-//            }
-//        }
-//
-//    }
-//
-//}
+package com.opensource.xtruntime
+
+import android.app.Activity
+import android.app.Fragment
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.widget.FrameLayout
+import com.eclipsesource.v8.Releasable
+import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
+import com.eclipsesource.v8.V8Object
+import com.opensource.xtmem.XTManagedObject
+import com.opensource.xtmem.XTMemoryManager
+import java.lang.ref.WeakReference
+
+/**
+ * Created by cuiminghui on 2017/9/6.
+ */
+class XTRNavigationController: XTRViewController() {
+
+    override fun requestFragment(): Fragment {
+        return childViewControllers.firstOrNull() ?: this
+    }
+
+    class JSExports(val context: XTRContext): XTRComponentExport() {
+
+        override val name: String = "XTRNavigationController"
+
+        override fun exports(): V8Object {
+            val exports = V8Object(context.runtime)
+            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_setRootViewController", "xtr_setRootViewController", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_pushViewController", "xtr_pushViewController", arrayOf(String::class.java, Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_popViewController", "xtr_popViewController", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_popToViewController", "xtr_popToViewController", arrayOf(String::class.java, Boolean::class.java, String::class.java))
+            return exports
+        }
+
+        fun create(): String {
+            val viewController = XTRNavigationController()
+            viewController.xtrContext = context
+            val managedObject = XTManagedObject(viewController)
+            viewController.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
+        }
+
+        fun xtr_setRootViewController(viewControllerRef: String, objectRef: String) {
+            val viewController = XTMemoryManager.find(viewControllerRef) as? XTRViewController ?: return
+            (XTMemoryManager.find(objectRef) as? XTRNavigationController)?.let {
+                viewController.parentViewController = WeakReference(it)
+                it.childViewControllers = listOf(viewController)
+            }
+        }
+
+        fun xtr_pushViewController(viewControllerRef: String, animated: Boolean, objectRef: String) {
+            val viewController = XTMemoryManager.find(viewControllerRef) as? XTRViewController ?: return
+            (XTMemoryManager.find(objectRef) as? XTRNavigationController)?.let { navigationController ->
+                viewController.parentViewController = WeakReference(navigationController)
+                navigationController.childViewControllers.toMutableList()?.let {
+                    it.add(viewController)
+                    navigationController.childViewControllers = it.toList()
+                    val intent = Intent(context.appContext, NextActivity::class.java)
+                    if (!animated) {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    }
+                    intent.putExtra("ChildViewControllerObjectUUID", viewControllerRef)
+                    context.appContext.startActivity(intent)
+                }
+            }
+        }
+
+        fun xtr_popViewController(animated: Boolean, objectRef: String): String? {
+            (XTMemoryManager.find(objectRef) as? XTRNavigationController)?.let { navigationController ->
+                if (navigationController.childViewControllers.count() > 1) {
+                    val targetViewController = navigationController.childViewControllers.last()
+                    navigationController.childViewControllers = navigationController.childViewControllers.filter { it != targetViewController }
+                    targetViewController.requestFragment().activity?.let {
+                        if (!animated) {
+                            (it as? NextActivity)?.finishWithAnimation = true
+                        }
+                        it.finish()
+                    }
+                    return targetViewController.objectUUID
+                }
+            }
+            return null
+        }
+
+        fun xtr_popToViewController(viewControllerRef: String, animated: Boolean, objectRef: String): V8Array {
+            val viewController = XTMemoryManager.find(viewControllerRef) as? XTRViewController ?: return V8Array(context.runtime)
+            val returnValue = V8Array(context.runtime)
+            (XTMemoryManager.find(objectRef) as? XTRNavigationController)?.let { navigationController ->
+                navigationController.childViewControllers.indexOf(viewController).takeIf { it >= 0 }?.let { targetIndex ->
+                    val targetViewControllers = navigationController.childViewControllers.filterIndexed { index, _ -> index > targetIndex }
+                    navigationController.childViewControllers = navigationController.childViewControllers.filterIndexed { index, _ -> index <= targetIndex }
+                    targetViewControllers.forEach {
+                        returnValue.push(it.objectUUID ?: "")
+                    }
+                    targetViewControllers.forEach {
+                        it.requestFragment().activity?.let {
+                            if (!animated) {
+                                (it as? NextActivity)?.finishWithAnimation = true
+                            }
+                            it.finish()
+                        }
+                    }
+                }
+            }
+            return returnValue
+        }
+
+    }
+
+    class NextActivity: Activity() {
+
+        var viewController: XTRViewController? = null
+        var finishWithAnimation = false
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            intent?.getStringExtra("ChildViewControllerObjectUUID")?.let {
+                this.viewController = XTMemoryManager.find(it) as? XTRViewController
+            }
+            this.viewController?.requestFragment()?.let {
+                val transaction = fragmentManager.beginTransaction()
+                transaction.replace(android.R.id.content, it)
+                transaction.commit()
+            }
+        }
+
+        override fun onPause() {
+            if (finishWithAnimation) {
+                this.overridePendingTransition(0, 0)
+            }
+            super.onPause()
+        }
+
+    }
+
+}
