@@ -1,7 +1,7 @@
 /// <reference path="xtr.d.ts" />
 import { View } from './View'
 import { Rect, RectZero, RectMake } from '../../interface/Rect';
-import { Font } from '../../interface/Font';
+import { Font } from './Font';
 import { Color } from '../../interface/Color';
 import { TextAlignment } from '../../interface/Label';
 import { TextFieldViewMode, KeyboardType, ReturnKeyType } from '../../interface/TextField';

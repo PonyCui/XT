@@ -1,6 +1,6 @@
 import { View } from './View'
 import { TextAlignment } from './Label'; import { Color } from '../../interface/Color';
-import { Font } from '../../interface/Font';
+import { Font } from './Font';
 import { KeyboardType, ReturnKeyType } from '../../interface/TextField';
 import { Rect, RectZero } from '../../interface/Rect';
 ;

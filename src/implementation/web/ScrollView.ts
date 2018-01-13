@@ -8,15 +8,15 @@ import { Color } from '../../interface/Color';
 import { LayoutConstraint } from './LayoutConstraint';
 import { isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
 declare function require(name: string): any;
-const Scroller = require('scroller');
+// const Scroller = require('scroller');
+import { Scroller, ScrollerDelegate } from '../libraries/scroller/scroller'
 
-export class ScrollView extends View {
+export class ScrollView extends View implements ScrollerDelegate {
 
-    nativeObject: any;
     private readonly innerView: View = new View();
     private readonly horizonalScrollIndicator: View = new View();;
     private readonly verticalScrollIndicator: View = new View();;
-    private scroller: any;
+    private scroller: Scroller;
 
     constructor() {
         super(ScrollViewElement)
@@ -56,47 +56,48 @@ export class ScrollView extends View {
     }
 
     private setupTouches() {
-        this.userInteractionEnabled = true
-        this.onPan = (state, viewLocation, absLocation, velocity) => {
-            if (state === InteractionState.Began) {
-                if (!viewLocation) { return }
-                this._indicatorShowed = false;
-                clearTimeout(this._indicatorHidingTimer);
-                this._tracking = true;
-                this.decelarating = false;
-                this.innerView.userInteractionEnabled = false;
-                let touches = [{
-                    pageX: viewLocation.x,
-                    pageY: viewLocation.y,
-                }];
-                this.scroller.doTouchStart(touches, this.touchTimestamp)
-            }
-            else if (state === InteractionState.Changed) {
-                if (!viewLocation) { return }
-                let touches = [{
-                    pageX: viewLocation.x,
-                    pageY: viewLocation.y,
-                }];
-                this.scroller.doTouchMove(touches, this.touchTimestamp)
-                if (!this._indicatorShowed) {
-                    this._indicatorShowed = true;
-                    View.animationWithDuration(0.15, () => {
-                        this.verticalScrollIndicator.alpha = 1.0;
-                        this.horizonalScrollIndicator.alpha = 1.0;
-                    })
-                }
-            }
-            else if (state === InteractionState.Ended || state === InteractionState.Cancelled) {
-                this._tracking = false;
-                this.decelarating = true;
-                clearTimeout(this._indicatorHidingTimer);
-                this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-                this.scroller.doTouchEnd(this.touchTimestamp)
-                if (!this.scroller.__isDecelerating) {
-                    this.innerView.userInteractionEnabled = true;
-                }
-            }
-        }
+        this.onPan = () => {}
+        // this.userInteractionEnabled = true
+        // this.onPan = (state, viewLocation, absLocation, velocity) => {
+        //     if (state === InteractionState.Began) {
+        //         if (!viewLocation) { return }
+        //         this._indicatorShowed = false;
+        //         clearTimeout(this._indicatorHidingTimer);
+        //         this._tracking = true;
+        //         this.decelarating = false;
+        //         this.innerView.userInteractionEnabled = false;
+        //         let touches = [{
+        //             pageX: viewLocation.x,
+        //             pageY: viewLocation.y,
+        //         }];
+        //         this.scroller.doTouchStart(touches, this.touchTimestamp)
+        //     }
+        //     else if (state === InteractionState.Changed) {
+        //         if (!viewLocation) { return }
+        //         let touches = [{
+        //             pageX: viewLocation.x,
+        //             pageY: viewLocation.y,
+        //         }];
+        //         this.scroller.doTouchMove(touches, this.touchTimestamp)
+        //         if (!this._indicatorShowed) {
+        //             this._indicatorShowed = true;
+        //             View.animationWithDuration(0.15, () => {
+        //                 this.verticalScrollIndicator.alpha = 1.0;
+        //                 this.horizonalScrollIndicator.alpha = 1.0;
+        //             })
+        //         }
+        //     }
+        //     else if (state === InteractionState.Ended || state === InteractionState.Cancelled) {
+        //         this._tracking = false;
+        //         this.decelarating = true;
+        //         clearTimeout(this._indicatorHidingTimer);
+        //         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+        //         this.scroller.doTouchEnd(this.touchTimestamp)
+        //         if (!this.scroller.__isDecelerating) {
+        //             this.innerView.userInteractionEnabled = true;
+        //         }
+        //     }
+        // }
     }
 
     private _decelarating: boolean = false
@@ -216,17 +217,67 @@ export class ScrollView extends View {
 
     // Touches
 
+    touchesBegan(touches: Touch[], event: Event): void {
+        super.touchesBegan(touches, event)
+        this.scroller.touchesBegan(touches.map(it => it.rawLocation), touches[0].timestamp)
+    }
+
+    touchesMoved(touches: Touch[], event: Event): void {
+        super.touchesMoved(touches, event)
+        this.scroller.touchesMoved(touches.map(it => it.rawLocation), touches[0].timestamp)
+    }
+
+    touchesEnded(touches: Touch[], event: Event): void {
+        super.touchesEnded(touches, event)
+        this.scroller.touchesEnded(touches.map(it => it.rawLocation), touches[0].timestamp)
+    }
+
+    touchesCancelled(touches: Touch[], event: Event): void {
+        super.touchesCancelled(touches, event)
+        this.scroller.touchesCancelled(touches.map(it => it.rawLocation), touches[0].timestamp)
+    }
+
     private resetScroller() {
-        const contentSize = this.contentSize
-        const bounds = this.bounds
         if (this.scroller === undefined) {
-            this.scroller = new Scroller(this.handleScroll.bind(this))
+            this.scroller = new Scroller(this)
         }
-        this.scroller.options.scrollingX = this.isScrollEnabled && (contentSize.width > bounds.width || this.alwaysBounceHorizontal);
-        this.scroller.options.scrollingY = this.isScrollEnabled && (contentSize.height > bounds.height || this.alwaysBounceVertical);
-        this.scroller.options.bouncing = this.bounces;
-        this.scroller.options.locking = this.isDirectionalLockEnabled;
-        this.scroller.setDimensions(bounds.width, bounds.height, contentSize.width, contentSize.height);
+        this.scroller.bounds = this.bounds
+        this.scroller.contentSize = this.contentSize
+
+
+        // this.scroller.options.scrollingX = this.isScrollEnabled && (contentSize.width > bounds.width || this.alwaysBounceHorizontal);
+        // this.scroller.options.scrollingY = this.isScrollEnabled && (contentSize.height > bounds.height || this.alwaysBounceVertical);
+        // this.scroller.options.bouncing = this.bounces;
+        // this.scroller.options.locking = this.isDirectionalLockEnabled;
+        // this.scroller.setDimensions(bounds.width, bounds.height, contentSize.width, contentSize.height);
+    }
+
+    scrollerDidScroll(): void {
+        this.contentOffset = this.scroller.contentOffset
+    }
+
+    scrollerDidZoom(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    scrollViewWillBeginDragging(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    scrollViewWillEndDragging(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    scrollViewDidEndDragging(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    scrollViewWillBeginDecelerating(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    scrollViewDidEndDecelerating(): void {
+        throw new Error("Method not implemented.");
     }
 
     protected handleScroll(x: number, y: number) {
