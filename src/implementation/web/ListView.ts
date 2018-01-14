@@ -133,8 +133,8 @@ export class ListView extends ScrollView {
         this.reloadData()
     }
 
-    protected handleScroll(x: number, y: number) {
-        super.handleScroll(x, y);
+    scrollerDidScroll() {
+        super.scrollerDidScroll()
         if (this._reusingCells !== undefined) {
             this.reloadVisibleRows();
         }

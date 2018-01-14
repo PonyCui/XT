@@ -56,7 +56,7 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     private setupTouches() {
-        this.onPan = () => {}
+        this.onPan = () => { }
         // this.userInteractionEnabled = true
         // this.onPan = (state, viewLocation, absLocation, velocity) => {
         //     if (state === InteractionState.Began) {
@@ -257,52 +257,63 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     scrollerDidZoom(): void {
-        throw new Error("Method not implemented.");
+
     }
 
-    scrollViewWillBeginDragging(): void {
-        throw new Error("Method not implemented.");
+    scrollerWillBeginDragging(): void {
+
     }
 
-    scrollViewWillEndDragging(): void {
-        throw new Error("Method not implemented.");
+    scrollerWillEndDragging(): void {
+
     }
 
-    scrollViewDidEndDragging(): void {
-        throw new Error("Method not implemented.");
+    scrollerDidEndDragging(): void {
+
     }
 
-    scrollViewWillBeginDecelerating(): void {
-        throw new Error("Method not implemented.");
+    scrollerWillBeginDecelerating(): void {
+        this.innerView.userInteractionEnabled = false
+        this.gestureRecongnizers.forEach(it => {
+            if (it instanceof PanGestureRecognizer) {
+                it.deceteMovement = -1
+            }
+        })
+
     }
 
-    scrollViewDidEndDecelerating(): void {
-        throw new Error("Method not implemented.");
+    scrollerDidEndDecelerating(): void {
+        this.innerView.userInteractionEnabled = true
+        this.gestureRecongnizers.forEach(it => {
+            if (it instanceof PanGestureRecognizer) {
+                it.deceteMovement = 10
+            }
+        })
     }
 
-    protected handleScroll(x: number, y: number) {
-        this.contentOffset = { x, y }
-        this.onScroll && this.onScroll(this);
-        clearTimeout(this._indicatorHidingTimer);
-        this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-        clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 32);
-    }
+    // protected handleScroll(x: number, y: number) {
+    //     this.contentOffset = { x, y }
+    //     this.onScroll && this.onScroll(this);
+    //     clearTimeout(this._indicatorHidingTimer);
+    //     this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
+    //     clearTimeout(this._restoreInteractiveChildrenTimer);
+    //     this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 32);
+    // }
 
     wheelScroll(deltaPoint: { x: number, y: number }): void {
-        if (this.userInteractionEnabled && this.alpha > 0.0 && !this.hidden) {
-            this.verticalScrollIndicator.alpha = 1.0;
-            this.horizonalScrollIndicator.alpha = 1.0;
-            this.handleScroll(
-                Math.max(0.0, Math.min(this.contentSize.width - this.bounds.width, this.contentOffset.x + deltaPoint.x)),
-                Math.max(0.0, Math.min(this.contentSize.height - this.bounds.height, this.contentOffset.y + deltaPoint.y))
-            )
-        }
-        else {
-            if (this.superview) {
-                (this.superview as any).wheelScroll(deltaPoint);
-            }
-        }
+        // if (this.userInteractionEnabled && this.alpha > 0.0 && !this.hidden) {
+        //     this.verticalScrollIndicator.alpha = 1.0;
+        //     this.horizonalScrollIndicator.alpha = 1.0;
+        //     this.handleScroll(
+        //         Math.max(0.0, Math.min(this.contentSize.width - this.bounds.width, this.contentOffset.x + deltaPoint.x)),
+        //         Math.max(0.0, Math.min(this.contentSize.height - this.bounds.height, this.contentOffset.y + deltaPoint.y))
+        //     )
+        // }
+        // else {
+        //     if (this.superview) {
+        //         (this.superview as any).wheelScroll(deltaPoint);
+        //     }
+        // }
     }
 
     // Indicators
