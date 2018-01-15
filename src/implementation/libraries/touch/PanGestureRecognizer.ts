@@ -14,12 +14,24 @@ export class PanGestureRecognizer implements GestureRecongnizer {
 
     private recognized = false
     private touchStartRawPoint?: { x: number, y: number }
+    private touchTranslationOriginPoint?: { x: number, y: number }
     private touchStartPoint?: { x: number, y: number }[]
     private touchPreviousPoint?: { x: number, y: number }
     private touchPreviousTimestamp?: number = undefined
 
+    setTranslation(point: { x: number, y: number }) {
+        if (this.touchPreviousPoint) {
+            this.touchTranslationOriginPoint = {
+                x: this.touchPreviousPoint.x - point.x,
+                y: this.touchPreviousPoint.y - point.y,
+            }
+        }
+    }
+
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.touchStartRawPoint = touches[0].rawLocation
+        this.touchTranslationOriginPoint = touches[0].rawLocation
+        this.velocity = { x: 0, y: 0 }
         this.translation = { x: 0, y: 0 }
         this.touchStartPoint = touches.map(t => t.locationInView(owner as any))
         this.touchPreviousPoint = { x: this.touchStartPoint[0].x, y: this.touchStartPoint[0].y }
@@ -42,8 +54,8 @@ export class PanGestureRecognizer implements GestureRecongnizer {
             }
             this.touchPreviousPoint = { x: viewLocation.x, y: viewLocation.y }
             this.touchPreviousTimestamp = touches[0].timestamp / 1000
-            if (this.touchStartRawPoint) {
-                this.translation = { x: touches[0].rawLocation.x - this.touchStartRawPoint.x, y: touches[0].rawLocation.y - this.touchStartRawPoint.y }
+            if (this.touchTranslationOriginPoint) {
+                this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
             }
             this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
         }
@@ -71,11 +83,8 @@ export class PanGestureRecognizer implements GestureRecongnizer {
             if (this.state !== GestureRecognizerState.Ended) {
                 this.state = GestureRecognizerState.Ended
                 const viewLocation = touches[0].locationInView(owner as any)
-                if (touches[0].timestamp - (this.touchPreviousTimestamp || 0) > 20000) {
-                    this.velocity = { x: 0, y: 0 }
-                }
-                if (this.touchStartRawPoint) {
-                    this.translation = { x: touches[0].rawLocation.x - this.touchStartRawPoint.x, y: touches[0].rawLocation.y - this.touchStartRawPoint.y }
+                if (this.touchTranslationOriginPoint) {
+                    this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
                 }
                 this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
                 releaseBlock && releaseBlock();
@@ -92,11 +101,8 @@ export class PanGestureRecognizer implements GestureRecongnizer {
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.state = GestureRecognizerState.Cancelled
         const viewLocation = touches[0].locationInView(owner as any)
-        if (touches[0].timestamp - (this.touchPreviousTimestamp || 0) > 20000) {
-            this.velocity = { x: 0, y: 0 }
-        }
-        if (this.touchStartRawPoint) {
-            this.translation = { x: touches[0].rawLocation.x - this.touchStartRawPoint.x, y: touches[0].rawLocation.y - this.touchStartRawPoint.y }
+        if (this.touchTranslationOriginPoint) {
+            this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
         }
         this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
         this.touchStartPoint = undefined;

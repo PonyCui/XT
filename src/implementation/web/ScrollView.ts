@@ -8,7 +8,6 @@ import { Color } from '../../interface/Color';
 import { LayoutConstraint } from './LayoutConstraint';
 import { isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
 declare function require(name: string): any;
-// const Scroller = require('scroller');
 import { Scroller, ScrollerDelegate } from '../libraries/scroller/scroller'
 
 export class ScrollView extends View implements ScrollerDelegate {
@@ -55,8 +54,27 @@ export class ScrollView extends View implements ScrollerDelegate {
         return target
     }
 
+    private previousAbsLocation: { x: number, y: number } = { x: 0, y: 0 }
+
     private setupTouches() {
-        this.onPan = () => { }
+        this.onPan = (state, viewLocation, absLocation, velocity, translation) => {
+            if (absLocation) {
+                const delta = { x: -(absLocation.x - this.previousAbsLocation.x), y: -(absLocation.y - this.previousAbsLocation.y) }
+                this.previousAbsLocation = absLocation
+                if (state == InteractionState.Began) {
+                    this.scroller._beginDragging()
+                }
+                else if (state == InteractionState.Changed) {
+                    this.scroller._dragBy(delta)
+                }
+                else if (state == InteractionState.Ended) {
+                    velocity && this.scroller._endDraggingWithDecelerationVelocity({
+                        x: -(velocity.x / 1),
+                        y: -(velocity.y / 1),
+                    })
+                }
+            }
+        }
         // this.userInteractionEnabled = true
         // this.onPan = (state, viewLocation, absLocation, velocity) => {
         //     if (state === InteractionState.Began) {
@@ -217,26 +235,6 @@ export class ScrollView extends View implements ScrollerDelegate {
 
     // Touches
 
-    touchesBegan(touches: Touch[], event: Event): void {
-        super.touchesBegan(touches, event)
-        this.scroller.touchesBegan(touches.map(it => it.rawLocation), touches[0].timestamp)
-    }
-
-    touchesMoved(touches: Touch[], event: Event): void {
-        super.touchesMoved(touches, event)
-        this.scroller.touchesMoved(touches.map(it => it.rawLocation), touches[0].timestamp)
-    }
-
-    touchesEnded(touches: Touch[], event: Event): void {
-        super.touchesEnded(touches, event)
-        this.scroller.touchesEnded(touches.map(it => it.rawLocation), touches[0].timestamp)
-    }
-
-    touchesCancelled(touches: Touch[], event: Event): void {
-        super.touchesCancelled(touches, event)
-        this.scroller.touchesCancelled(touches.map(it => it.rawLocation), touches[0].timestamp)
-    }
-
     private resetScroller() {
         if (this.scroller === undefined) {
             this.scroller = new Scroller(this)
@@ -279,7 +277,6 @@ export class ScrollView extends View implements ScrollerDelegate {
                 it.deceteMovement = -1
             }
         })
-
     }
 
     scrollerDidEndDecelerating(): void {

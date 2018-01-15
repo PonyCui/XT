@@ -1,3 +1,6 @@
+import { Animation } from "./animation";
+import { AnimationDeceleration } from "./deceleration";
+
 export interface ScrollerDelegate {
 
     scrollerDidScroll(): void
@@ -12,7 +15,15 @@ export interface ScrollerDelegate {
 
 export class Scroller {
 
-    contentOffset: { x: number, y: number } = { x: 0, y: 0 }
+    _contentOffset: { x: number, y: number } = { x: 0, y: 0 }
+    public get contentOffset(): { x: number, y: number } {
+        return this._contentOffset
+    }
+    public set contentOffset(value: { x: number, y: number }) {
+        this._contentOffset = value
+        this.delegate.scrollerDidScroll()
+    }
+
     contentSize: { width: number, height: number } = { width: 0, height: 0 }
     bounds: { width: number, height: number } = { width: 0, height: 0 }
     directionalLockEnabled: boolean = false
@@ -22,6 +33,7 @@ export class Scroller {
     pagingEnabled: boolean = false
     scrollEnabled: boolean = true
     decelerationRate: number = 0.997
+    accelerationRate: number = 0.978
 
     private _tracking: boolean = false
     public get tracking(): boolean {
@@ -40,112 +52,126 @@ export class Scroller {
 
     constructor(readonly delegate: ScrollerDelegate) { }
 
-
     // Private methods
 
-    private startPoint: { x: number, y: number } = { x: 0, y: 0 }
-    private startContentOffset: { x: number, y: number } = this.contentOffset
-    private lastContentOffset: { x: number, y: number } = this.contentOffset
-    private lastVelocity: { x: number, y: number } = { x: 0, y: 0 }
-    private lastTimestamp: number = 0
-    private deceleratingStartContentOffset: { x: number, y: number } | undefined = undefined
-    private deceleratingStartTimestamp: number = 0
-    private deceleratingRAFHandler: any = undefined
+    private scrollTimer: any = undefined
+    private scrollAnimation: Animation | undefined = undefined
 
-    touchesBegan(touches: { x: number, y: number }[], timestamp: number): boolean {
-        if (this._decelerating) {
-            this._decelerating = false
-            this.lastVelocity = { x: 0, y: 0 }
-            this.stopDecelerating()
-        }
-        this._tracking = true
-        this.startPoint = touches[0]
-        this.startContentOffset = this.contentOffset
-        return false
-    }
-
-    touchesMoved(touches: { x: number, y: number }[], timestamp: number): boolean {
+    _beginDragging() {
         if (!this._dragging) {
-            const currentPoint = touches[0]
-            if (Math.abs(currentPoint.x - this.startPoint.x) >= 8.0 || Math.abs(currentPoint.y - this.startPoint.y) >= 8.0) {
-                this.delegate.scrollerWillBeginDragging()
-                this._dragging = true
-                this.lastContentOffset = this.contentOffset
-                this.lastTimestamp = timestamp
-            }
+            this._dragging = true;
+            this._cancelScrollAnimation()
+            this.delegate.scrollerWillBeginDragging()
         }
-        else {
-            const currentPoint = touches[0]
-            const deltaPoint = { x: (currentPoint.x - this.startPoint.x), y: (currentPoint.y - this.startPoint.y) }
-            this.contentOffset = { x: this.startContentOffset.x, y: this.startContentOffset.y - deltaPoint.y }
-            this.lastVelocity = {
-                x: (this.contentOffset.x - this.lastContentOffset.x) / (timestamp - this.lastTimestamp),
-                y: (this.contentOffset.y - this.lastContentOffset.y) / (timestamp - this.lastTimestamp),
-            }
-            this.lastContentOffset = this.contentOffset
-            this.lastTimestamp = timestamp
-            this.delegate.scrollerDidScroll()
+    }
+
+    _dragBy(delta: { x: number, y: number }) {
+        if (this.contentSize.width <= this.bounds.width) {
+            delta.x = 0.0
         }
-        return false
-    }
-
-    touchesEnded(touches: { x: number, y: number }[], timestamp: number): boolean {
-        this.delegate.scrollerWillEndDragging()
-        this._tracking = false;
-        this._dragging = false;
-        this.delegate.scrollerDidEndDragging()
-        const currentPoint = touches[0]
-        const deltaPoint = { x: (currentPoint.x - this.startPoint.x), y: (currentPoint.y - this.startPoint.y) }
-        this.contentOffset = { x: this.startContentOffset.x, y: this.startContentOffset.y - deltaPoint.y }
-        this.delegate.scrollerDidScroll()
-        this.deceleratingStartContentOffset = this.contentOffset
-        this.doDecelerating()
-        return false
-    }
-
-    touchesCancelled(touches: { x: number, y: number }[], timestamp: number): boolean {
-        this.touchesEnded(touches, timestamp)
-        return false
-    }
-
-    private doDecelerating() {
-        if (this.deceleratingStartContentOffset && this._decelerating === true) {
-            const lastDeltaTimestamp = performance.now() - this.deceleratingStartTimestamp - 16
-            const deltaTimestamp = performance.now() - this.deceleratingStartTimestamp
-            const lastX = this.deceleratingStartContentOffset.x + (this.lastVelocity.x / (1 - this.decelerationRate)) * (1 - Math.exp(-(1 - this.decelerationRate) * lastDeltaTimestamp));
-            const lastY = this.deceleratingStartContentOffset.y + (this.lastVelocity.y / (1 - this.decelerationRate)) * (1 - Math.exp(-(1 - this.decelerationRate) * lastDeltaTimestamp));
-            const currentX = this.deceleratingStartContentOffset.x + (this.lastVelocity.x / (1 - this.decelerationRate)) * (1 - Math.exp(-(1 - this.decelerationRate) * deltaTimestamp));
-            const currentY = this.deceleratingStartContentOffset.y + (this.lastVelocity.y / (1 - this.decelerationRate)) * (1 - Math.exp(-(1 - this.decelerationRate) * deltaTimestamp));
-            this.contentOffset = {
-                x: currentX,
-                y: currentY
-            }
-            this.delegate.scrollerDidScroll()
-            if (Math.abs(currentX - lastX) < 0.1 && Math.abs(currentY - lastY) < 0.1) {
-                this._decelerating = false
-                this.delegate.scrollerDidEndDecelerating()
+        if (this.contentSize.height <= this.bounds.height) {
+            delta.y = 0.0
+        }
+        if (this._dragging) {
+            const originalOffset = this.contentOffset;
+            let proposedOffset = originalOffset;
+            if (this.bounces) {
+                if (proposedOffset.x + delta.x < 0.0) {
+                    proposedOffset.x = proposedOffset.x + delta.x / 3.0
+                }
+                if (proposedOffset.y + delta.y < 0.0) {
+                    proposedOffset.y = proposedOffset.y + delta.y / 3.0
+                }
+                this.contentOffset = proposedOffset
             }
             else {
-                this.deceleratingRAFHandler = requestAnimationFrame(() => {
-                    this.doDecelerating()
-                })
+                this.contentOffset = {
+                    x: Math.max(0.0, proposedOffset.x + delta.x),
+                    y: Math.max(0.0, proposedOffset.x + delta.y),
+                }
             }
-        }
-        else if (this.deceleratingStartContentOffset && (Math.abs(this.lastVelocity.x) > 0.1 || Math.abs(this.lastVelocity.y) > 0.1)) {
-            this.delegate.scrollerWillBeginDecelerating()
-            this.deceleratingStartTimestamp = performance.now()
-            this._decelerating = true
-            this.doDecelerating()
-        }
-        else {
-            this._decelerating = false
         }
     }
 
-    private stopDecelerating() {
-        this.deceleratingStartContentOffset = undefined
-        this._decelerating = false
-        cancelAnimationFrame(this.deceleratingRAFHandler)
+    _endDraggingWithDecelerationVelocity(velocity: { x: number, y: number }) {
+        if (this._dragging) {
+            this._dragging = false;
+            this.delegate.scrollerDidEndDragging()
+            const decelerationAnimation = this._decelerationAnimationWithVelocity(velocity)
+            this.delegate.scrollerDidEndDragging()
+            if (decelerationAnimation) {
+                this._setScrollAnimation(decelerationAnimation);
+                this._decelerating = true;
+                this.delegate.scrollerWillBeginDecelerating()
+            } else {
+                this.contentOffset = this._confinedContentOffset(this.contentOffset);
+            }
+        }
+    }
+
+    _decelerationAnimationWithVelocity(velocity: { x: number, y: number }): Animation | undefined {
+        const confinedOffset = this._confinedContentOffset(this.contentOffset);
+        if (this.contentSize.width <= this.bounds.width) {
+            velocity.x = 0.0
+        }
+        if (this.contentSize.height <= this.bounds.height) {
+            velocity.y = 0.0
+        }
+        if (!(velocity.x == 0.0 && velocity.y == 0.0) || !(confinedOffset.x == this.contentOffset.x && confinedOffset.y == this.contentOffset.y)) {
+            return new AnimationDeceleration(this, {
+                x: velocity.x / 1000,
+                y: velocity.y / 1000
+            });
+        } else {
+            return undefined;
+        }
+    }
+
+    _setScrollAnimation(animation: Animation) {
+        this._cancelScrollAnimation()
+        this.scrollAnimation = animation;
+        this.scrollTimer = requestAnimationFrame(this._updateScrollAnimation.bind(this))
+    }
+
+    _updateScrollAnimation() {
+        if (this.scrollAnimation) {
+            const finished = this.scrollAnimation.animate()
+            if (finished) {
+                this._cancelScrollAnimation()
+            }
+            else {
+                requestAnimationFrame(this._updateScrollAnimation.bind(this))
+            }
+        }
+    }
+
+    _cancelScrollAnimation() {
+        cancelAnimationFrame(this.scrollTimer)
+        this.scrollTimer = undefined
+        this.scrollAnimation = undefined
+        if (this._decelerating) {
+            this._decelerating = false
+            this.delegate.scrollerDidEndDecelerating()
+        }
+    }
+
+    _confinedContentOffset(contentOffset: { x: number, y: number }) {
+        const scrollerBounds = this.bounds;
+        if ((this.contentSize.width - contentOffset.x) < scrollerBounds.width) {
+            contentOffset.x = (this.contentSize.width - scrollerBounds.width);
+        }
+        if ((this.contentSize.height - contentOffset.y) < scrollerBounds.height) {
+            contentOffset.y = (this.contentSize.height - scrollerBounds.height);
+        }
+        contentOffset.x = Math.max(contentOffset.x, 0);
+        contentOffset.y = Math.max(contentOffset.y, 0);
+        if (this.contentSize.width <= scrollerBounds.width) {
+            contentOffset.x = 0;
+        }
+        if (this.contentSize.height <= scrollerBounds.height) {
+            contentOffset.y = 0;
+        }
+        return contentOffset;
     }
 
 }
