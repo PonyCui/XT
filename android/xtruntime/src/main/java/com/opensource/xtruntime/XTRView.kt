@@ -49,6 +49,9 @@ open class XTRView @JvmOverloads constructor(
 
     var frame: XTRRect? = null
         set(value) {
+            if (field?.equals(value) == true) {
+                return
+            }
             if (value != null && XTRViewAnimator.animationEnabled) {
                 XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.frame.x", (this.frame?.x ?: 0.0).toFloat() as Any, value.x.toFloat() as Any, { x ->
                     this.frame?.let {

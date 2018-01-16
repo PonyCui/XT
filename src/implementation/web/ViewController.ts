@@ -115,11 +115,11 @@ export class ViewController implements Releasable {
     }
 
     keyboardWillShow(frame: Rect, duration: number): void {
-        this.childViewControllers.slice().forEach(t => t.keyboardWillShow(frame, duration))
+        this.childViewControllers.forEach(t => t.keyboardWillShow(frame, duration))
     }
 
     keyboardWillHide(duration: number): void {
-        this.childViewControllers.slice().forEach(t => t.keyboardWillHide(duration))
+        this.childViewControllers.forEach(t => t.keyboardWillHide(duration))
     }
 
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]

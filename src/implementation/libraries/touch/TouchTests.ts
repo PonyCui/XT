@@ -18,7 +18,7 @@ class View implements Touchable, CoordinateOwner, GestureOwner {
         let target = undefined;
         if (isPointInside(point, this)) {
             target = this
-            let subviews = this.subviews.slice();
+            let subviews = this.subviews;
             subviews.reverse()
             subviews.forEach(subview => {
                 let subTarget = subview.hitTest(convertPointToChildView(point, this, subview))

@@ -98,11 +98,11 @@ export class ListView extends ScrollView {
     private _items: ListItem[] = [];
 
     public get items() {
-        return this._items.slice();
+        return this._items;
     }
 
     public set items(value: ListItem[]) {
-        this._items = value.slice();
+        this._items = value;
     }
 
     private _cacheRows: {
@@ -204,12 +204,20 @@ export class ListView extends ScrollView {
         }[] = []
         visibleRows.forEach(row => {
             var found = false
-            this._reusingCells.forEach(cell => {
-                if (cell.currentItem === row.item) {
-                    cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
-                    found = true
+            if ((row as any)._cell !== undefined && (row as any)._cell.currentItem === row.item) {
+                (row as any)._cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
+                found = true
+            }
+            if (!found) {
+                for (let index = 0; index < this._reusingCells.length; index++) {
+                    const cell = this._reusingCells[index];
+                    if (cell.currentItem === row.item) {
+                        cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
+                        found = true
+                        break;
+                    }
                 }
-            })
+            }
             if (!found) { renderingRows.push(row) }
         })
         const visibleCells: ListCell[] = renderingRows.map(row => {
@@ -218,7 +226,8 @@ export class ListView extends ScrollView {
             })[0] ||
                 (this.reuseMapping[row.item.reuseIdentifier] !== undefined ? new this.reuseMapping[row.item.reuseIdentifier]() : undefined) ||
                 new ListCell()
-            cell.reuseIdentifier = row.item.reuseIdentifier
+            cell.reuseIdentifier = row.item.reuseIdentifier;
+            (row as any)._cell = cell;
             cell.context = this.reuseContexts[row.item.reuseIdentifier]
             cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
             cell._isBusy = true;

@@ -5,17 +5,17 @@ import { Color } from "../../interface/Color";
 import { LayoutConstraint } from "./LayoutConstraint";
 import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
-declare function require(name: string): any;
-const Scroller = require('scroller');
+import { Scroller, ScrollerDelegate } from '../libraries/scroller/scroller'
+import { Animation } from '../libraries/scroller/animation';
 
-export class ScrollView extends View {
+export class ScrollView extends View implements ScrollerDelegate {
 
     onScroll?: (scrollView: ScrollView) => void
 
     private readonly innerView: View
     private readonly horizontalScrollIndicator: View
     private readonly verticalScrollIndicator: View
-    private scroller: any;
+    private scroller: Scroller;
 
     constructor(ref?: any) {
         super(ref || XTRScrollView);
@@ -32,74 +32,30 @@ export class ScrollView extends View {
         this.setupTouches();
     }
 
+    private previousAbsLocation: { x: number, y: number } = { x: 0, y: 0 }
+
     private setupTouches() {
-        this.onPan = (state, viewLocation) => {
-            if (state === InteractionState.Began) {
-                if (!viewLocation) { return }
-                this._indicatorShowed = false;
-                clearTimeout(this._indicatorHidingTimer);
-                this._tracking = true;
-                this.decelarating = false;
-                this.innerView.userInteractionEnabled = false;
-                let touches = [{
-                    pageX: viewLocation.x,
-                    pageY: viewLocation.y,
-                }];
-                this.scroller.doTouchStart(touches, this.touchTimestamp)
-            }
-            else if (state === InteractionState.Changed) {
-                if (!viewLocation) { return }
-                let touches = [{
-                    pageX: viewLocation.x,
-                    pageY: viewLocation.y,
-                }];
-                this.scroller.doTouchMove(touches, this.touchTimestamp)
-                if (!this._indicatorShowed) {
-                    this._indicatorShowed = true;
-                    View.animationWithDuration(0.15, () => {
-                        this.verticalScrollIndicator.alpha = 1.0;
-                        this.horizontalScrollIndicator.alpha = 1.0;
+        this.onPan = (state, viewLocation, absLocation, velocity) => {
+            if (absLocation) {
+                const delta = { x: -(absLocation.x - this.previousAbsLocation.x), y: -(absLocation.y - this.previousAbsLocation.y) }
+                this.previousAbsLocation = { ...absLocation }
+                if (state == InteractionState.Began) {
+                    this.scroller._beginDragging()
+                }
+                else if (state == InteractionState.Changed) {
+                    this.scroller._dragBy(delta)
+                }
+                else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {
+                    velocity && this.scroller._endDraggingWithDecelerationVelocity({
+                        x: -(velocity.x / 1),
+                        y: -(velocity.y / 1),
                     })
                 }
             }
-            else if (state === InteractionState.Ended) {
-                this._tracking = false;
-                this.decelarating = true;
-                clearTimeout(this._indicatorHidingTimer);
-                this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-                this.scroller.doTouchEnd(this.touchTimestamp)
-            }
-            else if (state === InteractionState.Cancelled) {
-                this._tracking = false;
-                clearTimeout(this._indicatorHidingTimer);
-                this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-            }
         }
     }
 
-    private _decelarating: boolean = false
-
-    private get decelarating(): boolean {
-        return this._decelarating
-    }
-
-    private set decelarating(value: boolean) {
-        this._decelarating = value;
-        if (value) {
-            this.gestureRecongnizers.forEach(it => {
-                if (it instanceof PanGestureRecognizer) {
-                    it.deceteMovement = -1
-                }
-            })
-        }
-        else {
-            this.gestureRecongnizers.forEach(it => {
-                if (it instanceof PanGestureRecognizer) {
-                    it.deceteMovement = 10
-                }
-            })
-        }
-    }
+    private decelarating: boolean = false
 
     private _contentSize: Size = SizeZero
 
@@ -120,6 +76,33 @@ export class ScrollView extends View {
         XTRScrollView.xtr_setContentOffset(value, this.objectRef);
         (this.innerView as any)._originOffset = value;
         this.resetIndicator();
+        this.scrollerDidScroll()
+    }
+
+    setContentOffset(value: Point, animated: boolean): void {
+        this.contentOffset = value;
+    }
+
+    private _isDirectionalLockEnabled: boolean = true
+
+    public get isDirectionalLockEnabled() {
+        return this._isDirectionalLockEnabled;
+    }
+
+    public set isDirectionalLockEnabled(value: boolean) {
+        this._isDirectionalLockEnabled = value;
+        this.resetScroller();
+    }
+
+    private _isPagingEnabled: boolean = false
+
+    public get isPagingEnabled() {
+        return this._isPagingEnabled;
+    }
+
+    public set isPagingEnabled(value: boolean) {
+        this._isPagingEnabled = value;
+        this.resetScroller();
     }
 
     private _isScrollEnabled: boolean = true
@@ -141,17 +124,6 @@ export class ScrollView extends View {
 
     public set bounces(value: boolean) {
         this._bounces = value;
-        this.resetScroller();
-    }
-
-    private _isDirectionalLockEnabled: boolean = true
-
-    public get isDirectionalLockEnabled() {
-        return this._isDirectionalLockEnabled;
-    }
-
-    public set isDirectionalLockEnabled(value: boolean) {
-        this._isDirectionalLockEnabled = value;
         this.resetScroller();
     }
 
@@ -208,25 +180,71 @@ export class ScrollView extends View {
     // Touches
 
     private resetScroller() {
-        const contentSize = this.contentSize
-        const bounds = this.bounds
         if (this.scroller === undefined) {
-            this.scroller = new Scroller(this.handleScroll.bind(this))
+            this.scroller = new Scroller(this)
         }
-        this.scroller.options.scrollingX = this.isScrollEnabled && (contentSize.width > bounds.width || this.alwaysBounceHorizontal);
-        this.scroller.options.scrollingY = this.isScrollEnabled && (contentSize.height > bounds.height || this.alwaysBounceVertical);
-        this.scroller.options.bouncing = this.bounces;
-        this.scroller.options.locking = this.isDirectionalLockEnabled;
-        this.scroller.setDimensions(bounds.width, bounds.height, contentSize.width, contentSize.height);
+        this.scroller.contentSize = this.contentSize
+        this.scroller.bounds = this.bounds
+        this.scroller.directionalLockEnabled = this.isDirectionalLockEnabled
+        this.scroller.bounces = this.bounces
+        this.scroller.alwaysBounceVertical = this.alwaysBounceVertical
+        this.scroller.alwaysBounceHorizontal = this.alwaysBounceHorizontal
+        this.scroller.pagingEnabled = this.isPagingEnabled
+        this.scroller.scrollEnabled = this.isScrollEnabled
     }
 
-    protected handleScroll(x: number, y: number) {
-        this.contentOffset = { x, y }
-        this.onScroll && this.onScroll(this);
-        clearTimeout(this._indicatorHidingTimer);
-        this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-        clearTimeout(this._restoreInteractiveChildrenTimer);
-        this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 32);
+    scrollerDidScroll(): void {
+        this.resetIndicator()
+    }
+
+    scrollerDidZoom(): void {
+
+    }
+
+    scrollerWillBeginDragging(): void {
+        View.animationWithDuration(0.15, () => {
+            this.verticalScrollIndicator.alpha = 1.0;
+            this.horizontalScrollIndicator.alpha = 1.0;
+        })
+        this.verticalScrollIndicator.alpha = 1.0;
+        this.horizontalScrollIndicator.alpha = 1.0;
+    }
+
+    scrollerWillEndDragging(): void {
+
+    }
+
+    scrollerDidEndDragging(animation: Animation | undefined): void {
+        if (animation === undefined) {
+            View.animationWithDuration(0.15, () => {
+                this.verticalScrollIndicator.alpha = 0.0;
+                this.horizontalScrollIndicator.alpha = 0.0;
+            })
+        }
+    }
+
+    scrollerWillBeginDecelerating(): void {
+        this.decelarating = true
+        this.innerView.userInteractionEnabled = false
+        this.gestureRecongnizers.forEach(it => {
+            if (it instanceof PanGestureRecognizer) {
+                it.deceteMovement = -1
+            }
+        })
+    }
+
+    scrollerDidEndDecelerating(): void {
+        this.decelarating = false
+        this.innerView.userInteractionEnabled = true
+        this.gestureRecongnizers.forEach(it => {
+            if (it instanceof PanGestureRecognizer) {
+                it.deceteMovement = 10
+            }
+        })
+        View.animationWithDuration(0.15, () => {
+            this.verticalScrollIndicator.alpha = 0.0;
+            this.horizontalScrollIndicator.alpha = 0.0;
+        })
     }
 
     // Indicators
@@ -256,13 +274,6 @@ export class ScrollView extends View {
         else {
             this.horizontalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
         }
-    }
-    private hideIndicator() {
-        if (this._tracking) { return; }
-        View.animationWithDuration(0.15, () => {
-            this.verticalScrollIndicator.alpha = 0.0;
-            this.horizontalScrollIndicator.alpha = 0.0;
-        })
     }
 
     // Proxy method call to innerView

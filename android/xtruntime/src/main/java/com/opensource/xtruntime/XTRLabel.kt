@@ -29,6 +29,7 @@ class XTRLabel @JvmOverloads constructor(
     val listener: OnLayoutChangeListener = OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> resetTextViewPosition() }
 
     init {
+        userInteractionEnabled = false
         textView.setTextColor(Color.BLACK)
         textView.textSize = 14f
         if (android.os.Build.VERSION.SDK_INT >= 16) {

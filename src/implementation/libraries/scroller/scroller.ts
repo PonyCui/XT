@@ -1,6 +1,8 @@
 import { Animation } from "./animation";
 import { AnimationDeceleration } from "./deceleration";
 import { Paging } from "./paging";
+declare var clearAnimationFrame: any
+const cancelAnimationFrame = window.cancelAnimationFrame || clearAnimationFrame
 
 export interface ScrollerDelegate {
 

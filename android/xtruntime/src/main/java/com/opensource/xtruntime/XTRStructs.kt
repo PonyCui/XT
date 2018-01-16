@@ -25,6 +25,13 @@ class XTRRect(val x: Double, val y: Double, val width: Double, val height: Doubl
         return "XTRRect, x: $x, y: $y, width: $width, height: $height"
     }
 
+    override fun equals(other: Any?): Boolean {
+        (other as? XTRRect)?.let {
+            return this.x == it.x && this.y == it.y && this.width == it.width && this.height == it.height
+        }
+        return false
+    }
+
 }
 
 class XTRPoint(val x: Double, val y: Double) {

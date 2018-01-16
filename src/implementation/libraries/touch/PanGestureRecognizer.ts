@@ -66,6 +66,11 @@ export class PanGestureRecognizer implements GestureRecongnizer {
             if (validPoints.length > 0) {
                 this.recognized = true;
                 this.state = GestureRecognizerState.Began;
+                const viewLocation = touches[0].locationInView(owner as any)
+                this.velocity = {
+                    x: (viewLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+                    y: (viewLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+                }
                 this.fire && this.fire(this.state, touches[0].locationInView(owner as any), touches[0].rawLocation)
                 return true
             }

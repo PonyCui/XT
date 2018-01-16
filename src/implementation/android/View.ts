@@ -75,6 +75,10 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public set frame(value: Rect) {
+        if (this._cachingFrame && this._cachingFrame.x == value.x && this._cachingFrame.y == value.y && this._cachingFrame.width == value.width && this._cachingFrame.height == value.height) {
+            return
+        }
+        this._cachingFrame = value
         XTRView.xtr_setFrame(value, this.objectRef);
     }
 
@@ -331,7 +335,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     private _constraints: LayoutConstraint[] = [];
 
     public get constraints(): LayoutConstraint[] {
-        return this._constraints.slice();
+        return this._constraints;
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {

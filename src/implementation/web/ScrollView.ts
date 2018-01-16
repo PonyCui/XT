@@ -14,7 +14,7 @@ import { Animation } from '../libraries/scroller/animation';
 export class ScrollView extends View implements ScrollerDelegate {
 
     private readonly innerView: View = new View();
-    private readonly horizonalScrollIndicator: View = new View();;
+    private readonly horizontalScrollIndicator: View = new View();;
     private readonly verticalScrollIndicator: View = new View();;
     private scroller: Scroller;
 
@@ -24,10 +24,10 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.clipsToBounds = true;
         this.innerView.userInteractionEnabled = true;
         super.addSubview(this.innerView);
-        this.horizonalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
-        this.horizonalScrollIndicator.cornerRadius = 1.0;
-        this.horizonalScrollIndicator.alpha = 0.0;
-        super.addSubview(this.horizonalScrollIndicator);
+        this.horizontalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
+        this.horizontalScrollIndicator.cornerRadius = 1.0;
+        this.horizontalScrollIndicator.alpha = 0.0;
+        super.addSubview(this.horizontalScrollIndicator);
         this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.verticalScrollIndicator.cornerRadius = 1.0;
         this.verticalScrollIndicator.alpha = 0.0;
@@ -78,28 +78,20 @@ export class ScrollView extends View implements ScrollerDelegate {
         }
     }
 
-    private _decelarating: boolean = false
+    private decelarating: boolean = false
 
-    private get decelarating(): boolean {
-        return this._decelarating
+
+    private _contentSize: Size = SizeZero
+
+    public get contentSize() {
+        return this._contentSize;
     }
 
-    private set decelarating(value: boolean) {
-        this._decelarating = value;
-        if (value) {
-            this.gestureRecongnizers.forEach(it => {
-                if (it instanceof PanGestureRecognizer) {
-                    it.deceteMovement = -1
-                }
-            })
-        }
-        else {
-            this.gestureRecongnizers.forEach(it => {
-                if (it instanceof PanGestureRecognizer) {
-                    it.deceteMovement = 10
-                }
-            })
-        }
+    public set contentSize(value: Size) {
+        this._contentSize = value;
+        const oldFrame = this.innerView.frame
+        this.innerView.frame = { x: oldFrame.x, y: oldFrame.y, width: Math.max(this.frame.width, value.width), height: Math.max(this.frame.height, value.height) }
+        this.resetScroller();
     }
 
     public get contentOffset() {
@@ -114,19 +106,6 @@ export class ScrollView extends View implements ScrollerDelegate {
 
     setContentOffset(value: Point, animated: boolean): void {
         this.contentOffset = value;
-    }
-
-    private _contentSize: Size = SizeZero
-
-    public get contentSize() {
-        return this._contentSize;
-    }
-
-    public set contentSize(value: Size) {
-        this._contentSize = value;
-        const oldFrame = this.innerView.frame
-        this.innerView.frame = { x: oldFrame.x, y: oldFrame.y, width: Math.max(this.frame.width, value.width), height: Math.max(this.frame.height, value.height) }
-        this.resetScroller();
     }
 
     private _isDirectionalLockEnabled: boolean = true
@@ -181,7 +160,7 @@ export class ScrollView extends View implements ScrollerDelegate {
 
     public set showsHorizontalScrollIndicator(value: boolean) {
         this._showsHorizontalScrollIndicator = value;
-        this.horizonalScrollIndicator.hidden = !value
+        this.horizontalScrollIndicator.hidden = !value
     }
 
     _showsVerticalScrollIndicator: boolean = true
@@ -251,10 +230,10 @@ export class ScrollView extends View implements ScrollerDelegate {
     scrollerWillBeginDragging(): void {
         View.animationWithDuration(0.15, () => {
             this.verticalScrollIndicator.alpha = 1.0;
-            this.horizonalScrollIndicator.alpha = 1.0;
+            this.horizontalScrollIndicator.alpha = 1.0;
         })
         this.verticalScrollIndicator.alpha = 1.0;
-        this.horizonalScrollIndicator.alpha = 1.0;
+        this.horizontalScrollIndicator.alpha = 1.0;
     }
 
     scrollerWillEndDragging(): void {
@@ -265,12 +244,13 @@ export class ScrollView extends View implements ScrollerDelegate {
         if (animation === undefined) {
             View.animationWithDuration(0.15, () => {
                 this.verticalScrollIndicator.alpha = 0.0;
-                this.horizonalScrollIndicator.alpha = 0.0;
+                this.horizontalScrollIndicator.alpha = 0.0;
             })
         }
     }
 
     scrollerWillBeginDecelerating(): void {
+        this.decelarating = true
         this.innerView.userInteractionEnabled = false
         this.gestureRecongnizers.forEach(it => {
             if (it instanceof PanGestureRecognizer) {
@@ -280,6 +260,7 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     scrollerDidEndDecelerating(): void {
+        this.decelarating = false
         this.innerView.userInteractionEnabled = true
         this.gestureRecongnizers.forEach(it => {
             if (it instanceof PanGestureRecognizer) {
@@ -288,14 +269,14 @@ export class ScrollView extends View implements ScrollerDelegate {
         })
         View.animationWithDuration(0.15, () => {
             this.verticalScrollIndicator.alpha = 0.0;
-            this.horizonalScrollIndicator.alpha = 0.0;
+            this.horizontalScrollIndicator.alpha = 0.0;
         })
     }
 
     wheelScroll(deltaPoint: { x: number, y: number }): void {
         if (this.userInteractionEnabled && this.alpha > 0.0 && !this.hidden) {
             this.verticalScrollIndicator.alpha = 1.0;
-            this.horizonalScrollIndicator.alpha = 1.0;
+            this.horizontalScrollIndicator.alpha = 1.0;
             this.contentOffset = {
                 x: Math.max(0.0, Math.min(this.contentSize.width - this.bounds.width, this.contentOffset.x + deltaPoint.x)),
                 y: Math.max(0.0, Math.min(this.contentSize.height - this.bounds.height, this.contentOffset.y + deltaPoint.y))
@@ -330,10 +311,10 @@ export class ScrollView extends View implements ScrollerDelegate {
         if (contentSize.width > 0 && bounds.width > 0 && contentSize.width > bounds.width) {
             const xProgress = contentOffset.x / (contentSize.width - bounds.width);
             const xWidth = Math.max(36.0, bounds.width / (contentSize.width / bounds.width))
-            this.horizonalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }
+            this.horizontalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }
         }
         else {
-            this.horizonalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
+            this.horizontalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
         }
     }
 

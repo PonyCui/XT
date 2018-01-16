@@ -23,6 +23,9 @@ export function QuadraticEaseOut(t: number, start: number, end: number): number 
 export class Animation {
 
     static currentTime = () => {
+        if (typeof performance === "undefined") {
+            return new Date().getTime()
+        }
         return performance.now()
     }
 

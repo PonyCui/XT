@@ -495,7 +495,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     private _constraints: LayoutConstraint[] = [];
 
     public get constraints(): LayoutConstraint[] {
-        return this._constraints.slice();
+        return this._constraints;
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {

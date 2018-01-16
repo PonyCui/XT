@@ -350,7 +350,7 @@ export class View implements Releasable {
     private _constraints: LayoutConstraint[] = [];
 
     public get constraints(): LayoutConstraint[] {
-        return this._constraints.slice();
+        return this._constraints;
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {
