@@ -58,6 +58,9 @@ export class Scroller {
     private scrollAnimation: Animation | undefined = undefined
 
     _beginDragging() {
+        if (!this.scrollEnabled) {
+            return;
+        }
         if (!this._dragging) {
             this._dragging = true;
             this._cancelScrollAnimation()
@@ -66,28 +69,36 @@ export class Scroller {
     }
 
     _dragBy(delta: { x: number, y: number }) {
-        if (this.contentSize.width <= this.bounds.width) {
-            delta.x = 0.0
+        if (!this.scrollEnabled) {
+            return;
         }
         if (this._dragging) {
             const originalOffset = this.contentOffset;
             let proposedOffset = originalOffset;
             if (this.bounces) {
-                if (proposedOffset.x + delta.x < 0.0) {
-                    proposedOffset.x = proposedOffset.x + delta.x / 5.0
+                if (this.contentSize.width < this.bounds.width && !this.alwaysBounceHorizontal) {
+                    proposedOffset.x = 0.0
                 }
                 else {
-                    proposedOffset.x = proposedOffset.x + delta.x
+                    if (proposedOffset.x + delta.x < 0.0) {
+                        proposedOffset.x = proposedOffset.x + delta.x / 2.5
+                    }
+                    else if (proposedOffset.x + delta.x > this.contentSize.width - this.bounds.width) {
+                        proposedOffset.x = proposedOffset.x + delta.x / 2.5
+                    }
+                    else {
+                        proposedOffset.x = proposedOffset.x + delta.x
+                    }
                 }
                 if (this.contentSize.height < this.bounds.height && !this.alwaysBounceVertical) {
                     proposedOffset.y = 0.0
                 }
                 else {
                     if (proposedOffset.y + delta.y < 0.0) {
-                        proposedOffset.y = proposedOffset.y + delta.y / 3.0
+                        proposedOffset.y = proposedOffset.y + delta.y / 2.5
                     }
                     else if (proposedOffset.y + delta.y > this.contentSize.height - this.bounds.height) {
-                        proposedOffset.y = proposedOffset.y + delta.y / 3.0
+                        proposedOffset.y = proposedOffset.y + delta.y / 2.5
                     }
                     else {
                         proposedOffset.y = proposedOffset.y + delta.y
@@ -105,6 +116,9 @@ export class Scroller {
     }
 
     _endDraggingWithDecelerationVelocity(velocity: { x: number, y: number }) {
+        if (!this.scrollEnabled) {
+            return;
+        }
         if (this._dragging) {
             this._dragging = false;
             this.delegate.scrollerWillEndDragging()

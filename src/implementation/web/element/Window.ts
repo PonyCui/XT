@@ -16,9 +16,11 @@ export class WindowElement extends ViewElement {
         }
     }
 
+    private firstTouchIdentifier: any = undefined
+
     setupTouches() {
         (document.body as any).onresize = () => {
-            this.scriptObject.frame = {...this.xtr_frame(), width: window.outerWidth, height: window.outerHeight}
+            this.scriptObject.frame = { ...this.xtr_frame(), width: window.outerWidth, height: window.outerHeight }
         }
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
@@ -48,26 +50,60 @@ export class WindowElement extends ViewElement {
             else { WindowElement._allowDefault = false; }
         })
         document.addEventListener("touchstart", (e) => {
-            this.scriptObject.handlePointerDown(e.which.toString(), e.timeStamp, { x: e.touches[e.which].clientX, y: e.touches[e.which].clientY })
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
+            if (this.firstTouchIdentifier !== undefined) { return }
+            let touch: Touch | undefined = undefined
+            for (let index = 0; index < e.touches.length; index++) {
+                touch = e.touches[index]
+                this.firstTouchIdentifier = e.touches[index].identifier
+            }
+            if (touch) {
+                this.scriptObject.handlePointerDown("0", e.timeStamp, { x: touch.clientX, y: touch.clientY })
+                if (!WindowElement._allowDefault) { e.preventDefault(); }
+                else { WindowElement._allowDefault = false; }
+            }
         })
         document.addEventListener("touchmove", (e) => {
-            const points: any = {};
-            points[e.which.toString()] = { x: e.changedTouches[e.which].clientX, y: e.changedTouches[e.which].clientY };
-            this.scriptObject.handlePointersMove(e.timeStamp, points)
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
+            let touch: Touch | undefined = undefined
+            for (let index = 0; index < e.changedTouches.length; index++) {
+                if (e.changedTouches[index].identifier === this.firstTouchIdentifier) {
+                    touch = e.changedTouches[index]
+                }
+            }
+            if (touch) {
+                const points: any = {};
+                points["0"] = { x: touch.clientX, y: touch.clientY };
+                this.scriptObject.handlePointersMove(e.timeStamp, points)
+                if (!WindowElement._allowDefault) { e.preventDefault(); }
+                else { WindowElement._allowDefault = false; }
+            }
         })
         document.addEventListener("touchend", (e) => {
-            this.scriptObject.handlePointerUp(e.which.toString(), e.timeStamp, { x: e.changedTouches[e.which].clientX, y: e.changedTouches[e.which].clientY })
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
+            let touch: Touch | undefined = undefined
+            for (let index = 0; index < e.changedTouches.length; index++) {
+                if (e.changedTouches[index].identifier === this.firstTouchIdentifier) {
+                    touch = e.changedTouches[index]
+                }
+            }
+            if (touch) {
+                this.firstTouchIdentifier = undefined
+                this.scriptObject.handlePointerUp("0", e.timeStamp, { x: touch.clientX, y: touch.clientY })
+                if (!WindowElement._allowDefault) { e.preventDefault(); }
+                else { WindowElement._allowDefault = false; }
+            }
         })
         document.addEventListener("touchcancel", (e) => {
-            this.scriptObject.handlePointerCancel(e.timeStamp)
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
+            let touch: Touch | undefined = undefined
+            for (let index = 0; index < e.changedTouches.length; index++) {
+                if (e.changedTouches[index].identifier === this.firstTouchIdentifier) {
+                    touch = e.changedTouches[index]
+                }
+            }
+            if (touch) {
+                this.firstTouchIdentifier = undefined
+                this.scriptObject.handlePointerCancel("0", e.timeStamp, { x: touch.clientX, y: touch.clientY })
+                if (!WindowElement._allowDefault) { e.preventDefault(); }
+                else { WindowElement._allowDefault = false; }
+            }
         })
     }
 

@@ -26,27 +26,15 @@ function BounceComponent(scroller: Scroller, c: AnimationDecelerationComponent, 
         return true
     }
     else if (c.bounced && c.bouncedStartTime > 0) {
-        if (c.position < c.bounceLeft) {
-            const deltaPosition = 0.0 + (c.velocity / (1 - scroller.accelerationRate)) * (1.0 - Math.exp(-(1.0 - scroller.accelerationRate) * (deltaTime - c.bouncedStartTime)))
-            if (Math.abs(c.position - (c.bounceLeft + deltaPosition / 5.0)) < 0.5) {
-                BounceReturn(scroller, c, deltaTime)
-            }
-            else {
-                c.position = c.bounceLeft + deltaPosition / 5.0
-            }
-            return false
+        const bounceTarget = c.position < c.bounceLeft ? c.bounceLeft : c.bounceRight
+        const deltaPosition = 0.0 + (c.velocity / (1 - scroller.accelerationRate)) * (1.0 - Math.exp(-(1.0 - scroller.accelerationRate) * (deltaTime - c.bouncedStartTime)))
+        if (Math.abs(c.position - (bounceTarget + c.bouncedStartPosition + deltaPosition / 5.0)) < 1.0) {
+            BounceReturn(scroller, c, deltaTime)
         }
-        else if (c.position > c.bounceRight) {
-            const deltaPosition = 0.0 + (c.velocity / (1 - scroller.accelerationRate)) * (1.0 - Math.exp(-(1.0 - scroller.accelerationRate) * (deltaTime - c.bouncedStartTime)))
-            if (Math.abs(c.position - (c.bounceRight + deltaPosition / 5.0)) < 0.5) {
-                BounceReturn(scroller, c, deltaTime)
-            }
-            else {
-                c.position = c.bounceRight + deltaPosition / 5.0
-            }
-            return false
+        else {
+            c.position = bounceTarget + c.bouncedStartPosition + deltaPosition / 5.0
         }
-        return true
+        return false
     }
     else {
         c.position = c.from + (c.velocity / (1 - scroller.decelerationRate)) * (1.0 - Math.exp(-(1.0 - scroller.decelerationRate) * deltaTime))
@@ -90,6 +78,7 @@ export class AnimationDecelerationComponent {
     velocity: number = 0.0;
     bounced: boolean = false;
     bouncedStartTime: number = 0;
+    bouncedStartPosition: number = 0;
     bouncedReturnTime: number = 0;
     bouncedReturnPosition: number = 0;
     bounce: boolean = false;
@@ -113,8 +102,25 @@ export class AnimationDeceleration extends Animation {
         this.x.bounce = scroller.bounces
         this.x.bounceLeft = 0.0
         this.x.bounceRight = Math.max(0.0, scroller.contentSize.width - scroller.bounds.width)
-        if (this.x.position < this.x.bounceLeft || this.x.position > this.x.bounceRight) {
-            BounceReturn(scroller, this.x, 0.001)
+        if (this.x.position < this.x.bounceLeft) {
+            if (this.x.velocity < -0.1) {
+                this.x.bounced = true
+                this.x.bouncedStartPosition = this.x.position
+                this.x.bouncedStartTime = 0
+            }
+            else {
+                BounceReturn(scroller, this.x, 0.001)
+            }
+        }
+        else if (this.x.position > this.x.bounceRight) {
+            if (this.x.velocity > 0.1) {
+                this.x.bounced = true
+                this.x.bouncedStartPosition = this.x.position - this.x.bounceRight
+                this.x.bouncedStartTime = 0
+            }
+            else {
+                BounceReturn(scroller, this.x, 0.001)
+            }
         }
         this.y.from = scroller.contentOffset.y;
         this.y.velocity = ClampedVelocty(velocity.y);
@@ -123,8 +129,25 @@ export class AnimationDeceleration extends Animation {
         this.y.bounce = scroller.bounces
         this.y.bounceLeft = 0.0
         this.y.bounceRight = Math.max(0.0, scroller.contentSize.height - scroller.bounds.height)
-        if (this.y.position < this.y.bounceLeft || this.y.position > this.y.bounceRight) {
-            BounceReturn(scroller, this.y, 0.001)
+        if (this.y.position < this.y.bounceLeft) {
+            if (this.y.velocity < -0.1) {
+                this.y.bounced = true
+                this.y.bouncedStartPosition = this.y.position
+                this.y.bouncedStartTime = 0
+            }
+            else {
+                BounceReturn(scroller, this.y, 0.001)
+            }
+        }
+        else if (this.y.position > this.y.bounceRight) {
+            if (this.y.velocity > 0.1) {
+                this.y.bounced = true
+                this.y.bouncedStartPosition = this.y.position - this.y.bounceRight
+                this.y.bouncedStartTime = 0
+            }
+            else {
+                BounceReturn(scroller, this.y, 0.001)
+            }
         }
     }
 
