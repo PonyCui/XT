@@ -484,6 +484,7 @@ export class Screen {
 export class ScrollView extends View {
     contentOffset: Point
     contentSize: Size
+    isPagingEnabled: boolean
     isDirectionalLockEnabled: boolean
     bounces: boolean
     isScrollEnabled: boolean

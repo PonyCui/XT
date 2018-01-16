@@ -1,8 +1,10 @@
 import { Animation } from "./animation";
 import { AnimationDeceleration } from "./deceleration";
+import { Paging } from "./paging";
 
 export interface ScrollerDelegate {
 
+    contentOffset: { x: number, y: number }
     scrollerDidScroll(): void
     scrollerDidZoom(): void
     scrollerWillBeginDragging(): void
@@ -14,15 +16,6 @@ export interface ScrollerDelegate {
 }
 
 export class Scroller {
-
-    _contentOffset: { x: number, y: number } = { x: 0, y: 0 }
-    public get contentOffset(): { x: number, y: number } {
-        return this._contentOffset
-    }
-    public set contentOffset(value: { x: number, y: number }) {
-        this._contentOffset = value
-        this.delegate.scrollerDidScroll()
-    }
 
     contentSize: { width: number, height: number } = { width: 0, height: 0 }
     bounds: { width: number, height: number } = { width: 0, height: 0 }
@@ -56,12 +49,14 @@ export class Scroller {
 
     private scrollTimer: any = undefined
     private scrollAnimation: Animation | undefined = undefined
+    private dragStartContentOffset: { x: number, y: number } = { x: 0, y: 0 }
 
     _beginDragging() {
         if (!this.scrollEnabled) {
             return;
         }
         if (!this._dragging) {
+            this.dragStartContentOffset = { ...this.delegate.contentOffset }
             this._dragging = true;
             this._cancelScrollAnimation()
             this.delegate.scrollerWillBeginDragging()
@@ -73,7 +68,7 @@ export class Scroller {
             return;
         }
         if (this._dragging) {
-            const originalOffset = this.contentOffset;
+            const originalOffset = this.delegate.contentOffset;
             let proposedOffset = originalOffset;
             if (this.bounces) {
                 if (this.contentSize.width < this.bounds.width && !this.alwaysBounceHorizontal) {
@@ -104,12 +99,12 @@ export class Scroller {
                         proposedOffset.y = proposedOffset.y + delta.y
                     }
                 }
-                this.contentOffset = proposedOffset
+                this.delegate.contentOffset = proposedOffset
             }
             else {
-                this.contentOffset = {
-                    x: Math.min(this.contentSize.width - this.bounds.width, Math.max(0.0, proposedOffset.x + delta.x)),
-                    y: Math.min(this.contentSize.height - this.bounds.height, Math.max(0.0, proposedOffset.x + delta.y)),
+                this.delegate.contentOffset = {
+                    x: Math.min(Math.max(0.0, this.contentSize.width - this.bounds.width), Math.max(0.0, proposedOffset.x + delta.x)),
+                    y: Math.min(Math.max(0.0, this.contentSize.height - this.bounds.height), Math.max(0.0, proposedOffset.x + delta.y)),
                 }
             }
         }
@@ -122,14 +117,48 @@ export class Scroller {
         if (this._dragging) {
             this._dragging = false;
             this.delegate.scrollerWillEndDragging()
-            const decelerationAnimation = this._decelerationAnimationWithVelocity(velocity)
+            const decelerationAnimation = this._pagingAnimationWithVelocity(velocity) || this._decelerationAnimationWithVelocity(velocity)
             this.delegate.scrollerDidEndDragging(decelerationAnimation)
-            if (decelerationAnimation) {
+            if (decelerationAnimation instanceof Animation) {
                 this._setScrollAnimation(decelerationAnimation);
                 this._decelerating = true;
                 this.delegate.scrollerWillBeginDecelerating()
             }
         }
+    }
+
+    _pagingAnimationWithVelocity(velocity: { x: number, y: number }): Animation | undefined {
+        if (this.pagingEnabled) {
+            const currentContentOffset = this.delegate.contentOffset
+            const deltaContentOffset = { x: currentContentOffset.x - this.dragStartContentOffset.x, y: currentContentOffset.y - this.dragStartContentOffset.y }
+            let toX = 0.0
+            if (deltaContentOffset.x / this.bounds.width > 0.50 || (velocity.x / 1000) > 0.2) {
+                toX = (Math.floor(this.dragStartContentOffset.x / this.bounds.width) + 1) * this.bounds.width
+            }
+            else if (deltaContentOffset.x / this.bounds.width < -0.50 || (velocity.x / 1000) < -0.2) {
+                toX = (Math.floor(this.dragStartContentOffset.x / this.bounds.width) - 1) * this.bounds.width
+            }
+            else {
+                toX = (Math.floor(this.dragStartContentOffset.x / this.bounds.width) + 0) * this.bounds.width
+            }
+            toX = Math.max(0, Math.min(this.contentSize.width - this.bounds.width, toX))
+            let toY = 0.0
+            if (deltaContentOffset.y / this.bounds.height > 0.50 || (velocity.y / 1000) > 0.2) {
+                toY = (Math.floor(this.dragStartContentOffset.y / this.bounds.height) + 1) * this.bounds.height
+            }
+            else if (deltaContentOffset.y / this.bounds.height < -0.50 || (velocity.y / 1000) < -0.2) {
+                toY = (Math.floor(this.dragStartContentOffset.y / this.bounds.height) - 1) * this.bounds.height
+            }
+            else {
+                toY = (Math.floor(this.dragStartContentOffset.y / this.bounds.height) + 0) * this.bounds.height
+            }
+            toY = Math.max(0, Math.min(this.contentSize.height - this.bounds.height, toY))
+            return new Paging(this, { x: toX, y: toY }, {
+                x: velocity.x / 1000,
+                y: velocity.y / 1000
+            })
+        }
+        return undefined
     }
 
     _decelerationAnimationWithVelocity(velocity: { x: number, y: number }): Animation | undefined {

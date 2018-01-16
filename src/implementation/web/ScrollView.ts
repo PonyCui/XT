@@ -109,6 +109,7 @@ export class ScrollView extends View implements ScrollerDelegate {
     public set contentOffset(value: Point) {
         this.nativeObject.xtr_setContentOffset(value);
         this.resetIndicator();
+        this.scrollerDidScroll()
     }
 
     setContentOffset(value: Point, animated: boolean): void {
@@ -139,6 +140,17 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.resetScroller();
     }
 
+    private _isPagingEnabled: boolean = false
+
+    public get isPagingEnabled() {
+        return this._isPagingEnabled;
+    }
+
+    public set isPagingEnabled(value: boolean) {
+        this._isPagingEnabled = value;
+        this.resetScroller();
+    }
+
     private _isScrollEnabled: boolean = true
 
     public get isScrollEnabled() {
@@ -161,8 +173,27 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.resetScroller();
     }
 
-    showsHorizontalScrollIndicator: boolean = true
-    showsVerticalScrollIndicator: boolean = true
+    _showsHorizontalScrollIndicator: boolean = true
+
+    public get showsHorizontalScrollIndicator() {
+        return this._showsHorizontalScrollIndicator;
+    }
+
+    public set showsHorizontalScrollIndicator(value: boolean) {
+        this._showsHorizontalScrollIndicator = value;
+        this.horizonalScrollIndicator.hidden = !value
+    }
+
+    _showsVerticalScrollIndicator: boolean = true
+
+    public get showsVerticalScrollIndicator() {
+        return this._showsVerticalScrollIndicator;
+    }
+
+    public set showsVerticalScrollIndicator(value: boolean) {
+        this._showsVerticalScrollIndicator = value;
+        this.verticalScrollIndicator.hidden = !value
+    }
 
     private _alwaysBounceVertical: boolean = false
 
@@ -199,12 +230,17 @@ export class ScrollView extends View implements ScrollerDelegate {
         if (this.scroller === undefined) {
             this.scroller = new Scroller(this)
         }
-        this.scroller.bounds = this.bounds
         this.scroller.contentSize = this.contentSize
+        this.scroller.bounds = this.bounds
+        this.scroller.directionalLockEnabled = this.isDirectionalLockEnabled
+        this.scroller.bounces = this.bounces
+        this.scroller.alwaysBounceVertical = this.alwaysBounceVertical
+        this.scroller.alwaysBounceHorizontal = this.alwaysBounceHorizontal
+        this.scroller.pagingEnabled = this.isPagingEnabled
+        this.scroller.scrollEnabled = this.isScrollEnabled
     }
 
     scrollerDidScroll(): void {
-        this.contentOffset = this.scroller.contentOffset
         this.resetIndicator()
     }
 

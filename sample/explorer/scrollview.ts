@@ -71,12 +71,15 @@ export class ScrollViewSample extends XT.ViewController {
         summary.font = XT.Font.systemFontOfSize(11)
         summary.textColor = XT.Color.grayColor
         summary.numberOfLines = 0
-        summary.text = "Horizonal ScrollView (Drag it!) \ncontentSize = {600, 0} \nbackgroundColor = yellowColor"
+        summary.text = "Horizonal ScrollView (Drag it!) \ncontentSize = {600, 0}, pagingEnabled = true \nbackgroundColor = yellowColor"
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.ScrollView()
         view.frame = XT.RectMake(0, 66, 200, 200)
         view.contentSize = XT.SizeMake(600, 0)
+        view.bounces = false
+        view.isPagingEnabled = true
+        view.showsHorizontalScrollIndicator = false
         view.backgroundColor = XT.Color.yellowColor
         {
             const childView = new XT.View()

@@ -39,6 +39,10 @@ function BounceComponent(scroller: Scroller, c: AnimationDecelerationComponent, 
     else {
         c.position = c.from + (c.velocity / (1 - scroller.decelerationRate)) * (1.0 - Math.exp(-(1.0 - scroller.decelerationRate) * deltaTime))
         if (c.position < c.bounceLeft || c.position > c.bounceRight) {
+            if (!c.bounce) {
+                c.position = c.position < c.bounceLeft ? c.bounceLeft : Math.max(0, c.bounceRight)
+                return true
+            }
             c.bounced = true
             c.bouncedStartTime = deltaTime
         }
@@ -95,9 +99,9 @@ export class AnimationDeceleration extends Animation {
     constructor(readonly scroller: Scroller, velocity: { x: number, y: number }) {
         super(scroller)
         this.lastMomentumTime = this.beginTime
-        this.x.from = scroller.contentOffset.x;
+        this.x.from = scroller.delegate.contentOffset.x;
         this.x.velocity = ClampedVelocty(velocity.x);
-        this.x.position = scroller.contentOffset.x;
+        this.x.position = scroller.delegate.contentOffset.x;
         this.x.bounced = false;
         this.x.bounce = scroller.bounces
         this.x.bounceLeft = 0.0
@@ -122,9 +126,9 @@ export class AnimationDeceleration extends Animation {
                 BounceReturn(scroller, this.x, 0.001)
             }
         }
-        this.y.from = scroller.contentOffset.y;
+        this.y.from = scroller.delegate.contentOffset.y;
         this.y.velocity = ClampedVelocty(velocity.y);
-        this.y.position = scroller.contentOffset.y;
+        this.y.position = scroller.delegate.contentOffset.y;
         this.y.bounced = false;
         this.y.bounce = scroller.bounces
         this.y.bounceLeft = 0.0
@@ -155,7 +159,7 @@ export class AnimationDeceleration extends Animation {
         const currentTime = Animation.currentTime()
         const verticalIsFinished = BounceComponent(this.scroller, this.y, currentTime - this.beginTime);
         const horizontalIsFinished = BounceComponent(this.scroller, this.x, currentTime - this.beginTime);
-        this.scroller.contentOffset = { x: this.x.position, y: this.y.position }
+        this.scroller.delegate.contentOffset = { x: this.x.position, y: this.y.position }
         return verticalIsFinished && horizontalIsFinished;
     }
 
