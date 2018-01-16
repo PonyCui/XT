@@ -44,6 +44,14 @@ export class ScrollView extends View {
         XTRScrollView.xtr_setBouncesObjectRef(value, this.objectRef);
     }
 
+    public get isPagingEnabled() {
+        return XTRScrollView.xtr_isPagingEnabled(this.objectRef);
+    }
+
+    public set isPagingEnabled(value: boolean) {
+        XTRScrollView.xtr_setPagingEnabledObjectRef(value, this.objectRef);
+    }
+
     public get isScrollEnabled(): boolean {
         return XTRScrollView.xtr_isScrollEnabled(this.objectRef);
     }

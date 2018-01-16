@@ -61,7 +61,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.onPan = (state, viewLocation, absLocation, velocity, translation) => {
             if (absLocation) {
                 const delta = { x: -(absLocation.x - this.previousAbsLocation.x), y: -(absLocation.y - this.previousAbsLocation.y) }
-                this.previousAbsLocation = absLocation
+                this.previousAbsLocation = { ...absLocation }
                 if (state == InteractionState.Began) {
                     this.scroller._beginDragging()
                 }
@@ -292,29 +292,20 @@ export class ScrollView extends View implements ScrollerDelegate {
         })
     }
 
-    // protected handleScroll(x: number, y: number) {
-    //     this.contentOffset = { x, y }
-    //     this.onScroll && this.onScroll(this);
-    //     clearTimeout(this._indicatorHidingTimer);
-    //     this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-    //     clearTimeout(this._restoreInteractiveChildrenTimer);
-    //     this._restoreInteractiveChildrenTimer = setTimeout(() => { this.decelarating = false; this.innerView.userInteractionEnabled = true; }, 32);
-    // }
-
     wheelScroll(deltaPoint: { x: number, y: number }): void {
-        // if (this.userInteractionEnabled && this.alpha > 0.0 && !this.hidden) {
-        //     this.verticalScrollIndicator.alpha = 1.0;
-        //     this.horizonalScrollIndicator.alpha = 1.0;
-        //     this.handleScroll(
-        //         Math.max(0.0, Math.min(this.contentSize.width - this.bounds.width, this.contentOffset.x + deltaPoint.x)),
-        //         Math.max(0.0, Math.min(this.contentSize.height - this.bounds.height, this.contentOffset.y + deltaPoint.y))
-        //     )
-        // }
-        // else {
-        //     if (this.superview) {
-        //         (this.superview as any).wheelScroll(deltaPoint);
-        //     }
-        // }
+        if (this.userInteractionEnabled && this.alpha > 0.0 && !this.hidden) {
+            this.verticalScrollIndicator.alpha = 1.0;
+            this.horizonalScrollIndicator.alpha = 1.0;
+            this.contentOffset = {
+                x: Math.max(0.0, Math.min(this.contentSize.width - this.bounds.width, this.contentOffset.x + deltaPoint.x)),
+                y: Math.max(0.0, Math.min(this.contentSize.height - this.bounds.height, this.contentOffset.y + deltaPoint.y))
+            }
+        }
+        else {
+            if (this.superview) {
+                (this.superview as any).wheelScroll(deltaPoint);
+            }
+        }
     }
 
     // Indicators
@@ -328,7 +319,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         const contentOffset = this.contentOffset
         const contentSize = this.contentSize
         const bounds = this.bounds
-        if (contentSize.height > bounds.height) {
+        if (contentSize.height > 0 && bounds.height > 0 && contentSize.height > bounds.height) {
             const yProgress = contentOffset.y / (contentSize.height - bounds.height);
             const yHeight = Math.max(36.0, bounds.height / (contentSize.height / bounds.height))
             this.verticalScrollIndicator.frame = { x: bounds.width - 4, y: yProgress * (bounds.height - yHeight), width: 2, height: yHeight }
@@ -336,7 +327,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         else {
             this.verticalScrollIndicator.frame = { x: bounds.width - 4, y: 0, width: 2, height: 0 }
         }
-        if (contentSize.width > bounds.width) {
+        if (contentSize.width > 0 && bounds.width > 0 && contentSize.width > bounds.width) {
             const xProgress = contentOffset.x / (contentSize.width - bounds.width);
             const xWidth = Math.max(36.0, bounds.width / (contentSize.width / bounds.width))
             this.horizonalScrollIndicator.frame = { x: xProgress * (bounds.width - xWidth), y: bounds.height - 4, width: xWidth, height: 2 }

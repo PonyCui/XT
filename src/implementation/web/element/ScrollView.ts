@@ -8,7 +8,7 @@ export class ScrollViewElement extends ViewElement {
         super(scriptObject)
     }
 
-    private contentOffset: Point = PointZero
+    private contentOffset: Point = { ...PointZero }
 
     public xtr_contentOffset() {
         return this.contentOffset

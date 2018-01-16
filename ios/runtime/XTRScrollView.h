@@ -22,6 +22,8 @@
 + (void)xtr_setDirectionalLockEnabled:(BOOL)isDirectionalLockEnabled objectRef:(NSString *)objectRef;
 + (BOOL)xtr_bounces:(NSString *)objectRef;
 + (void)xtr_setBounces:(BOOL)bounces objectRef:(NSString *)objectRef;
++ (BOOL)xtr_isPagingEnabled:(NSString *)objectRef;
++ (void)xtr_setPagingEnabled:(BOOL)isPagingEnabled objectRef:(NSString *)objectRef;
 + (BOOL)xtr_isScrollEnabled:(NSString *)objectRef;
 + (void)xtr_setScrollEnabled:(BOOL)isScrollEnabled objectRef:(NSString *)objectRef;
 + (BOOL)xtr_showsHorizontalScrollIndicator:(NSString *)objectRef;

@@ -69,7 +69,7 @@ export class Scroller {
         }
         if (this._dragging) {
             const originalOffset = this.delegate.contentOffset;
-            let proposedOffset = originalOffset;
+            let proposedOffset = { ...originalOffset };
             if (this.bounces) {
                 if (this.contentSize.width < this.bounds.width && !this.alwaysBounceHorizontal) {
                     proposedOffset.x = 0.0

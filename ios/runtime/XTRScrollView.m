@@ -117,6 +117,21 @@
     }
 }
 
++ (BOOL)xtr_isPagingEnabled:(NSString *)objectRef {
+    UIScrollView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        return view.isPagingEnabled;
+    }
+    return NO;
+}
+
++ (void)xtr_setPagingEnabled:(BOOL)isPagingEnabled objectRef:(NSString *)objectRef {
+    UIScrollView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        [view setPagingEnabled:isPagingEnabled];
+    }
+}
+
 + (BOOL)xtr_isScrollEnabled:(NSString *)objectRef {
     UIScrollView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[UIScrollView class]]) {
