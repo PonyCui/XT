@@ -7,7 +7,7 @@ export class PanGestureRecognizer implements GestureRecongnizer {
     enabled: boolean = true
     cancellable: boolean = false
     state: GestureRecognizerState = GestureRecognizerState.Possible
-    deceteMovement = 10;
+    deceteMovement = 4;
     velocity: { x: number, y: number } = { x: 0, y: 0 }
     translation: { x: number, y: number } = { x: 0, y: 0 }
     fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: { x: number, y: number }) => void

@@ -47,8 +47,8 @@ export class ScrollView extends View implements ScrollerDelegate {
                 }
                 else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {
                     velocity && this.scroller._endDraggingWithDecelerationVelocity({
-                        x: -(velocity.x / 1),
-                        y: -(velocity.y / 1),
+                        x: -(velocity.x * 2 / 1),
+                        y: -(velocity.y * 2 / 1),
                     })
                 }
             }
@@ -116,7 +116,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.resetScroller();
     }
 
-    private _bounces: boolean = true
+    private _bounces: boolean = false
 
     public get bounces() {
         return this._bounces;
@@ -238,7 +238,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.innerView.userInteractionEnabled = true
         this.gestureRecongnizers.forEach(it => {
             if (it instanceof PanGestureRecognizer) {
-                it.deceteMovement = 10
+                it.deceteMovement = 4
             }
         })
         View.animationWithDuration(0.15, () => {

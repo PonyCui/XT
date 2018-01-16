@@ -106,7 +106,7 @@ export class Scroller {
             else {
                 this.delegate.contentOffset = {
                     x: Math.min(Math.max(0.0, this.contentSize.width - this.bounds.width), Math.max(0.0, proposedOffset.x + delta.x)),
-                    y: Math.min(Math.max(0.0, this.contentSize.height - this.bounds.height), Math.max(0.0, proposedOffset.x + delta.y)),
+                    y: Math.min(Math.max(0.0, this.contentSize.height - this.bounds.height), Math.max(0.0, proposedOffset.y + delta.y)),
                 }
             }
         }
@@ -134,10 +134,10 @@ export class Scroller {
             const currentContentOffset = this.delegate.contentOffset
             const deltaContentOffset = { x: currentContentOffset.x - this.dragStartContentOffset.x, y: currentContentOffset.y - this.dragStartContentOffset.y }
             let toX = 0.0
-            if (deltaContentOffset.x / this.bounds.width > 0.50 || (velocity.x / 1000) > 0.2) {
+            if (deltaContentOffset.x / this.bounds.width > 0.50 || (velocity.x / 1000) > 0.1) {
                 toX = (Math.floor(this.dragStartContentOffset.x / this.bounds.width) + 1) * this.bounds.width
             }
-            else if (deltaContentOffset.x / this.bounds.width < -0.50 || (velocity.x / 1000) < -0.2) {
+            else if (deltaContentOffset.x / this.bounds.width < -0.50 || (velocity.x / 1000) < -0.1) {
                 toX = (Math.floor(this.dragStartContentOffset.x / this.bounds.width) - 1) * this.bounds.width
             }
             else {
@@ -145,10 +145,10 @@ export class Scroller {
             }
             toX = Math.max(0, Math.min(this.contentSize.width - this.bounds.width, toX))
             let toY = 0.0
-            if (deltaContentOffset.y / this.bounds.height > 0.50 || (velocity.y / 1000) > 0.2) {
+            if (deltaContentOffset.y / this.bounds.height > 0.50 || (velocity.y / 1000) > 0.1) {
                 toY = (Math.floor(this.dragStartContentOffset.y / this.bounds.height) + 1) * this.bounds.height
             }
-            else if (deltaContentOffset.y / this.bounds.height < -0.50 || (velocity.y / 1000) < -0.2) {
+            else if (deltaContentOffset.y / this.bounds.height < -0.50 || (velocity.y / 1000) < -0.1) {
                 toY = (Math.floor(this.dragStartContentOffset.y / this.bounds.height) - 1) * this.bounds.height
             }
             else {
