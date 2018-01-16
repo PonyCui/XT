@@ -9,6 +9,7 @@ import { LayoutConstraint } from './LayoutConstraint';
 import { isPointInside, convertPointToChildView } from '../libraries/coordinate/CoordinateManager';
 declare function require(name: string): any;
 import { Scroller, ScrollerDelegate } from '../libraries/scroller/scroller'
+import { Animation } from '../libraries/scroller/animation';
 
 export class ScrollView extends View implements ScrollerDelegate {
 
@@ -67,7 +68,7 @@ export class ScrollView extends View implements ScrollerDelegate {
                 else if (state == InteractionState.Changed) {
                     this.scroller._dragBy(delta)
                 }
-                else if (state == InteractionState.Ended) {
+                else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {
                     velocity && this.scroller._endDraggingWithDecelerationVelocity({
                         x: -(velocity.x / 1),
                         y: -(velocity.y / 1),
@@ -75,47 +76,6 @@ export class ScrollView extends View implements ScrollerDelegate {
                 }
             }
         }
-        // this.userInteractionEnabled = true
-        // this.onPan = (state, viewLocation, absLocation, velocity) => {
-        //     if (state === InteractionState.Began) {
-        //         if (!viewLocation) { return }
-        //         this._indicatorShowed = false;
-        //         clearTimeout(this._indicatorHidingTimer);
-        //         this._tracking = true;
-        //         this.decelarating = false;
-        //         this.innerView.userInteractionEnabled = false;
-        //         let touches = [{
-        //             pageX: viewLocation.x,
-        //             pageY: viewLocation.y,
-        //         }];
-        //         this.scroller.doTouchStart(touches, this.touchTimestamp)
-        //     }
-        //     else if (state === InteractionState.Changed) {
-        //         if (!viewLocation) { return }
-        //         let touches = [{
-        //             pageX: viewLocation.x,
-        //             pageY: viewLocation.y,
-        //         }];
-        //         this.scroller.doTouchMove(touches, this.touchTimestamp)
-        //         if (!this._indicatorShowed) {
-        //             this._indicatorShowed = true;
-        //             View.animationWithDuration(0.15, () => {
-        //                 this.verticalScrollIndicator.alpha = 1.0;
-        //                 this.horizonalScrollIndicator.alpha = 1.0;
-        //             })
-        //         }
-        //     }
-        //     else if (state === InteractionState.Ended || state === InteractionState.Cancelled) {
-        //         this._tracking = false;
-        //         this.decelarating = true;
-        //         clearTimeout(this._indicatorHidingTimer);
-        //         this._indicatorHidingTimer = setTimeout(this.hideIndicator.bind(this), 250)
-        //         this.scroller.doTouchEnd(this.touchTimestamp)
-        //         if (!this.scroller.__isDecelerating) {
-        //             this.innerView.userInteractionEnabled = true;
-        //         }
-        //     }
-        // }
     }
 
     private _decelarating: boolean = false
@@ -241,17 +201,11 @@ export class ScrollView extends View implements ScrollerDelegate {
         }
         this.scroller.bounds = this.bounds
         this.scroller.contentSize = this.contentSize
-
-
-        // this.scroller.options.scrollingX = this.isScrollEnabled && (contentSize.width > bounds.width || this.alwaysBounceHorizontal);
-        // this.scroller.options.scrollingY = this.isScrollEnabled && (contentSize.height > bounds.height || this.alwaysBounceVertical);
-        // this.scroller.options.bouncing = this.bounces;
-        // this.scroller.options.locking = this.isDirectionalLockEnabled;
-        // this.scroller.setDimensions(bounds.width, bounds.height, contentSize.width, contentSize.height);
     }
 
     scrollerDidScroll(): void {
         this.contentOffset = this.scroller.contentOffset
+        this.resetIndicator()
     }
 
     scrollerDidZoom(): void {
@@ -259,15 +213,25 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     scrollerWillBeginDragging(): void {
-
+        View.animationWithDuration(0.15, () => {
+            this.verticalScrollIndicator.alpha = 1.0;
+            this.horizonalScrollIndicator.alpha = 1.0;
+        })
+        this.verticalScrollIndicator.alpha = 1.0;
+        this.horizonalScrollIndicator.alpha = 1.0;
     }
 
     scrollerWillEndDragging(): void {
 
     }
 
-    scrollerDidEndDragging(): void {
-
+    scrollerDidEndDragging(animation: Animation | undefined): void {
+        if (animation === undefined) {
+            View.animationWithDuration(0.15, () => {
+                this.verticalScrollIndicator.alpha = 0.0;
+                this.horizonalScrollIndicator.alpha = 0.0;
+            })
+        }
     }
 
     scrollerWillBeginDecelerating(): void {
@@ -285,6 +249,10 @@ export class ScrollView extends View implements ScrollerDelegate {
             if (it instanceof PanGestureRecognizer) {
                 it.deceteMovement = 10
             }
+        })
+        View.animationWithDuration(0.15, () => {
+            this.verticalScrollIndicator.alpha = 0.0;
+            this.horizonalScrollIndicator.alpha = 0.0;
         })
     }
 
@@ -340,13 +308,6 @@ export class ScrollView extends View implements ScrollerDelegate {
         else {
             this.horizonalScrollIndicator.frame = { x: 0, y: bounds.height - 4, width: 0, height: 2 }
         }
-    }
-    private hideIndicator() {
-        if (this._tracking) { return; }
-        View.animationWithDuration(0.15, () => {
-            this.verticalScrollIndicator.alpha = 0.0;
-            this.horizonalScrollIndicator.alpha = 0.0;
-        })
     }
 
     // Proxy method call to innerView

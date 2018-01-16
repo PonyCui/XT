@@ -7,7 +7,7 @@ export interface ScrollerDelegate {
     scrollerDidZoom(): void
     scrollerWillBeginDragging(): void
     scrollerWillEndDragging(): void
-    scrollerDidEndDragging(): void
+    scrollerDidEndDragging(animation: Animation | undefined): void
     scrollerWillBeginDecelerating(): void
     scrollerDidEndDecelerating(): void
 
@@ -33,7 +33,7 @@ export class Scroller {
     pagingEnabled: boolean = false
     scrollEnabled: boolean = true
     decelerationRate: number = 0.997
-    accelerationRate: number = 0.978
+    accelerationRate: number = 0.985
 
     private _tracking: boolean = false
     public get tracking(): boolean {
@@ -69,25 +69,36 @@ export class Scroller {
         if (this.contentSize.width <= this.bounds.width) {
             delta.x = 0.0
         }
-        if (this.contentSize.height <= this.bounds.height) {
-            delta.y = 0.0
-        }
         if (this._dragging) {
             const originalOffset = this.contentOffset;
             let proposedOffset = originalOffset;
             if (this.bounces) {
                 if (proposedOffset.x + delta.x < 0.0) {
-                    proposedOffset.x = proposedOffset.x + delta.x / 3.0
+                    proposedOffset.x = proposedOffset.x + delta.x / 5.0
                 }
-                if (proposedOffset.y + delta.y < 0.0) {
-                    proposedOffset.y = proposedOffset.y + delta.y / 3.0
+                else {
+                    proposedOffset.x = proposedOffset.x + delta.x
+                }
+                if (this.contentSize.height < this.bounds.height && !this.alwaysBounceVertical) {
+                    proposedOffset.y = 0.0
+                }
+                else {
+                    if (proposedOffset.y + delta.y < 0.0) {
+                        proposedOffset.y = proposedOffset.y + delta.y / 3.0
+                    }
+                    else if (proposedOffset.y + delta.y > this.contentSize.height - this.bounds.height) {
+                        proposedOffset.y = proposedOffset.y + delta.y / 3.0
+                    }
+                    else {
+                        proposedOffset.y = proposedOffset.y + delta.y
+                    }
                 }
                 this.contentOffset = proposedOffset
             }
             else {
                 this.contentOffset = {
-                    x: Math.max(0.0, proposedOffset.x + delta.x),
-                    y: Math.max(0.0, proposedOffset.x + delta.y),
+                    x: Math.min(this.contentSize.width - this.bounds.width, Math.max(0.0, proposedOffset.x + delta.x)),
+                    y: Math.min(this.contentSize.height - this.bounds.height, Math.max(0.0, proposedOffset.x + delta.y)),
                 }
             }
         }
@@ -96,35 +107,28 @@ export class Scroller {
     _endDraggingWithDecelerationVelocity(velocity: { x: number, y: number }) {
         if (this._dragging) {
             this._dragging = false;
-            this.delegate.scrollerDidEndDragging()
+            this.delegate.scrollerWillEndDragging()
             const decelerationAnimation = this._decelerationAnimationWithVelocity(velocity)
-            this.delegate.scrollerDidEndDragging()
+            this.delegate.scrollerDidEndDragging(decelerationAnimation)
             if (decelerationAnimation) {
                 this._setScrollAnimation(decelerationAnimation);
                 this._decelerating = true;
                 this.delegate.scrollerWillBeginDecelerating()
-            } else {
-                this.contentOffset = this._confinedContentOffset(this.contentOffset);
             }
         }
     }
 
     _decelerationAnimationWithVelocity(velocity: { x: number, y: number }): Animation | undefined {
-        const confinedOffset = this._confinedContentOffset(this.contentOffset);
         if (this.contentSize.width <= this.bounds.width) {
             velocity.x = 0.0
         }
         if (this.contentSize.height <= this.bounds.height) {
             velocity.y = 0.0
         }
-        if (!(velocity.x == 0.0 && velocity.y == 0.0) || !(confinedOffset.x == this.contentOffset.x && confinedOffset.y == this.contentOffset.y)) {
-            return new AnimationDeceleration(this, {
-                x: velocity.x / 1000,
-                y: velocity.y / 1000
-            });
-        } else {
-            return undefined;
-        }
+        return new AnimationDeceleration(this, {
+            x: velocity.x / 1000,
+            y: velocity.y / 1000
+        });
     }
 
     _setScrollAnimation(animation: Animation) {
@@ -153,25 +157,6 @@ export class Scroller {
             this._decelerating = false
             this.delegate.scrollerDidEndDecelerating()
         }
-    }
-
-    _confinedContentOffset(contentOffset: { x: number, y: number }) {
-        const scrollerBounds = this.bounds;
-        if ((this.contentSize.width - contentOffset.x) < scrollerBounds.width) {
-            contentOffset.x = (this.contentSize.width - scrollerBounds.width);
-        }
-        if ((this.contentSize.height - contentOffset.y) < scrollerBounds.height) {
-            contentOffset.y = (this.contentSize.height - scrollerBounds.height);
-        }
-        contentOffset.x = Math.max(contentOffset.x, 0);
-        contentOffset.y = Math.max(contentOffset.y, 0);
-        if (this.contentSize.width <= scrollerBounds.width) {
-            contentOffset.x = 0;
-        }
-        if (this.contentSize.height <= scrollerBounds.height) {
-            contentOffset.y = 0;
-        }
-        return contentOffset;
     }
 
 }

@@ -86,6 +86,9 @@ export class PanGestureRecognizer implements GestureRecongnizer {
                 if (this.touchTranslationOriginPoint) {
                     this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
                 }
+                if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0.1) {
+                    this.velocity = { x: 0, y: 0 }
+                }
                 this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
                 releaseBlock && releaseBlock();
                 this.touchStartPoint = undefined;
@@ -103,6 +106,9 @@ export class PanGestureRecognizer implements GestureRecongnizer {
         const viewLocation = touches[0].locationInView(owner as any)
         if (this.touchTranslationOriginPoint) {
             this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
+        }
+        if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0.1) {
+            this.velocity = { x: 0, y: 0 }
         }
         this.fire && this.fire(this.state, viewLocation, touches[0].rawLocation)
         this.touchStartPoint = undefined;
