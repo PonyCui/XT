@@ -26,14 +26,6 @@ export class Window extends View {
         XTRWindow.xtr_makeKeyAndVisible(this.objectRef);
     }
 
-    // handleKeyboardShow(frame: Rect, duration: number) {
-    //     this.rootViewController && this.rootViewController.keyboardWillShow(frame, duration)
-    // }
-
-    // handleKeyboardHide(duration: number) {
-    //     this.rootViewController && this.rootViewController.keyboardWillHide(duration)
-    // }
-
     // handleOrientationChange(): void {
     //     this.rootViewController && this.rootViewController.orientationDidChange(this)
     // }
@@ -42,9 +34,9 @@ export class Window extends View {
     //     this.nativeObject.xtr_setStatusBarHidden(hidden === true)
     // }
 
-    // endEditing(): void {
-    //     this.nativeObject.xtr_endEditing();
-    // }
+    endEditing(): void {
+        XTRWindow.xtr_endEditing(this.objectRef);
+    }
 
 }
 

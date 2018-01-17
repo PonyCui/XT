@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import android.app.Activity
 import android.app.Fragment
 import android.content.Context
 import android.graphics.Canvas

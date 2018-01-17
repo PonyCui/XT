@@ -46,7 +46,7 @@ class XTRWindow @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_setRootViewController", "xtr_setRootViewController", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_makeKeyAndVisible", "xtr_makeKeyAndVisible", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setStatusBarHidden", "xtr_setStatusBarHidden", arrayOf(Boolean::class.java))
-            exports.registerJavaMethod(this, "xtr_endEditing", "xtr_endEditing", arrayOf())
+            exports.registerJavaMethod(this, "xtr_endEditing", "xtr_endEditing", arrayOf(String::class.java))
             return exports
         }
 
@@ -77,11 +77,11 @@ class XTRWindow @JvmOverloads constructor(
 //            this.systemUiVisibility = if (hidden) View.SYSTEM_UI_FLAG_FULLSCREEN else 0
         }
 
-        fun xtr_endEditing() {
-//            firstResponder?.let {
-//                (it as? XTRTextField)?.xtr_blur()
-//                (it as? XTRTextView)?.xtr_blur()
-//            }
+        fun xtr_endEditing(objectRef: String) {
+            firstResponder?.let {
+                (it as? XTRTextField)?.onBlur(true)
+                (it as? XTRTextView)?.onBlur(true)
+            }
         }
 
     }

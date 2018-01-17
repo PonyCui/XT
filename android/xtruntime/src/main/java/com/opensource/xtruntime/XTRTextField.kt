@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
@@ -34,10 +35,12 @@ class XTRTextField @JvmOverloads constructor(
         if (editText.isFocused) {
             XTRWindow.firstResponder = this
             val scriptObject = scriptObject() ?: return@OnFocusChangeListener
-            (XTRContext.invokeMethod(scriptObject, "handleShouldBeginEditing") as? Boolean)?.takeIf { !it }.let {
-                XTRTextField.xtr_blur(this.objectUUID ?: "")
-                scriptObject.release()
-                return@OnFocusChangeListener
+            (XTRContext.invokeMethod(scriptObject, "handleShouldBeginEditing") as? Boolean)?.let {
+                if (!it) {
+                    XTRTextField.xtr_blur(this.objectUUID ?: "")
+                    scriptObject.release()
+                    return@OnFocusChangeListener
+                }
             }
             if (clearsOnBeginEditing) {
                 editText.editableText?.clear()
@@ -196,6 +199,21 @@ class XTRTextField @JvmOverloads constructor(
     private var clearViewMode: Int = 0
         set(value) { resetClearView(); field = value; resetLayout(); }
 
+    fun onClear() {
+        var shouldClear = true
+        scriptObject()?.let { scriptObject ->
+            (XTRContext.invokeMethod(scriptObject, "handleShouldClear") as? Boolean)?.let {
+                if (!it) {
+                    shouldClear = false
+                }
+            }
+            scriptObject.release()
+        }
+        if (shouldClear) {
+            editText.editableText?.clear()
+        }
+    }
+
     private var leftView: XTRView? = null
         set(value) {
             field?.let { (it.parent as? ViewGroup)?.removeView(it) }
@@ -218,6 +236,31 @@ class XTRTextField @JvmOverloads constructor(
 
     private var rightViewMode: Int = 0
         set(value) { field = value; resetLayout(); }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (this.editText.isFocused && this.clearView?.visibility == View.VISIBLE ) {
+            onClear()
+        }
+        return true
+    }
+
+    fun onBlur(force: Boolean = false) {
+        if (this.editText.isFocused) {
+            if (!force) {
+                val scriptObject = this.scriptObject() ?: return
+                (XTRContext.invokeMethod(scriptObject, "handleShouldEndEditing", null) as? Boolean)?.let {
+                    if (!it) {
+                        scriptObject.release()
+                        return
+                    }
+                }
+                scriptObject.release()
+            }
+            this.editText.clearFocus()
+            val inputMethodManager = xtrContext.appContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
+        }
+    }
     
     class JSExports(val context: XTRContext): XTRComponentExport() {
 
@@ -355,12 +398,7 @@ class XTRTextField @JvmOverloads constructor(
 
         fun xtr_onClearButtonTap(objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTRTextField)?.let {
-                it.scriptObject()?.let {
-                    (XTRContext.invokeMethod(it, "handleShouldClear") as? Boolean)?.takeIf { !it }?.let {
-                        return
-                    }
-                }
-                it.editText.editableText?.clear()
+                it.onClear()
             }
         }
 
@@ -538,19 +576,7 @@ class XTRTextField @JvmOverloads constructor(
 
         fun xtr_blur(objectRef: String) {
             val textField = (XTMemoryManager.find(objectRef) as? XTRTextField) ?: return
-            if (textField.editText.isFocused) {
-                val scriptObject = textField.scriptObject() ?: return
-                (XTRContext.invokeMethod(scriptObject, "handleShouldEndEditing", null) as? Boolean)?.let {
-                    if (!it) {
-                        scriptObject.release()
-                        return
-                    }
-                }
-                textField.editText.clearFocus()
-                val inputMethodManager = context.appContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(textField.windowToken, 0)
-                scriptObject.release()
-            }
+            textField.onBlur()
         }
 
     }

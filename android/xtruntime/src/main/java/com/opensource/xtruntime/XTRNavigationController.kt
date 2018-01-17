@@ -118,11 +118,7 @@ class XTRNavigationController: XTRViewController() {
             intent?.getStringExtra("ChildViewControllerObjectUUID")?.let {
                 this.viewController = XTMemoryManager.find(it) as? XTRViewController
             }
-            this.viewController?.requestFragment()?.let {
-                val transaction = fragmentManager.beginTransaction()
-                transaction.replace(android.R.id.content, it)
-                transaction.commit()
-            }
+            this.viewController?.setContentView(this)
         }
 
         override fun onPause() {

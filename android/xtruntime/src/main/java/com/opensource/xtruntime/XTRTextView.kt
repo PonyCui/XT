@@ -149,6 +149,24 @@ class XTRTextView @JvmOverloads constructor(
 
     private var clearsOnBeginEditing = false
 
+    fun onBlur(force: Boolean = false) {
+        if (this.editText.isFocused) {
+            if (!force) {
+                val scriptObject = this.scriptObject() ?: return
+                (XTRContext.invokeMethod(scriptObject, "handleShouldEndEditing", null) as? Boolean)?.let {
+                    if (!it) {
+                        scriptObject.release()
+                        return
+                    }
+                }
+                scriptObject.release()
+            }
+            this.editText.clearFocus()
+            val inputMethodManager = xtrContext.appContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
+        }
+    }
+
     class JSExports(val context: XTRContext): XTRComponentExport() {
 
         override val name: String = "XTRTextView"
@@ -382,20 +400,8 @@ class XTRTextView @JvmOverloads constructor(
         }
 
         fun xtr_blur(objectRef: String) {
-            val textField = (XTMemoryManager.find(objectRef) as? XTRTextView) ?: return
-            if (textField.editText.isFocused) {
-                val scriptObject = textField.scriptObject() ?: return
-                (XTRContext.invokeMethod(scriptObject, "handleShouldEndEditing", null) as? Boolean)?.let {
-                    if (!it) {
-                        scriptObject.release()
-                        return
-                    }
-                }
-                textField.editText.clearFocus()
-                val inputMethodManager = context.appContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(textField.windowToken, 0)
-                scriptObject.release()
-            }
+            val textView = (XTMemoryManager.find(objectRef) as? XTRTextView) ?: return
+            textView.onBlur()
         }
 
     }

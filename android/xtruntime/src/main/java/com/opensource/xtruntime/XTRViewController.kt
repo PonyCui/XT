@@ -1,5 +1,6 @@
 package com.opensource.xtruntime
 
+import android.app.Activity
 import android.app.Fragment
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
@@ -11,7 +12,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by cuiminghui on 2017/9/5.
  */
-open class XTRViewController: XTRFragment(), XTRComponentInstance {
+open class XTRViewController: XTRFragment(), XTRComponentInstance, KeyboardHeightObserver {
 
     override var objectUUID: String? = null
     lateinit var xtrContext: XTRContext
@@ -29,6 +30,15 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
 
     var childViewControllers: List<XTRViewController> = listOf()
         internal set
+
+    fun setContentView(activity: Activity) {
+        this.requestFragment().let {
+            val transaction = activity.fragmentManager.beginTransaction()
+            transaction.replace(android.R.id.content, it)
+            transaction.commit()
+            setupKeyboardHeightProvider(activity)
+        }
+    }
 
     fun scriptObject(): V8Object? {
         return xtrContext.evaluateScript("objectRefs['$objectUUID']") as? V8Object
@@ -100,6 +110,49 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance {
             XTRContext.invokeMethod(it, "_didMoveToParentViewController", listOf(
                     parent?.objectUUID ?: V8.getUndefined()
             ))
+        }
+    }
+
+
+
+    private var keyboardHeightProvider: KeyboardHeightProvider? = null
+
+    private fun setupKeyboardHeightProvider(activity: Activity) {
+        keyboardHeightProvider = KeyboardHeightProvider(activity)
+        activity.findViewById(android.R.id.content).rootView?.post {
+            keyboardHeightProvider?.start()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        keyboardHeightProvider?.close()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        keyboardHeightProvider?.setKeyboardHeightObserver(null)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        keyboardHeightProvider?.setKeyboardHeightObserver(this)
+    }
+
+    override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
+        scriptObject()?.let {
+            if (height > 0) {
+                XTRContext.invokeMethod(it, "keyboardWillShow", listOf(
+                        XTRUtils.fromRect(XTRRect(
+                                0.0,
+                                0.0,
+                                this.view?.bounds?.width ?: 0.0,
+                                height.toDouble() / resources.displayMetrics.density), xtrContext.runtime), 0.25))
+            }
+            else {
+                XTRContext.invokeMethod(it, "keyboardWillHide", listOf(0.25))
+            }
+            it.release()
         }
     }
 

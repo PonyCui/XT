@@ -19,6 +19,18 @@ export class TextFieldSample extends XT.ViewController {
         this.addTestCases()
     }
 
+    keyboardWillShow(rect: XT.Rect, duration: number) {
+        XT.View.animationWithDuration(duration, () => {
+            this.contentView.transform = new XT.TransformMatrix().postTranslate(0.0, -200)
+        })
+    }
+
+    keyboardWillHide(duration: number) {
+        XT.View.animationWithDuration(duration, () => {
+            this.contentView.transform = new XT.TransformMatrix()
+        })
+    }
+
     viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         this.contentView.frame = this.view.bounds
