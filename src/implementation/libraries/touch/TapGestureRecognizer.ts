@@ -8,20 +8,23 @@ export class TapGestureRecognizer implements GestureRecongnizer {
     cancellable: boolean = false
     state: GestureRecognizerState = GestureRecognizerState.Possible
     tapsRequired = 1
-    fire?: (state: GestureRecognizerState, viewLocation?: { x: number, y: number }, absLocation?: { x: number, y: number }) => void
+    fire?: (state: GestureRecognizerState, absLocation?: { x: number, y: number }) => void
 
     private touchStartPoint?: { x: number, y: number }[]
+    private lastZeroTouch: Touch | undefined = undefined
 
     touchesBegan(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
-        this.touchStartPoint = touches.map(t => t.locationInView(owner as any))
+        this.lastZeroTouch = touches[0]
+        this.touchStartPoint = touches.map(t => t.rawLocation)
         this.state = GestureRecognizerState.Possible
         return false
     }
 
     touchesMoved(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
+        this.lastZeroTouch = touches[0]
         if (this.touchStartPoint) {
             let invalidPoints = this.touchStartPoint.filter(pt => {
-                return touches.filter(t => Math.abs(pt.x - t.locationInView(owner as any).x) > 8.0 || Math.abs(pt.y - t.locationInView(owner as any).y) > 8.0).length > 0
+                return touches.filter(t => Math.abs(pt.x - t.rawLocation.x) > 8.0 || Math.abs(pt.y - t.rawLocation.y) > 8.0).length > 0
             });
             if (invalidPoints.length > 0) {
                 this.touchStartPoint = undefined;
@@ -32,9 +35,10 @@ export class TapGestureRecognizer implements GestureRecongnizer {
     }
 
     touchesEnded(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
+        this.lastZeroTouch = touches[0]
         if (this.touchStartPoint) {
             let invalidPoints = this.touchStartPoint.filter(pt => {
-                return touches.filter(t => Math.abs(pt.x - t.locationInView(owner as any).x) > 8.0 || Math.abs(pt.y - t.locationInView(owner as any).y) > 8.0).length > 0
+                return touches.filter(t => Math.abs(pt.x - t.rawLocation.x) > 8.0 || Math.abs(pt.y - t.rawLocation.y) > 8.0).length > 0
             });
             if (invalidPoints.length == 0 && touches[0].tapCount >= this.tapsRequired) {
                 this.state = GestureRecognizerState.Recognized
@@ -52,10 +56,20 @@ export class TapGestureRecognizer implements GestureRecongnizer {
     }
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
+        this.lastZeroTouch = touches[0]
         this.state = GestureRecognizerState.Cancelled
-        this.fire && this.fire(this.state, undefined, undefined)
+        this.fire && this.fire(this.state, { x: 0, y: 0 })
         this.touchStartPoint = undefined;
         return false
+    }
+
+
+
+    locationInView(): { x: number, y: number } {
+        if (this.lastZeroTouch) {
+            return this.lastZeroTouch.locationInView(this.owner as any)
+        }
+        return { x: 0, y: 0 }
     }
 
 

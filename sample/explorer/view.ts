@@ -26,7 +26,7 @@ export class ViewSample extends XT.ViewController {
         this.addHierarchyView()
         this.addHierarchyViewWithClips()
         this.addBorderView()
-        this.contentView.contentSize = XT.SizeMake(0, 660)
+        this.contentView.contentSize = XT.SizeMake(0, 800)
     }
 
     addRegularView() {

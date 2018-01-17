@@ -99,17 +99,21 @@ open class XTRFragment: Fragment() {
             }
         }
 
+        private var currentTouchScriptObject: V8Object? = null
+
         override fun onTouchEvent(event: MotionEvent?): Boolean {
+            val s = System.currentTimeMillis()
             val xtrContext = view?.get()?.xtrContext ?: return false
             when (event?.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    currentTouchScriptObject = view?.get()?.scriptObject()
                     val pid = event.getPointerId(0).toString()
                     val timestamp = System.nanoTime() / 1000000
                     val point = XTRUtils.fromPoint(XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - this.topLayoutLength)), xtrContext.runtime)
-                    view?.get()?.scriptObject()?.let {
+                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTRContext.invokeMethod(it, "handlePointerDown", listOf(pid, timestamp, point))
-                        it.release()
                     }
+                    point.release()
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val timestamp = System.nanoTime() / 1000000
@@ -121,9 +125,8 @@ open class XTRFragment: Fragment() {
                             it.release()
                         }
                     }
-                    view?.get()?.scriptObject()?.let {
+                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTRContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points))
-                        it.release()
                     }
                     points.release()
                 }
@@ -131,26 +134,13 @@ open class XTRFragment: Fragment() {
                     val pid = event.getPointerId(0).toString()
                     val timestamp = System.nanoTime() / 1000000
                     val point = XTRUtils.fromPoint(XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - this.topLayoutLength)), xtrContext.runtime)
-                    view?.get()?.scriptObject()?.let {
+                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTRContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point))
                         it.release()
                     }
                 }
-    //                MotionEvent.ACTION_POINTER_DOWN -> {
-    //                    val pointerID = event.actionIndex
-    //                    val pid = event.getPointerId(pointerID).toString()
-    //                    val timestamp = System.nanoTime() / 1000000
-    //                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-    //                    xtrContext.invokeMethod(scriptObject, "handlePointerDown", listOf(pid, timestamp, point))
-    //                }
-    //                MotionEvent.ACTION_POINTER_UP -> {
-    //                    val pointerID = event.actionIndex
-    //                    val pid = event.getPointerId(pointerID).toString()
-    //                    val timestamp = System.nanoTime() / 1000000
-    //                    val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density).toDouble())
-    //                    xtrContext.invokeMethod(scriptObject, "handlePointerUp", listOf(pid, timestamp, point))
-    //                }
             }
+            System.out.println("touch ms >>> " + (System.currentTimeMillis() - s))
             return true
         }
 

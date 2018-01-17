@@ -47,8 +47,8 @@ export class ScrollView extends View implements ScrollerDelegate {
                 }
                 else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {
                     velocity && this.scroller._endDraggingWithDecelerationVelocity({
-                        x: -(velocity.x * 2 / 1),
-                        y: -(velocity.y * 2 / 1),
+                        x: -(velocity.x),
+                        y: -(velocity.y),
                     })
                 }
             }

@@ -41,24 +41,23 @@ export class Button extends View {
                 this.onHighlighted && this.onHighlighted(true)
             }
             else if (state == InteractionState.Changed) {
-                if (viewLocation) {
-                    if (viewLocation.x < -44.0 || viewLocation.y < -44.0 || viewLocation.x > this.bounds.width + 44.0 || viewLocation.y > this.bounds.height + 44.0) {
-                        if (this.highlighted) {
-                            this.highlighted = false
-                            View.animationWithDuration(0.15, () => {
-                                this.titleLabel.alpha = 1.0
-                                this.imageView.alpha = 1.0;
-                            });
-                            this.onHighlighted && this.onHighlighted(false)
-                        }
+                const loc = viewLocation()
+                if (loc.x < -44.0 || loc.y < -44.0 || loc.x > this.bounds.width + 44.0 || loc.y > this.bounds.height + 44.0) {
+                    if (this.highlighted) {
+                        this.highlighted = false
+                        View.animationWithDuration(0.15, () => {
+                            this.titleLabel.alpha = 1.0
+                            this.imageView.alpha = 1.0;
+                        });
+                        this.onHighlighted && this.onHighlighted(false)
                     }
-                    else {
-                        if (!this.highlighted) {
-                            this.highlighted = true;
-                            this.titleLabel.alpha = 0.25;
-                            this.imageView.alpha = 0.25;
-                            this.onHighlighted && this.onHighlighted(true)
-                        }
+                }
+                else {
+                    if (!this.highlighted) {
+                        this.highlighted = true;
+                        this.titleLabel.alpha = 0.25;
+                        this.imageView.alpha = 0.25;
+                        this.onHighlighted && this.onHighlighted(true)
                     }
                 }
             }
@@ -69,7 +68,8 @@ export class Button extends View {
                     this.imageView.alpha = 1.0;
                 });
                 this.onHighlighted && this.onHighlighted(false)
-                if (viewLocation && viewLocation.x > -44.0 && viewLocation.y > -44.0 && viewLocation.x < this.bounds.width + 44.0 && viewLocation.y < this.bounds.height + 44.0) {
+                const loc = viewLocation()
+                if (loc.x > -44.0 && loc.y > -44.0 && loc.x < this.bounds.width + 44.0 && loc.y < this.bounds.height + 44.0) {
                     this.onTouchUpInside && this.onTouchUpInside()
                 }
             }

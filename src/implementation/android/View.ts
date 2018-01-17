@@ -71,6 +71,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     _cachingFrame?: Rect
 
     public get frame(): Rect {
+        if (this._cachingFrame) { return this._cachingFrame }
         return XTRView.xtr_frame(this.objectRef);
     }
 
@@ -83,6 +84,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public get bounds(): Rect {
+        if (this._cachingFrame) { return { ...this._cachingFrame, x: 0, y: 0 } }
         return XTRView.xtr_bounds(this.objectRef);
     }
 
@@ -101,11 +103,15 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.frame = newFrame;
     }
 
+    _cachingTransform?: TransformMatrix
+
     public get transform(): TransformMatrix {
+        if (this._cachingTransform) { return this._cachingTransform }
         return XTRView.xtr_transform(this.objectRef)
     }
 
     public set transform(value: TransformMatrix) {
+        this._cachingTransform = value
         XTRView.xtr_setTransform(value, this.objectRef)
     }
 
@@ -209,10 +215,14 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         XTRView.xtr_setTag(value, this.objectRef);
     }
 
+    private _cachingSuperview: View | null | undefined = undefined
+
     public get superview(): View | undefined {
+        if (this._cachingSuperview !== undefined) { return this._cachingSuperview === null ? undefined : this._cachingSuperview }
         const viewRef = XTRView.xtr_superview(this.objectRef)
         if (typeof viewRef !== "string") { return undefined }
-        return new View(viewRef)
+        this._cachingSuperview = new View(viewRef)
+        return this._cachingSuperview
     }
 
     public get subviews(): View[] {
@@ -229,6 +239,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     removeFromSuperview() {
+        this._cachingSuperview = null
         XTRView.xtr_removeFromSuperview(this.objectRef);
     }
 
@@ -481,11 +492,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.gestureRecongnizers.push(tapGesture);
     }
 
-    public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+    public set onLongPress(value: ((state: InteractionState, viewLocation: () => Point, absLocation: Point) => void) | undefined) {
         const longPressGesture = new LongPressGestureRecognizer();
         longPressGesture.owner = this
         longPressGesture.minimumPressDuration = this._longPressDuration
-        longPressGesture.fire = (state, viewLocation, absLocation) => {
+        longPressGesture.fire = (state, absLocation) => {
             let interactionState = InteractionState.Began;
             switch (state) {
                 case GestureRecognizerState.Began:
@@ -501,15 +512,15 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, viewLocation, absLocation);
+            value && value(interactionState, longPressGesture.locationInView, absLocation);
         };
         this.gestureRecongnizers.push(longPressGesture);
     }
 
-    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point) => void) | undefined) {
+    public set onPan(value: ((state: InteractionState, viewLocation: () => Point, absLocation: Point, velocity: Point, translation: Point) => void) | undefined) {
         const panGesture = new PanGestureRecognizer();
         panGesture.owner = this
-        panGesture.fire = (state, viewLocation, absLocation) => {
+        panGesture.fire = (state, absLocation) => {
             let interactionState = InteractionState.Began;
             switch (state) {
                 case GestureRecognizerState.Began:
@@ -525,7 +536,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, viewLocation, absLocation, panGesture.velocity);
+            value && value(interactionState, panGesture.locationInView, absLocation, panGesture.velocity, panGesture.translation);
         };
         this.gestureRecongnizers.push(panGesture);
     }

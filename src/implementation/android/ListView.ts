@@ -15,6 +15,7 @@ export class ListCell extends View {
     selectionView: View = new View();
     contentView: View = new View();
     _isBusy = false
+    _selectedTime: number = 0
     context?: any
 
     constructor() {
@@ -28,6 +29,10 @@ export class ListCell extends View {
         this.userInteractionEnabled = true
         this.longPressDuration = 0.05
         this.onTap = () => {
+            if (new Date().getTime() - this._selectedTime < 300) {
+                return
+            }
+            this._selectedTime = new Date().getTime()
             this.highligted = true
             this.selectionView.hidden = false
             this.didSelected();
@@ -43,6 +48,10 @@ export class ListCell extends View {
                 this.selectionView.hidden = false
             }
             else if (state == InteractionState.Ended) {
+                if (new Date().getTime() - this._selectedTime < 300) {
+                    return
+                }
+                this._selectedTime = new Date().getTime()
                 this.didSelected();
                 View.animationWithDuration(0.15, () => {
                     this.highligted = false

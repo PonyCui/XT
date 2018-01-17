@@ -1,4 +1,4 @@
-import {InteractionState} from '../../main.android';
+import { InteractionState } from '../../main.android';
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
 import { ImageView, Image } from "./ImageView";
@@ -28,11 +28,10 @@ export class Button extends View {
                 this.handleHighlighted(true)
             }
             else if (state == InteractionState.Changed) {
-                if (viewLocation) {
-                    const highlighted = !(viewLocation.x < -44 || viewLocation.x > this.bounds.width + 44 || viewLocation.y < -44 || viewLocation.y > this.bounds.height + 44)
-                    if (this.highlighted !== highlighted) {
-                        this.handleHighlighted(highlighted);
-                    }
+                const loc = viewLocation()
+                const highlighted = !(loc.x < -44 || loc.x > this.bounds.width + 44 || loc.y < -44 || loc.y > this.bounds.height + 44)
+                if (this.highlighted !== highlighted) {
+                    this.handleHighlighted(highlighted);
                 }
             }
             else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {

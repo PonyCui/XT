@@ -627,12 +627,12 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.gestureRecongnizers.unshift(tapGesture);
     }
 
-    public set onLongPress(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point) => void) | undefined) {
+    public set onLongPress(value: ((state: InteractionState, viewLocation: () => Point, absLocation: Point) => void) | undefined) {
         this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof LongPressGestureRecognizer))
         const longPressGesture = new LongPressGestureRecognizer();
         longPressGesture.owner = this
         longPressGesture.minimumPressDuration = this._longPressDuration
-        longPressGesture.fire = (state, viewLocation, absLocation) => {
+        longPressGesture.fire = (state, absLocation) => {
             let interactionState = InteractionState.Began;
             switch (state) {
                 case GestureRecognizerState.Began:
@@ -648,16 +648,16 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, viewLocation, absLocation);
+            value && value(interactionState, longPressGesture.locationInView, absLocation);
         };
         this.gestureRecongnizers.push(longPressGesture);
     }
 
-    public set onPan(value: ((state: InteractionState, viewLocation?: Point, absLocation?: Point, velocity?: Point, translation?: Point) => void) | undefined) {
+    public set onPan(value: ((state: InteractionState, viewLocation: () => Point, absLocation: Point, velocity: Point, translation: Point) => void) | undefined) {
         this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof PanGestureRecognizer))
         const panGesture = new PanGestureRecognizer();
         panGesture.owner = this
-        panGesture.fire = (state, viewLocation, absLocation) => {
+        panGesture.fire = (state, absLocation) => {
             let interactionState = InteractionState.Began;
             switch (state) {
                 case GestureRecognizerState.Began:
@@ -673,7 +673,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, viewLocation, absLocation, panGesture.velocity, panGesture.translation);
+            value && value(interactionState, panGesture.locationInView, absLocation, panGesture.velocity, panGesture.translation);
         };
         this.gestureRecongnizers.push(panGesture);
     }
