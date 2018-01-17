@@ -10,8 +10,8 @@ import { Image } from './ImageView';
 
 export class TextField extends View {
 
-    constructor() {
-        super(XTRTextField)
+    constructor(ref?: any) {
+        super(ref || XTRTextField)
     }
 
     public get text(): string {

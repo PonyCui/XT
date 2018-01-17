@@ -45,7 +45,7 @@ class XTRButton @JvmOverloads constructor(
         val scale = resources.displayMetrics.density
         val imageWidth = (this.imageView.image?.size?.width ?: 0.0)
         val imageHeight = (this.imageView.image?.size?.height ?: 0.0)
-        val textSize = this.titleLabel.intrinsicContentSize(this.width.toDouble() / scale  - imageWidth - inset) ?: XTRSize(0.0, 0.0)
+        val textSize = this.titleLabel.intrinsicContentSize(this.bounds.width / scale  - imageWidth - inset) ?: XTRSize(0.0, 0.0)
         val textWidth = textSize.width
         val textHeight = textSize.height
         if (isVertical) {
@@ -92,6 +92,8 @@ class XTRButton @JvmOverloads constructor(
         override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_titleLabel", "xtr_titleLabel", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_imageView", "xtr_imageView", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_title", "xtr_title", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setTitle", "xtr_setTitle", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf(String::class.java))
@@ -115,6 +117,14 @@ class XTRButton @JvmOverloads constructor(
             return managedObject.objectUUID
         }
 
+        fun xtr_titleLabel(objectRef: String): String {
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.objectUUID ?: ""
+        }
+
+        fun xtr_imageView(objectRef: String): String {
+            return (XTMemoryManager.find(objectRef) as? XTRButton)?.imageView?.objectUUID ?: ""
+        }
+
         fun xtr_title(objectRef: String): String {
             return (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
                 return@let XTRLabel.xtr_text(it.objectUUID ?: "")
@@ -122,8 +132,9 @@ class XTRButton @JvmOverloads constructor(
         }
 
         fun xtr_setTitle(value: String, objectRef: String) {
-            (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
-                XTRLabel.xtr_setText(value, it.objectUUID ?: "")
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.let {
+                XTRLabel.xtr_setText(value, it.titleLabel.objectUUID ?: "")
+                it.resetContents()
             }
         }
 
@@ -134,8 +145,9 @@ class XTRButton @JvmOverloads constructor(
         }
 
         fun xtr_setFont(fontRef: String, objectRef: String) {
-            (XTMemoryManager.find(objectRef) as? XTRButton)?.titleLabel?.let {
-                XTRLabel.xtr_setFont(fontRef, it.objectUUID ?: "")
+            (XTMemoryManager.find(objectRef) as? XTRButton)?.let {
+                XTRLabel.xtr_setFont(fontRef, it.titleLabel.objectUUID ?: "")
+                it.resetContents()
             }
         }
 

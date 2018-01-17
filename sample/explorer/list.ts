@@ -363,6 +363,7 @@ export class List extends XT.ViewController {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
                 name: "Spring Animation",
+                isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new SpringAnimationSample())

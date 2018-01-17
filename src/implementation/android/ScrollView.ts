@@ -116,7 +116,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.resetScroller();
     }
 
-    private _bounces: boolean = false
+    private _bounces: boolean = true
 
     public get bounces() {
         return this._bounces;

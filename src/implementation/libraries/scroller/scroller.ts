@@ -69,6 +69,9 @@ export class Scroller {
         if (!this.scrollEnabled) {
             return;
         }
+        if (Math.abs(delta.x) < 0.1 && Math.abs(delta.y) < 0.1) {
+            return
+        }
         if (this._dragging) {
             const originalOffset = this.delegate.contentOffset;
             let proposedOffset = { ...originalOffset };

@@ -40,7 +40,7 @@ export class TapGestureRecognizer implements GestureRecongnizer {
             let invalidPoints = this.touchStartPoint.filter(pt => {
                 return touches.filter(t => Math.abs(pt.x - t.rawLocation.x) > 8.0 || Math.abs(pt.y - t.rawLocation.y) > 8.0).length > 0
             });
-            if (invalidPoints.length == 0 && touches[0].tapCount >= this.tapsRequired) {
+            if (invalidPoints.length == 0 && touches[0].tapCount == this.tapsRequired) {
                 this.state = GestureRecognizerState.Recognized
                 this.fire && this.fire(this.state)
                 this.touchStartPoint = undefined;
@@ -62,8 +62,6 @@ export class TapGestureRecognizer implements GestureRecongnizer {
         this.touchStartPoint = undefined;
         return false
     }
-
-
 
     locationInView(): { x: number, y: number } {
         if (this.lastZeroTouch) {

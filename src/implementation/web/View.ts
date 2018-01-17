@@ -648,7 +648,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, longPressGesture.locationInView, absLocation);
+            value && value(interactionState, longPressGesture.locationInView.bind(longPressGesture), absLocation);
         };
         this.gestureRecongnizers.push(longPressGesture);
     }
@@ -673,7 +673,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, panGesture.locationInView, absLocation, panGesture.velocity, panGesture.translation);
+            value && value(interactionState, panGesture.locationInView.bind(panGesture), absLocation, panGesture.velocity, panGesture.translation);
         };
         this.gestureRecongnizers.push(panGesture);
     }

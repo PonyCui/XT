@@ -40,7 +40,7 @@
     if (URL != nil) {
         [[[NSURLSession sharedSession] dataTaskWithURL:URL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (error == nil && data != nil) {
-                UIImage *image = [UIImage imageWithData:data scale:scale];
+                UIImage *image = [[UIImage imageWithData:data scale:scale] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
                 if (image != nil) {
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         XTRImage *obj = [[XTRImage alloc] initWithImage:image];
@@ -91,7 +91,7 @@
             }
         }
         if ([targetData isKindOfClass:[NSData class]]) {
-            UIImage *targetImage = [UIImage imageWithData:targetData scale:scale];
+            UIImage *targetImage = [[UIImage imageWithData:targetData scale:scale] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
             if (targetImage != nil) {
                 XTRImage *obj = [[XTRImage alloc] initWithImage:targetImage];
                 XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
@@ -118,7 +118,7 @@
 + (void)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale success:(JSValue *)success {
     NSData *data = [[NSData alloc] initWithBase64EncodedString:value options:kNilOptions];
     if (data != nil) {
-        UIImage *image = [UIImage imageWithData:data scale:scale];
+        UIImage *image = [[UIImage imageWithData:data scale:scale] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         if (image != nil) {
             XTRImage *obj = [[XTRImage alloc] initWithImage:image];
             XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];

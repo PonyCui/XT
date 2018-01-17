@@ -160,11 +160,14 @@ class XTRLabel @JvmOverloads constructor(
         }
 
     override fun intrinsicContentSize(width: Double): XTRSize? {
+        val oldMaxWidth = this.textView.maxWidth
+        this.textView.maxWidth = (width * this.resources.displayMetrics.density).toInt()
         this.textView.measure(
                 MeasureSpec.makeMeasureSpec((width * this.resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST),
                 MeasureSpec.makeMeasureSpec((Double.MAX_VALUE * this.resources.displayMetrics.density).toInt(), MeasureSpec.AT_MOST)
         )
-        return XTRSize(this.textView.measuredWidth.toDouble() / this.resources.displayMetrics.density, this.textView.measuredHeight.toDouble() / this.resources.displayMetrics.density)
+        this.textView.maxWidth = oldMaxWidth
+        return XTRSize(Math.ceil(this.textView.measuredWidth.toDouble() / this.resources.displayMetrics.density), Math.ceil(this.textView.measuredHeight.toDouble() / this.resources.displayMetrics.density))
     }
 
     class JSExports(val context: XTRContext): XTRComponentExport() {

@@ -1,6 +1,7 @@
 package com.opensource.xtruntime
 
 import android.graphics.*
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -89,9 +90,6 @@ open class XTRView @JvmOverloads constructor(
 
     override fun requestLayout() {
         if (isLayoutRequested) {
-            this.post {
-                super.requestLayout()
-            }
             return
         }
         super.requestLayout()

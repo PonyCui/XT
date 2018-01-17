@@ -9,11 +9,13 @@ import { Font } from "./Font";
 
 export class Button extends View {
 
-    readonly imageView = new ImageView()
-    readonly titleLabel = new Label()
+    readonly imageView: ImageView
+    readonly titleLabel: Label
 
-    constructor() {
-        super(XTRButton)
+    constructor(ref?: any) {
+        super(ref || XTRButton)
+        this.titleLabel = new Label(XTRButton.xtr_titleLabel(this.objectRef))
+        this.imageView = new ImageView(XTRButton.xtr_imageView(this.objectRef))
         this.setupTouches();
     }
 
@@ -56,7 +58,7 @@ export class Button extends View {
     }
 
     public set font(value: Font) {
-        XTRButton.xtr_setFont(value.objectRef);
+        XTRButton.xtr_setFont(value.objectRef, this.objectRef);
     }
 
     public get image(): Image | undefined {
@@ -108,7 +110,7 @@ export class Button extends View {
     }
 
     handleHighlighted(highligted: boolean) {
-        this.highlighted = highligted
+        this.highlighted = highligted        
         if (this.onHighlighted) {
             this.onHighlighted && this.onHighlighted(highligted);
         }

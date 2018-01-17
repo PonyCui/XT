@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.app.Fragment
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.util.AttributeSet
@@ -102,7 +103,6 @@ open class XTRFragment: Fragment() {
         private var currentTouchScriptObject: V8Object? = null
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {
-            val s = System.currentTimeMillis()
             val xtrContext = view?.get()?.xtrContext ?: return false
             when (event?.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -140,7 +140,6 @@ open class XTRFragment: Fragment() {
                     }
                 }
             }
-            System.out.println("touch ms >>> " + (System.currentTimeMillis() - s))
             return true
         }
 

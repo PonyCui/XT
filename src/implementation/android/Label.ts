@@ -24,8 +24,8 @@ export enum LineBreakMode {
 
 export class Label extends View {
 
-    constructor() {
-        super(XTRLabel)
+    constructor(ref?: any) {
+        super(ref || XTRLabel)
     }
 
     public get text(): string {

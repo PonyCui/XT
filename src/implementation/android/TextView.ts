@@ -7,8 +7,8 @@ import { Rect, RectZero } from '../../interface/Rect';
 
 export class TextView extends View {
 
-    constructor() {
-        super(XTRTextView)
+    constructor(ref?: any) {
+        super(ref || XTRTextView)
     }
 
     public get text(): string {

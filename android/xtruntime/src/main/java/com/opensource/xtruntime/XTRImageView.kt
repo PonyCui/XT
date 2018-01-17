@@ -27,6 +27,7 @@ class XTRImageView @JvmOverloads constructor(
             canvas?.let { canvas ->
                 sharedImagePaint.reset()
                 sharedImagePaint.isAntiAlias = true
+                sharedImagePaint.isFilterBitmap = true
                 sharedImagePaint.alpha = (alpha * 255).toInt()
                 if (image.renderingMode == 2) {
                     sharedImagePaint.colorFilter = PorterDuffColorFilter(tintColor?.intColor() ?: 0, PorterDuff.Mode.SRC_IN)

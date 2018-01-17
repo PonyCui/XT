@@ -4,8 +4,8 @@ import { Color } from '../../interface/Color';
 
 export class CanvasView extends View {
 
-    constructor() {
-        super(XTRCanvasView)
+    constructor(ref?: any) {
+        super(ref || XTRCanvasView)
     }
 
     public get globalAlpha(): number {

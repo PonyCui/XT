@@ -75,8 +75,8 @@ export enum ContentMode {
 
 export class ImageView extends View {
 
-    constructor() {
-        super(XTRImageView)
+    constructor(ref?: any) {
+        super(ref || XTRImageView)
     }
 
     public get image(): Image | undefined {

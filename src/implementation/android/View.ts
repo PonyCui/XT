@@ -308,8 +308,8 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         if (this._constraints.length > 0) {
             let viewMapping: { [key: string]: View } = {}
             this._constraints.forEach(item => {
-                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).objectUUID] = item.firstItem as any }
-                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).objectUUID] = item.secondItem as any }
+                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).objectRef] = item.firstItem as any }
+                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).objectRef] = item.secondItem as any }
             })
             const view = new AutoLayout.View({
                 constraints: this._constraints.map(item => (item as any).toALObject()),
@@ -350,7 +350,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {
-        return XTRView.xtr_intrinsicContentSize(width || Infinity);
+        return XTRView.xtr_intrinsicContentSize(width || Infinity, this.objectRef);
     }
 
     public addConstraint(constraint: LayoutConstraint) {
@@ -512,7 +512,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, longPressGesture.locationInView, absLocation);
+            value && value(interactionState, longPressGesture.locationInView.bind(longPressGesture), absLocation);
         };
         this.gestureRecongnizers.push(longPressGesture);
     }
@@ -536,7 +536,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
                     interactionState = InteractionState.Cancelled;
                     break;
             }
-            value && value(interactionState, panGesture.locationInView, absLocation, panGesture.velocity, panGesture.translation);
+            value && value(interactionState, panGesture.locationInView.bind(panGesture), absLocation, panGesture.velocity, panGesture.translation);
         };
         this.gestureRecongnizers.push(panGesture);
     }

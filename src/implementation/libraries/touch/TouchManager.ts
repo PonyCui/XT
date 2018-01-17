@@ -79,7 +79,7 @@ export class TouchManager {
         if (this.target) {
             for (const pid in points) {
                 this.touches[pid] = {
-                    _maybeTap: this.touches[pid]._maybeTap === true && (Math.abs(this.touches[pid]._startPoint.x - points[pid].x) < 8 || Math.abs(this.touches[pid]._startPoint.y - points[pid].y) < 8),
+                    _maybeTap: this.touches[pid] && this.touches[pid]._maybeTap === true && (Math.abs(this.touches[pid]._startPoint.x - points[pid].x) < 8 || Math.abs(this.touches[pid]._startPoint.y - points[pid].y) < 8),
                     _startPoint: this.touches[pid]._startPoint,
                     timestamp: timestamp,
                     phase: TouchPhase.Moved,
