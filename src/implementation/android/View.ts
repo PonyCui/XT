@@ -71,7 +71,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     _cachingFrame?: Rect
 
     public get frame(): Rect {
-        if (this._cachingFrame) { return this._cachingFrame }
+        if (this._cachingFrame) { return { ...this._cachingFrame } }
         return XTRView.xtr_frame(this.objectRef);
     }
 

@@ -3,6 +3,7 @@
 export class TextFieldSample extends XT.ViewController {
 
     contentView = new XT.ScrollView()
+    textFields: XT.TextField[] = []
 
     viewDidLoad() {
         super.viewDidLoad()
@@ -19,16 +20,8 @@ export class TextFieldSample extends XT.ViewController {
         this.addTestCases()
     }
 
-    keyboardWillShow(rect: XT.Rect, duration: number) {
-        XT.View.animationWithDuration(duration, () => {
-            this.contentView.transform = new XT.TransformMatrix().postTranslate(0.0, -200)
-        })
-    }
-
-    keyboardWillHide(duration: number) {
-        XT.View.animationWithDuration(duration, () => {
-            this.contentView.transform = new XT.TransformMatrix()
-        })
+    keyboardAvoidingMode() {
+        return XT.KeyboardAvoidingMode.Pan
     }
 
     viewWillLayoutSubviews() {
@@ -39,8 +32,11 @@ export class TextFieldSample extends XT.ViewController {
     addTestCases() {
         this.addRegularTextField()
         this.addAdditionalViewTextField()
-        this.addPasswrdTextField()
-        this.contentView.contentSize = XT.SizeMake(0, 360)
+        this.addPasswordTextField()
+        this.contentView.contentSize = XT.SizeMake(0, 1000)
+        this.contentView.onScroll = () => {
+            this.view.window && this.view.window.endEditing()
+        }
     }
 
     addRegularTextField() {
@@ -61,6 +57,11 @@ export class TextFieldSample extends XT.ViewController {
         view.textAlignment = XT.TextAlignment.Center
         view.clearButtonMode = XT.TextFieldViewMode.WhileEditing
         view.placeholder = "Tap to input text."
+        view.shouldReturn = () => {
+            this.textFields[1].focus()
+            return true
+        }
+        this.textFields.push(view)
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)
@@ -68,7 +69,7 @@ export class TextFieldSample extends XT.ViewController {
 
     addAdditionalViewTextField() {
         const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 120, 999, 240)
+        wrapper.frame = XT.RectMake(15, 160, 999, 120)
         const summary = new XT.Label()
         summary.frame = XT.RectMake(0, 8, 999, 44)
         summary.font = XT.Font.systemFontOfSize(11)
@@ -87,14 +88,19 @@ export class TextFieldSample extends XT.ViewController {
         leftView.frame = XT.RectMake(0, 0, 15, 36)
         view.leftView = leftView
         view.leftViewMode = XT.TextFieldViewMode.Always
+        this.textFields.push(view)
+        view.shouldReturn = () => {
+            this.textFields[2].focus()
+            return true
+        }
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)
     }
 
-    addPasswrdTextField() {
+    addPasswordTextField() {
         const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 240, 999, 120)
+        wrapper.frame = XT.RectMake(15, 320, 999, 120)
         const summary = new XT.Label()
         summary.frame = XT.RectMake(0, 8, 999, 44)
         summary.font = XT.Font.systemFontOfSize(11)
@@ -111,6 +117,11 @@ export class TextFieldSample extends XT.ViewController {
         view.placeholder = "Input Password Here."
         view.secureTextEntry = true
         view.returnKeyType = XT.ReturnKeyType.Go
+        this.textFields.push(view)
+        view.shouldReturn = () => {
+            this.textFields[0].focus()
+            return true
+        }
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)

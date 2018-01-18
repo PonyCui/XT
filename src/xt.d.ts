@@ -493,6 +493,8 @@ export class ScrollView extends View {
     alwaysBounceVertical: boolean
     alwaysBounceHorizontal: boolean
     onScroll?: (scrollView: ScrollView) => void
+    setContentOffset(value: Point, animated: boolean): void
+    scrollRectToVisible(rect: Rect, animated: boolean): void
 }
 
 export class TransformMatrix {
@@ -518,8 +520,14 @@ export class TransformMatrix {
 
 export class Window extends View {
     rootViewController?: ViewController
+    firstResponder?: View
     makeKeyAndVisible(): void
     endEditing(): void
+}
+
+export enum KeyboardAvoidingMode {
+    None,
+    Pan,
 }
 
 export class ViewController implements Releasable {
@@ -543,6 +551,7 @@ export class ViewController implements Releasable {
     removeFromParentViewController(): void
     willMoveToParentViewController(parent?: ViewController): void
     didMoveToParentViewController(parent?: ViewController): void
+    keyboardAvoidingMode(): KeyboardAvoidingMode
     keyboardWillShow(frame: Rect, duration: number): void
     keyboardWillHide(duration: number): void
     supportOrientations: DeviceOrientation[]
@@ -828,6 +837,7 @@ declare global {
         ScrollView: typeof ScrollView,
         TransformMatrix: typeof TransformMatrix,
         Window: typeof Window,
+        KeyboardAvoidingMode: typeof KeyboardAvoidingMode,
         ViewController: typeof ViewController,
         NavigationBarButtonItem: typeof NavigationBarButtonItem,
         NavigationBar: typeof NavigationBar,

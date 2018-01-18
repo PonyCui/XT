@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.util.AttributeSet
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
 import com.opensource.xtmem.XTManagedObject
 import com.opensource.xtmem.XTMemoryManager
 
@@ -42,10 +43,12 @@ class XTRWindow @JvmOverloads constructor(
         override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "create", "create", arrayOf())
+            exports.registerJavaMethod(this, "xtr_bounds", "xtr_bounds", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_rootViewController", "xtr_rootViewController", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setRootViewController", "xtr_setRootViewController", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_makeKeyAndVisible", "xtr_makeKeyAndVisible", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setStatusBarHidden", "xtr_setStatusBarHidden", arrayOf(Boolean::class.java))
+            exports.registerJavaMethod(this, "xtr_firstResponder", "xtr_firstResponder", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_endEditing", "xtr_endEditing", arrayOf(String::class.java))
             return exports
         }
@@ -56,6 +59,19 @@ class XTRWindow @JvmOverloads constructor(
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)
             return managedObject.objectUUID
+        }
+
+        fun xtr_bounds(objectRef: String): V8Value {
+            return (XTMemoryManager.find(objectRef) as? XTRWindow)?.rootViewController?.requestFragment()?.rootView?.let {
+                return XTRUtils.fromRect(
+                        XTRRect(
+                                0.0,
+                                0.0,
+                                it.width.toDouble() / it.resources.displayMetrics.density.toDouble(),
+                                it.height.toDouble() / it.resources.displayMetrics.density.toDouble()
+                                ), context.runtime
+                )
+            } ?: XTRUtils.fromRect(XTRRect(0.0,0.0,0.0,0.0), context.runtime)
         }
 
         fun xtr_rootViewController(objectRef: String): String? {
@@ -84,11 +100,28 @@ class XTRWindow @JvmOverloads constructor(
             }
         }
 
+        fun xtr_firstResponder(objectRef: String): String? {
+            return (firstResponder as? XTRView)?.objectUUID
+        }
+
     }
 
     companion object {
 
         var firstResponder: Any? = null
+            set(value) {
+                field = value
+                (field as? XTRView)?.let {
+                    it.xtrContext.bridge?.get()?.keyWindow?.let {
+                        it.rootViewController?.let {
+                            it.handleKeyboardHeightChanged()
+                            it.childViewControllers?.forEach {
+                                it.handleKeyboardHeightChanged()
+                            }
+                        }
+                    }
+                }
+            }
 
     }
 

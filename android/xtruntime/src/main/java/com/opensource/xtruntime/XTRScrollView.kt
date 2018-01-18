@@ -21,6 +21,30 @@ class XTRScrollView @JvmOverloads constructor(
     val innerView = XTMemoryManager.find(XTRView.create()) as XTRView
     val horizontalScrollIndicator = XTMemoryManager.find(XTRView.create()) as XTRView
     val verticalScrollIndicator = XTMemoryManager.find(XTRView.create()) as XTRView
+    var contentOffset: XTRPoint = XTRPoint(0.0, 0.0)
+        set(value) {
+            if (field.x == value.x && field.y == value.y) {
+                return
+            }
+            if (XTRViewAnimator.animationEnabled) {
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.contentOffset.x", (field.x).toFloat() as Any, value.x.toFloat() as Any, { x ->
+                    this.contentOffset = XTRPoint((x as Float).toDouble(), this.contentOffset.y)
+                }))
+                XTRViewAnimator.addAnimation(XTRViewAnimationProperty("$objectUUID.contentOffset.y", (field.y).toFloat() as Any, value.y.toFloat() as Any, { y ->
+                    this.contentOffset = XTRPoint(this.contentOffset.x, (y as Float).toDouble())
+                }))
+                return
+            }
+            field = value
+            this.innerView.scrollX = (value.x * this.resources.displayMetrics.density).toInt()
+            this.innerView.scrollY = (value.y * this.resources.displayMetrics.density).toInt()
+            this.innerView.requestLayout()
+            scriptObject()?.let {
+                XTRContext.invokeMethod(it, "scrollerDidScroll")
+                it.release()
+            }
+        }
+
 
     init {
         clipsToBounds = true
@@ -80,9 +104,7 @@ class XTRScrollView @JvmOverloads constructor(
         fun xtr_setContentOffset(value: V8Object, objectRef: String) {
             val scrollView = (XTMemoryManager.find(objectRef) as? XTRScrollView) ?: return
             XTRUtils.toPoint(value)?.let {
-                scrollView.innerView.scrollX = (it.x * scrollView.resources.displayMetrics.density).toInt()
-                scrollView.innerView.scrollY = (it.y * scrollView.resources.displayMetrics.density).toInt()
-                scrollView.innerView.requestLayout()
+                scrollView.contentOffset = it
             }
         }
 

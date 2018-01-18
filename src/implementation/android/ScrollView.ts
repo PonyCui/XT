@@ -75,12 +75,37 @@ export class ScrollView extends View implements ScrollerDelegate {
     public set contentOffset(value: Point) {
         XTRScrollView.xtr_setContentOffset(value, this.objectRef);
         (this.innerView as any)._originOffset = value;
-        this.resetIndicator();
         this.scrollerDidScroll()
     }
 
     setContentOffset(value: Point, animated: boolean): void {
-        this.contentOffset = value;
+        if (animated) {
+            XT.View.animationWithBouncinessAndSpeed(0.0, 8.0, () => {
+                this.contentOffset = value;
+            })
+        }
+        else {
+            this.contentOffset = value;
+        }
+    }
+
+    scrollRectToVisible(rect: Rect, animated: boolean): void {
+        let targetContentOffset = { ...this.contentOffset }
+        if (rect.x < this.contentOffset.x) {
+            targetContentOffset.x = rect.x
+        }
+        else if (rect.x + rect.width > this.contentOffset.x + this.bounds.width) {
+            targetContentOffset.x = rect.x + rect.width - this.bounds.width
+        }
+        if (rect.y < this.contentOffset.y) {
+            targetContentOffset.y = rect.y
+        }
+        else if (rect.y + rect.height > this.contentOffset.y + this.bounds.height) {
+            targetContentOffset.y = rect.y + rect.height - this.bounds.height
+        }
+        targetContentOffset.x = Math.max(0, Math.min(this.contentSize.width - this.bounds.width, targetContentOffset.x))
+        targetContentOffset.y = Math.max(0, Math.min(this.contentSize.height - this.bounds.height, targetContentOffset.y))
+        this.setContentOffset(targetContentOffset, animated)
     }
 
     private _isDirectionalLockEnabled: boolean = true

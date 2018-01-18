@@ -80,7 +80,6 @@ export class ScrollView extends View implements ScrollerDelegate {
 
     private decelarating: boolean = false
 
-
     private _contentSize: Size = SizeZero
 
     public get contentSize() {
@@ -99,13 +98,51 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     public set contentOffset(value: Point) {
+        if (View._animationEnabled) {
+            if (this.contentOffset.x != value.x) { View.addAnimation(this as any, "contentOffsetX", this.contentOffset.x, value.x); }
+            if (this.contentOffset.y != value.y) { View.addAnimation(this as any, "contentOffsetY", this.contentOffset.y, value.y); }
+            return;
+        }
         this.nativeObject.xtr_setContentOffset(value);
-        this.resetIndicator();
         this.scrollerDidScroll()
     }
 
+    private set contentOffsetX(value: number) {
+        this.contentOffset = { ...this.contentOffset, x: value };
+    }
+
+    private set contentOffsetY(value: number) {
+        this.contentOffset = { ...this.contentOffset, y: value };
+    }
+
     setContentOffset(value: Point, animated: boolean): void {
-        this.contentOffset = value;
+        if (animated) {
+            XT.View.animationWithBouncinessAndSpeed(0.0, 4.0, () => {
+                this.contentOffset = value;
+            })
+        }
+        else {
+            this.contentOffset = value;
+        }
+    }
+
+    scrollRectToVisible(rect: Rect, animated: boolean): void {
+        let targetContentOffset = { ...this.contentOffset }
+        if (rect.x < this.contentOffset.x) {
+            targetContentOffset.x = rect.x
+        }
+        else if (rect.x + rect.width > this.contentOffset.x + this.bounds.width) {
+            targetContentOffset.x = rect.x + rect.width - this.bounds.width
+        }
+        if (rect.y < this.contentOffset.y) {
+            targetContentOffset.y = rect.y
+        }
+        else if (rect.y + rect.height > this.contentOffset.y + this.bounds.height) {
+            targetContentOffset.y = rect.y + rect.height - this.bounds.height
+        }
+        targetContentOffset.x = Math.max(0, Math.min(this.contentSize.width - this.bounds.width, targetContentOffset.x))
+        targetContentOffset.y = Math.max(0, Math.min(this.contentSize.height - this.bounds.height, targetContentOffset.y))
+        this.setContentOffset(targetContentOffset, animated)
     }
 
     private _isDirectionalLockEnabled: boolean = true

@@ -11,6 +11,11 @@ interface NavigationControllerInterface extends ViewController {
     popToRootViewController(animated?: boolean): ViewController[]
 }
 
+export enum KeyboardAvoidingMode {
+    None,
+    Pan,
+}
+
 export class ViewController implements Releasable {
 
     retain(): this {
@@ -43,6 +48,7 @@ export class ViewController implements Releasable {
     willMoveToParentViewController(parent?: ViewController): void { }
     didMoveToParentViewController(parent?: ViewController): void { }
 
+    keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }
     keyboardWillShow(frame: Rect, duration: number): void { }
     keyboardWillHide(duration: number): void { }
 

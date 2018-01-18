@@ -7,7 +7,11 @@ import { TouchManager } from "../libraries/touch/TouchManager";
 export class Window extends View {
 
     constructor(ref: any) {
-        super(XTRWindow)
+        super(ref || XTRWindow)
+    }
+
+    public get bounds(): Rect {
+        return XTRWindow.xtr_bounds(this.objectRef);
     }
 
     public get rootViewController(): ViewController | undefined {
@@ -36,6 +40,12 @@ export class Window extends View {
 
     endEditing(): void {
         XTRWindow.xtr_endEditing(this.objectRef);
+    }
+
+    public get firstResponder(): View | undefined {
+        const ref = XTRWindow.xtr_firstResponder(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref)
     }
 
 }

@@ -7,12 +7,19 @@ import { Device } from "./Device";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { Releasable } from "../../interface/Releasable";
 import { NavigationBar } from "./NavigationBar";
+import { Screen } from "./Screen";
+import { ScrollView } from "./ScrollView";
 
 export interface NavigationControllerInterface extends ViewController {
     pushViewController(viewController: ViewController, animated?: boolean): void
     popViewController(animated?: boolean): ViewController | undefined
     popToViewController(viewController: ViewController, animated?: boolean): ViewController[]
     popToRootViewController(animated?: boolean): ViewController[]
+}
+
+export enum KeyboardAvoidingMode {
+    None,
+    Pan,
 }
 
 export class ViewController implements Releasable {
@@ -148,12 +155,50 @@ export class ViewController implements Releasable {
         return InsetsMake(0, 0, 0, 0);
     }
 
+    keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }
+
+    makeKeyboardAvoiding(keyboardHeight: number, keyboardDuration: number) {
+        if (this.keyboardAvoidingMode() == KeyboardAvoidingMode.Pan && this.view.window) {
+            const firstResponder = this.view.window.firstResponder
+            if (firstResponder && firstResponder.isDescendantOfView(this.view)) {
+                let targetScrollView: ScrollView | undefined = undefined
+                const firstResponderWindowRect: any = firstResponder.frame
+                var currentView = firstResponder.superview
+                while (currentView instanceof View) {
+                    firstResponderWindowRect.x += currentView.frame.x
+                    firstResponderWindowRect.y += currentView.frame.y
+                    if (currentView instanceof ScrollView) {
+                        targetScrollView = currentView
+                        break
+                    }
+                    currentView = currentView.superview
+                }
+                if (targetScrollView) {
+                    XT.View.animationWithDuration(keyboardDuration, () => {
+                        targetScrollView && targetScrollView.scrollRectToVisible({ ...firstResponderWindowRect, height: firstResponderWindowRect.height + keyboardHeight }, false)
+                    })
+                }
+                else {
+                    const windowBounds = this.view.window.bounds
+                    const adjustHeight = Math.max(0.0, (firstResponderWindowRect.y + firstResponderWindowRect.height) - ((windowBounds.height) - keyboardHeight))
+                    XT.View.animationWithDuration(keyboardDuration, () => {
+                        this.view.transform = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, -adjustHeight)
+                    })
+                }
+            }
+        }
+    }
+
     keyboardWillShow(frame: Rect, duration: number): void {
         this.childViewControllers.forEach(t => t.keyboardWillShow(frame, duration))
+        this.makeKeyboardAvoiding(frame.height, duration)
     }
 
     keyboardWillHide(duration: number): void {
         this.childViewControllers.forEach(t => t.keyboardWillHide(duration))
+        if (this.keyboardAvoidingMode() == KeyboardAvoidingMode.Pan) {
+            this.makeKeyboardAvoiding(0, duration)
+        }
     }
 
     // supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]

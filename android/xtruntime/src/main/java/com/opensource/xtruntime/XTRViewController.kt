@@ -32,11 +32,12 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance, KeyboardHeigh
         internal set
 
     fun setContentView(activity: Activity) {
+        XTRScreen.resetScreenInfo(activity)
         this.requestFragment().let {
             val transaction = activity.fragmentManager.beginTransaction()
             transaction.replace(android.R.id.content, it)
             transaction.commit()
-            setupKeyboardHeightProvider(activity)
+            it.setupKeyboardHeightProvider(activity)
         }
     }
 
@@ -113,8 +114,6 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance, KeyboardHeigh
         }
     }
 
-
-
     private var keyboardHeightProvider: KeyboardHeightProvider? = null
 
     private fun setupKeyboardHeightProvider(activity: Activity) {
@@ -140,6 +139,13 @@ open class XTRViewController: XTRFragment(), XTRComponentInstance, KeyboardHeigh
     }
 
     override fun onKeyboardHeightChanged(height: Int, orientation: Int) {
+        this.lastKeyboardHeight = height
+        handleKeyboardHeightChanged(height)
+    }
+
+    var lastKeyboardHeight = 0
+
+    fun handleKeyboardHeightChanged(height: Int = this.lastKeyboardHeight) {
         scriptObject()?.let {
             if (height > 0) {
                 XTRContext.invokeMethod(it, "keyboardWillShow", listOf(
