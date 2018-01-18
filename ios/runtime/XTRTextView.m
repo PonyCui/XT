@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRFont.h"
 #import "XTRContext.h"
+#import "XTRWindow.h"
 #import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRTextView ()<UITextViewDelegate>
@@ -266,6 +267,8 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
+    [XTRWindow setCurrentFirstResponder:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIKeyboardWillShowNotification object:nil];
     JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidBeginEditing" withArguments:@[]];
@@ -281,6 +284,7 @@
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
+    [XTRWindow setCurrentFirstResponder:nil];
     JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidEndEditing" withArguments:@[]];

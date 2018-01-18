@@ -20,6 +20,10 @@ export class ScrollView extends View {
         XTRScrollView.xtr_setContentOffsetAnimatedObjectRef(value, animated, this.objectRef)
     }
 
+    public scrollRectToVisible(value: Rect, animated: boolean): void {
+        XTRScrollView.xtr_scrollRectToVisibleAnimatedObjectRef(value, animated, this.objectRef)
+    }
+
     public get contentSize(): Size {
         return XTRScrollView.xtr_contentSize(this.objectRef);
     }

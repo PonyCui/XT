@@ -10,6 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRFont.h"
 #import "XTRContext.h"
+#import "XTRWindow.h"
 #import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRTextField ()<UITextFieldDelegate>
@@ -416,6 +417,8 @@
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [XTRWindow setCurrentFirstResponder:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIKeyboardWillShowNotification object:nil];
     JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidBeginEditing" withArguments:@[]];
@@ -431,6 +434,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
+    [XTRWindow setCurrentFirstResponder:nil];
     JSValue *value = self.scriptObject;
     if (value) {
         [value invokeMethod:@"handleDidEndEditing" withArguments:@[]];

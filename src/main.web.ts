@@ -74,9 +74,10 @@ import { Window as IWindow } from './interface/Window'
 import { Window as MWindow } from './implementation/web/Window'
 export class Window extends MWindow { }
 
-import { ViewController as IViewController } from './interface/ViewController'
+import { ViewController as IViewController, KeyboardAvoidingMode as IKeyboardAvoidingMode } from './interface/ViewController'
 import { ViewController as MViewController } from './implementation/web/ViewController'
 export class ViewController extends MViewController { }
+export const KeyboardAvoidingMode = IKeyboardAvoidingMode 
 
 import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from './interface/NavigationBar'
 import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './implementation/web/NavigationBar'

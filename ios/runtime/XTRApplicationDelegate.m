@@ -67,7 +67,7 @@
             return [(XTRWindow *)delegate.window objectUUID];
         }
     }
-    return @"";
+    return nil;
 }
 
 + (void)xtr_setWindow:(NSString *)windowRef objectRef:(NSString *)objectRef {

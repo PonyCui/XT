@@ -23,16 +23,14 @@ export class Window extends View {
         XTRWindow.xtr_makeKeyAndVisible(this.objectRef);
     }
 
-    handleKeyboardShow(frame: Rect, duration: number) {
-        this.rootViewController && this.rootViewController.keyboardWillShow(frame, duration)
-    }
-
-    handleKeyboardHide(duration: number) {
-        this.rootViewController && this.rootViewController.keyboardWillHide(duration)
-    }
-
     endEditing(): void {
         XTRWindow.xtr_endEditing(this.objectRef);
+    }
+
+    public get firstResponder(): View | undefined {
+        const ref = XTRWindow.xtr_firstResponder(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return new View(ref)
     }
 
 }

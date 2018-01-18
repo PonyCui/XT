@@ -11,6 +11,7 @@
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
 #import "XTRWindow.h"
+#import "XTRBridge.h"
 #import <XT-Mem/XTMemoryManager.h>
 
 @interface XTRView ()
@@ -207,7 +208,7 @@
             return [maskView objectUUID];
         }
     }
-    return @"";
+    return nil;
 }
 
 + (void)xtr_setMaskView:(NSString *)maskViewRef objectRef:(NSString *)objectRef {
@@ -366,7 +367,7 @@
             return [superview objectUUID];
         }
     }
-    return @"";
+    return nil;
 }
 
 + (NSArray<NSString *> *)xtr_subviews:(NSString *)objectRef {
@@ -388,6 +389,12 @@
         id window = (id)obj.window;
         if ([window conformsToProtocol:@protocol(XTRComponent)]) {
             return [window objectUUID];
+        }
+        else if ([obj isKindOfClass:[XTRView class]]) {
+            XTRWindow *window = (id)[[(XTRContext *)[(XTRView *)obj context] bridge] keyWindow];
+            if ([window isKindOfClass:[XTRWindow class]]) {
+                return window.objectUUID;
+            }
         }
         else if ([window isKindOfClass:[UIWindow class]]) {
             XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:window];
@@ -531,7 +538,7 @@
             return [view objectUUID];
         }
     }
-    return @"";
+    return nil;
 }
 
 + (void)xtr_setNeedsLayout:(NSString *)objectRef {

@@ -2,7 +2,7 @@
 
 export class TextFieldSample extends XT.ViewController {
 
-    contentView = new XT.ScrollView()
+    contentView = new XT.View()
     textFields: XT.TextField[] = []
 
     viewDidLoad() {
@@ -33,10 +33,7 @@ export class TextFieldSample extends XT.ViewController {
         this.addRegularTextField()
         this.addAdditionalViewTextField()
         this.addPasswordTextField()
-        this.contentView.contentSize = XT.SizeMake(0, 1000)
-        this.contentView.onScroll = () => {
-            this.view.window && this.view.window.endEditing()
-        }
+        // this.contentView.contentSize = XT.SizeMake(0, 1000)
     }
 
     addRegularTextField() {
@@ -56,6 +53,7 @@ export class TextFieldSample extends XT.ViewController {
         view.font = XT.Font.systemFontOfSize(14)
         view.textAlignment = XT.TextAlignment.Center
         view.clearButtonMode = XT.TextFieldViewMode.WhileEditing
+        view.returnKeyType = XT.ReturnKeyType.Next
         view.placeholder = "Tap to input text."
         view.shouldReturn = () => {
             this.textFields[1].focus()
@@ -79,6 +77,7 @@ export class TextFieldSample extends XT.ViewController {
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new XT.TextField()
+        view.returnKeyType = XT.ReturnKeyType.Next
         view.frame = XT.RectMake(0, 66, 200, 36)
         view.backgroundColor = XT.Color.whiteColor
         view.font = XT.Font.systemFontOfSize(14)

@@ -55,6 +55,25 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated {
+    CGPoint targetContentOffset = self.contentOffset;
+    if (rect.origin.x < self.contentOffset.x) {
+        targetContentOffset.x = rect.origin.x;
+    }
+    else if (rect.origin.x + rect.size.width > self.contentOffset.x + self.bounds.size.width) {
+        targetContentOffset.x = rect.origin.x + rect.size.width - self.bounds.size.width;
+    }
+    if (rect.origin.y < self.contentOffset.y) {
+        targetContentOffset.y = rect.origin.y;
+    }
+    else if (rect.origin.y + rect.size.height > self.contentOffset.y + self.bounds.size.height) {
+        targetContentOffset.y = rect.origin.y + rect.size.height - self.bounds.size.height;
+    }
+    targetContentOffset.x = MAX(0, MIN(self.contentSize.width - self.bounds.size.width, targetContentOffset.x));
+    targetContentOffset.y = MAX(0, MIN(self.contentSize.height - self.bounds.size.height, targetContentOffset.y));
+    [self setContentOffset:targetContentOffset animated:animated];
+}
+
 #pragma mark - XTRScrollViewExport
 
 + (NSDictionary *)xtr_contentOffset:(NSString *)objectRef {
@@ -69,6 +88,13 @@
     UIScrollView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[UIScrollView class]]) {
         [view setContentOffset:[contentOffset toPoint] animated:animated];
+    }
+}
+
++ (void)xtr_scrollRectToVisible:(JSValue *)rect animated:(BOOL)animated objectRef:(NSString *)objectRef {
+    UIScrollView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        [view scrollRectToVisible:[rect toRect] animated:animated];
     }
 }
 

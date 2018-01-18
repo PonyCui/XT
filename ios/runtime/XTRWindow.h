@@ -19,6 +19,7 @@
 + (NSString *)xtr_rootViewController:(NSString *)objectRef;
 + (void)xtr_setRootViewController:(NSString *)viewControllerRef objectRef:(NSString *)objectRef;
 + (void)xtr_endEditing:(NSString *)objectRef;
++ (NSString *)xtr_firstResponder:(NSString *)objectRef;
 
 @end
 
@@ -27,5 +28,7 @@
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, weak) XTRContext *context;
 @property (nonatomic, readonly) JSValue *scriptObject;
+
++ (void)setCurrentFirstResponder:(id<XTRComponent>)argCurrentFirstResponder;
 
 @end

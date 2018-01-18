@@ -49,7 +49,7 @@
             return keyWindow.objectUUID;
         }
     }
-    return @"";
+    return nil;
 }
 
 + (void)xtr_exit:(NSString *)objectRef {

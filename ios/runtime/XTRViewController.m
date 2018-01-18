@@ -22,6 +22,8 @@
 @property (nonatomic, assign) BOOL navigationBarHidden;
 @property (nonatomic, strong) UIView *innerView;
 @property (nonatomic, weak) JSContext *context;
+@property (nonatomic, strong) id keyboardWillShowObserver;
+@property (nonatomic, strong) id keyboardWillHideObserver;
 
 @end
 
@@ -40,11 +42,14 @@
     return managedObject.objectUUID;
 }
 
-#ifdef LOGDEALLOC
+
 - (void)dealloc {
+#ifdef LOGDEALLOC
     NSLog(@"XTRViewController dealloc.");
-}
 #endif
+    [self unsetKeyboardNotifications];
+}
+
 
 - (instancetype)init
 {
@@ -52,12 +57,49 @@
     if (self) {
         _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
         _navigationBarHidden = YES;
+        [self setupKeyboardNotifications];
     }
     return self;
 }
 
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+#pragma mark - Keyboard Notifications
+
+- (void)setupKeyboardNotifications {
+    static NSDictionary *lastUserInfo;
+    __weak XTRViewController *welf = self;
+    self.keyboardWillShowObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        __strong XTRViewController *strongSelf = welf;
+        JSValue *value = strongSelf.scriptObject;
+        if (value) {
+            NSDictionary *userInfo = note.userInfo ?: lastUserInfo;
+            if (userInfo == nil) {
+                return ;
+            }
+            lastUserInfo = userInfo;
+            [value invokeMethod:@"keyboardWillShow" withArguments:@[
+                                                                      [JSValue fromRect:[userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue]],
+                                                                      userInfo[UIKeyboardAnimationDurationUserInfoKey] ?: @(0),
+                                                                      ]];
+        }
+    }];
+    self.keyboardWillHideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        __strong XTRViewController *strongSelf = welf;
+        JSValue *value = strongSelf.scriptObject;
+        if (value) {
+            [value invokeMethod:@"keyboardWillHide" withArguments:@[
+                                                                      note.userInfo[UIKeyboardAnimationDurationUserInfoKey] ?: @(0),
+                                                                      ]];
+        }
+    }];
+}
+
+- (void)unsetKeyboardNotifications {
+    [[NSNotificationCenter defaultCenter] removeObserver:self.keyboardWillShowObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self.keyboardWillHideObserver];
 }
 
 + (NSString *)xtr_view:(NSString *)objectRef {

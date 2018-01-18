@@ -196,9 +196,7 @@ export class ViewController implements Releasable {
 
     keyboardWillHide(duration: number): void {
         this.childViewControllers.forEach(t => t.keyboardWillHide(duration))
-        if (this.keyboardAvoidingMode() == KeyboardAvoidingMode.Pan) {
-            this.makeKeyboardAvoiding(0, duration)
-        }
+        this.makeKeyboardAvoiding(0, duration)
     }
 
     // supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
