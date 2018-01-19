@@ -94,11 +94,8 @@ export class Button extends View {
         XTRButton.xtr_setInset(value, this.objectRef);
     }
 
-    willMoveToSuperview(newSuperview: View) {
-        super.willMoveToSuperview(newSuperview)
-        if (newSuperview) {
-            this.color = newSuperview.tintColor
-        }
+    didMoveToSuperview() {
+        this.tintColorDidChange()
     }
 
     highlighted: boolean = false

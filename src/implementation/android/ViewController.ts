@@ -6,7 +6,7 @@ import { DeviceOrientation } from "../../interface/Device";
 import { Device } from "./Device";
 import { TransformMatrix } from "../../interface/TransformMatrix";
 import { Releasable } from "../../interface/Releasable";
-import { NavigationBar } from "./NavigationBar";
+import { NavigationBar, NavigationBarDelegate } from "./NavigationBar";
 import { Screen } from "./Screen";
 import { ScrollView } from "./ScrollView";
 
@@ -22,7 +22,7 @@ export enum KeyboardAvoidingMode {
     Pan,
 }
 
-export class ViewController implements Releasable {
+export class ViewController implements Releasable, NavigationBarDelegate {
 
     retain(): this {
         XTMemoryManager.retain(this.objectRef)
@@ -146,6 +146,7 @@ export class ViewController implements Releasable {
         let ref = XTRViewController.xtr_navigationBar(this.objectRef)
         if (typeof ref !== "string") {
             this.navigationBar = new NavigationBar();
+            this.navigationBar.delegate = this
             return this.navigationBar
         }
         return new NavigationBar(ref)
@@ -155,11 +156,26 @@ export class ViewController implements Releasable {
         if (this.navigationBar === undefined) {
             this.navigationBar = new NavigationBar()
         }
+        this.reloadNavigationBar()
         XTRViewController.xtr_showNavigationBar(animated, this.objectRef)
     }
 
     hideNavigationBar(animated: boolean = false): void {
         XTRViewController.xtr_hideNavigationBar(animated, this.objectRef)
+    }
+
+    onBack(): void {
+        if (this.navigationController) {
+            this.navigationController.popViewController(true)
+        }
+    }
+
+    reloadNavigationBar() {
+        this.navigationBar.reload()
+    }
+
+    shouldShowBackButton() {
+        return this.navigationController && this.navigationController.childViewControllers.indexOf(this) > 0 ? true : false
     }
 
     public get safeAreaInsets(): Insets {

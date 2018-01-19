@@ -108,7 +108,7 @@ class XTRNavigationController: XTRViewController() {
 
     }
 
-    class NextActivity: Activity() {
+    class NextActivity: XTRActivity() {
 
         var viewController: XTRViewController? = null
         var finishWithAnimation = false

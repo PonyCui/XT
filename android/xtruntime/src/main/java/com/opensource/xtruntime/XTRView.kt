@@ -1,8 +1,6 @@
 package com.opensource.xtruntime
 
 import android.graphics.*
-import android.os.Build
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View

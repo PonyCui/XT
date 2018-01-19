@@ -5,8 +5,9 @@ export class ViewSample extends XT.ViewController {
     contentView = new XT.ScrollView()
 
     viewDidLoad() {
-        super.viewDidLoad()
-        this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        super.viewDidLoad()        
+        this.navigationBar.backgroundColor = XT.Color.blackColor
+        this.navigationBar.lightContent = true
         this.title = "View"
         this.showNavigationBar()
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)

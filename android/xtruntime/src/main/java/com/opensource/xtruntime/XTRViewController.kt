@@ -1,6 +1,9 @@
 package com.opensource.xtruntime
 
 import android.app.Activity
+import android.graphics.Color
+import android.view.View
+import android.view.WindowManager
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object

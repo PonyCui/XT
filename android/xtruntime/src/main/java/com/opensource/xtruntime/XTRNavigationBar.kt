@@ -1,5 +1,7 @@
 package com.opensource.xtruntime
 
+import android.os.Build
+import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import com.eclipsesource.v8.V8Object
 import com.opensource.xtmem.XTManagedObject
@@ -24,6 +26,7 @@ class XTRNavigationBar @JvmOverloads constructor(
 
         fun create(): String {
             val view = XTRNavigationBar(context)
+            ViewCompat.setElevation(view, 4.0f)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)
