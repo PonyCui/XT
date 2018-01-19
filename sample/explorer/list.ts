@@ -15,7 +15,6 @@ import { AutoLayoutSample } from "./autolayout";
 import { LinearAnimationSample } from "./linearanimation";
 import { SpringAnimationSample } from "./springanimation";
 
-
 class Header extends XT.ListCell {
 
     logoImageView = new XT.ImageView()
@@ -28,7 +27,7 @@ class Header extends XT.ListCell {
     }
 
     setupLogoImageView() {
-        XT.Image.fromAssets("logo", it => { this.logoImageView.image = it })
+        this.logoImageView.image = require('../assets/logo@2x.png')
         this.addSubview(this.logoImageView)
     }
 

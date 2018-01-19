@@ -23,9 +23,7 @@ export class Image implements Releasable {
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) { }
 
-    static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) { }
-
-    static fromBase64(value: string, scale: number, success: (image: Image) => void) { }
+    static fromBase64(value: string, scale: number): Image | undefined { return undefined }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         throw "Not Implemented."

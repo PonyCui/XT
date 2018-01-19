@@ -37,28 +37,13 @@ export class Image implements Releasable {
         })
     }
 
-    static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssets(named, (imageRef?: string) => {
-            if (typeof imageRef === "string") {
-                success(new Image(imageRef))
-            }
-        }, () => {
-            if (failure) {
-                failure(new Error())
-            }
-        })
-    }
-
-    static fromBase64(value: string, scale: number, success: (image: Image) => void) {
-        XTRImage.xtr_fromBase64(value, scale, (imageRef?: string) => {
-            if (typeof imageRef === "string") {
-                success(new Image(imageRef))
-            }
-        })
+    static fromBase64(value: string, scale: number): Image | undefined {
+        const imageRef = XTRImage.xtr_fromBase64(value, scale)
+        return typeof imageRef === "string" ? new Image(imageRef) : undefined
     }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        const imageRef =  XTRImage.xtr_imageWithImageRenderingMode(this.objectRef, renderingMode)
+        const imageRef = XTRImage.xtr_imageWithImageRenderingMode(this.objectRef, renderingMode)
         if (typeof imageRef === "string") {
             return new Image(imageRef)
         }

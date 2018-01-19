@@ -39,9 +39,6 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
 
     val breakpoint: XTRBreakpoint
 
-    var bundleAssets: JSONObject? = null
-        private set
-
     var keyWindow: XTRWindow? = null
 
     var registeredComponents: Map<String, XTRComponentExport> = mapOf()
@@ -120,7 +117,6 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
                 if (sourceURL.startsWith("file:///android_asset/")) {
                     sourceURL.replace("file:///android_asset/", "").let {
                         try {
-                            this.loadAssets()
                             val inputStream = appContext.assets.open(it)
                             val byteArray = ByteArray(inputStream.available())
                             inputStream.read(byteArray)
@@ -137,7 +133,6 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
             else if (sourceURL.startsWith("http://") || sourceURL.startsWith("https://")) {
                 Thread(Thread.currentThread().threadGroup, {
                     try {
-                        loadAssets()
                         val req = Request.Builder().url(sourceURL).method("GET", null).build()
                         val res = OkHttpClient().newCall(req).execute()
                         val script = res.body()?.string() ?: return@Thread
@@ -152,24 +147,6 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
                 Log.w("XTRBridge", "Unknown sourceURL type >>> $sourceURL")
             }
             return
-        }
-    }
-
-    private fun loadAssets() {
-        sourceURL?.let { sourceURL ->
-            if (sourceURL.startsWith("file://")) {
-                if (sourceURL.startsWith("file:///android_asset/")) {
-                    sourceURL.replace("file:///android_asset/", "").replace(".min.js", ".xtassets").let {
-                        try {
-                            val inputStream = appContext.assets.open(it)
-                            val byteArray = ByteArray(inputStream.available())
-                            inputStream.read(byteArray)
-                            inputStream.close()
-                            this.bundleAssets = JSONObject(String(byteArray))
-                        } catch (e: Exception) {}
-                    }
-                }
-            }
         }
     }
 

@@ -64,9 +64,7 @@ export class ButtonSample extends XT.ViewController {
         view.frame = XT.RectMake(0, 66, 200, 44)
         view.backgroundColor = XT.Color.whiteColor
         view.inset = 8
-        XT.Image.fromAssets("location", (it) => {
-            view.image = it
-        })
+        view.image = require('../assets/location@2x.png')
         view.font = XT.Font.systemFontOfSize(12)
         view.title = "Find Location"
         // } Sample Code 

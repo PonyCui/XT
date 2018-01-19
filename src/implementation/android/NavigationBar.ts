@@ -6,8 +6,6 @@ import { Color } from '../../interface/Color';
 import { Button } from './Button';
 import { RectMake } from '../../interface/Rect';
 
-const backButtonData = "iVBORw0KGgoAAAANSUhEUgAAADkAAAA8CAMAAADrC+IEAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABOUExURUdwTP///////////////////////////////////////////////////////////////////////////////////////////////////4il91oAAAAZdFJOUwD+ZRPxOKUhoAPR0BY3pxSZmAIOMyhEh7SA0BQ9AAAAfElEQVRIx+3VSQqAMBAF0XaIGudZ+/4XVaMLCQjxo4LQtX/rIrpO14qgdMShAiFD1ECEHnClPQg5CwQ+D1OBAv8Cq68hz4ljnQXdy1FoZMOoLEJUYtRIiO7yRKfYsZYs6vl3z6WEChUq1JGOKC01YRSAO4XgRkFINKDwrRZIeEfaMx4tYAAAAABJRU5ErkJggg=="
-
 export class NavigationBarButtonItem {
 
     image?: Image
@@ -55,9 +53,10 @@ export class NavigationBar extends View {
         this.backButton = new Button()
         this.backButton.hidden = true
         this.backButton.frame = RectMake(0, 0, 44, 48)
-        Image.fromBase64(backButtonData, 3.0, (it) => {
-            this.backButton.image = it.imageWithImageRenderingMode(ImageRenderingMode.Template)
-        })
+        this.backButton.image = Image.fromBase64("iVBORw0KGgoAAAANSUhEUgAAADkAAAA8CAMAAADrC+IEAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABOUExURUdwTP///////////////////////////////////////////////////////////////////////////////////////////////////4il91oAAAAZdFJOUwD+ZRPxOKUhoAPR0BY3pxSZmAIOMyhEh7SA0BQ9AAAAfElEQVRIx+3VSQqAMBAF0XaIGudZ+/4XVaMLCQjxo4LQtX/rIrpO14qgdMShAiFD1ECEHnClPQg5CwQ+D1OBAv8Cq68hz4ljnQXdy1FoZMOoLEJUYtRIiO7yRKfYsZYs6vl3z6WEChUq1JGOKC01YRSAO4XgRkFINKDwrRZIeEfaMx4tYAAAAABJRU5ErkJggg==", 3.0)
+        if (this.backButton.image) {
+            this.backButton.image = this.backButton.image.imageWithImageRenderingMode(ImageRenderingMode.Template)
+        }
         this.backButton.onTouchUpInside = () => {
             this.delegate && this.delegate.onBack()
         }

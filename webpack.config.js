@@ -2,7 +2,6 @@ var path = require('path')
 var webpack = require('webpack')
 var WebpackShellPlugin = require('webpack-shell-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var XTCarPlugin = require('./xtassets/index')
 
 module.exports = function (env) {
     var setting = {
@@ -14,11 +13,12 @@ module.exports = function (env) {
             path: __dirname + "/dist"
         },
         resolve: {
-            extensions: [".xtml", ".ts", ".js"]
+            extensions: [".xtml", ".ts", ".js", ".png"]
         },
         module: {
             rules: [
                 { test: /\.xtml?$/, loader: require.resolve('./xtml/index') },
+                { test: /\.png?$/, loader: require.resolve('./xtassets/loader') },
                 { test: /\.ts?$/, loader: "awesome-typescript-loader" },
             ],
         },
@@ -30,15 +30,9 @@ module.exports = function (env) {
                 minimize: true,
                 output: { comments: false },
             }),
-            new XTCarPlugin(
-                { entry: ['./sample/assets'], filename: 'sample.xtassets' }
-            ),
             new WebpackShellPlugin({
                 onBuildExit: ['cp dist/sample.min.js android/app/src/main/assets/sample.min.js']
             }),
-            // new WebpackShellPlugin({
-            //     onBuildExit: ['cp dist/sample.xtassets android/app/src/main/assets/sample.xtassets']
-            // }),
         ],
     }
     if (env && env.devandroid) {

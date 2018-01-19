@@ -42,9 +42,7 @@ export class ImageViewSample extends XT.ViewController {
         // Sample Code {
         const view = new XT.ImageView()
         view.frame = XT.RectMake(0, 66, 78, 78)
-        XT.Image.fromAssets("success", (it) => {
-            view.image = it
-        })
+        view.image = require('../assets/success@2x.png')
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)

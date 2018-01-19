@@ -30,8 +30,7 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
             installCache(context.appContext)
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "xtr_fromURL", "xtr_fromURL", arrayOf(String::class.java, V8Function::class.java, V8Function::class.java))
-            exports.registerJavaMethod(this, "xtr_fromAssets", "xtr_fromAssets", arrayOf(String::class.java, V8Function::class.java, V8Function::class.java))
-            exports.registerJavaMethod(this, "xtr_fromBase64", "xtr_fromBase64", arrayOf(String::class.java, Int::class.java, V8Function::class.java))
+            exports.registerJavaMethod(this, "xtr_fromBase64", "xtr_fromBase64", arrayOf(String::class.java, Int::class.java))
             exports.registerJavaMethod(this, "xtr_imageWithImageRenderingMode", "xtr_imageWithImageRenderingMode", arrayOf(String::class.java, Int::class.java))
             return exports
         }
@@ -88,44 +87,17 @@ class XTRImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTRC
 
         private val scaleOptions = listOf(3, 2)
 
-        fun xtr_fromAssets(named: String, success: V8Function, failure: V8Function) {
-            this.context?.let { ctx ->
-                ctx.bridge?.get()?.bundleAssets?.let { assets ->
-                    var targetData: String? = null
-                    var scale = Math.ceil(ctx.appContext.resources.displayMetrics.density.toDouble()).toInt()
-                    assets.optString("$named@${scale}x.png", null)?.let {
-                        targetData = it
-                    } ?: kotlin.run {
-                        scaleOptions.firstOrNull { return@firstOrNull assets.optString("$named@${it}x.png", null) != null }?.let {
-                            targetData = assets.optString("$named@${it}x.png")
-                            scale = it
-                        }
-                    }
-                    targetData?.let {
-                        xtr_fromBase64(it, scale, success)
-                        failure?.release()
-                    }
-                }
-            }
-        }
-
-        fun xtr_fromBase64(value: String, scale: Int, success: V8Function) {
-            val handler = android.os.Handler()
-            val success = success.twin()
+        fun xtr_fromBase64(value: String, scale: Int): String? {
             try {
                 val bytes = Base64.decode(value, 0)
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: throw Exception()
-                handler.post {
-                    val instance = XTRImage(bitmap, scale, 0)
-                    val managedObject = XTManagedObject(instance)
-                    instance.objectUUID = managedObject.objectUUID
-                    XTMemoryManager.add(managedObject)
-                    XTRContext.callWithArgument(success, managedObject.objectUUID)
-                    success.release()
-                }
-            } catch (e: Exception) {
-                success.release()
-            }
+                val instance = XTRImage(bitmap, scale, 0)
+                val managedObject = XTManagedObject(instance)
+                instance.objectUUID = managedObject.objectUUID
+                XTMemoryManager.add(managedObject)
+                return managedObject.objectUUID
+            } catch (e: Exception) { }
+            return null
         }
 
         fun xtr_imageWithImageRenderingMode(imageRef: String, renderingMode: Int): String? {
