@@ -413,12 +413,12 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.touchManager.handlePointerDown(pid, timestamp, point.x, point.y)
     }
 
-    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }) {
-        this.touchManager.handlePointersMove(timestamp, points)
+    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }, velocities: { [key: string]: { x: number, y: number } }) {
+        this.touchManager.handlePointersMove(timestamp, points, velocities)
     }
 
-    handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }) {
-        this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y)
+    handlePointerUp(pid: string, timestamp: number, point: { x: number, y: number }, velocity: { x: number, y: number }) {
+        this.touchManager.handlePointerUp(pid, timestamp, point.x, point.y, velocity.x, velocity.y)
     }
 
     touchesBegan(touches: Touch[], event: Event): void {

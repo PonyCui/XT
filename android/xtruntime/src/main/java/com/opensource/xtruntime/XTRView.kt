@@ -2,6 +2,7 @@ package com.opensource.xtruntime
 
 import android.graphics.*
 import android.os.Build
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -78,6 +79,7 @@ open class XTRView @JvmOverloads constructor(
             }
             field = value
             this.bounds = XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
+            layoutSubviews()
             requestLayout()
         }
 
@@ -661,7 +663,10 @@ open class XTRView @JvmOverloads constructor(
         }
 
         fun xtr_addSubview(subviewRef: String, objectRef: String) {
-            val view = XTMemoryManager.find(objectRef) as? ViewGroup ?: return
+            val view = XTMemoryManager.find(objectRef) as? ViewGroup ?: return kotlin.run {
+                val sss = XTMemoryManager.find(objectRef)
+                print(sss)
+            }
             val subview = XTMemoryManager.find(subviewRef) as? View ?: return
             (subview as? XTRView)?.willMoveToSuperview(view)
             (subview as? XTRView)?.willMoveToWindow(context?.bridge?.get()?.keyWindow)

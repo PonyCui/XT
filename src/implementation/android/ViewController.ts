@@ -62,6 +62,17 @@ export class ViewController implements Releasable {
         this.loadView()
     }
 
+    private _title: string = ""
+
+    public get title(): string {
+        return this._title
+    }
+
+    public set title(value: string) {
+        this._title = value
+        this.navigationBar.title = value
+    }
+
     public get view() {
         return new View(XTRViewController.xtr_view(this.objectRef));
     }
@@ -133,9 +144,11 @@ export class ViewController implements Releasable {
 
     public get navigationBar(): NavigationBar {
         let ref = XTRViewController.xtr_navigationBar(this.objectRef)
+        console.log("sssxxx" + ref);
+        
         if (typeof ref !== "string") {
             this.navigationBar = new NavigationBar();
-            ref = XTRViewController.xtr_navigationBar(this.objectRef)
+            return this.navigationBar
         }
         return new NavigationBar(ref)
     }

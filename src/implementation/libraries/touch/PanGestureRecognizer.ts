@@ -49,9 +49,14 @@ export class PanGestureRecognizer implements GestureRecongnizer {
     touchesMoved(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         this.lastZeroTouch = touches[0]
         const rawLocation = touches[0].rawLocation
-        this.velocity = {
-            x: (rawLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
-            y: (rawLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+        if (touches[0].velocity) {
+            this.velocity = touches[0].velocity as any
+        }
+        else {
+            this.velocity = {
+                x: (rawLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+                y: (rawLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+            }
         }
         if (this.recognized) {
             this.state = GestureRecognizerState.Changed
@@ -88,7 +93,10 @@ export class PanGestureRecognizer implements GestureRecongnizer {
                 if (this.touchTranslationOriginPoint) {
                     this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
                 }
-                if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0.1) {
+                if (touches[0].velocity) {
+                    this.velocity = touches[0].velocity as any
+                }
+                else if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0.1) {
                     this.velocity = { x: 0, y: 0 }
                 }
                 this.fire && this.fire(this.state, touches[0].rawLocation)
@@ -110,7 +118,10 @@ export class PanGestureRecognizer implements GestureRecongnizer {
         if (this.touchTranslationOriginPoint) {
             this.translation = { x: touches[0].rawLocation.x - this.touchTranslationOriginPoint.x, y: touches[0].rawLocation.y - this.touchTranslationOriginPoint.y }
         }
-        if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0.1) {
+        if (touches[0].velocity) {
+            this.velocity = touches[0].velocity as any
+        }
+        else if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0.1) {
             this.velocity = { x: 0, y: 0 }
         }
         this.fire && this.fire(this.state, lastTouch ? lastTouch.rawLocation : { x: 0, y: 0 })

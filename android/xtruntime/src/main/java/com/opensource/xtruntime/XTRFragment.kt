@@ -7,10 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import com.eclipsesource.v8.V8Object
 import java.lang.ref.WeakReference
@@ -93,7 +90,6 @@ open class XTRFragment: Fragment() {
 
         fun resetLayout() {
             navigationBar?.get()?.let {
-                it.setBackgroundColor(Color.GRAY)
                 it.frame = XTRRect(0.0, 0.0, (this.width / resources.displayMetrics.density).toDouble(), 48.0)
             }
             view?.get()?.let {
@@ -102,9 +98,11 @@ open class XTRFragment: Fragment() {
         }
 
         private var currentTouchScriptObject: V8Object? = null
+        private var velocityTracker = VelocityTracker.obtain()
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {
             val xtrContext = view?.get()?.xtrContext ?: return false
+            velocityTracker.addMovement(event)
             when (event?.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     currentTouchScriptObject = view?.get()?.scriptObject()
@@ -117,28 +115,42 @@ open class XTRFragment: Fragment() {
                     point.release()
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    velocityTracker.computeCurrentVelocity(1000)
                     val timestamp = System.nanoTime() / 1000000
                     val points = V8Object(xtrContext.runtime)
                     (0 until event.pointerCount).forEach { pointerID ->
                         val point = XTRPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density - this.topLayoutLength))
+
                         (XTRUtils.fromPoint(point, xtrContext.runtime) as? V8Object)?.let {
                             points.add(pointerID.toString(), it)
                             it.release()
                         }
                     }
+                    val velocities = V8Object(xtrContext.runtime)
+                    (0 until event.pointerCount).forEach { pointerID ->
+                        val velocity = XTRPoint(velocityTracker.getXVelocity(pointerID).toDouble(), velocityTracker.getYVelocity(pointerID).toDouble())
+                        (XTRUtils.fromPoint(velocity, xtrContext.runtime) as? V8Object)?.let {
+                            velocities.add(pointerID.toString(), it)
+                            it.release()
+                        }
+                    }
                     currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
-                        XTRContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points))
+                        XTRContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points, velocities))
                     }
                     points.release()
                 }
                 MotionEvent.ACTION_UP -> {
+                    velocityTracker.computeCurrentVelocity(1000)
                     val pid = event.getPointerId(0).toString()
                     val timestamp = System.nanoTime() / 1000000
                     val point = XTRUtils.fromPoint(XTRPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - this.topLayoutLength)), xtrContext.runtime)
+                    val velocity = XTRUtils.fromPoint(XTRPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
                     currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
-                        XTRContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point))
+                        XTRContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
                         it.release()
                     }
+                    point.release()
+                    velocity.release()
                 }
             }
             return true

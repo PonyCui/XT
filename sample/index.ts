@@ -8,6 +8,10 @@ class AppDelegate extends XT.ApplicationDelegate {
         this.window.backgroundColor = XT.Color.grayColor
         this.window.rootViewController = new XT.NavigationController(new List())
         // this.window.rootViewController = new XT.NavigationController(new TestViewController())
+        // const v = new XT.ViewController()
+        // v.title = "Hello"
+        // v.showNavigationBar()
+        // this.window.rootViewController = v
         this.window.makeKeyAndVisible();
     }
 

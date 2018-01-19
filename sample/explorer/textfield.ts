@@ -2,7 +2,7 @@
 
 export class TextFieldSample extends XT.ViewController {
 
-    contentView = new XT.View()
+    contentView = new XT.ScrollView()
     textFields: XT.TextField[] = []
 
     viewDidLoad() {
@@ -33,7 +33,7 @@ export class TextFieldSample extends XT.ViewController {
         this.addRegularTextField()
         this.addAdditionalViewTextField()
         this.addPasswordTextField()
-        // this.contentView.contentSize = XT.SizeMake(0, 1000)
+        this.contentView.contentSize = XT.SizeMake(0, 1000)
     }
 
     addRegularTextField() {

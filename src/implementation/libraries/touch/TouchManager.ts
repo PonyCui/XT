@@ -17,6 +17,7 @@ export interface Touch {
     phase: TouchPhase
     tapCount: number
     rawLocation: { x: number, y: number }
+    velocity?: { x: number, y: number }
     locationInView(view: Touchable): { x: number, y: number }
 
 }
@@ -75,7 +76,7 @@ export class TouchManager {
         }
     }
 
-    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }) {
+    handlePointersMove(timestamp: number, points: { [key: string]: { x: number, y: number } }, velocities: { [key: string]: { x: number, y: number } } | undefined = undefined) {
         if (this.target) {
             for (const pid in points) {
                 this.touches[pid] = {
@@ -85,6 +86,7 @@ export class TouchManager {
                     phase: TouchPhase.Moved,
                     tapCount: 1,
                     rawLocation: { x: points[pid].x, y: points[pid].y },
+                    velocity: velocities ? velocities[pid] : undefined,
                     locationInView: (view: Touchable) => {
                         return convertPointToChildView({ x: points[pid].x, y: points[pid].y }, this.root as any, view as any)
                     }
@@ -101,7 +103,7 @@ export class TouchManager {
         }
     }
 
-    handlePointerUp(pid: string, timestamp: number, x: number, y: number) {
+    handlePointerUp(pid: string, timestamp: number, x: number, y: number, vx: number | undefined = undefined, vy: number | undefined = undefined) {
         if (this.target) {
             if (this.touches[pid]._maybeTap) {
                 tapHistory = tapHistory.filter(t => timestamp - t.timestamp < 350)
@@ -114,6 +116,7 @@ export class TouchManager {
                 phase: TouchPhase.Ended,
                 tapCount: tapHistory.filter(t => Math.abs(t.x - x) < 44 && Math.abs(t.y - y) < 44).length,
                 rawLocation: { x, y },
+                velocity: { x: vx || 0.0, y: vy || 0.0 },
                 locationInView: (view: Touchable) => {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }

@@ -1,6 +1,7 @@
 import { View } from './View'
 import { Font } from './Font'
 import { Image } from './ImageView'
+import { Label } from './Label';
 
 export class NavigationBarButtonItem {
 
@@ -13,17 +14,38 @@ export class NavigationBarButtonItem {
 
 export class NavigationBar extends View {
 
+    private titleView: Label
+    private lightContent = false
+
     constructor(ref?: any) {
         super(ref || XTRNavigationBar)
+        if (ref === undefined) {
+            this.setupTitleView()
+        }
     }
 
-    // public get title(): string {
-    //     return XTRNavigationBar.xtr_title(this.objectRef)
-    // }
+    setupTitleView() {
+        this.titleView = new Label()
+        this.titleView.numberOfLines = 1
+        this.titleView.font = Font.boldSystemFontOfSize(19)
+        this.titleView.textColor = XT.Color.blackColor
+        this.addSubview(this.titleView)
+    }
 
-    // public set title(value: string) {
-    //     XTRNavigationBar.xtr_setTitle(value, this.objectRef)
-    // }
+    layoutSubviews() {
+        super.layoutSubviews()
+        const leftSpace = 15
+        const rightSpace = 15
+        this.titleView.frame = XT.RectMake(leftSpace, 0, this.bounds.width - leftSpace - rightSpace, this.bounds.height)
+    }
+
+    public get title(): string {
+        return this.titleView.text
+    }
+
+    public set title(value: string) {
+        this.titleView.text = value
+    }
 
     // public get translucent(): boolean {
     //     return XTRNavigationBar.xtr_translucent(this.objectRef)

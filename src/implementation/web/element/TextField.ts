@@ -270,11 +270,11 @@ export class TextFieldElement extends ViewElement {
         }
     }
 
-    public get xtr_returnKeyType() {
+    public xtr_returnKeyType() {
         return 0
     }
 
-    public set xtr_setReturnKeyType(value: any) { }
+    public xtr_setReturnKeyType(value: any) { }
 
     private resetContentRects() {
         const inputWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
