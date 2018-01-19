@@ -27,22 +27,9 @@ export class Image implements Releasable {
         });
     }
 
-    static fromAssets(named: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromAssetsSuccessFailure(named, (ref: string) => {
-            if (success) {
-                success(new Image(ref))
-            }
-        }, (message: string) => {
-            failure && failure(new Error(message));
-        });
-    }
-
-    static fromBase64(value: string, scale: number, success: (image: Image) => void) {
-        XTRImage.xtr_fromBase64ScaleSuccess(value, scale, (ref: string) => {
-            if (success) {
-                success(new Image(ref))
-            }
-        });
+    static fromBase64(value: string, scale: number): Image | undefined {
+        const imageRef = XTRImage.xtr_fromBase64Scale(value, scale);
+        return typeof imageRef === "string" ? new Image(imageRef) : undefined
     }
 
     objectRef: any;

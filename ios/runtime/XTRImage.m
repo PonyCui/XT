@@ -72,50 +72,7 @@
     }
 }
 
-+ (void)xtr_fromAssets:(NSString *)named success:(JSValue *)success failure:(JSValue *)failure {
-    static NSInteger scaleOptions[2] = {3, 2};
-    XTRContext *context = (id)[JSContext currentContext];
-    if ([context isKindOfClass:[XTRContext class]]) {
-        NSData *targetData;
-        NSInteger scale = (NSInteger)[UIScreen mainScreen].scale;
-        if (context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]] != nil) {
-            targetData = context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]];
-        }
-        else {
-            for (NSInteger i = 0; i < 2; i++) {
-                scale = scaleOptions[i];
-                if (context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]] != nil) {
-                    targetData = context.bridge.assets[[NSString stringWithFormat:@"%@@%ldx.png", named, (long)scale]];
-                    break;
-                }
-            }
-        }
-        if ([targetData isKindOfClass:[NSData class]]) {
-            UIImage *targetImage = [[UIImage imageWithData:targetData scale:scale] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            if (targetImage != nil) {
-                XTRImage *obj = [[XTRImage alloc] initWithImage:targetImage];
-                XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
-                obj.objectUUID = managedObject.objectUUID;
-                [XTMemoryManager add:managedObject];
-                if (success != nil) {
-                    [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
-                }
-            }
-            else {
-                if (failure) {
-                    [failure xtr_callWithArguments:@[@"Image decode fail."]];
-                }
-            }
-        }
-        else {
-            if (failure) {
-                [failure xtr_callWithArguments:@[@"Image not found."]];
-            }
-        }
-    }
-}
-
-+ (void)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale success:(JSValue *)success {
++ (NSString *)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale {
     NSData *data = [[NSData alloc] initWithBase64EncodedString:value options:kNilOptions];
     if (data != nil) {
         UIImage *image = [[UIImage imageWithData:data scale:scale] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -124,11 +81,10 @@
             XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
             obj.objectUUID = managedObject.objectUUID;
             [XTMemoryManager add:managedObject];
-            if (success != nil) {
-                [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""]];
-            }
+            return managedObject.objectUUID;
         }
     }
+    return nil;
 }
 
 + (NSDictionary *)xtr_size:(NSString *)objectRef {

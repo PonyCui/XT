@@ -47,7 +47,6 @@
 @interface XTRBridge ()
 
 @property (nonatomic, strong) XTRContext *context;
-@property (nonatomic, copy) NSDictionary<NSString *, NSData *> * _Nonnull assets;
 @property (nonatomic, weak) XTRApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
 @property (nonatomic, copy) NSArray *pluginInstances;
@@ -105,7 +104,6 @@ static NSString *globalBridgeScript;
     if (self.sourceURL.isFileURL) {
         NSString *script = [[NSString alloc] initWithContentsOfURL:self.sourceURL encoding:NSUTF8StringEncoding error:NULL];
         if (script) {
-            [self loadAssetsWithCompletionBlock:nil];
             [self.context evaluateScript:script];
             if (((JSValue *)[self.context evaluateScript:@"window._xtrDelegate"]).isUndefined) {
                 if (failureBlock) {
@@ -128,19 +126,17 @@ static NSString *globalBridgeScript;
             if (error == nil && data != nil) {
                 NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 if (script) {
-                    [self loadAssetsWithCompletionBlock:^{
-                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                            [self.context evaluateScript:script];
-                            if (((JSValue *)[self.context evaluateScript:@"window._xtrDelegate"]).isUndefined) {
-                                if (failureBlock) {
-                                    failureBlock([NSError errorWithDomain:@"XTRBridge" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"Fail to create AppDelegate."}]);
-                                }
-                                return ;
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        [self.context evaluateScript:script];
+                        if (((JSValue *)[self.context evaluateScript:@"window._xtrDelegate"]).isUndefined) {
+                            if (failureBlock) {
+                                failureBlock([NSError errorWithDomain:@"XTRBridge" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"Fail to create AppDelegate."}]);
                             }
-                            if (completionBlock) {
-                                completionBlock();
-                            }
-                        }];
+                            return ;
+                        }
+                        if (completionBlock) {
+                            completionBlock();
+                        }
                     }];
                 }
             }
@@ -153,81 +149,25 @@ static NSString *globalBridgeScript;
     }
     else {
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        [self loadAssetsWithCompletionBlock:^{
-            [[[NSURLSession sharedSession] dataTaskWithRequest:request
-                                             completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                                                 if (error == nil && data != nil) {
-                                                     NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                     if (script) {
-                                                         [self.context evaluateScript:script];
-                                                         if (completionBlock) {
-                                                             completionBlock();
-                                                         }
-                                                     }
-                                                 }
-                                                 else {
-                                                     if (failureBlock) {
-                                                         failureBlock(error);
-                                                     }
-                                                 }
-                                                 dispatch_semaphore_signal(semaphore);
-                                             }] resume];
-        }];
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    }
-}
-
-- (void)loadAssetsWithCompletionBlock:(void (^)(void))completionBlock {
-    if (self.sourceURL.isFileURL) {
-        NSData *assetsData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.sourceURL absoluteString] stringByReplacingOccurrencesOfString:@".min.js" withString:@".xtassets"]]];
-        if (assetsData != nil) {
-            NSDictionary *assetsObject = (id)[NSJSONSerialization JSONObjectWithData:assetsData
-                                                                             options:kNilOptions
-                                                                               error:NULL];
-            NSMutableDictionary *finalAssets = [NSMutableDictionary dictionary];
-            if ([assetsObject isKindOfClass:[NSDictionary class]]) {
-                [assetsObject enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull base64EncodedString, BOOL * _Nonnull stop) {
-                    if ([base64EncodedString isKindOfClass:[NSString class]]) {
-                        NSData *objData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:kNilOptions];
-                        if (objData != nil) {
-                            [finalAssets setObject:objData forKey:key];
-                        }
-                    }
-                }];
-            }
-            self.assets = finalAssets;
-        }
-        if (completionBlock) {
-            completionBlock();
-        }
-    }
-    else {
-        NSURLRequest *assetsURL = [NSURLRequest requestWithURL:[NSURL URLWithString:[[self.sourceURL absoluteString] stringByReplacingOccurrencesOfString:@".min.js" withString:@".xtassets"]]
-                                                   cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                               timeoutInterval:15.0];
-        [[[NSURLSession sharedSession] dataTaskWithRequest:assetsURL
+        [[[NSURLSession sharedSession] dataTaskWithRequest:request
                                          completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                                             if (data != nil) {
-                                                 NSDictionary *assetsObject = (id)[NSJSONSerialization JSONObjectWithData:data
-                                                                                                                  options:kNilOptions
-                                                                                                                    error:NULL];
-                                                 NSMutableDictionary *finalAssets = [NSMutableDictionary dictionary];
-                                                 if ([assetsObject isKindOfClass:[NSDictionary class]]) {
-                                                     [assetsObject enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull base64EncodedString, BOOL * _Nonnull stop) {
-                                                         if ([base64EncodedString isKindOfClass:[NSString class]]) {
-                                                             NSData *objData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:kNilOptions];
-                                                             if (objData != nil) {
-                                                                 [finalAssets setObject:objData forKey:key];
-                                                             }
-                                                         }
-                                                     }];
+                                             if (error == nil && data != nil) {
+                                                 NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                 if (script) {
+                                                     [self.context evaluateScript:script];
+                                                     if (completionBlock) {
+                                                         completionBlock();
+                                                     }
                                                  }
-                                                 self.assets = finalAssets;
                                              }
-                                             if (completionBlock) {
-                                                 completionBlock();
+                                             else {
+                                                 if (failureBlock) {
+                                                     failureBlock(error);
+                                                 }
                                              }
+                                             dispatch_semaphore_signal(semaphore);
                                          }] resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     }
 }
 

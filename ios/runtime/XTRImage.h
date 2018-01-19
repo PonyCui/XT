@@ -14,8 +14,7 @@
 @protocol XTRImageExport <JSExport>
 
 + (void)xtr_fromURL:(NSString *)URLString success:(JSValue *)success failure:(JSValue *)failure;
-+ (void)xtr_fromAssets:(NSString *)named success:(JSValue *)success failure:(JSValue *)failure;
-+ (void)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale success:(JSValue *)success;
++ (NSString *)xtr_fromBase64:(NSString *)value scale:(NSInteger)scale;
 + (NSDictionary *)xtr_size:(NSString *)objectRef;
 + (CGFloat)xtr_scale:(NSString *)objectRef;
 + (NSInteger)xtr_renderingMode:(NSString *)objectRef;

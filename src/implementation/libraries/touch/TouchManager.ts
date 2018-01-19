@@ -116,7 +116,7 @@ export class TouchManager {
                 phase: TouchPhase.Ended,
                 tapCount: tapHistory.filter(t => Math.abs(t.x - x) < 44 && Math.abs(t.y - y) < 44).length,
                 rawLocation: { x, y },
-                velocity: { x: vx || 0.0, y: vy || 0.0 },
+                velocity: vx !== undefined && vy !== undefined ? { x: vx, y: vy } : undefined,
                 locationInView: (view: Touchable) => {
                     return convertPointToChildView({ x, y }, this.root as any, view as any)
                 }
