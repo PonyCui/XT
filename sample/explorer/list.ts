@@ -69,7 +69,7 @@ class SectionHeader extends XT.ListCell {
 
     layoutSubviews() {
         this.content.frame = XT.RectMake(15, 8, this.bounds.width - 30, 44)
-        this.titleLabel.frame = {...this.content.bounds, x: 15}
+        this.titleLabel.frame = { ...this.content.bounds, x: 15 }
     }
 
 }
@@ -116,7 +116,7 @@ class Cell extends XT.ListCell {
 
     layoutSubviews() {
         this.content.frame = XT.RectMake(15, 0, this.bounds.width - 30, 44)
-        this.titleLabel.frame = {...this.content.bounds, x: 15}
+        this.titleLabel.frame = { ...this.content.bounds, x: 15 }
         this.bottomLine.frame = XT.RectMake(15, this.bounds.height - 1, this.content.bounds.width - 30, 1)
     }
 
@@ -149,12 +149,28 @@ export class List extends XT.ViewController {
 
     viewDidLoad() {
         this.title = "UI Explorer"
-        this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.showNavigationBar()
         this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.setupNavigationBar()
         this.setupListView()
         this.loadData()
         // this.setupRightButtons()
+    }
+
+    setupNavigationBar() {
+        this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        const infoItem = new XT.NavigationBarButtonItem()
+        infoItem.image = require('../assets/info@3x.png')
+        infoItem.onTouchUpInside = () => {
+            console.log("on info");   
+        }
+        const voiceItem = new XT.NavigationBarButtonItem()
+        voiceItem.image = require('../assets/voice@3x.png')
+        voiceItem.onTouchUpInside = () => {
+            console.log("on voice");
+            
+        }
+        this.navigationBar.setRightBarButtonItems([infoItem, voiceItem])
+        this.showNavigationBar()
     }
 
     setupListView() {

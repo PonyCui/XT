@@ -41,7 +41,7 @@ export class NavigationBar extends View {
         XTRNavigationBar.xtr_setLightContentObjectRef(value, this.objectRef)
     }
 
-    private leftButtonItemCallbacks: (() => void)[] = []
+    private leftButtonItemCallbacks: (() => void)[]
 
     public setLeftBarButtonItem(navigationItem?: NavigationBarButtonItem): void {
         if (navigationItem) {
@@ -78,7 +78,7 @@ export class NavigationBar extends View {
         }
     }
 
-    private rightButtonItemCallbacks: (() => void)[] = []
+    private rightButtonItemCallbacks: (() => void)[]
 
     public setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
         this.rightButtonItemCallbacks = navigationItems.map(it => it.onTouchUpInside || (() => { }))
