@@ -1,4 +1,4 @@
-package com.opensource.xtruntime;
+package com.opensource.xtruntime.libraries.keyboard;
 
 /*
  * This file is part of Siebe Projects samples.

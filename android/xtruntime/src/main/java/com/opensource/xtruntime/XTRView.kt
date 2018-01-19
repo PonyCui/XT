@@ -49,6 +49,9 @@ open class XTRView @JvmOverloads constructor(
             invalidate()
         }
 
+    var frameChangeViaJavascript = false
+        private set
+
     var frame: XTRRect? = null
         set(value) {
             if (field?.equals(value) == true) {
@@ -77,6 +80,12 @@ open class XTRView @JvmOverloads constructor(
                 }))
                 return
             }
+            if (!this.frameChangeViaJavascript) {
+                scriptObject()?.let {
+                    XTRContext.invokeMethod(it, "handleFrameChange")
+                    it.release()
+                }
+            }
             field = value
             this.bounds = XTRRect(0.0, 0.0, frame?.width ?: (this.width / resources.displayMetrics.density).toDouble(), frame?.height ?: (this.height / resources.displayMetrics.density).toDouble())
             layoutSubviews()
@@ -96,6 +105,10 @@ open class XTRView @JvmOverloads constructor(
         }
         super.requestLayout()
     }
+
+
+    var transformMatrixChangeViaJavascript = false
+        private set
 
     var transformMatrix: XTRMatrix = XTRMatrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
         set(value) {
@@ -118,6 +131,12 @@ open class XTRView @JvmOverloads constructor(
                     transformMatrix = transformMatrix.setTranslate(null, (translateY as Float).toDouble())
                 }))
                 return
+            }
+            if (!this.transformMatrixChangeViaJavascript) {
+                scriptObject()?.let {
+                    XTRContext.invokeMethod(it, "handleTransformChange")
+                    it.release()
+                }
             }
             field = value
             invalidate()
@@ -483,7 +502,9 @@ open class XTRView @JvmOverloads constructor(
         fun xtr_setFrame(value: V8Object, objectRef: String) {
             XTRUtils.toRect(value)?.let { frame ->
                 (XTMemoryManager.find(objectRef) as? XTRView)?.let {
+                    it.frameChangeViaJavascript = true
                     it.frame = frame
+                    it.frameChangeViaJavascript = false
                 }
             }
         }

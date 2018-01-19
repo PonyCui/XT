@@ -144,8 +144,6 @@ export class ViewController implements Releasable {
 
     public get navigationBar(): NavigationBar {
         let ref = XTRViewController.xtr_navigationBar(this.objectRef)
-        console.log("sssxxx" + ref);
-        
         if (typeof ref !== "string") {
             this.navigationBar = new NavigationBar();
             return this.navigationBar

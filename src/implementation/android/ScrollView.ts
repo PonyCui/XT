@@ -46,9 +46,11 @@ export class ScrollView extends View implements ScrollerDelegate {
                     this.scroller._dragBy(delta)
                 }
                 else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {
+                    console.log(JSON.stringify(velocity));
+                    
                     velocity && this.scroller._endDraggingWithDecelerationVelocity({
-                        x: -(velocity.x),
-                        y: -(velocity.y),
+                        x: Math.abs(velocity.x) < 160.0 ? 0.0 : -(velocity.x),
+                        y: Math.abs(velocity.y) < 160.0 ? 0.0 : -(velocity.y),
                     })
                 }
             }

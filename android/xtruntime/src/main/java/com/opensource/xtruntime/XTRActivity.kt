@@ -3,14 +3,14 @@ package com.opensource.xtruntime
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import java.util.*
 import kotlin.concurrent.timerTask
 import android.view.Gravity
-
+import com.opensource.xtruntime.libraries.keyboard.KeyboardHeightObserver
+import com.opensource.xtruntime.libraries.keyboard.KeyboardHeightProvider
 
 
 /**

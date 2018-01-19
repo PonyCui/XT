@@ -1,4 +1,4 @@
-package com.opensource.xtruntime;
+package com.opensource.xtruntime.libraries.keyboard;
 
 /*
  * This file is part of Siebe Projects samples.
@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
+
+import com.opensource.xtruntime.R;
 
 /**
  * The keyboard height provider, this class uses a PopupWindow

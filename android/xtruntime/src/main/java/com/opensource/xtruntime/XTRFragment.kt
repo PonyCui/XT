@@ -15,6 +15,9 @@ import java.lang.ref.WeakReference
 /**
  * Created by cuiminghui on 2018/1/9.
  */
+
+private var velocityTracker = VelocityTracker.obtain()
+
 open class XTRFragment: Fragment() {
 
     var rootView: RootView? = null
@@ -98,7 +101,6 @@ open class XTRFragment: Fragment() {
         }
 
         private var currentTouchScriptObject: V8Object? = null
-        private var velocityTracker = VelocityTracker.obtain()
 
         override fun onTouchEvent(event: MotionEvent?): Boolean {
             val xtrContext = view?.get()?.xtrContext ?: return false
@@ -151,6 +153,10 @@ open class XTRFragment: Fragment() {
                     }
                     point.release()
                     velocity.release()
+                    velocityTracker.clear()
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    velocityTracker.clear()
                 }
             }
             return true

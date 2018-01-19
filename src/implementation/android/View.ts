@@ -83,6 +83,10 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         XTRView.xtr_setFrame(value, this.objectRef);
     }
 
+    private handleFrameChange() {
+        this._cachingFrame = undefined
+    }
+
     public get bounds(): Rect {
         if (this._cachingFrame) { return { ...this._cachingFrame, x: 0, y: 0 } }
         return XTRView.xtr_bounds(this.objectRef);
@@ -113,6 +117,10 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     public set transform(value: TransformMatrix) {
         this._cachingTransform = value
         XTRView.xtr_setTransform(value, this.objectRef)
+    }
+
+    private handleTransformChange() {
+        this._cachingTransform = undefined
     }
 
     // Mark: View Rendering
@@ -222,7 +230,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         const viewRef = XTRView.xtr_superview(this.objectRef)
         if (typeof viewRef !== "string") { return undefined }
         this._cachingSuperview = new View(viewRef)
-        return this._cachingSuperview
+        return new View(viewRef)
     }
 
     public get subviews(): View[] {
