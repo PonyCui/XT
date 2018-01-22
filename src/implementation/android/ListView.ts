@@ -155,14 +155,16 @@ export class ListView extends ScrollView {
     private _nextReloadMaxY?: number = undefined;
 
     private reloadVisibleRows() {
-        let contentOffset = this.contentOffset;
+        let contentOffset = { ...this.contentOffset };
+        let contentSize = this.contentSize;
         let bounds = this.bounds;
-        if (this._nextSetted === true &&
-            this._nextReloadMinY != this._nextReloadMaxY &&
-            (this._nextReloadMinY !== undefined && contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
-            (this._nextReloadMaxY !== undefined && contentOffset.y < (this._nextReloadMaxY || Infinity))) {
-            return;
-        }
+        contentOffset.y = Math.max(0.0, Math.min(contentSize.height - bounds.height, contentOffset.y))
+        // if (this._nextSetted === true &&
+        //     this._nextReloadMinY != this._nextReloadMaxY &&
+        //     (this._nextReloadMinY !== undefined && contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
+        //     (this._nextReloadMaxY !== undefined && contentOffset.y < (this._nextReloadMaxY || Infinity))) {
+        //     return;
+        // }
         this.markInvisibleCellNoBusy(contentOffset, bounds);
         this._nextSetted = true;
         this._nextReloadMinY = undefined;
