@@ -79,6 +79,11 @@ import { ViewController as MViewController } from './implementation/android/View
 export class ViewController extends MViewController {}
 export const KeyboardAvoidingMode = IKeyboardAvoidingMode 
 
+import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from './interface/NavigationBar'
+import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './implementation/android/NavigationBar'
+export class NavigationBar extends MNavigationBar { }
+export class NavigationBarButtonItem extends MNavigationBarButtonItem { }
+
 import { NavigationController as INavigationController } from './interface/NavigationController'
 import { NavigationController as MNavigationController } from './implementation/android/NavigationController'
 export class NavigationController extends MNavigationController {}

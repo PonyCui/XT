@@ -531,7 +531,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
 
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
         let target = undefined;
-        if (this.alpha > 0.0 && !this.hidden && this.userInteractionEnabled === true && isPointInside(point, this)) {
+        if (this.hidden !== true && this.alpha > 0.0 && !this.hidden && this.userInteractionEnabled === true && isPointInside(point, this)) {
             target = this
             let subviews = this.subviews;
             for (let index = subviews.length - 1; index >= 0; index--) {

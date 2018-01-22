@@ -230,7 +230,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         const viewRef = XTRView.xtr_superview(this.objectRef)
         if (typeof viewRef !== "string") { return undefined }
         this._cachingSuperview = new View(viewRef)
-        return new View(viewRef)
+        return this._cachingSuperview
     }
 
     public get subviews(): View[] {
@@ -247,7 +247,6 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     removeFromSuperview() {
-        this._cachingSuperview = null
         XTRView.xtr_removeFromSuperview(this.objectRef);
     }
 
@@ -288,7 +287,9 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
 
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
-    willMoveToSuperview(newSuperview?: View) { }
+    willMoveToSuperview(newSuperview?: View) {
+        this._cachingSuperview = newSuperview
+    }
     didMoveToSuperview() { }
     willMoveToWindow(newWindow?: Window) { }
     didMoveToWindow() { }
@@ -398,7 +399,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
 
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
         let target = undefined;
-        if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
+        if (this.hidden !== true && this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {
             target = this
             let subviews = this.subviews;
             for (let index = subviews.length - 1; index >= 0; index--) {

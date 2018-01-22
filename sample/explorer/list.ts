@@ -153,7 +153,6 @@ export class List extends XT.ViewController {
         this.setupNavigationBar()
         this.setupListView()
         this.loadData()
-        // this.setupRightButtons()
     }
 
     setupNavigationBar() {
@@ -167,7 +166,6 @@ export class List extends XT.ViewController {
         voiceItem.image = require('../assets/voice@3x.png')
         voiceItem.onTouchUpInside = () => {
             console.log("on voice");
-            
         }
         this.navigationBar.setRightBarButtonItems([infoItem, voiceItem])
         this.showNavigationBar()

@@ -8,10 +8,32 @@ import { RectMake } from '../../interface/Rect';
 
 export class NavigationBarButtonItem {
 
-    image?: Image
     title?: string
-    customView?: View
+    customView: View
     onTouchUpInside?: () => void
+
+    constructor() {
+        this.customView = new Button()
+        this.customView.frame = RectMake(0, 0, 44, 44);
+        (this.customView as Button).onTouchUpInside = () => {
+            if (this.onTouchUpInside) {
+                this.onTouchUpInside()
+            }
+        }
+    }
+
+    private _image: Image | undefined
+
+    public get image(): Image | undefined {
+        return this._image;
+    }
+
+    public set image(value: Image | undefined) {
+        this._image = value;
+        if (this.customView instanceof Button) {
+            this.customView.image = value
+        }
+    }
 
 }
 
@@ -35,9 +57,26 @@ export class NavigationBar extends View {
         }
     }
 
+    private _leftItems: View[] = []
+    private _rightItems: View[] = []
+
     reload() {
         if (this.delegate) {
-            this.backButton.hidden = !this.delegate.shouldShowBackButton()
+            this.contentView.subviews.forEach(it => {
+                it.removeFromSuperview()
+            })
+            this._leftItems = (this.leftButtonItems || []).map(it => {
+                return it.customView
+            })
+            this._rightItems = (this.rightButtonItems || []).map(it => {
+                return it.customView
+            })
+            if (this.delegate.shouldShowBackButton() && this._leftItems.length == 0) {
+                this._leftItems.push(this.backButton)
+            }
+            this._leftItems.forEach(it => { this.contentView.addSubview(it) })
+            this._rightItems.forEach(it => { this.contentView.addSubview(it) })
+            this.contentView.addSubview(this.titleView)
             this.layoutSubviews()
         }
     }
@@ -47,11 +86,11 @@ export class NavigationBar extends View {
         this.setupBackButton()
         this.setupTitleView()
         this.addSubview(this.contentView)
+        this.reload()
     }
 
     setupBackButton() {
         this.backButton = new Button()
-        this.backButton.hidden = true
         this.backButton.frame = RectMake(0, 0, 44, 48)
         this.backButton.image = Image.fromBase64("iVBORw0KGgoAAAANSUhEUgAAADkAAAA8CAMAAADrC+IEAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABOUExURUdwTP///////////////////////////////////////////////////////////////////////////////////////////////////4il91oAAAAZdFJOUwD+ZRPxOKUhoAPR0BY3pxSZmAIOMyhEh7SA0BQ9AAAAfElEQVRIx+3VSQqAMBAF0XaIGudZ+/4XVaMLCQjxo4LQtX/rIrpO14qgdMShAiFD1ECEHnClPQg5CwQ+D1OBAv8Cq68hz4ljnQXdy1FoZMOoLEJUYtRIiO7yRKfYsZYs6vl3z6WEChUq1JGOKC01YRSAO4XgRkFINKDwrRZIeEfaMx4tYAAAAABJRU5ErkJggg==", 3.0)
         if (this.backButton.image) {
@@ -60,7 +99,6 @@ export class NavigationBar extends View {
         this.backButton.onTouchUpInside = () => {
             this.delegate && this.delegate.onBack()
         }
-        this.contentView.addSubview(this.backButton)
     }
 
     setupTitleView() {
@@ -68,24 +106,23 @@ export class NavigationBar extends View {
         this.titleView.numberOfLines = 1
         this.titleView.font = Font.boldSystemFontOfSize(17)
         this.titleView.textColor = Color.blackColor
-        this.contentView.addSubview(this.titleView)
     }
 
     layoutSubviews() {
         super.layoutSubviews()
         this.contentView.frame = RectMake(0, this.bounds.height - 48, this.bounds.width, 48)
-        let leftItems: View[] = []
-        let rightItems: View[] = []
-        if (!this.backButton.hidden) {
-            leftItems.push(this.backButton)
-        }
-        let currentX = leftItems.length > 0 ? 4.0 : 15.0
+        let currentX = this._leftItems.length > 0 ? 4.0 : 15.0
         let currentWidthLefted = this.contentView.bounds.width - currentX
-        leftItems.forEach(it => {
+        this._leftItems.forEach(it => {
             it.frame = RectMake(currentX, (this.contentView.bounds.height - it.frame.height) / 2.0, it.frame.width, it.frame.height)
             currentX += it.frame.width + 4.0
         })
-        currentWidthLefted = this.contentView.bounds.width - currentX
+        let currentRightX = this.contentView.bounds.width - 4.0
+        this._rightItems.forEach(it => {
+            it.frame = RectMake(currentRightX - it.frame.width, (this.contentView.bounds.height - it.frame.height) / 2.0, it.frame.width, it.frame.height)
+            currentRightX -= it.frame.width + 4.0
+        })
+        currentWidthLefted = currentRightX - currentX
         this.titleView.frame = RectMake(currentX, 0, currentWidthLefted, this.contentView.bounds.height)
     }
 
@@ -121,60 +158,36 @@ export class NavigationBar extends View {
         this.tintColor = XT.Color.whiteColor
     }
 
-    // private leftButtonItemCallbacks: (() => void)[] = []
+    private leftButtonItems: NavigationBarButtonItem[]
 
-    // public setLeftBarButtonItem(navigationItem?: NavigationBarButtonItem): void {
-    //     if (navigationItem) {
-    //         this.setLeftBarButtonItems([navigationItem])
-    //     }
-    //     else {
-    //         this.setLeftBarButtonItems([]);
-    //     }
-    // }
+    public setLeftBarButtonItem(navigationItem?: NavigationBarButtonItem): void {
+        if (navigationItem) {
+            this.setLeftBarButtonItems([navigationItem])
+        }
+        else {
+            this.setLeftBarButtonItems([]);
+        }
+    }
 
-    // public setLeftBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
-    //     this.leftButtonItemCallbacks = navigationItems.map(it => it.onTouchUpInside || (() => { }))
-    //     XTRNavigationBar.xtr_setLeftBarButtonItemsObjectRef(navigationItems.map(it => {
-    //         return {
-    //             image: it.image ? it.image.objectRef : undefined,
-    //             title: it.title,
-    //             customView: it.customView ? it.customView.objectRef : undefined,
-    //         }
-    //     }), this.objectRef)
-    // }
+    public setLeftBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
+        this.leftButtonItems = navigationItems
+        this.reload()
+    }
 
-    // private handleLeftButtonTouchUpInside(idx: number) {
-    //     if (this.leftButtonItemCallbacks[idx]) {
-    //         this.leftButtonItemCallbacks[idx]()
-    //     }
-    // }
+    public setRightBarButtonItem(navigationItem?: NavigationBarButtonItem): void {
+        if (navigationItem) {
+            this.setRightBarButtonItems([navigationItem])
+        }
+        else {
+            this.setRightBarButtonItems([]);
+        }
+    }
 
-    // public setRightBarButtonItem(navigationItem?: NavigationBarButtonItem): void {
-    //     if (navigationItem) {
-    //         this.setRightBarButtonItems([navigationItem])
-    //     }
-    //     else {
-    //         this.setRightBarButtonItems([]);
-    //     }
-    // }
+    private rightButtonItems: NavigationBarButtonItem[]
 
-    // private rightButtonItemCallbacks: (() => void)[] = []
-
-    // public setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
-    //     this.rightButtonItemCallbacks = navigationItems.map(it => it.onTouchUpInside || (() => { }))
-    //     XTRNavigationBar.xtr_setRightBarButtonItemsObjectRef(navigationItems.map(it => {
-    //         return {
-    //             image: it.image ? it.image.objectRef : undefined,
-    //             title: it.title,
-    //             customView: it.customView ? it.customView.objectRef : undefined,
-    //         }
-    //     }), this.objectRef)
-    // }
-
-    // private handleRightButtonTouchUpInside(idx: number) {
-    //     if (this.rightButtonItemCallbacks[idx]) {
-    //         this.rightButtonItemCallbacks[idx]()
-    //     }
-    // }
+    public setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
+        this.rightButtonItems = navigationItems
+        this.reload()
+    }
 
 }
