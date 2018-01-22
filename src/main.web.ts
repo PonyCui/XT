@@ -128,5 +128,9 @@ export class Alert extends MAlert { }
 export class Confirm extends MConfirm { }
 export class Prompt extends MPrompt { }
 
+import { WebView as IWebView } from './interface/WebView'
+import { WebView as MWebView } from './implementation/web/WebView'
+export class WebView extends MWebView { }
+
 declare var module: any;
 (window as any).XT = module.exports;

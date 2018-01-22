@@ -32,7 +32,7 @@
     return managedObject.objectUUID;
 }
 
-+ (void)loadWithURLString:(NSString *)URLString objectRef:(NSString *)objectRef {
++ (void)xtr_loadWithURLString:(NSString *)URLString objectRef:(NSString *)objectRef {
     XTRWebView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTRWebView class]]) {
         [view.innerView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLString]]];

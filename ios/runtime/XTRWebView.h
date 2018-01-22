@@ -14,7 +14,7 @@
 @protocol XTRWebViewExport <JSExport>
 
 + (NSString *)create;
-+ (void)loadWithURLString:(NSString *)URLString objectRef:(NSString *)objectRef;
++ (void)xtr_loadWithURLString:(NSString *)URLString objectRef:(NSString *)objectRef;
 
 @end
 

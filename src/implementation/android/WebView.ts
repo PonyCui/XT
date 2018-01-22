@@ -11,7 +11,7 @@ export class WebView extends View {
     }
 
     load(URLString: string): void {
-        XTRWebView.xtr_loadWithURLStringObjectRef(URLString, this.objectRef)
+        XTRWebView.xtr_loadWithURLString(URLString, this.objectRef)
     }
 
     handleStart() {

@@ -23,12 +23,12 @@ export class WebViewSample extends XT.ViewController {
 
     addTestCases() {
         this.contentView.addSubview(this.webView)
-        this.webView.load("https://github.com/")
+        this.webView.load("https://www.gz.gov.cn/")
         this.webView.onStart = () => {
             this.title = "Loading..."
         }
         this.webView.onFinish = () => {
-            this.title = "GitHub"
+            this.title = "中国广州政府"
         }
         this.webView.onFail = () => {
             this.title = "加载失败...."

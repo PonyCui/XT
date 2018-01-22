@@ -1,4 +1,5 @@
 import { View } from './View'
+import { WebViewElement } from './element/WebView';
 
 export class WebView extends View {
 
@@ -6,12 +7,14 @@ export class WebView extends View {
     onFinish?: () => void
     onFail?: (error: Error) => void
 
-    constructor(ref: any) {
-        super(ref || XTRWebView)
+    nativeObject: any;
+
+    constructor() {
+        super(WebViewElement)
     }
 
     load(URLString: string): void {
-        XTRWebView.xtr_loadWithURLStringObjectRef(URLString, this.objectRef)
+        this.nativeObject.xtr_loadWithURLString(URLString)
     }
 
     handleStart() {
