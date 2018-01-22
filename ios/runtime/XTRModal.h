@@ -12,8 +12,8 @@
 @protocol XTRModalExport<JSExport>
 
 + (void)showAlert:(JSValue *)params callback:(JSValue *)callback;
-+ (void)showConfirm:(JSValue *)params resolver:(JSValue *)resolver rejecter:(JSValue *)rejecter;
-+ (void)showPrompt:(JSValue *)params resolver:(JSValue *)resolver rejecter:(JSValue *)rejecter;
++ (void)showConfirm:(JSValue *)params resolver:(JSValue *)resolver rejected:(JSValue *)rejected;
++ (void)showPrompt:(JSValue *)params resolver:(JSValue *)resolver rejected:(JSValue *)rejected;
 
 @end
 

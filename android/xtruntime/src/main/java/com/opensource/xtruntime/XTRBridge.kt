@@ -73,7 +73,8 @@ class XTRBridge(val appContext: android.content.Context, val completionBlock: ((
                 XTRCustomView.JSExports(xtrContext),
                 XTRFont.JSExports(xtrContext),
                 XTRHRView.JSExports(xtrContext),
-                XTRNavigationBar.JSExports(xtrContext)
+                XTRNavigationBar.JSExports(xtrContext),
+                XTRModal.JSExports(xtrContext)
         )
         val registeredComponents: MutableMap<String, XTRComponentExport> = mutableMapOf()
         components.forEach {

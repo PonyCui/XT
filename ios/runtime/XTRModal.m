@@ -28,7 +28,7 @@
                                                                                completion:nil];
 }
 
-+ (void)showConfirm:(JSValue *)params resolver:(JSValue *)resolver rejecter:(JSValue *)rejecter {
++ (void)showConfirm:(JSValue *)params resolver:(JSValue *)resolver rejected:(JSValue *)rejected {
     NSString *message = params.isObject ? params.toDictionary[@"message"] ?: @"" : @"";
     NSString *confirmTitle = params.isObject ? params.toDictionary[@"confirmTitle"] ?: @"确认" : @"确认";
     NSString *cancelTitle = params.isObject ? params.toDictionary[@"cancelTitle"] ?: @"取消" : @"取消";
@@ -39,14 +39,14 @@
         [resolver callWithArguments:@[]];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [rejecter callWithArguments:@[]];
+        [rejected callWithArguments:@[]];
     }]];
     [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController
                                                                                  animated:YES
                                                                                completion:nil];
 }
 
-+ (void)showPrompt:(JSValue *)params resolver:(JSValue *)resolver rejecter:(JSValue *)rejecter {
++ (void)showPrompt:(JSValue *)params resolver:(JSValue *)resolver rejected:(JSValue *)rejected {
     NSString *message = params.isObject ? params.toDictionary[@"message"] ?: @"" : @"";
     NSString *placeholder = params.isObject ? params.toDictionary[@"placeholder"] ?: nil : nil;
     NSString *defaultValue = params.isObject ? params.toDictionary[@"defaultValue"] ?: nil : nil;
@@ -66,7 +66,7 @@
                                       ]];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [rejecter callWithArguments:@[]];
+        [rejected callWithArguments:@[]];
     }]];
     [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController
                                                                                  animated:YES

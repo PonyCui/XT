@@ -120,6 +120,12 @@ import { HRView as IHRView } from './interface/HRView'
 import { HRView as MHRView } from './implementation/android/HRView'
 export class HRView extends MHRView { }
 
+import { Alert as IAlert, Confirm as IConfirm, Prompt as IPrompt } from './interface/Modal'
+import { Alert as MAlert, Confirm as MConfirm, Prompt as MPrompt } from './implementation/android/Modal'
+export class Alert extends MAlert { }
+export class Confirm extends MConfirm { }
+export class Prompt extends MPrompt { }
+
 declare var module: any;
 declare var XT: any;
 if (typeof XT === "object") {
