@@ -23,3 +23,4 @@ declare var XTRCustomView: any
 declare var XTRDevice: any
 declare var XTRTextMeasurer: any
 declare var XTRHRView: any
+declare var XTRModal: any

@@ -93,3 +93,8 @@ export class TextMeasurer extends ITextMeasurer { }
 
 import { HRView as IHRView } from './interface/HRView'
 export class HRView extends IHRView { }
+
+import { Alert as IAlert, Confirm as IConfirm, Prompt as IPrompt } from './interface/Modal'
+export class Alert extends IAlert { }
+export class Confirm extends IConfirm { }
+export class Prompt extends IPrompt { }

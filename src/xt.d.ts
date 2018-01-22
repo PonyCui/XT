@@ -791,6 +791,28 @@ export class HRView extends View {
     color: Color
 }
 
+export class Alert {
+    public buttonTitle: string
+    constructor(message: string)
+    show(callback?: () => void): void
+}
+
+export class Confirm {
+    public confirmTitle: string
+    public cancelTitle: string
+    constructor(message: string)
+    show(resolve: () => void, reject: () => void): void
+}
+
+export class Prompt {
+    public placeholder: string
+    public defaultValue: string
+    public confirmTitle: string
+    public cancelTitle: string
+    constructor(message: string)
+    show(resolve: (value: string) => void, reject: () => void): void
+}
+
 declare global {
     const XT: {
         Releasable: Releasable,
@@ -854,5 +876,8 @@ declare global {
         TextMeasureParams: TextMeasureParams,
         TextMeasurer: typeof TextMeasurer,
         HRView: typeof HRView,
+        Alert: typeof Alert,
+        Confirm: typeof Confirm,
+        Prompt: typeof Prompt,
     };
 }

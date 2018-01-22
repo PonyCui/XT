@@ -77,7 +77,7 @@ export class Window extends MWindow { }
 import { ViewController as IViewController, KeyboardAvoidingMode as IKeyboardAvoidingMode } from './interface/ViewController'
 import { ViewController as MViewController } from './implementation/ios/ViewController'
 export class ViewController extends MViewController { }
-export const KeyboardAvoidingMode = IKeyboardAvoidingMode 
+export const KeyboardAvoidingMode = IKeyboardAvoidingMode
 
 import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from './interface/NavigationBar'
 import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './implementation/ios/NavigationBar'
@@ -90,7 +90,7 @@ export class NavigationController extends MNavigationController { }
 
 import { TextField as ITextField, TextFieldViewMode as ITextFieldViewMode, ReturnKeyType as IReturnKeyType, KeyboardType as IKeyboardType } from './interface/TextField'
 import { TextField as MTextField } from './implementation/ios/TextField'
-export class TextField extends MTextField {}
+export class TextField extends MTextField { }
 export const TextFieldViewMode = ITextFieldViewMode
 export const ReturnKeyType = IReturnKeyType
 export const KeyboardType = IKeyboardType
@@ -119,7 +119,13 @@ export class TextMeasurer extends MTextMeasurer { }
 import { HRView as IHRView } from './interface/HRView'
 import { HRView as MHRView } from './implementation/ios/HRView'
 export class HRView extends MHRView { }
- 
+
+import { Alert as IAlert, Confirm as IConfirm, Prompt as IPrompt } from './interface/Modal'
+import { Alert as MAlert, Confirm as MConfirm, Prompt as MPrompt } from './implementation/ios/Modal'
+export class Alert extends MAlert { }
+export class Confirm extends MConfirm { }
+export class Prompt extends MPrompt { }
+
 declare var module: any;
 declare var XT: any;
 if (typeof XT === "object") {

@@ -160,12 +160,31 @@ export class List extends XT.ViewController {
         const infoItem = new XT.NavigationBarButtonItem()
         infoItem.image = require('../assets/info@3x.png')
         infoItem.onTouchUpInside = () => {
-            console.log("on info");   
+            const alertView = new XT.Alert("You Just Touch Info Button.")
+            alertView.buttonTitle = "知道了"
+            alertView.show(() => {
+                console.log("on info");
+            })
         }
         const voiceItem = new XT.NavigationBarButtonItem()
         voiceItem.image = require('../assets/voice@3x.png')
         voiceItem.onTouchUpInside = () => {
-            console.log("on voice");
+            const confirmView = new XT.Confirm("Want To Input Something?")
+            confirmView.confirmTitle = "Yes"
+            confirmView.cancelTitle = "No"
+            confirmView.show(() => {
+                console.log("Yes");
+                const prompt = new XT.Prompt("Title")
+                prompt.confirmTitle = "Go"
+                prompt.cancelTitle = "Cancel"
+                prompt.placeholder = "Input title here."
+                prompt.defaultValue = this.title
+                prompt.show((value: string) => {
+                    this.title = value
+                }, () => { })
+            }, () => {
+                console.log("No");
+            })
         }
         this.navigationBar.setRightBarButtonItems([infoItem, voiceItem])
         this.showNavigationBar()
