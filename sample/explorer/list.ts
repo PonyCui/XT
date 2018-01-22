@@ -14,6 +14,7 @@ import { FrameLayoutSample } from "./framelayout";
 import { AutoLayoutSample } from "./autolayout";
 import { LinearAnimationSample } from "./linearanimation";
 import { SpringAnimationSample } from "./springanimation";
+import { WebViewSample } from "./webview";
 
 class Header extends XT.ListCell {
 
@@ -281,10 +282,20 @@ export class List extends XT.ViewController {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
                 name: "TextView",
-                isSectionLast: true,
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new TextViewSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "WebView",
+                isSectionLast: true,
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new WebViewSample())
                     }
                 },
             },

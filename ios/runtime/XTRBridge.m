@@ -36,6 +36,7 @@
 #import "XTRTextMeasurer.h"
 #import "XTRHRView.h"
 #import "XTRModal.h"
+#import "XTRWebView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <XT-Polyfill/XTPolyfill.h>
 
@@ -199,6 +200,7 @@ static NSString *globalBridgeScript;
                               [XTRTextMeasurer class],
                               [XTRHRView class],
                               [XTRModal class],
+                              [XTRWebView class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;

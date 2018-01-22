@@ -98,3 +98,6 @@ import { Alert as IAlert, Confirm as IConfirm, Prompt as IPrompt } from './inter
 export class Alert extends IAlert { }
 export class Confirm extends IConfirm { }
 export class Prompt extends IPrompt { }
+
+import { WebView as IWebView } from './interface/WebView'
+export class WebView extends IWebView { }

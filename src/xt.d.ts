@@ -813,6 +813,13 @@ export class Prompt {
     show(resolve: (value: string) => void, reject: () => void): void
 }
 
+export class WebView extends View {
+    load(URLString: string): void
+    onStart?: () => void
+    onFinish?: () => void
+    onFail?: (error: Error) => void
+}
+
 declare global {
     const XT: {
         Releasable: Releasable,
@@ -879,5 +886,6 @@ declare global {
         Alert: typeof Alert,
         Confirm: typeof Confirm,
         Prompt: typeof Prompt,
+        WebView: typeof WebView,
     };
 }
