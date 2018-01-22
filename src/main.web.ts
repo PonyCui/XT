@@ -122,5 +122,11 @@ import { HRView as IHRView } from './interface/HRView'
 import { HRView as MHRView } from './implementation/web/HRView'
 export class HRView extends MHRView { }
 
+import { Alert as IAlert, Confirm as IConfirm, Prompt as IPrompt } from './interface/Modal'
+import { Alert as MAlert, Confirm as MConfirm, Prompt as MPrompt } from './implementation/web/Modal'
+export class Alert extends MAlert { }
+export class Confirm extends MConfirm { }
+export class Prompt extends MPrompt { }
+
 declare var module: any;
 (window as any).XT = module.exports;
