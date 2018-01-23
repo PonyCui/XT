@@ -23,16 +23,20 @@ class XTRActivityIndicatorView @JvmOverloads constructor(
             innerView?.visibility = if (value) View.VISIBLE else View.GONE
         }
 
-    private var innerView = ProgressBar(context)
+    private var innerView = ProgressBar(context, null, android.R.attr.progressBarStyleSmall)
+    private var layoutParams = LayoutParams((24.0 * resources.displayMetrics.density).toInt(), (24.0 * resources.displayMetrics.density).toInt())
 
     private var style = 0
         set(value) {
             field = value
-            removeView(innerView)
-            innerView = ProgressBar(context, null, if (value == 1) android.R.attr.progressBarStyleLarge else android.R.attr.progressBarStyleSmall)
-            innerView.visibility = if (animating) View.VISIBLE else View.GONE
-            innerView.isIndeterminate = true
-            addView(innerView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
+            if (value == 0) {
+                layoutParams.width = (24.0 * resources.displayMetrics.density).toInt()
+                layoutParams.height = (24.0 * resources.displayMetrics.density).toInt()
+            }
+            else if (value == 1) {
+                layoutParams.width = (66.0 * resources.displayMetrics.density).toInt()
+                layoutParams.height = (66.0 * resources.displayMetrics.density).toInt()
+            }
             resetLayout()
             resetColor()
         }
@@ -40,7 +44,7 @@ class XTRActivityIndicatorView @JvmOverloads constructor(
     init {
         innerView.visibility = View.GONE
         innerView.isIndeterminate = true
-        addView(innerView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
+        addView(innerView, layoutParams)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
