@@ -132,5 +132,13 @@ import { WebView as IWebView } from './interface/WebView'
 import { WebView as MWebView } from './implementation/web/WebView'
 export class WebView extends MWebView { }
 
+import { Switch as ISwitch } from './interface/Switch'
+import { Switch as MSwitch } from './implementation/web/Switch'
+export class Switch extends MSwitch { }
+
+import { Slider as ISlider } from './interface/Slider'
+import { Slider as MSlider } from './implementation/web/Slider'
+export class Slider extends MSlider { }
+
 declare var module: any;
 (window as any).XT = module.exports;

@@ -145,9 +145,13 @@ export class ViewElement extends BaseElement {
 
     public xtr_setBackgroundColor(value: Color) {
         this.backgroundColor = value;
-        if (this.backgroundColor.a > 0) {
+        this.backgroundObject.setAttribute('fill', 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')')
+        this.resetBackgroundVisibility()
+    }
+
+    private resetBackgroundVisibility() {
+        if (this.backgroundColor.a > 0 || (this.borderWidth > 0 && this.borderColor.a > 0)) {
             this.backgroundObject.setAttribute('visibility', 'inherit');
-            this.backgroundObject.setAttribute('fill', 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')')
             if (this.backgroundObject.parentNode === null) {
                 this.nativeObject.insertBefore(this.backgroundObject, this.nativeObject.childNodes[0])
             }
@@ -223,6 +227,7 @@ export class ViewElement extends BaseElement {
             this.borderWidth = value;
             this.backgroundObject.setAttribute("stroke-width", value.toString())
         }
+        this.resetBackgroundVisibility()
     }
 
     private borderColor: Color = Color.clearColor;
@@ -234,6 +239,7 @@ export class ViewElement extends BaseElement {
     public xtr_setBorderColor(value: Color) {
         this.borderColor = value;
         this.backgroundObject.setAttribute('stroke', 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')')
+        this.resetBackgroundVisibility()
     }
 
     private shadowColor: Color = Color.clearColor;

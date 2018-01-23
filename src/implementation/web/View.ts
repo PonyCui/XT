@@ -723,30 +723,6 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         })
     }
 
-    static animationWithTensionAndFriction(tension: number, friction: number, animations: () => void, completion?: () => void) {
-        const springSystem = new Rebound.SpringSystem();
-        let rested = false;
-        this.commonAnimation(animations, (startTime, animationViewProps) => {
-            animationViewProps.forEach(item => {
-                const spring = springSystem.createSpring(tension, friction);
-                spring.addListener({
-                    onSpringUpdate: (spring) => {
-                        (item.view as any)[item.propName] = spring.getCurrentValue();
-                    },
-                    onSpringAtRest: () => {
-                        if (!rested) {
-                            rested = true;
-                            completion && completion();
-                        }
-                    }
-                });
-                spring.setCurrentValue(item.from);
-                spring.setEndValue(item.to);
-            })
-            return true;
-        })
-    }
-
     static animationWithBouncinessAndSpeed(bounciness: number, speed: number, animations: () => void, completion?: () => void) {
         const springSystem = new Rebound.SpringSystem();
         let rested = false;
