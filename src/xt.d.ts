@@ -832,6 +832,19 @@ export class Slider extends View {
     setValue(value: number, animated: boolean): void
 }
 
+export enum ActivityIndicatorViewStyle {
+    Regular,
+    Large,
+}
+
+export class ActivityIndicatorView extends View {
+    style: ActivityIndicatorViewStyle
+    readonly animating: boolean
+    hidesWhenStopped: boolean
+    startAnimating(): void
+    stopAnimating(): void
+}
+
 declare global {
     const XT: {
         Releasable: Releasable,
@@ -901,5 +914,8 @@ declare global {
         WebView: typeof WebView,
         Switch: typeof Switch,
         Slider: typeof Slider,
+        ActivityIndicatorViewStyle: typeof ActivityIndicatorViewStyle,
+        ActivityIndicatorView: typeof ActivityIndicatorView,
+
     };
 }

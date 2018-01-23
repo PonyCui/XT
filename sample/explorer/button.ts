@@ -25,7 +25,9 @@ export class ButtonSample extends XT.ViewController {
         this.addImageButton()
         this.addRegularSwitch()
         this.addRegularSlider()
-        this.contentView.contentSize = XT.SizeMake(0, 640)
+        this.addSmallActivityIndicatorView()
+        this.addLargeActivityIndicatorView()
+        this.contentView.contentSize = XT.SizeMake(0, 1000)
     }
 
     addRegularButton() {
@@ -115,6 +117,47 @@ export class ButtonSample extends XT.ViewController {
         view.onValueChanged = () => {
             summary.text = "Regular Slider \nframe = {44, 66, 200, 66} \ntintColor = blackColor, value = " + (view.value.toFixed(2))
         }
+        // } Sample Code 
+        wrapper.addSubview(view)
+        this.contentView.addSubview(wrapper)
+    }
+
+    addSmallActivityIndicatorView() {
+        const wrapper = new XT.View()
+        wrapper.frame = XT.RectMake(15, 520, 999, 160)
+        const summary = new XT.Label()
+        summary.frame = XT.RectMake(0, 8, 999, 44)
+        summary.font = XT.Font.systemFontOfSize(11)
+        summary.textColor = XT.Color.grayColor
+        summary.text = "Small ActivityIndicatorView \nframe = {0, 66, 200, 66} \ntintColor = grayColor, style = Small"
+        summary.numberOfLines = 0
+        wrapper.addSubview(summary)
+        // Sample Code {
+        const view = new XT.ActivityIndicatorView()
+        view.frame = XT.RectMake(0, 66, 200, 66)
+        view.tintColor = XT.Color.grayColor
+        view.startAnimating()
+        // } Sample Code 
+        wrapper.addSubview(view)
+        this.contentView.addSubview(wrapper)
+    }
+
+    addLargeActivityIndicatorView() {
+        const wrapper = new XT.View()
+        wrapper.frame = XT.RectMake(15, 680, 999, 160)
+        const summary = new XT.Label()
+        summary.frame = XT.RectMake(0, 8, 999, 44)
+        summary.font = XT.Font.systemFontOfSize(11)
+        summary.textColor = XT.Color.grayColor
+        summary.text = "Large ActivityIndicatorView \nframe = {0, 66, 200, 66} \ntintColor = grayColor, style = Large"
+        summary.numberOfLines = 0
+        wrapper.addSubview(summary)
+        // Sample Code {
+        const view = new XT.ActivityIndicatorView()
+        view.frame = XT.RectMake(0, 66, 200, 66)
+        view.tintColor = XT.Color.grayColor
+        view.style = XT.ActivityIndicatorViewStyle.Large
+        view.startAnimating()
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)

@@ -62,6 +62,15 @@
 
 @implementation XTRCanvasView
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.userInteractionEnabled = NO;
+    }
+    return self;
+}
+
 + (NSString *)name {
     return @"XTRCanvasView";
 }

@@ -59,6 +59,15 @@
     }
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.userInteractionEnabled = NO;
+    }
+    return self;
+}
+
 - (CGSize)intrinsicContentSize {
     return self.innerView.intrinsicContentSize;
 }

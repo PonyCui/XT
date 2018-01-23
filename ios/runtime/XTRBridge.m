@@ -39,6 +39,7 @@
 #import "XTRWebView.h"
 #import "XTRSwitch.h"
 #import "XTRSlider.h"
+#import "XTRActivityIndicatorView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <XT-Polyfill/XTPolyfill.h>
 
@@ -205,6 +206,7 @@ static NSString *globalBridgeScript;
                               [XTRWebView class],
                               [XTRSwitch class],
                               [XTRSlider class],
+                              [XTRActivityIndicatorView class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;

@@ -107,3 +107,7 @@ export class Switch extends ISwitch { }
 
 import { Slider as ISlider } from './interface/Slider'
 export class Slider extends ISlider { }
+
+import { ActivityIndicatorViewStyle as IActivityIndicatorViewStyle, ActivityIndicatorView as IActivityIndicatorView } from './interface/ActivityIndicatorView'
+export const ActivityIndicatorViewStyle = IActivityIndicatorViewStyle
+export class ActivityIndicatorView extends IActivityIndicatorView { }

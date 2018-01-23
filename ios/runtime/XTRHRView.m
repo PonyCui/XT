@@ -73,6 +73,7 @@
         _shapeLayer.strokeColor = [UIColor blackColor].CGColor;
         _shapeLayer.lineWidth = 1.0 / [UIScreen mainScreen].scale;
         [self.layer addSublayer:_shapeLayer];
+        self.userInteractionEnabled = NO;
     }
     return self;
 }

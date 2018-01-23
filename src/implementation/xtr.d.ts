@@ -27,3 +27,4 @@ declare var XTRModal: any
 declare var XTRWebView: any
 declare var XTRSwitch: any
 declare var XTRSlider: any
+declare var XTRActivityIndicatorView: any

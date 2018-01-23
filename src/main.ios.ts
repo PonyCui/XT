@@ -138,6 +138,11 @@ import { Slider as ISlider } from './interface/Slider'
 import { Slider as MSlider } from './implementation/ios/Slider'
 export class Slider extends MSlider { }
 
+import { ActivityIndicatorViewStyle as IActivityIndicatorViewStyle, ActivityIndicatorView as IActivityIndicatorView } from './interface/ActivityIndicatorView'
+import { ActivityIndicatorView as MActivityIndicatorView } from './implementation/ios/ActivityIndicatorView'
+export const ActivityIndicatorViewStyle = IActivityIndicatorViewStyle
+export class ActivityIndicatorView extends MActivityIndicatorView { }
+
 declare var module: any;
 declare var XT: any;
 if (typeof XT === "object") {

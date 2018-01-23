@@ -36,6 +36,15 @@
     return managedObject.objectUUID;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.userInteractionEnabled = NO;
+    }
+    return self;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.innerView.frame = self.bounds;
