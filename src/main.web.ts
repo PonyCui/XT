@@ -140,5 +140,10 @@ import { Slider as ISlider } from './interface/Slider'
 import { Slider as MSlider } from './implementation/web/Slider'
 export class Slider extends MSlider { }
 
+import { ActivityIndicatorViewStyle as IActivityIndicatorViewStyle, ActivityIndicatorView as IActivityIndicatorView } from './interface/ActivityIndicatorView'
+import { ActivityIndicatorView as MActivityIndicatorView } from './implementation/web/ActivityIndicatorView'
+export const ActivityIndicatorViewStyle = IActivityIndicatorViewStyle
+export class ActivityIndicatorView extends MActivityIndicatorView { }
+
 declare var module: any;
 (window as any).XT = module.exports;

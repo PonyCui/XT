@@ -21,6 +21,10 @@ class XTRImageView @JvmOverloads constructor(
 
     private val sharedImagePaint = Paint()
 
+    init {
+        userInteractionEnabled = false
+    }
+
     override fun tintColorDidChange() {
         super.tintColorDidChange()
         invalidate()

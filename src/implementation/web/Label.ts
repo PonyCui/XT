@@ -30,6 +30,7 @@ export class Label extends View {
 
     constructor() {
         super(LabelElement)
+        this.userInteractionEnabled = false
     }
 
     public get text(): string {

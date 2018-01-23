@@ -15,6 +15,7 @@ export class HRView extends View {
 
     constructor() {
         super(HRViewElement)
+        this.userInteractionEnabled = false
         this.position = HRViewPosition.Bottom
         this.color = Color.blackColor
     }

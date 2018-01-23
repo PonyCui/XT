@@ -9,7 +9,7 @@ export class CanvasView extends View {
 
     constructor() {
         super(CanvasElement)
-        this.userInteractionEnabled = true
+        this.userInteractionEnabled = false
     }
 
     public get globalAlpha(): number {

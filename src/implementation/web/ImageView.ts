@@ -97,6 +97,7 @@ export class ImageView extends View {
 
     constructor() {
         super(ImageViewElement)
+        this.userInteractionEnabled = false
     }
 
     private _image?: Image;

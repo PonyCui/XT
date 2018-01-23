@@ -29,6 +29,10 @@ class XTRHRView @JvmOverloads constructor(
 
     var sharedPaint = Paint()
 
+    init {
+        userInteractionEnabled = false
+    }
+
     override fun requestLayout() {
         super.requestLayout()
         invalidate()

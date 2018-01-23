@@ -37,6 +37,10 @@ class XTRCanvasView @JvmOverloads constructor(
     private var currentPaint = Paint()
     private val scale = resources.displayMetrics.density
 
+    init {
+        userInteractionEnabled = false
+    }
+
     override fun drawContent(canvas: Canvas?) {
         super.drawContent(canvas)
         canvas?.takeIf { it.width > 0 && it.height > 0 }?.let { canvas ->
