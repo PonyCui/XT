@@ -111,6 +111,7 @@ export class ButtonSample extends XT.ViewController {
         const view = new XT.Slider()
         view.frame = XT.RectMake(44, 66, 200, 66)
         view.tintColor = XT.Color.blackColor
+        view.setValue(0.5, false)
         view.onValueChanged = () => {
             summary.text = "Regular Slider \nframe = {44, 66, 200, 66} \ntintColor = blackColor, value = " + (view.value.toFixed(2))
         }
