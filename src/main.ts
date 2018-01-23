@@ -101,3 +101,9 @@ export class Prompt extends IPrompt { }
 
 import { WebView as IWebView } from './interface/WebView'
 export class WebView extends IWebView { }
+
+import { Switch as ISwitch } from './interface/Switch'
+export class Switch extends ISwitch { }
+
+import { Slider as ISlider } from './interface/Slider'
+export class Slider extends ISlider { }

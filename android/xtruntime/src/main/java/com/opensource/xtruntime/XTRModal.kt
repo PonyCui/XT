@@ -3,9 +3,12 @@ package com.opensource.xtruntime
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.view.KeyEvent
 import android.view.Window
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
@@ -66,6 +69,8 @@ class XTRModal {
             val rejectedTwin = rejected.twin()
             val dialogBuilder = AlertDialog.Builder(context.appContext)
             val editText = EditText(context.appContext)
+            editText.setSingleLine(true)
+            editText.imeOptions = EditorInfo.IME_ACTION_GO
             editText.hint = params.getString("placeholder") ?: ""
             params.getString("defaultValue")?.let {
                 editText.text.clear()
@@ -89,6 +94,18 @@ class XTRModal {
             })
             dialogBuilder.setCancelable(false)
             val dialog = dialogBuilder.create()
+            editText.setOnEditorActionListener { v, actionId, event ->
+                dialog.dismiss()
+                (resolverTwin as? V8Function)?.let {
+                    val returnParams = V8Array(it.runtime)
+                    returnParams.push(editText.editableText.toString())
+                    it.call(null, returnParams)
+                    returnParams.release()
+                }
+                resolverTwin.release()
+                rejectedTwin.release()
+                return@setOnEditorActionListener true
+            }
             dialog.setView(editText, (20.0 * editText.resources.displayMetrics.density).toInt(), (20.0 * editText.resources.displayMetrics.density).toInt(), (20.0 * editText.resources.displayMetrics.density).toInt(), (20.0 * editText.resources.displayMetrics.density).toInt())
             dialog.show()
         }

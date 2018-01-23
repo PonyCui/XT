@@ -37,6 +37,8 @@
 #import "XTRHRView.h"
 #import "XTRModal.h"
 #import "XTRWebView.h"
+#import "XTRSwitch.h"
+#import "XTRSlider.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <XT-Polyfill/XTPolyfill.h>
 
@@ -201,6 +203,8 @@ static NSString *globalBridgeScript;
                               [XTRHRView class],
                               [XTRModal class],
                               [XTRWebView class],
+                              [XTRSwitch class],
+                              [XTRSlider class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;

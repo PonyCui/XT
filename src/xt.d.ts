@@ -820,6 +820,18 @@ export class WebView extends View {
     onFail?: (error: Error) => void
 }
 
+export class Switch extends View {
+    on: boolean
+    onValueChanged?: () => void
+    setOn(value: boolean, animated: boolean): void
+}
+
+export class Slider extends View {
+    value: number
+    onValueChanged?: () => void
+    setValue(value: number, animated: boolean): void
+}
+
 declare global {
     const XT: {
         Releasable: Releasable,
@@ -887,5 +899,7 @@ declare global {
         Confirm: typeof Confirm,
         Prompt: typeof Prompt,
         WebView: typeof WebView,
+        Switch: typeof Switch,
+        Slider: typeof Slider,
     };
 }

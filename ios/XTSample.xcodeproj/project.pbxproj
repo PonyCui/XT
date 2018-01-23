@@ -46,6 +46,8 @@
 		90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FE61F7A647000CB3EA5 /* FOOView.m */; };
 		90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */; };
 		90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */ = {isa = PBXBuildFile; fileRef = 90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */; };
+		90AFB4D92016D3CF001E9DA7 /* XTRSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4D82016D3CF001E9DA7 /* XTRSwitch.m */; };
+		90AFB4DC2016DC22001E9DA7 /* XTRSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4DB2016DC22001E9DA7 /* XTRSlider.m */; };
 		90BB25571FBC24D700286398 /* XTRTextMeasurer.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25561FBC24D700286398 /* XTRTextMeasurer.m */; };
 		90BB255E1FBC3C4800286398 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB255A1FBC3C4800286398 /* AppDelegate.m */; };
 		90BB255F1FBC3C4800286398 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB255C1FBC3C4800286398 /* ViewController.m */; };
@@ -131,6 +133,10 @@
 		90A76FE91F7B982D00CB3EA5 /* FOOPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FOOPlugin.h; sourceTree = "<group>"; };
 		90A76FEA1F7B982D00CB3EA5 /* FOOPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FOOPlugin.m; sourceTree = "<group>"; };
 		90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = foo.xtplugin.json; sourceTree = "<group>"; };
+		90AFB4D72016D3CF001E9DA7 /* XTRSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRSwitch.h; sourceTree = "<group>"; };
+		90AFB4D82016D3CF001E9DA7 /* XTRSwitch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRSwitch.m; sourceTree = "<group>"; };
+		90AFB4DA2016DC22001E9DA7 /* XTRSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRSlider.h; sourceTree = "<group>"; };
+		90AFB4DB2016DC22001E9DA7 /* XTRSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRSlider.m; sourceTree = "<group>"; };
 		90BB25551FBC24D700286398 /* XTRTextMeasurer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRTextMeasurer.h; sourceTree = "<group>"; };
 		90BB25561FBC24D700286398 /* XTRTextMeasurer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRTextMeasurer.m; sourceTree = "<group>"; };
 		90BB25591FBC3C4800286398 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -278,6 +284,10 @@
 				902527552015CD350034988F /* XTRModal.m */,
 				902527572015EE2C0034988F /* XTRWebView.h */,
 				902527582015EE2C0034988F /* XTRWebView.m */,
+				90AFB4D72016D3CF001E9DA7 /* XTRSwitch.h */,
+				90AFB4D82016D3CF001E9DA7 /* XTRSwitch.m */,
+				90AFB4DA2016DC22001E9DA7 /* XTRSlider.h */,
+				90AFB4DB2016DC22001E9DA7 /* XTRSlider.m */,
 			);
 			path = runtime;
 			sourceTree = "<group>";
@@ -478,6 +488,7 @@
 				909009E51FFE108100B27F2D /* XTRHRView.m in Sources */,
 				909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */,
 				90689F2D1FA99FE4007EF1D3 /* XTRFont.m in Sources */,
+				90AFB4D92016D3CF001E9DA7 /* XTRSwitch.m in Sources */,
 				90689F3D1FA99FE4007EF1D3 /* XTRWindow.m in Sources */,
 				90BB25571FBC24D700286398 /* XTRTextMeasurer.m in Sources */,
 				90A76FEB1F7B982D00CB3EA5 /* FOOPlugin.m in Sources */,
@@ -488,6 +499,7 @@
 				90BB255E1FBC3C4800286398 /* AppDelegate.m in Sources */,
 				90BB25621FBC3CB100286398 /* ModulizeAppDelegate.m in Sources */,
 				90689F351FA99FE4007EF1D3 /* XTRScreen.m in Sources */,
+				90AFB4DC2016DC22001E9DA7 /* XTRSlider.m in Sources */,
 				90689F331FA99FE4007EF1D3 /* XTRListView.m in Sources */,
 				90689F291FA99FE4007EF1D3 /* XTRContext.m in Sources */,
 				902527592015EE2C0034988F /* XTRWebView.m in Sources */,

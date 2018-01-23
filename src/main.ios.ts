@@ -130,6 +130,14 @@ import { WebView as IWebView } from './interface/WebView'
 import { WebView as MWebView } from './implementation/ios/WebView'
 export class WebView extends MWebView { }
 
+import { Switch as ISwitch } from './interface/Switch'
+import { Switch as MSwitch } from './implementation/ios/Switch'
+export class Switch extends MSwitch { }
+
+import { Slider as ISlider } from './interface/Slider'
+import { Slider as MSlider } from './implementation/ios/Slider'
+export class Slider extends MSlider { }
+
 declare var module: any;
 declare var XT: any;
 if (typeof XT === "object") {

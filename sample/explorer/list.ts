@@ -307,7 +307,7 @@ export class List extends XT.ViewController {
             {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
-                name: "Button",
+                name: "Button & Switch & Slider",
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new ButtonSample())

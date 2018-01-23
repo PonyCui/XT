@@ -25,3 +25,5 @@ declare var XTRTextMeasurer: any
 declare var XTRHRView: any
 declare var XTRModal: any
 declare var XTRWebView: any
+declare var XTRSwitch: any
+declare var XTRSlider: any
