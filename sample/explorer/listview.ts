@@ -26,8 +26,8 @@ class ListCellSample extends XT.ListCell {
                 const nextViewController = new XT.ViewController()
                 if (this.currentItem) {
                     nextViewController.navigationBar.title = this.currentItem.name
+                    nextViewController.showNavigationBar()
                 }
-                nextViewController.showNavigationBar()
                 this.context.navigationController.pushViewController(nextViewController)
             }
         }

@@ -130,7 +130,11 @@ export class ViewController implements Releasable, NavigationBarDelegate {
         )
     }
 
-    didMoveToParentViewController(parent?: ViewController): void { }
+    didMoveToParentViewController(parent?: ViewController): void {
+        console.log("didMoveToParentViewController");
+        
+        this.navigationBar.reload()
+    }
 
     public get navigationController(): NavigationControllerInterface | undefined {
         const ref = XTRViewController.xtr_navigationController(this.objectRef)
