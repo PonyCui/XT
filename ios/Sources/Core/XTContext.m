@@ -13,7 +13,7 @@
 @interface XTContext ()
 
 @property (nonatomic, assign) BOOL isGlobalVariableDidSetup;
-@property (nonatomic, copy) NSArray<XTContext *> *childContext;
+@property (nonatomic, copy) NSArray<XTContext *> *childContexts;
 @property (nonatomic, weak) XTContext *parentContext;
 
 @end
@@ -42,9 +42,9 @@
 - (instancetype)initWithParentContext:(XTContext *)context {
     self = [super init];
     if (self) {
-        NSMutableArray<XTContext *> *mutableChildContexts = (_parentContext.childContext ?: @[]).mutableCopy;
+        NSMutableArray<XTContext *> *mutableChildContexts = (_parentContext.childContexts ?: @[]).mutableCopy;
         [mutableChildContexts addObject:self];
-        _parentContext.childContext = [mutableChildContexts copy];
+        _parentContext.childContexts = [mutableChildContexts copy];
         _parentContext = context;
         [self setup];
     }

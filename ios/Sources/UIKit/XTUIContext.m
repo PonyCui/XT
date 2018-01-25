@@ -45,9 +45,7 @@
 
 @interface XTUIContext ()<UINavigationControllerDelegate>
 
-@property (nonatomic, weak) XTUIApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
-@property (nonatomic, copy) NSArray *pluginInstances;
 
 @end
 

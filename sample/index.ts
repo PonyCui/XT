@@ -7,11 +7,6 @@ class AppDelegate extends UI.ApplicationDelegate {
         this.window = new UI.Window();
         this.window.backgroundColor = UI.Color.grayColor
         this.window.rootViewController = new UI.NavigationController(new List())
-        // this.window.rootViewController = new UI.NavigationController(new TestViewController())
-        // const v = new UI.ViewController()
-        // v.title = "Hello"
-        // v.showNavigationBar()
-        // this.window.rootViewController = v
         this.window.makeKeyAndVisible();
     }
 

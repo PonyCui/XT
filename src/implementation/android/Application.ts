@@ -8,10 +8,25 @@ export class ApplicationDelegate {
     objectRef: any
 
     constructor() {
-        this.objectRef = _XTUIApplicationDelegate.create()
+        this.objectRef = _XTUIApplicationDelegate.create();
+        objectRefs[this.objectRef] = this;
     }
 
-    applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
+    public get window(): Window | undefined {
+        const windowRef = _XTUIApplicationDelegate.xtr_window(this.objectRef)
+        if (typeof windowRef !== "string") {
+            return undefined
+        }
+        return new Window(windowRef)
+    }
+
+    public set window(value: Window | undefined) {
+        if (value) {
+            _XTUIApplicationDelegate.xtr_setWindow(value.objectRef, this.objectRef)
+        }
+    }
+
+    applicationDidFinishLaunchingWithOptions(launchOptions: Object): void { }
 
 }
 
@@ -25,9 +40,9 @@ export class Application {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.objectRef = _XTUIApplication.create()
+        this.objectRef = _XTUIApplication.create(delegate.objectRef)
+        objectRefs[this.objectRef] = this;
         this.delegate = delegate
-        this.delegate.applicationDidFinishLaunchingWithOptions(this, new Object())
     }
 
     public get keyWindow(): Window | undefined {

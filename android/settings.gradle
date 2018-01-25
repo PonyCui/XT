@@ -1,1 +1,1 @@
-include ':app', ':xtruntime'
+include ':app', ':uikit', ':core'

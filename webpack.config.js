@@ -36,7 +36,7 @@ module.exports = function (env) {
         ],
     }
     if (env && env.devandroid) {
-        setting.entry = { "xt.android.min": "./src/main.android.ts", };
+        setting.entry = { "xt.uikit.android.min": "./src/main.android.ts", };
         setting.output.libraryTarget = 'umd';
         setting.output.library = 'UI';
         setting.plugins = [
@@ -46,7 +46,7 @@ module.exports = function (env) {
                 output: { comments: false },
             }),
             new WebpackShellPlugin({
-                onBuildExit: ['cp dist/xt.android.min.js android/xtruntime/src/main/assets/xt.android.min.js']
+                onBuildExit: ['cp dist/xt.uikit.android.min.js android/xtruntime/src/main/assets/xt.uikit.android.min.js']
             }),
         ];
     }

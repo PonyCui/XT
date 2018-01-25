@@ -62,7 +62,7 @@
 + (void)xtr_exit:(NSString *)objectRef {
     XTUIApplication *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIApplication class]] && [obj.context isKindOfClass:[XTUIContext class]]) {
-//        XTUIViewController *keyViewController = [(XTUIContext *)obj.context keyViewController];
+//        XTUIViewController *keyViewController = (id)obj.delegate.window.rootViewController;
 //        if ([keyViewController isKindOfClass:[XTUIViewController class]] && keyViewController.exitAction) {
 //            keyViewController.exitAction(keyViewController);
 //        }

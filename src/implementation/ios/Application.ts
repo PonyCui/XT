@@ -26,7 +26,7 @@ export class ApplicationDelegate {
         }
     }
 
-    applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
+    applicationDidFinishLaunchingWithOptions(launchOptions: Object): void { }
 
 }
 
