@@ -37,6 +37,8 @@ module.exports = function (env) {
     }
     if (env && env.devandroid) {
         setting.entry = { "xt.android.min": "./src/main.android.ts", };
+        setting.output.libraryTarget = 'umd';
+        setting.output.library = 'UI';
         setting.plugins = [
             new webpack.optimize.UglifyJsPlugin({
                 include: /\.min\.js$/,
@@ -49,7 +51,9 @@ module.exports = function (env) {
         ];
     }
     if (env && env.devios) {
-        setting.entry = { "xt.ios.min": "./src/main.ios.ts", };
+        setting.entry = { "xt.uikit.ios.min": "./src/main.ios.ts", };
+        setting.output.libraryTarget = 'umd';
+        setting.output.library = 'UI';
         setting.plugins = [
             new webpack.optimize.UglifyJsPlugin({
                 include: /\.min\.js$/,
@@ -57,12 +61,14 @@ module.exports = function (env) {
                 output: { comments: false },
             }),
             new WebpackShellPlugin({
-                onBuildExit: ['cp dist/xt.ios.min.js ios/runtime/xt.ios.min.js']
+                onBuildExit: ['cp dist/xt.uikit.ios.min.js ios/Sources/UIKit/xt.uikit.ios.min.js']
             }),
         ];
     }
     if (env && env.devweb) {
         setting.entry = { "xt.web.min": "./src/main.web.ts", };
+        setting.output.libraryTarget = 'umd';
+        setting.output.library = 'UI';
         setting.plugins = [
             new webpack.optimize.UglifyJsPlugin({
                 include: /\.min\.js$/,

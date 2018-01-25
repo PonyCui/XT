@@ -1,6 +1,6 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
-import { Rect, RectMake, Insets } from "../../interface/Rect";
+import { Rect, RectMake, Insets, InsetsMake } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { DeviceOrientation } from "../../interface/Device";
 // import { Device } from "./Device";
@@ -64,7 +64,7 @@ export class ViewController implements Releasable {
         }
     }
 
-    safeAreaInsets: Insets = XT.InsetsMake(0, 0, 0, 0)
+    safeAreaInsets: Insets = InsetsMake(0, 0, 0, 0)
 
     loadView(): void {
         const view = new View();
@@ -113,7 +113,7 @@ export class ViewController implements Releasable {
     didMoveToParentViewController(parent?: ViewController): void { }
 
     public get navigationController(): NavigationControllerInterface | undefined {
-        if ((this as any).className === "XTRNavigationController") {
+        if ((this as any).className === "_XTUINavigationController") {
             return this as any
         }
         return this.parentViewController ? this.parentViewController.navigationController as any : undefined

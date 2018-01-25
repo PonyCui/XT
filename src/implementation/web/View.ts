@@ -370,7 +370,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     addSubview(subview: View) {
-        if ((this as any).className === "XTRWindow") {
+        if ((this as any).className === "_XTUIWindow") {
             subview.window = this as any
         }
         else {
@@ -385,7 +385,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     insertSubviewBelow(subview: View, siblingSubview: View) {
-        if ((this as any).className === "XTRWindow") {
+        if ((this as any).className === "_XTUIWindow") {
             subview.window = this as any
         }
         else {
@@ -400,7 +400,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     insertSubviewAbove(subview: View, siblingSubview: View) {
-        if ((this as any).className === "XTRWindow") {
+        if ((this as any).className === "_XTUIWindow") {
             subview.window = this as any
         }
         else {

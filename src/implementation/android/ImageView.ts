@@ -26,7 +26,7 @@ export class Image implements Releasable {
     readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromURL(url, (imageRef?: string) => {
+        _XTUIImage.xtr_fromURL(url, (imageRef?: string) => {
             if (typeof imageRef === "string") {
                 success(new Image(imageRef))
             }
@@ -38,12 +38,12 @@ export class Image implements Releasable {
     }
 
     static fromBase64(value: string, scale: number): Image | undefined {
-        const imageRef = XTRImage.xtr_fromBase64(value, scale)
+        const imageRef = _XTUIImage.xtr_fromBase64(value, scale)
         return typeof imageRef === "string" ? new Image(imageRef) : undefined
     }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        const imageRef = XTRImage.xtr_imageWithImageRenderingMode(this.objectRef, renderingMode)
+        const imageRef = _XTUIImage.xtr_imageWithImageRenderingMode(this.objectRef, renderingMode)
         if (typeof imageRef === "string") {
             return new Image(imageRef)
         }
@@ -61,25 +61,25 @@ export enum ContentMode {
 export class ImageView extends View {
 
     constructor(ref?: any) {
-        super(ref || XTRImageView)
+        super(ref || _XTUIImageView)
     }
 
     public get image(): Image | undefined {
-        const imageRef = XTRImageView.xtr_image(this.objectRef)
+        const imageRef = _XTUIImageView.xtr_image(this.objectRef)
         return typeof imageRef === "string" ? new Image(imageRef) : undefined;
     }
 
     public set image(value: Image | undefined) {
-        XTRImageView.xtr_setImage(value ? value.objectRef : "", this.objectRef);
+        _XTUIImageView.xtr_setImage(value ? value.objectRef : "", this.objectRef);
         this.recursiveSetNeedLayout()
     }
 
     public get contentMode(): ContentMode {
-        return XTRImageView.xtr_contentMode(this.objectRef);
+        return _XTUIImageView.xtr_contentMode(this.objectRef);
     }
 
     public set contentMode(value: ContentMode) {
-        XTRImageView.xtr_setContentMode(value, this.objectRef);
+        _XTUIImageView.xtr_setContentMode(value, this.objectRef);
     }
 
     public intrinsicContentSize(width?: number): Size | undefined {

@@ -5,7 +5,7 @@ import { RectMake } from "../../interface/Rect";
 
 export class NavigationController extends ViewController {
 
-    className = "XTRNavigationController"
+    className = "_XTUINavigationController"
 
     private runAfterAnimated?: () => void = undefined
 

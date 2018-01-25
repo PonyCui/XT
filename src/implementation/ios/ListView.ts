@@ -18,7 +18,7 @@ export class ListCell extends View {
     context?: any
 
     constructor(ref: any) {
-        super(ref || XTRListCell)
+        super(ref || _XTUIListCell)
     }
 
     public get contentView(): View {
@@ -26,11 +26,11 @@ export class ListCell extends View {
     }
 
     public get selectionStyle(): ListSelectionStyle {
-        return XTRListCell.xtr_selectionStyle(this.objectRef);
+        return _XTUIListCell.xtr_selectionStyle(this.objectRef);
     }
 
     public set selectionStyle(value: ListSelectionStyle) {
-        XTRListCell.xtr_setSelectionStyleObjectRef(value, this.objectRef);
+        _XTUIListCell.xtr_setSelectionStyleObjectRef(value, this.objectRef);
     }
 
     handleSelected() {
@@ -51,7 +51,7 @@ export class ListView extends ScrollView {
     protected registedContexts: { [key: string]: any } = {}
 
     constructor(ref: any) {
-        super(ref || XTRListView)
+        super(ref || _XTUIListView)
     }
 
     private _items: ListItem[];
@@ -62,7 +62,7 @@ export class ListView extends ScrollView {
 
     public set items(value: ListItem[]) {
         this._items = value;
-        XTRListView.xtr_setItemsObjectRef(value, this.objectRef);
+        _XTUIListView.xtr_setItemsObjectRef(value, this.objectRef);
     }
 
     renderItem?: (cell: ListCell, item: ListItem) => void
@@ -73,7 +73,7 @@ export class ListView extends ScrollView {
     }
 
     reloadData() {
-        XTRListView.xtr_reloadData(this.objectRef);
+        _XTUIListView.xtr_reloadData(this.objectRef);
     }
 
     requestRowHeight(width: number, rowIndex: number): number {

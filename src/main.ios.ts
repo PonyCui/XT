@@ -142,9 +142,3 @@ import { ActivityIndicatorViewStyle as IActivityIndicatorViewStyle, ActivityIndi
 import { ActivityIndicatorView as MActivityIndicatorView } from './implementation/ios/ActivityIndicatorView'
 export const ActivityIndicatorViewStyle = IActivityIndicatorViewStyle
 export class ActivityIndicatorView extends MActivityIndicatorView { }
-
-declare var module: any;
-declare var XT: any;
-if (typeof XT === "object") {
-    XT = module.exports
-}

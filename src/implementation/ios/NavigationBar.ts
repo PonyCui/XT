@@ -14,31 +14,31 @@ export class NavigationBarButtonItem {
 export class NavigationBar extends View {
 
     constructor(ref?: any) {
-        super(ref || XTRNavigationBar)
+        super(ref || _XTUINavigationBar)
     }
 
     public get title(): string {
-        return XTRNavigationBar.xtr_title(this.objectRef)
+        return _XTUINavigationBar.xtr_title(this.objectRef)
     }
 
     public set title(value: string) {
-        XTRNavigationBar.xtr_setTitleObjectRef(value, this.objectRef)
+        _XTUINavigationBar.xtr_setTitleObjectRef(value, this.objectRef)
     }
 
     public get translucent(): boolean {
-        return XTRNavigationBar.xtr_translucent(this.objectRef)
+        return _XTUINavigationBar.xtr_translucent(this.objectRef)
     }
 
     public set translucent(value: boolean) {
-        XTRNavigationBar.xtr_setTranslucentObjectRef(value, this.objectRef)
+        _XTUINavigationBar.xtr_setTranslucentObjectRef(value, this.objectRef)
     }
 
     public get lightContent(): boolean {
-        return XTRNavigationBar.xtr_lightContent(this.objectRef)
+        return _XTUINavigationBar.xtr_lightContent(this.objectRef)
     }
 
     public set lightContent(value: boolean) {
-        XTRNavigationBar.xtr_setLightContentObjectRef(value, this.objectRef)
+        _XTUINavigationBar.xtr_setLightContentObjectRef(value, this.objectRef)
     }
 
     private leftButtonItemCallbacks: (() => void)[]
@@ -54,7 +54,7 @@ export class NavigationBar extends View {
 
     public setLeftBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
         this.leftButtonItemCallbacks = navigationItems.map(it => it.onTouchUpInside || (() => { }))
-        XTRNavigationBar.xtr_setLeftBarButtonItemsObjectRef(navigationItems.map(it => {
+        _XTUINavigationBar.xtr_setLeftBarButtonItemsObjectRef(navigationItems.map(it => {
             return {
                 image: it.image ? it.image.objectRef : undefined,
                 title: it.title,
@@ -82,7 +82,7 @@ export class NavigationBar extends View {
 
     public setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void {
         this.rightButtonItemCallbacks = navigationItems.map(it => it.onTouchUpInside || (() => { }))
-        XTRNavigationBar.xtr_setRightBarButtonItemsObjectRef(navigationItems.map(it => {
+        _XTUINavigationBar.xtr_setRightBarButtonItemsObjectRef(navigationItems.map(it => {
             return {
                 image: it.image ? it.image.objectRef : undefined,
                 title: it.title,

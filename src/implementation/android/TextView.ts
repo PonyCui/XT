@@ -8,83 +8,83 @@ import { Rect, RectZero } from '../../interface/Rect';
 export class TextView extends View {
 
     constructor(ref?: any) {
-        super(ref || XTRTextView)
+        super(ref || _XTUITextView)
     }
 
     public get text(): string {
-        return XTRTextView.xtr_text(this.objectRef);
+        return _XTUITextView.xtr_text(this.objectRef);
     }
 
     public set text(value: string) {
-        XTRTextView.xtr_setText(value, this.objectRef);
+        _XTUITextView.xtr_setText(value, this.objectRef);
     }
 
     public get font(): Font {
-        return new Font(XTRTextView.xtr_font(this.objectRef));
+        return new Font(_XTUITextView.xtr_font(this.objectRef));
     }
 
     public set font(value: Font) {
-        XTRTextView.xtr_setFont(value.objectRef, this.objectRef);
+        _XTUITextView.xtr_setFont(value.objectRef, this.objectRef);
     }
 
     public get textColor(): Color {
-        return XTRTextView.xtr_textColor(this.objectRef);
+        return _XTUITextView.xtr_textColor(this.objectRef);
     }
 
     public set textColor(value: Color) {
-        XTRTextView.xtr_setTextColor(value, this.objectRef);
+        _XTUITextView.xtr_setTextColor(value, this.objectRef);
     }
 
     public get textAlignment(): TextAlignment {
-        return XTRTextView.xtr_textAlignment(this.objectRef);
+        return _XTUITextView.xtr_textAlignment(this.objectRef);
     }
 
     public set textAlignment(value: TextAlignment) {
-        XTRTextView.xtr_setTextAlignment(value, this.objectRef);
+        _XTUITextView.xtr_setTextAlignment(value, this.objectRef);
     }
 
     public get editing(): Boolean {
-        return XTRTextView.xtr_editing(this.objectRef);
+        return _XTUITextView.xtr_editing(this.objectRef);
     }
 
     public get allowAutocapitalization(): Boolean {
-        return XTRTextView.xtr_allowAutocapitalization(this.objectRef);
+        return _XTUITextView.xtr_allowAutocapitalization(this.objectRef);
     }
 
     public set allowAutocapitalization(value: Boolean) {
-        XTRTextView.xtr_setAllowAutocapitalization(value, this.objectRef);
+        _XTUITextView.xtr_setAllowAutocapitalization(value, this.objectRef);
     }
 
     public get allowAutocorrection(): Boolean {
-        return XTRTextView.xtr_allowAutocorrection(this.objectRef);
+        return _XTUITextView.xtr_allowAutocorrection(this.objectRef);
     }
 
     public set allowAutocorrection(value: Boolean) {
-        XTRTextView.xtr_setAllowAutocorrection(value, this.objectRef);
+        _XTUITextView.xtr_setAllowAutocorrection(value, this.objectRef);
     }
 
     public get allowSpellChecking(): Boolean {
-        return XTRTextView.xtr_allowSpellChecking(this.objectRef);
+        return _XTUITextView.xtr_allowSpellChecking(this.objectRef);
     }
 
     public set allowSpellChecking(value: Boolean) {
-        XTRTextView.xtr_setAllowSpellChecking(value, this.objectRef);
+        _XTUITextView.xtr_setAllowSpellChecking(value, this.objectRef);
     }
 
     public get keyboardType(): KeyboardType {
-        return XTRTextView.xtr_keyboardType(this.objectRef);
+        return _XTUITextView.xtr_keyboardType(this.objectRef);
     }
 
     public set keyboardType(value: KeyboardType) {
-        XTRTextView.xtr_setKeyboardType(value, this.objectRef);
+        _XTUITextView.xtr_setKeyboardType(value, this.objectRef);
     }
 
     public get returnKeyType(): ReturnKeyType {
-        return XTRTextView.xtr_returnKeyType(this.objectRef);
+        return _XTUITextView.xtr_returnKeyType(this.objectRef);
     }
 
     public set returnKeyType(value: ReturnKeyType) {
-        XTRTextView.xtr_setReturnKeyType(value, this.objectRef);
+        _XTUITextView.xtr_setReturnKeyType(value, this.objectRef);
     }
 
     public get enablesReturnKeyAutomatically(): Boolean {
@@ -94,7 +94,7 @@ export class TextView extends View {
     public set enablesReturnKeyAutomatically(value: Boolean) { }
 
     public get secureTextEntry(): Boolean {
-        return XTRTextView.xtr_secureTextEntry(this.objectRef);
+        return _XTUITextView.xtr_secureTextEntry(this.objectRef);
     }
 
     public set secureTextEntry(value: Boolean) {
@@ -103,7 +103,7 @@ export class TextView extends View {
             this.allowAutocorrection = false
             this.allowSpellChecking = false
         }
-        XTRTextView.xtr_setSecureTextEntry(value, this.objectRef);
+        _XTUITextView.xtr_setSecureTextEntry(value, this.objectRef);
     }
 
     shouldBeginEditing?: () => Boolean = undefined
@@ -158,11 +158,11 @@ export class TextView extends View {
     }
 
     focus(): void {
-        XTRTextView.xtr_focus(this.objectRef);
+        _XTUITextView.xtr_focus(this.objectRef);
     }
 
     blur(): void {
-        XTRTextView.xtr_blur(this.objectRef);
+        _XTUITextView.xtr_blur(this.objectRef);
     }
 
 }

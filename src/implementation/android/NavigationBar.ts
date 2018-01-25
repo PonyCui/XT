@@ -50,7 +50,7 @@ export class NavigationBar extends View {
     private titleView: Label
 
     constructor(ref?: any) {
-        super(ref || XTRNavigationBar)
+        super(ref || _XTUINavigationBar)
         if (ref === undefined) {
             this.setupContents()
             this.tintColor = Color.blackColor
@@ -140,11 +140,11 @@ export class NavigationBar extends View {
     }
 
     // public get translucent(): boolean {
-    //     return XTRNavigationBar.xtr_translucent(this.objectRef)
+    //     return _XTUINavigationBar.xtr_translucent(this.objectRef)
     // }
 
     // public set translucent(value: boolean) {
-    //     XTRNavigationBar.xtr_setTranslucent(value, this.objectRef)
+    //     _XTUINavigationBar.xtr_setTranslucent(value, this.objectRef)
     // }
 
     private _lightContent: boolean = false
@@ -155,7 +155,7 @@ export class NavigationBar extends View {
 
     public set lightContent(value: boolean) {
         this._lightContent = value
-        this.tintColor = XT.Color.whiteColor
+        this.tintColor = Color.whiteColor
     }
 
     private leftButtonItems: NavigationBarButtonItem[]

@@ -23,12 +23,12 @@ export enum KeyboardAvoidingMode {
 export class ViewController implements Releasable {
 
     retain(): this {
-        XTRetain(this.objectRef)
+        _XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        XTRelease(this.objectRef)
+        _XTRelease(this.objectRef)
         return this
     }
 
@@ -54,7 +54,7 @@ export class ViewController implements Releasable {
             this.objectRef = (ref as any).create()
         }
         else {
-            this.objectRef = XTRViewController.create()
+            this.objectRef = _XTUIViewController.create()
         }
         objectRefs[this.objectRef] = this;
     }
@@ -71,15 +71,15 @@ export class ViewController implements Releasable {
     }
 
     public get view() {
-        return new View(XTRViewController.xtr_view(this.objectRef));
+        return new View(_XTUIViewController.xtr_view(this.objectRef));
     }
 
     public set view(value: View) {
-        XTRViewController.xtr_setViewObjectRef(value.objectRef, this.objectRef);
+        _XTUIViewController.xtr_setViewObjectRef(value.objectRef, this.objectRef);
     }
 
     public get safeAreaInsets(): Insets {
-        return XTRViewController.xtr_safeAreaInsets(this.objectRef);
+        return _XTUIViewController.xtr_safeAreaInsets(this.objectRef);
     }
 
     loadView(): void {
@@ -97,23 +97,23 @@ export class ViewController implements Releasable {
     viewDidLayoutSubviews(): void { }
 
     public get parentViewController(): ViewController | undefined {
-        const ref = XTRViewController.xtr_parentViewController(this.objectRef)
+        const ref = _XTUIViewController.xtr_parentViewController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new ViewController(ref);
     }
 
     public get childViewControllers(): ViewController[] {
-        return XTRViewController.xtr_childViewControllers(this.objectRef).map((ref: string) => {
+        return _XTUIViewController.xtr_childViewControllers(this.objectRef).map((ref: string) => {
             return new ViewController(ref)
         });
     }
 
     addChildViewController(childController: ViewController): void {
-        XTRViewController.xtr_addChildViewControllerObjectRef(childController.objectRef, this.objectRef);
+        _XTUIViewController.xtr_addChildViewControllerObjectRef(childController.objectRef, this.objectRef);
     }
 
     removeFromParentViewController(): void {
-        XTRViewController.xtr_removeFromParentViewController(this.objectRef);
+        _XTUIViewController.xtr_removeFromParentViewController(this.objectRef);
     }
 
     _willMoveToParentViewController(parent?: string): void {
@@ -133,7 +133,7 @@ export class ViewController implements Releasable {
     didMoveToParentViewController(parent?: ViewController): void { }
 
     public get navigationController(): NavigationControllerInterface | undefined {
-        const ref = XTRViewController.xtr_navigationController(this.objectRef)
+        const ref = _XTUIViewController.xtr_navigationController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new (window as any)._NavigationControllerInterface(undefined, ref)
     }
@@ -158,14 +158,14 @@ export class ViewController implements Releasable {
                     currentView = currentView.superview
                 }
                 if (targetScrollView) {
-                    XT.View.animationWithDuration(keyboardDuration, () => {
+                    View.animationWithDuration(keyboardDuration, () => {
                         targetScrollView && targetScrollView.scrollRectToVisible({ ...firstResponderWindowRect, height: firstResponderWindowRect.height + keyboardHeight }, false)
                     })
                 }
                 else {
                     const windowBounds = this.view.window.bounds
                     const adjustHeight = Math.max(0.0, (firstResponderWindowRect.y + firstResponderWindowRect.height) - ((windowBounds.height) - keyboardHeight))
-                    XT.View.animationWithDuration(keyboardDuration, () => {
+                    View.animationWithDuration(keyboardDuration, () => {
                         this.view.transform = new TransformMatrix(1.0, 0.0, 0.0, 1.0, 0.0, -adjustHeight)
                     })
                 }
@@ -186,14 +186,14 @@ export class ViewController implements Releasable {
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
     public set navigationBar(value: NavigationBar) {
-        XTRViewController.xtr_setNavigationBarObjectRef(value.objectRef, this.objectRef)
+        _XTUIViewController.xtr_setNavigationBarObjectRef(value.objectRef, this.objectRef)
     }
 
     public get navigationBar(): NavigationBar {
-        let ref = XTRViewController.xtr_navigationBar(this.objectRef)
+        let ref = _XTUIViewController.xtr_navigationBar(this.objectRef)
         if (typeof ref !== "string") {
             this.navigationBar = new NavigationBar();
-            ref = XTRViewController.xtr_navigationBar(this.objectRef)
+            ref = _XTUIViewController.xtr_navigationBar(this.objectRef)
         }
         return new NavigationBar(ref)
     }
@@ -202,11 +202,11 @@ export class ViewController implements Releasable {
         if (this.navigationBar === undefined) {
             this.navigationBar = new NavigationBar()
         }
-        XTRViewController.xtr_showNavigationBarObjectRef(animated, this.objectRef)
+        _XTUIViewController.xtr_showNavigationBarObjectRef(animated, this.objectRef)
     }
 
     hideNavigationBar(animated: boolean = false): void {
-        XTRViewController.xtr_hideNavigationBar(animated, this.objectRef)
+        _XTUIViewController.xtr_hideNavigationBar(animated, this.objectRef)
     }
 
 }

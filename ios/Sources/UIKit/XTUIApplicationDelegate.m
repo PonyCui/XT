@@ -8,8 +8,8 @@
 
 #import "XTUIApplicationDelegate.h"
 #import "XTUIContext.h"
-#import "XTRUtils.h"
-#import "XTRWindow.h"
+#import "XTUIUtils.h"
+#import "XTUIWindow.h"
 #import "XTMemoryManager.h"
 
 @interface XTUIApplicationDelegate()
@@ -21,7 +21,7 @@
 @implementation XTUIApplicationDelegate
 
 + (NSString *)name {
-    return @"XTUIApplicationDelegate";
+    return @"_XTUIApplicationDelegate";
 }
 
 + (NSString *)create {
@@ -53,8 +53,8 @@
 + (NSString *)xtr_window:(NSString *)objectRef {
     XTUIApplicationDelegate *delegate = [XTMemoryManager find:objectRef];
     if ([delegate isKindOfClass:[XTUIApplicationDelegate class]]) {
-        if ([delegate.window isKindOfClass:[XTRWindow class]]) {
-            return [(XTRWindow *)delegate.window objectUUID];
+        if ([delegate.window isKindOfClass:[XTUIWindow class]]) {
+            return [(XTUIWindow *)delegate.window objectUUID];
         }
     }
     return nil;
@@ -62,8 +62,8 @@
 
 + (void)xtr_setWindow:(NSString *)windowRef objectRef:(NSString *)objectRef {
     XTUIApplicationDelegate *delegate = [XTMemoryManager find:objectRef];
-    XTRWindow *window = [XTMemoryManager find:windowRef];
-    if ([delegate isKindOfClass:[XTUIApplicationDelegate class]] && [window isKindOfClass:[XTRWindow class]]) {
+    XTUIWindow *window = [XTMemoryManager find:windowRef];
+    if ([delegate isKindOfClass:[XTUIApplicationDelegate class]] && [window isKindOfClass:[XTUIWindow class]]) {
         delegate.window = window;
     }
 }

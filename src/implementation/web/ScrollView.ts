@@ -117,7 +117,7 @@ export class ScrollView extends View implements ScrollerDelegate {
 
     setContentOffset(value: Point, animated: boolean): void {
         if (animated) {
-            XT.View.animationWithBouncinessAndSpeed(0.0, 4.0, () => {
+            View.animationWithBouncinessAndSpeed(0.0, 4.0, () => {
                 this.contentOffset = value;
             })
         }

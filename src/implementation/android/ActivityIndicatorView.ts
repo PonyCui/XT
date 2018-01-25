@@ -4,19 +4,19 @@ import { ActivityIndicatorViewStyle } from "../../interface/ActivityIndicatorVie
 export class ActivityIndicatorView extends View {
 
     constructor(ref: any) {
-        super(ref || XTRActivityIndicatorView)
+        super(ref || _XTUIActivityIndicatorView)
     }
 
     public get style(): ActivityIndicatorViewStyle {
-        return XTRActivityIndicatorView.xtr_style(this.objectRef);
+        return _XTUIActivityIndicatorView.xtr_style(this.objectRef);
     }
 
     public set style(value: ActivityIndicatorViewStyle) {
-        XTRActivityIndicatorView.xtr_setStyle(value, this.objectRef)
+        _XTUIActivityIndicatorView.xtr_setStyle(value, this.objectRef)
     }
 
     public get animating(): boolean {
-        return XTRActivityIndicatorView.xtr_animating(this.objectRef)
+        return _XTUIActivityIndicatorView.xtr_animating(this.objectRef)
     }
 
     public get hidesWhenStopped(): boolean {
@@ -26,11 +26,11 @@ export class ActivityIndicatorView extends View {
     public set hidesWhenStopped(value: boolean) { }
 
     startAnimating(): void {
-        XTRActivityIndicatorView.xtr_startAnimating(this.objectRef)
+        _XTUIActivityIndicatorView.xtr_startAnimating(this.objectRef)
     }
 
     stopAnimating(): void {
-        XTRActivityIndicatorView.xtr_stopAnimating(this.objectRef)
+        _XTUIActivityIndicatorView.xtr_stopAnimating(this.objectRef)
     }
 
 }

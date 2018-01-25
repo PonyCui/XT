@@ -25,67 +25,67 @@ export enum LineBreakMode {
 export class Label extends View {
 
     constructor(ref?: any) {
-        super(ref || XTRLabel)
+        super(ref || _XTUILabel)
     }
 
     public get text(): string {
-        return XTRLabel.xtr_text(this.objectRef);
+        return _XTUILabel.xtr_text(this.objectRef);
     }
 
     public set text(value: string) {
-        XTRLabel.xtr_setText(value, this.objectRef);
+        _XTUILabel.xtr_setText(value, this.objectRef);
     }
 
 	public get font(): Font {
-		return new Font(XTRLabel.xtr_font(this.objectRef));
+		return new Font(_XTUILabel.xtr_font(this.objectRef));
 	}
 
 	public set font(value: Font) {
-		XTRLabel.xtr_setFont(value.objectRef, this.objectRef);
+		_XTUILabel.xtr_setFont(value.objectRef, this.objectRef);
 	}
 
     public get textColor(): Color {
-        return XTRLabel.xtr_textColor(this.objectRef);
+        return _XTUILabel.xtr_textColor(this.objectRef);
     }
 
     public set textColor(value: Color) {
-        XTRLabel.xtr_setTextColor(value, this.objectRef);
+        _XTUILabel.xtr_setTextColor(value, this.objectRef);
     }
 
     public get textAlignment(): TextAlignment {
-        return XTRLabel.xtr_textAlignment(this.objectRef);
+        return _XTUILabel.xtr_textAlignment(this.objectRef);
     }
 
     public set textAlignment(value: TextAlignment) {
-        XTRLabel.xtr_setTextAlignment(value, this.objectRef);
+        _XTUILabel.xtr_setTextAlignment(value, this.objectRef);
     }
 
     public get numberOfLines(): number {
-        return XTRLabel.xtr_numberOfLines(this.objectRef);
+        return _XTUILabel.xtr_numberOfLines(this.objectRef);
     }
 
     public set numberOfLines(value: number) {
-        XTRLabel.xtr_setNumberOfLines(value, this.objectRef);
+        _XTUILabel.xtr_setNumberOfLines(value, this.objectRef);
     }
 
     public get lineBreakMode(): LineBreakMode {
-        return XTRLabel.xtr_lineBreakMode(this.objectRef);
+        return _XTUILabel.xtr_lineBreakMode(this.objectRef);
     }
 
     public set lineBreakMode(value: LineBreakMode) {
-        XTRLabel.xtr_setLineBreakMode(value, this.objectRef);
+        _XTUILabel.xtr_setLineBreakMode(value, this.objectRef);
     }
 
     public get lineSpace(): number {
-        return XTRLabel.xtr_lineSpace(this.objectRef);
+        return _XTUILabel.xtr_lineSpace(this.objectRef);
     }
 
     public set lineSpace(value: number) {
-        XTRLabel.xtr_setLineSpace(value, this.objectRef);
+        _XTUILabel.xtr_setLineSpace(value, this.objectRef);
     }
 
     textRectForBounds(bounds: Rect): Rect {
-        return XTRLabel.xtr_textRectForBounds(bounds, this.objectRef);
+        return _XTUILabel.xtr_textRectForBounds(bounds, this.objectRef);
     }
 
 }

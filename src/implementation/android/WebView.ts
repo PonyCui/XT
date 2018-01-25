@@ -7,11 +7,11 @@ export class WebView extends View {
     onFail?: (error: Error) => void
 
     constructor(ref: any) {
-        super(ref || XTRWebView)
+        super(ref || _XTUIWebView)
     }
 
     load(URLString: string): void {
-        XTRWebView.xtr_loadWithURLString(URLString, this.objectRef)
+        _XTUIWebView.xtr_loadWithURLString(URLString, this.objectRef)
     }
 
     handleStart() {

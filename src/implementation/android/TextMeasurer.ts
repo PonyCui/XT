@@ -17,7 +17,7 @@ export class TextMeasurer {
         if (params.font) {
             params.font = params.font.objectRef
         }
-        return XTRTextMeasurer.measureText(text, params);
+        return _XTUITextMeasurer.measureText(text, params);
     }
 
 }

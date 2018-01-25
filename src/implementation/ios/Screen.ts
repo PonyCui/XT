@@ -4,8 +4,8 @@ import { Rect } from "../../interface/Rect";
 export class Screen {
 
     static mainScreen: () => Screen = () => {
-        const bounds: Rect = XTRScreen.xtr_mainScreenBounds()
-        return new Screen(bounds.width, bounds.height, XTRScreen.xtr_mainScreenScale());
+        const bounds: Rect = _XTUIScreen.xtr_mainScreenBounds()
+        return new Screen(bounds.width, bounds.height, _XTUIScreen.xtr_mainScreenScale());
     }
 
     readonly width: number;

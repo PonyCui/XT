@@ -6,29 +6,29 @@ import { ViewController } from "./ViewController";
 export class Window extends View {
 
     constructor(ref: any) {
-        super(ref || XTRWindow)
+        super(ref || _XTUIWindow)
     }
 
     public get rootViewController(): ViewController | undefined {
-        const ref = XTRWindow.xtr_rootViewController(this.objectRef)
+        const ref = _XTUIWindow.xtr_rootViewController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new ViewController(ref);
     }
 
     public set rootViewController(value: ViewController | undefined) {
-        XTRWindow.xtr_setRootViewControllerObjectRef(value ? value.objectRef : "", this.objectRef);
+        _XTUIWindow.xtr_setRootViewControllerObjectRef(value ? value.objectRef : "", this.objectRef);
     }
 
     makeKeyAndVisible(): void {
-        XTRWindow.xtr_makeKeyAndVisible(this.objectRef);
+        _XTUIWindow.xtr_makeKeyAndVisible(this.objectRef);
     }
 
     endEditing(): void {
-        XTRWindow.xtr_endEditing(this.objectRef);
+        _XTUIWindow.xtr_endEditing(this.objectRef);
     }
 
     public get firstResponder(): View | undefined {
-        const ref = XTRWindow.xtr_firstResponder(this.objectRef)
+        const ref = _XTUIWindow.xtr_firstResponder(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new View(ref)
     }

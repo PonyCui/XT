@@ -6,7 +6,7 @@ export class Alert {
     constructor(readonly message: string) { }
 
     show(callback?: () => void): void {
-        XTRModal.showAlert({ message: this.message, buttonTitle: this.buttonTitle }, callback)
+        _XTUIModal.showAlert({ message: this.message, buttonTitle: this.buttonTitle }, callback)
     }
 
 }
@@ -19,7 +19,7 @@ export class Confirm {
     constructor(readonly message: string) { }
 
     show(resolve: () => void, reject: () => void): void {
-        XTRModal.showConfirm({
+        _XTUIModal.showConfirm({
             message: this.message,
             confirmTitle: this.confirmTitle,
             cancelTitle: this.cancelTitle,
@@ -41,7 +41,7 @@ export class Prompt {
     constructor(readonly message: string) { }
 
     show(resolve: (value: string) => void, reject: () => void): void {
-        XTRModal.showPrompt({
+        _XTUIModal.showPrompt({
             message: this.message,
             confirmTitle: this.confirmTitle,
             cancelTitle: this.cancelTitle,

@@ -8,9 +8,9 @@ export class NavigationController extends ViewController {
     className = "NavigationController"
 
     constructor(rootViewController?: ViewController, ref?: any) {
-        super(ref || XTRNavigationController)
+        super(ref || _XTUINavigationController)
         if (rootViewController) {
-            XTRNavigationController.xtr_setRootViewController(rootViewController.objectRef, this.objectRef);
+            _XTUINavigationController.xtr_setRootViewController(rootViewController.objectRef, this.objectRef);
         }
     }
 
@@ -20,12 +20,12 @@ export class NavigationController extends ViewController {
 
     pushViewController(viewController: ViewController, animated: boolean = true): void {
         viewController.willMoveToParentViewController(this)
-        XTRNavigationController.xtr_pushViewController(viewController.objectRef, animated, this.objectRef)
+        _XTUINavigationController.xtr_pushViewController(viewController.objectRef, animated, this.objectRef)
         viewController.didMoveToParentViewController(this)
     }
 
     popViewController(animated: boolean = true): ViewController | undefined {
-        const ref = XTRNavigationController.xtr_popViewController(animated, this.objectRef)
+        const ref = _XTUINavigationController.xtr_popViewController(animated, this.objectRef)
         if (typeof ref !== "string") { return undefined }
         const target = new ViewController(ref)
         target.willMoveToParentViewController(undefined)
@@ -34,7 +34,7 @@ export class NavigationController extends ViewController {
     }
 
     popToViewController(viewController: ViewController, animated: boolean = true): ViewController[] {
-        return XTRNavigationController.xtr_popToViewController(viewController.objectRef, animated, this.objectRef).map((ref: string) => {
+        return _XTUINavigationController.xtr_popToViewController(viewController.objectRef, animated, this.objectRef).map((ref: string) => {
             const target = new ViewController(ref)
             target.willMoveToParentViewController(undefined)
             target.didMoveToParentViewController(undefined)
@@ -43,7 +43,7 @@ export class NavigationController extends ViewController {
     }
 
     popToRootViewController(animated: boolean = true): ViewController[] {
-        return XTRNavigationController.xtr_popToViewController(this.childViewControllers[0].objectRef, animated, this.objectRef).map((ref: string) => {
+        return _XTUINavigationController.xtr_popToViewController(this.childViewControllers[0].objectRef, animated, this.objectRef).map((ref: string) => {
             const target = new ViewController(ref)
             target.willMoveToParentViewController(undefined)
             target.didMoveToParentViewController(undefined)

@@ -8,7 +8,7 @@ import { ViewController } from "./ViewController";
 
 export class Window extends View {
 
-    className = "XTRWindow"
+    className = "_XTUIWindow"
 
     nativeObject: any;
 

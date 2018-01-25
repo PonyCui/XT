@@ -10,7 +10,7 @@ export class Font {
             this.objectRef = pointSize;
         }
         else {
-            this.objectRef = XTRFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
+            this.objectRef = _XTUIFont.createFontWeightFontStyleFamilyName(pointSize, fontWeight, fontStyle, familyName || "");
         }
         objectRefs[this.objectRef] = this;
     }
@@ -28,19 +28,19 @@ export class Font {
     }
 
     public get familyName(): string | undefined {
-        return XTRFont.xtr_familyName(this.objectRef)
+        return _XTUIFont.xtr_familyName(this.objectRef)
     }
 
     public get pointSize(): number {
-        return XTRFont.xtr_pointSize(this.objectRef)
+        return _XTUIFont.xtr_pointSize(this.objectRef)
     }
 
     public get fontWeight(): string {
-        return XTRFont.xtr_fontWeight(this.objectRef);
+        return _XTUIFont.xtr_fontWeight(this.objectRef);
     }
 
     public get fontStyle(): string {
-        return XTRFont.xtr_fontStyle(this.objectRef);
+        return _XTUIFont.xtr_fontStyle(this.objectRef);
     }
 
 }

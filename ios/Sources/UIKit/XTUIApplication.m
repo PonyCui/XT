@@ -7,11 +7,11 @@
 //
 
 #import "XTUIApplication.h"
-#import "XTRUtils.h"
+#import "XTUIUtils.h"
 #import "XTContext.h"
 #import "XTUIContext.h"
-#import "XTRViewController.h"
-#import "XTRWindow.h"
+#import "XTUIViewController.h"
+#import "XTUIWindow.h"
 #import "XTMemoryManager.h"
 
 @interface XTUIApplication ()
@@ -39,7 +39,7 @@
 }
 
 + (NSString *)name {
-    return @"XTUIApplication";
+    return @"_XTUIApplication";
 }
 
 - (void)dealloc {
@@ -51,8 +51,8 @@
 + (NSString *)xtr_keyWindow:(NSString *)objectRef {
     XTUIApplication *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIApplication class]] && [obj.context isKindOfClass:[XTUIContext class]]) {
-        XTRWindow *keyWindow = (id)[(XTUIContext *)obj.context application].delegate.window;
-        if ([keyWindow isKindOfClass:[XTRWindow class]]) {
+        XTUIWindow *keyWindow = (id)[(XTUIContext *)obj.context application].delegate.window;
+        if ([keyWindow isKindOfClass:[XTUIWindow class]]) {
             return keyWindow.objectUUID;
         }
     }
@@ -62,8 +62,8 @@
 + (void)xtr_exit:(NSString *)objectRef {
     XTUIApplication *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIApplication class]] && [obj.context isKindOfClass:[XTUIContext class]]) {
-//        XTRViewController *keyViewController = [(XTUIContext *)obj.context keyViewController];
-//        if ([keyViewController isKindOfClass:[XTRViewController class]] && keyViewController.exitAction) {
+//        XTUIViewController *keyViewController = [(XTUIContext *)obj.context keyViewController];
+//        if ([keyViewController isKindOfClass:[XTUIViewController class]] && keyViewController.exitAction) {
 //            keyViewController.exitAction(keyViewController);
 //        }
     }

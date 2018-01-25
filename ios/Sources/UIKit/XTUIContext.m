@@ -10,36 +10,36 @@
 #import "XTContext.h"
 #import "XTComponent.h"
 #import "XTUIApplication.h"
-#import "XTRView.h"
-#import "XTRWindow.h"
+#import "XTUIView.h"
+#import "XTUIWindow.h"
 #import "XTUIApplicationDelegate.h"
-#import "XTRViewController.h"
-#import "XTRNavigationBar.h"
-#import "XTRNavigationController.h"
-#import "XTRScreen.h"
-#import "XTRImage.h"
-#import "XTRImageView.h"
-#import "XTRLabel.h"
-#import "XTRLayoutConstraint.h"
-#import "XTRButton.h"
-#import "XTRFont.h"
-#import "XTRUtils.h"
-#import "XTRScrollView.h"
-#import "XTRListView.h"
-#import "XTRListCell.h"
-#import "XTRTextField.h"
-#import "XTRTextView.h"
+#import "XTUIViewController.h"
+#import "XTUINavigationBar.h"
+#import "XTUINavigationController.h"
+#import "XTUIScreen.h"
+#import "XTUIImage.h"
+#import "XTUIImageView.h"
+#import "XTUILabel.h"
+#import "XTUILayoutConstraint.h"
+#import "XTUIButton.h"
+#import "XTUIFont.h"
+#import "XTUIUtils.h"
+#import "XTUIScrollView.h"
+#import "XTUIListView.h"
+#import "XTUIListCell.h"
+#import "XTUITextField.h"
+#import "XTUITextView.h"
 #import "XTDebug.h"
-#import "XTRCanvasView.h"
-#import "XTRCustomView.h"
-#import "XTRDevice.h"
-#import "XTRTextMeasurer.h"
-#import "XTRHRView.h"
-#import "XTRModal.h"
-#import "XTRWebView.h"
-#import "XTRSwitch.h"
-#import "XTRSlider.h"
-#import "XTRActivityIndicatorView.h"
+#import "XTUICanvasView.h"
+#import "XTUICustomView.h"
+#import "XTUIDevice.h"
+#import "XTUITextMeasurer.h"
+#import "XTUIHRView.h"
+#import "XTUIModal.h"
+#import "XTUIWebView.h"
+#import "XTUISwitch.h"
+#import "XTUISlider.h"
+#import "XTUIActivityIndicatorView.h"
 #import "XTDebug.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
@@ -124,33 +124,33 @@
     for (Class component in @[
                               [XTUIApplication class],
                               [XTUIApplicationDelegate class],
-                              [XTRView class],
-                              [XTRWindow class],
-                              [XTRViewController class],
-                              [XTRNavigationBar class],
-                              [XTRNavigationController class],
-                              [XTRScreen class],
-                              [XTRImage class],
-                              [XTRImageView class],
-                              [XTRLabel class],
-                              [XTRLayoutConstraint class],
-                              [XTRButton class],
-                              [XTRFont class],
-                              [XTRScrollView class],
-                              [XTRListView class],
-                              [XTRListCell class],
-                              [XTRTextField class],
-                              [XTRTextView class],
-                              [XTRCanvasView class],
-                              [XTRCustomView class],
-                              [XTRDevice class],
-                              [XTRTextMeasurer class],
-                              [XTRHRView class],
-                              [XTRModal class],
-                              [XTRWebView class],
-                              [XTRSwitch class],
-                              [XTRSlider class],
-                              [XTRActivityIndicatorView class],
+                              [XTUIView class],
+                              [XTUIWindow class],
+                              [XTUIViewController class],
+                              [XTUINavigationBar class],
+                              [XTUINavigationController class],
+                              [XTUIScreen class],
+                              [XTUIImage class],
+                              [XTUIImageView class],
+                              [XTUILabel class],
+                              [XTUILayoutConstraint class],
+                              [XTUIButton class],
+                              [XTUIFont class],
+                              [XTUIScrollView class],
+                              [XTUIListView class],
+                              [XTUIListCell class],
+                              [XTUITextField class],
+                              [XTUITextView class],
+                              [XTUICanvasView class],
+                              [XTUICustomView class],
+                              [XTUIDevice class],
+                              [XTUITextMeasurer class],
+                              [XTUIHRView class],
+                              [XTUIModal class],
+                              [XTUIWebView class],
+                              [XTUISwitch class],
+                              [XTUISlider class],
+                              [XTUIActivityIndicatorView class],
                               [XTDebug class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTComponent)]) {
@@ -160,8 +160,7 @@
 }
 
 - (void)loadScript {
-    [self evaluateScript:@"var XT = {}"];
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.ios.min" ofType:@"js"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.uikit.ios.min" ofType:@"js"];
     if (path) {
         NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
         [self evaluateScript:script];
@@ -170,26 +169,26 @@
 
 #pragma mark - Start Application Static Methods
 
-+ (void)startWithNamed:(NSString *)name
-              inBundle:(NSBundle *)bundle
-  navigationController:(UINavigationController *)navigationController {
-    [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
-  navigationController:navigationController
-       completionBlock:nil
-          failureBlock:nil];
++ (XTUIContext *)startWithNamed:(NSString *)name
+                       inBundle:(NSBundle *)bundle
+           navigationController:(UINavigationController *)navigationController {
+    return [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
+         navigationController:navigationController
+              completionBlock:nil
+                 failureBlock:nil];
 }
 
-+ (void)startWithURLString:(NSString *)URLString
++ (XTUIContext *)startWithURLString:(NSString *)URLString
       navigationController:(UINavigationController *)navigationController
            completionBlock:(XTUIContextCompletionBlock)completionBlock
               failureBlock:(XTUIContextFailureBlock)failureBlock {
-    [self startWithURL:[NSURL URLWithString:URLString]
-  navigationController:navigationController
-       completionBlock:completionBlock
-          failureBlock:failureBlock];
+    return [self startWithURL:[NSURL URLWithString:URLString]
+         navigationController:navigationController
+              completionBlock:completionBlock
+                 failureBlock:failureBlock];
 }
 
-+ (void)startWithURL:(NSURL *)sourceURL
++ (XTUIContext *)startWithURL:(NSURL *)sourceURL
 navigationController:(UINavigationController *)navigationController
      completionBlock:(XTUIContextCompletionBlock)completionBlock
         failureBlock:(XTUIContextFailureBlock)failureBlock {
@@ -197,8 +196,8 @@ navigationController:(UINavigationController *)navigationController
                                       completionBlock:^{
                                           UINavigationController *rootViewController = (id)context.application.delegate.window.rootViewController;
                                           if ([rootViewController isKindOfClass:[UINavigationController class]]) {
-                                              XTRViewController *firstViewController = [rootViewController childViewControllers].firstObject;
-                                              if ([firstViewController isKindOfClass:[XTRViewController class]]) {
+                                              XTUIViewController *firstViewController = [rootViewController childViewControllers].firstObject;
+                                              if ([firstViewController isKindOfClass:[XTUIViewController class]]) {
                                                   firstViewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
                                                   [UIView animateWithDuration:0.25 animations:^{
                                                       [navigationController pushViewController:firstViewController
@@ -208,7 +207,7 @@ navigationController:(UINavigationController *)navigationController
                                                       navigationController.navigationBar.alpha = 1.0;
                                                       navigationController.navigationBar.hidden = YES;
                                                   }];
-                                                  [firstViewController setExitAction:^(XTRViewController *keyViewController) {
+                                                  [firstViewController setExitAction:^(XTUIViewController *keyViewController) {
                                                       [context terminal];
                                                   }];
                                               }
@@ -223,6 +222,7 @@ navigationController:(UINavigationController *)navigationController
                                              }
                                              [context terminal];
                                          }];
+    return context;
 }
 
 static UINavigationController *currentDebugNavigationViewController;
@@ -237,7 +237,7 @@ static UINavigationController *currentDebugNavigationViewController;
     UIViewController *targetViewController = nil;
     BOOL found = NO;
     for (id item in [currentDebugNavigationViewController childViewControllers]) {
-        if ([item isKindOfClass:[XTRViewController class]]) {
+        if ([item isKindOfClass:[XTUIViewController class]]) {
             found = YES;
             break;
         }

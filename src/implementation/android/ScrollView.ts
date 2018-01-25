@@ -18,13 +18,13 @@ export class ScrollView extends View implements ScrollerDelegate {
     private scroller: Scroller;
 
     constructor(ref?: any) {
-        super(ref || XTRScrollView);
-        this.innerView = new View(XTRScrollView.xtr_innerView(this.objectRef))
-        this.horizontalScrollIndicator = new View(XTRScrollView.xtr_horizontalScrollIndicator(this.objectRef))
+        super(ref || _XTUIScrollView);
+        this.innerView = new View(_XTUIScrollView.xtr_innerView(this.objectRef))
+        this.horizontalScrollIndicator = new View(_XTUIScrollView.xtr_horizontalScrollIndicator(this.objectRef))
         this.horizontalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.horizontalScrollIndicator.cornerRadius = 1.0;
         this.horizontalScrollIndicator.alpha = 0.0;
-        this.verticalScrollIndicator = new View(XTRScrollView.xtr_verticalScrollIndicator(this.objectRef))
+        this.verticalScrollIndicator = new View(_XTUIScrollView.xtr_verticalScrollIndicator(this.objectRef))
         this.verticalScrollIndicator.backgroundColor = new Color(0x8f / 0xff, 0x8f / 0xff, 0x90 / 0xff)
         this.verticalScrollIndicator.cornerRadius = 1.0;
         this.verticalScrollIndicator.alpha = 0.0;
@@ -69,18 +69,18 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     public get contentOffset() {
-        return XTRScrollView.xtr_contentOffset(this.objectRef);
+        return _XTUIScrollView.xtr_contentOffset(this.objectRef);
     }
 
     public set contentOffset(value: Point) {
-        XTRScrollView.xtr_setContentOffset(value, this.objectRef);
+        _XTUIScrollView.xtr_setContentOffset(value, this.objectRef);
         (this.innerView as any)._originOffset = value;
         this.scrollerDidScroll()
     }
 
     setContentOffset(value: Point, animated: boolean): void {
         if (animated) {
-            XT.View.animationWithBouncinessAndSpeed(0.0, 8.0, () => {
+            View.animationWithBouncinessAndSpeed(0.0, 8.0, () => {
                 this.contentOffset = value;
             })
         }

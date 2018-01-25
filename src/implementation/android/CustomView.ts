@@ -6,20 +6,20 @@ export class CustomView extends View {
     onMessage?: (message: string) => any = undefined
 
     constructor(className: string) {
-        super(XTRCustomView)
-        XTRCustomView.xtr_setClassName(className, this.objectRef)
+        super(_XTUICustomView)
+        _XTUICustomView.xtr_setClassName(className, this.objectRef)
     }
 
     public get props(): any {
-        return XTRCustomView.xtr_props(this.objectRef) || {};
+        return _XTUICustomView.xtr_props(this.objectRef) || {};
     }
 
     public set props(value: any) {
-        XTRCustomView.xtr_setProps(value, this.objectRef);
+        _XTUICustomView.xtr_setProps(value, this.objectRef);
     }
 
     emitMessage(message: any): any {
-        return XTRCustomView.xtr_handleMessage(message, this.objectRef);
+        return _XTUICustomView.xtr_handleMessage(message, this.objectRef);
     }
 
     handleMessage(message: any): any {

@@ -7,19 +7,19 @@
 //
 
 #import "FOOView.h"
-#import "XTRCustomView.h"
+#import "XTUICustomView.h"
 
-@interface FOOView()<XTRCustomViewProtocol>
+@interface FOOView()<XTUICustomViewProtocol>
 
 @end
 
 @implementation FOOView
 
 + (void)load {
-    [XTRCustomView registerClass:[self class] className:@"FOOView"];
+    [XTUICustomView registerClass:[self class] className:@"FOOView"];
 }
 
-- (id)onMessage:(JSValue *)value customView:(XTRCustomView *)customView {
+- (id)onMessage:(JSValue *)value customView:(XTUICustomView *)customView {
     NSDictionary *params = [value toDictionary];
     if (params) {
         if ([params[@"on"] isKindOfClass:[NSNumber class]]) {

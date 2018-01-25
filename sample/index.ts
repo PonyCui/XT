@@ -1,14 +1,14 @@
 /// <reference path="../src/xt.d.ts" />
 import { List } from "./explorer/list";
 
-class AppDelegate extends XT.ApplicationDelegate {
+class AppDelegate extends UI.ApplicationDelegate {
 
     applicationDidFinishLaunchingWithOptions() {
-        this.window = new XT.Window();
-        this.window.backgroundColor = XT.Color.grayColor
-        this.window.rootViewController = new XT.NavigationController(new List())
-        // this.window.rootViewController = new XT.NavigationController(new TestViewController())
-        // const v = new XT.ViewController()
+        this.window = new UI.Window();
+        this.window.backgroundColor = UI.Color.grayColor
+        this.window.rootViewController = new UI.NavigationController(new List())
+        // this.window.rootViewController = new UI.NavigationController(new TestViewController())
+        // const v = new UI.ViewController()
         // v.title = "Hello"
         // v.showNavigationBar()
         // this.window.rootViewController = v
@@ -16,4 +16,4 @@ class AppDelegate extends XT.ApplicationDelegate {
     }
 
 }
-const sampleApplication = new XT.Application('app', new AppDelegate());
+const sampleApplication = new UI.Application('app', new AppDelegate());

@@ -8,17 +8,17 @@ import { Releasable } from "../../interface/Releasable";
 export class Image implements Releasable {
 
     retain(): this {
-        XTRetain(this.objectRef)
+        _XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        XTRelease(this.objectRef)
+        _XTRelease(this.objectRef)
         return this
     }
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        XTRImage.xtr_fromURLSuccessFailure(url, (ref: string) => {
+        _XTUIImage.xtr_fromURLSuccessFailure(url, (ref: string) => {
             if (success) {
                 success(new Image(ref))
             }
@@ -28,7 +28,7 @@ export class Image implements Releasable {
     }
 
     static fromBase64(value: string, scale: number): Image | undefined {
-        const imageRef = XTRImage.xtr_fromBase64Scale(value, scale);
+        const imageRef = _XTUIImage.xtr_fromBase64Scale(value, scale);
         return typeof imageRef === "string" ? new Image(imageRef) : undefined
     }
 
@@ -43,19 +43,19 @@ export class Image implements Releasable {
     }
 
     public get size(): Size {
-        return XTRImage.xtr_size(this.objectRef)
+        return _XTUIImage.xtr_size(this.objectRef)
     }
 
     public get scale(): number {
-        return XTRImage.xtr_scale(this.objectRef)
+        return _XTUIImage.xtr_scale(this.objectRef)
     }
 
     public get renderingMode(): ImageRenderingMode {
-        return XTRImage.xtr_renderingMode(this.objectRef)
+        return _XTUIImage.xtr_renderingMode(this.objectRef)
     }
 
     public imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        return new Image(XTRImage.xtr_imageWithImageRenderingModeObjectRef(renderingMode, this.objectRef))
+        return new Image(_XTUIImage.xtr_imageWithImageRenderingModeObjectRef(renderingMode, this.objectRef))
     }
 
 }
@@ -69,17 +69,17 @@ export enum ContentMode {
 export class ImageView extends View {
 
     constructor(ref: any) {
-        super(ref || XTRImageView)
+        super(ref || _XTUIImageView)
     }
 
     public get image(): Image | undefined {
-        const ref = XTRImageView.xtr_image(this.objectRef)
+        const ref = _XTUIImageView.xtr_image(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new Image(ref);
     }
 
     public set image(value: Image | undefined) {
-        XTRImageView.xtr_setImageObjectRef(value ? value.objectRef : undefined, this.objectRef);
+        _XTUIImageView.xtr_setImageObjectRef(value ? value.objectRef : undefined, this.objectRef);
     }
 
 }

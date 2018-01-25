@@ -6,7 +6,7 @@ export class Screen {
 
     static mainScreen: () => Screen = () => {
         if (Screen.screenInfo === undefined) {
-            Screen.screenInfo = XTRScreen.xtr_mainScreen() || { width: 0.0, height: 0.0, scale: 1.0 };
+            Screen.screenInfo = _XTUIScreen.xtr_mainScreen() || { width: 0.0, height: 0.0, scale: 1.0 };
         }
         const screenInfo: any = Screen.screenInfo
         return new Screen(screenInfo.width, screenInfo.height, screenInfo.scale)

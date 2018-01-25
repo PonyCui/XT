@@ -4,35 +4,35 @@ import { ActivityIndicatorViewStyle } from "../../interface/ActivityIndicatorVie
 export class ActivityIndicatorView extends View {
 
     constructor(ref: any) {
-        super(ref || XTRActivityIndicatorView)
+        super(ref || _XTUIActivityIndicatorView)
     }
 
     public get style(): ActivityIndicatorViewStyle {
-        return XTRActivityIndicatorView.xtr_style(this.objectRef);
+        return _XTUIActivityIndicatorView.xtr_style(this.objectRef);
     }
 
     public set style(value: ActivityIndicatorViewStyle) {
-        XTRActivityIndicatorView.xtr_setStyleObjectRef(value, this.objectRef)
+        _XTUIActivityIndicatorView.xtr_setStyleObjectRef(value, this.objectRef)
     }
 
     public get animating(): boolean {
-        return XTRActivityIndicatorView.xtr_animating(this.objectRef)
+        return _XTUIActivityIndicatorView.xtr_animating(this.objectRef)
     }
 
     public get hidesWhenStopped(): boolean {
-        return XTRActivityIndicatorView.xtr_hidesWhenStopped(this.objectRef)
+        return _XTUIActivityIndicatorView.xtr_hidesWhenStopped(this.objectRef)
     }
 
     public set hidesWhenStopped(value: boolean) {
-        XTRActivityIndicatorView.xtr_setHidesWhenStoppedObjectRef(value, this.objectRef)
+        _XTUIActivityIndicatorView.xtr_setHidesWhenStoppedObjectRef(value, this.objectRef)
     }
 
     startAnimating(): void {
-        XTRActivityIndicatorView.xtr_startAnimating(this.objectRef)
+        _XTUIActivityIndicatorView.xtr_startAnimating(this.objectRef)
     }
 
     stopAnimating(): void {
-        XTRActivityIndicatorView.xtr_stopAnimating(this.objectRef)
+        _XTUIActivityIndicatorView.xtr_stopAnimating(this.objectRef)
     }
 
 }

@@ -1,12 +1,12 @@
 /// <reference path="../../src/xt.d.ts" />
 
-class ListCellSample extends XT.ListCell {
+class ListCellSample extends UI.ListCell {
 
-    titleLabel = new XT.Label()
+    titleLabel = new UI.Label()
 
     constructor() {
         super()
-        this.titleLabel.textAlignment = XT.TextAlignment.Left
+        this.titleLabel.textAlignment = UI.TextAlignment.Left
         this.addSubview(this.titleLabel)
     }
 
@@ -17,13 +17,13 @@ class ListCellSample extends XT.ListCell {
     }
 
     didHighlighted(value: boolean) {
-        this.backgroundColor = value ? new XT.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : XT.Color.clearColor
+        this.backgroundColor = value ? new UI.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : UI.Color.clearColor
     }
 
     didSelected() {
-        if (this.context instanceof XT.ViewController) {
+        if (this.context instanceof UI.ViewController) {
             if (this.context.navigationController) {
-                const nextViewController = new XT.ViewController()
+                const nextViewController = new UI.ViewController()
                 if (this.currentItem) {
                     nextViewController.navigationBar.title = this.currentItem.name
                     nextViewController.showNavigationBar()
@@ -40,16 +40,16 @@ class ListCellSample extends XT.ListCell {
 
 }
 
-export class ListViewSample extends XT.ViewController {
+export class ListViewSample extends UI.ViewController {
 
-    contentView = new XT.ListView()
+    contentView = new UI.ListView()
 
     viewDidLoad() {
         super.viewDidLoad()
-        this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.navigationBar.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.title = "ListView"
         this.showNavigationBar()
-        this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.view.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.contentView.alwaysBounceVertical = true
         this.view.addSubview(this.contentView)
         this.addTestCases()
@@ -62,7 +62,7 @@ export class ListViewSample extends XT.ViewController {
 
     addTestCases() {
         this.contentView.register(ListCellSample, "Cell", this)
-        let mockDatas: XT.ListItem[] = []
+        let mockDatas: UI.ListItem[] = []
         for (let index = 0; index < 10000; index++) {
             mockDatas.push({
                 reuseIdentifier: "Cell",

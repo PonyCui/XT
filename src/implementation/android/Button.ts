@@ -13,9 +13,9 @@ export class Button extends View {
     readonly titleLabel: Label
 
     constructor(ref?: any) {
-        super(ref || XTRButton)
-        this.titleLabel = new Label(XTRButton.xtr_titleLabel(this.objectRef))
-        this.imageView = new ImageView(XTRButton.xtr_imageView(this.objectRef))
+        super(ref || _XTUIButton)
+        this.titleLabel = new Label(_XTUIButton.xtr_titleLabel(this.objectRef))
+        this.imageView = new ImageView(_XTUIButton.xtr_imageView(this.objectRef))
         this.setupTouches();
     }
 
@@ -46,52 +46,52 @@ export class Button extends View {
     }
 
     public get title(): string {
-        return XTRButton.xtr_title(this.objectRef);
+        return _XTUIButton.xtr_title(this.objectRef);
     }
 
     public set title(value: string) {
-        XTRButton.xtr_setTitle(value, this.objectRef);
+        _XTUIButton.xtr_setTitle(value, this.objectRef);
     }
 
     public get font(): Font {
-        return new Font(XTRButton.xtr_font(this.objectRef));
+        return new Font(_XTUIButton.xtr_font(this.objectRef));
     }
 
     public set font(value: Font) {
-        XTRButton.xtr_setFont(value.objectRef, this.objectRef);
+        _XTUIButton.xtr_setFont(value.objectRef, this.objectRef);
     }
 
     public get image(): Image | undefined {
-        const imageRef = XTRButton.xtr_image(this.objectRef)
+        const imageRef = _XTUIButton.xtr_image(this.objectRef)
         return typeof imageRef === "string" ? new Image(imageRef) : undefined;
     }
 
     public set image(value: Image | undefined) {
-        XTRButton.xtr_setImage(value ? value.objectRef : "", this.objectRef);
+        _XTUIButton.xtr_setImage(value ? value.objectRef : "", this.objectRef);
     }
 
     public get color(): Color {
-        return XTRButton.xtr_color(this.objectRef);
+        return _XTUIButton.xtr_color(this.objectRef);
     }
 
     public set color(value: Color) {
-        XTRButton.xtr_setColor(value, this.objectRef);
+        _XTUIButton.xtr_setColor(value, this.objectRef);
     }
 
     public get vertical(): boolean {
-        return XTRButton.xtr_vertical(this.objectRef);
+        return _XTUIButton.xtr_vertical(this.objectRef);
     }
 
     public set vertical(value: boolean) {
-        XTRButton.xtr_setVertical(value, this.objectRef);
+        _XTUIButton.xtr_setVertical(value, this.objectRef);
     }
 
     public get inset(): number {
-        return XTRButton.xtr_inset(this.objectRef);
+        return _XTUIButton.xtr_inset(this.objectRef);
     }
 
     public set inset(value: number) {
-        XTRButton.xtr_setInset(value, this.objectRef);
+        _XTUIButton.xtr_setInset(value, this.objectRef);
     }
 
     didMoveToSuperview() {

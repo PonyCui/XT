@@ -1,16 +1,16 @@
 /// <reference path="../../src/xt.d.ts" />
 
-export class WebViewSample extends XT.ViewController {
+export class WebViewSample extends UI.ViewController {
 
-    contentView = new XT.View()
-    webView = new XT.WebView()
+    contentView = new UI.View()
+    webView = new UI.WebView()
 
     viewDidLoad() {
         super.viewDidLoad()
-        this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.navigationBar.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.title = "WebView"
         this.showNavigationBar()
-        this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.view.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.view.addSubview(this.contentView)
         this.addTestCases()
     }

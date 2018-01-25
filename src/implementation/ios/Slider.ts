@@ -3,11 +3,11 @@ import { View } from "./View";
 export class Slider extends View {
 
     constructor(ref: any = undefined) {
-        super(ref || XTRSlider)
+        super(ref || _XTUISlider)
     }
 
     public get value(): number {
-        return XTRSlider.xtr_value(this.objectRef);
+        return _XTUISlider.xtr_value(this.objectRef);
     }
 
     public set value(value: number) {
@@ -17,7 +17,7 @@ export class Slider extends View {
     onValueChanged?: () => void
 
     setValue(value: number, animated: boolean) {
-        XTRSlider.xtr_setValueAnimatedObjectRef(value, animated, this.objectRef)
+        _XTUISlider.xtr_setValueAnimatedObjectRef(value, animated, this.objectRef)
     }
 
     handleValueChanged() {

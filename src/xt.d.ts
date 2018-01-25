@@ -1,7 +1,4 @@
-// declare const XTRDebugger: any
-// declare const XTRBreakpoint: any
-
-export as namespace XT;
+export as namespace UI;
 
 export interface Releasable {
     retain(): this;
@@ -846,7 +843,7 @@ export class ActivityIndicatorView extends View {
 }
 
 declare global {
-    const XT: {
+    const UI: {
         Releasable: Releasable,
         InteractionState: typeof InteractionState,
         SwipeDirection: typeof SwipeDirection,

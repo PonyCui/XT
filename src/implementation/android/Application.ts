@@ -8,7 +8,7 @@ export class ApplicationDelegate {
     objectRef: any
 
     constructor() {
-        this.objectRef = XTUIApplicationDelegate.create()
+        this.objectRef = _XTUIApplicationDelegate.create()
     }
 
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
@@ -25,7 +25,7 @@ export class Application {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.objectRef = XTUIApplication.create()
+        this.objectRef = _XTUIApplication.create()
         this.delegate = delegate
         this.delegate.applicationDidFinishLaunchingWithOptions(this, new Object())
     }

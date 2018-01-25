@@ -3,27 +3,27 @@ import { DeviceOrientation } from "../../interface/Device";
 export class Device {
 
     public static get deviceName(): string {
-        return XTRDevice.xtr_name()
+        return _XTUIDevice.xtr_name()
     }
 
     public static get systemName(): string {
-        return XTRDevice.xtr_systemName()
+        return _XTUIDevice.xtr_systemName()
     }
 
     public static get systemVersion(): string {
-        return XTRDevice.xtr_systemVersion()
+        return _XTUIDevice.xtr_systemVersion()
     }
 
     public static get xtRuntimeVersion(): string {
-        return XTRDevice.xtr_xtRuntimeVersion()
+        return _XTUIDevice.xtr_xtRuntimeVersion()
     }
 
     public static get model(): string {
-        return XTRDevice.xtr_model()
+        return _XTUIDevice.xtr_model()
     }
 
     public static get orientation(): DeviceOrientation {
-        return XTRDevice.xtr_orientation()
+        return _XTUIDevice.xtr_orientation()
     }
 
     static isiOS(): Boolean { return true }

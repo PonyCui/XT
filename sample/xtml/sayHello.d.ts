@@ -3,10 +3,10 @@
  */
 declare module "*/sayHello.xtml" {
 
-    export default class Body extends XT.View {
+    export default class Body extends UI.View {
         
-        fooView: XT.View
-        barView: XT.View
+        fooView: UI.View
+        barView: UI.View
 
     }
 

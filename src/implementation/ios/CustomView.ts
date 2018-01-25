@@ -6,11 +6,11 @@ export class CustomView extends View {
     onMessage?: (message: string) => any = undefined
 
     constructor(ref: any, className: string) {
-        super(ref || XTRCustomView.create, className)
+        super(ref || _XTUICustomView.create, className)
     }
 
     emitMessage(message: any): any {
-        return XTRCustomView.handleMessageObjectRef(message, this.objectRef);
+        return _XTUICustomView.handleMessageObjectRef(message, this.objectRef);
     }
 
     handleMessage(message: any): any {

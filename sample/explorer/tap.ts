@@ -1,16 +1,16 @@
 /// <reference path="../../src/xt.d.ts" />
 declare var XTRDebug: any
 
-export class TapSample extends XT.ViewController {
+export class TapSample extends UI.ViewController {
 
-    contentView = new XT.ScrollView()
+    contentView = new UI.ScrollView()
 
     viewDidLoad() {
         super.viewDidLoad()
-        this.navigationBar.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.navigationBar.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.title = "Tap & Double Tap"
         this.showNavigationBar()
-        this.view.backgroundColor = new XT.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.view.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.contentView.alwaysBounceVertical = true
         this.view.addSubview(this.contentView)
         this.addTestCases()
@@ -25,27 +25,27 @@ export class TapSample extends XT.ViewController {
         this.addTapView()
         this.addDoubleTapView()
         this.addBothTapView()
-        this.contentView.contentSize = XT.SizeMake(0, 480)
+        this.contentView.contentSize = UI.SizeMake(0, 480)
     }
 
     addTapView() {
-        const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 0, 999, 160)
-        const summary = new XT.Label()
-        summary.frame = XT.RectMake(0, 8, 999, 44)
-        summary.font = XT.Font.systemFontOfSize(11)
-        summary.textColor = XT.Color.grayColor
+        const wrapper = new UI.View()
+        wrapper.frame = UI.RectMake(15, 0, 999, 160)
+        const summary = new UI.Label()
+        summary.frame = UI.RectMake(0, 8, 999, 44)
+        summary.font = UI.Font.systemFontOfSize(11)
+        summary.textColor = UI.Color.grayColor
         summary.numberOfLines = 0
         summary.text = "View - Single Tap \nTry to tap it."
         wrapper.addSubview(summary)
         // Sample Code {
-        const view = new XT.View()
-        view.frame = XT.RectMake(0, 66, 66, 66)
-        view.backgroundColor = XT.Color.grayColor
+        const view = new UI.View()
+        view.frame = UI.RectMake(0, 66, 66, 66)
+        view.backgroundColor = UI.Color.grayColor
         view.userInteractionEnabled = true
         view.onTap = () => {
             XTRDebug.xtr_breakpoint("123123")
-            view.backgroundColor = XT.Color.greenColor
+            view.backgroundColor = UI.Color.greenColor
         }
         // } Sample Code 
         wrapper.addSubview(view)
@@ -53,22 +53,22 @@ export class TapSample extends XT.ViewController {
     }
 
     addDoubleTapView() {
-        const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 160, 999, 160)
-        const summary = new XT.Label()
-        summary.frame = XT.RectMake(0, 8, 999, 44)
-        summary.font = XT.Font.systemFontOfSize(11)
-        summary.textColor = XT.Color.grayColor
+        const wrapper = new UI.View()
+        wrapper.frame = UI.RectMake(15, 160, 999, 160)
+        const summary = new UI.Label()
+        summary.frame = UI.RectMake(0, 8, 999, 44)
+        summary.font = UI.Font.systemFontOfSize(11)
+        summary.textColor = UI.Color.grayColor
         summary.numberOfLines = 0
         summary.text = "View - Double Tap \nTry to tap it."
         wrapper.addSubview(summary)
         // Sample Code {
-        const view = new XT.View()
-        view.frame = XT.RectMake(0, 66, 66, 66)
-        view.backgroundColor = XT.Color.grayColor
+        const view = new UI.View()
+        view.frame = UI.RectMake(0, 66, 66, 66)
+        view.backgroundColor = UI.Color.grayColor
         view.userInteractionEnabled = true
         view.onDoubleTap = () => {
-            view.backgroundColor = XT.Color.greenColor
+            view.backgroundColor = UI.Color.greenColor
         }
         // } Sample Code 
         wrapper.addSubview(view)
@@ -76,25 +76,25 @@ export class TapSample extends XT.ViewController {
     }
 
     addBothTapView() {
-        const wrapper = new XT.View()
-        wrapper.frame = XT.RectMake(15, 320, 999, 160)
-        const summary = new XT.Label()
-        summary.frame = XT.RectMake(0, 8, 999, 44)
-        summary.font = XT.Font.systemFontOfSize(11)
-        summary.textColor = XT.Color.grayColor
+        const wrapper = new UI.View()
+        wrapper.frame = UI.RectMake(15, 320, 999, 160)
+        const summary = new UI.Label()
+        summary.frame = UI.RectMake(0, 8, 999, 44)
+        summary.font = UI.Font.systemFontOfSize(11)
+        summary.textColor = UI.Color.grayColor
         summary.numberOfLines = 0
         summary.text = "View - Single Tap & Double Tap \nTry to tap it."
         wrapper.addSubview(summary)
         // Sample Code {
-        const view = new XT.View()
-        view.frame = XT.RectMake(0, 66, 66, 66)
-        view.backgroundColor = XT.Color.grayColor
+        const view = new UI.View()
+        view.frame = UI.RectMake(0, 66, 66, 66)
+        view.backgroundColor = UI.Color.grayColor
         view.userInteractionEnabled = true
         view.onTap = () => {
-            view.backgroundColor = XT.Color.redColor
+            view.backgroundColor = UI.Color.redColor
         }
         view.onDoubleTap = () => {
-            view.backgroundColor = XT.Color.greenColor
+            view.backgroundColor = UI.Color.greenColor
         }
         // } Sample Code 
         wrapper.addSubview(view)
