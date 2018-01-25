@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRApplication;
 
@@ -19,7 +19,7 @@
 
 @end
 
-@interface XTRApplication : NSObject<XTRComponent, XTRApplicationExport>
+@interface XTRApplication : NSObject<XTComponent, XTRApplicationExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 

@@ -19,9 +19,7 @@
 		90689F261FA99FE4007EF1D3 /* XTRBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EF31FA99FE4007EF1D3 /* XTRBridge.m */; };
 		90689F271FA99FE4007EF1D3 /* XTRButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EF51FA99FE4007EF1D3 /* XTRButton.m */; };
 		90689F281FA99FE4007EF1D3 /* XTRCanvasView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EF71FA99FE4007EF1D3 /* XTRCanvasView.m */; };
-		90689F291FA99FE4007EF1D3 /* XTRContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EFA1FA99FE4007EF1D3 /* XTRContext.m */; };
 		90689F2A1FA99FE4007EF1D3 /* XTRCustomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EFC1FA99FE4007EF1D3 /* XTRCustomView.m */; };
-		90689F2B1FA99FE4007EF1D3 /* XTRDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EFE1FA99FE4007EF1D3 /* XTRDebug.m */; };
 		90689F2C1FA99FE4007EF1D3 /* XTRDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F001FA99FE4007EF1D3 /* XTRDevice.m */; };
 		90689F2D1FA99FE4007EF1D3 /* XTRFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F021FA99FE4007EF1D3 /* XTRFont.m */; };
 		90689F2E1FA99FE4007EF1D3 /* XTRImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689F041FA99FE4007EF1D3 /* XTRImage.m */; };
@@ -49,6 +47,12 @@
 		90AFB4D92016D3CF001E9DA7 /* XTRSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4D82016D3CF001E9DA7 /* XTRSwitch.m */; };
 		90AFB4DC2016DC22001E9DA7 /* XTRSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4DB2016DC22001E9DA7 /* XTRSlider.m */; };
 		90AFB4DF20172FF1001E9DA7 /* XTRActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4DE20172FF1001E9DA7 /* XTRActivityIndicatorView.m */; };
+		90AFB4F320197F4E001E9DA7 /* XTMemoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4E720197F4E001E9DA7 /* XTMemoryManager.m */; };
+		90AFB4F420197F4E001E9DA7 /* XTDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4EC20197F4E001E9DA7 /* XTDebug.m */; };
+		90AFB4F520197F4E001E9DA7 /* XTContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4EE20197F4E001E9DA7 /* XTContext.m */; };
+		90AFB4F620197F4E001E9DA7 /* XTManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4EF20197F4E001E9DA7 /* XTManagedObject.m */; };
+		90AFB4F720197F4E001E9DA7 /* XTPolyfill.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4F020197F4E001E9DA7 /* XTPolyfill.m */; };
+		90AFB4F820197F4E001E9DA7 /* es6-shim.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90AFB4F120197F4E001E9DA7 /* es6-shim.min.js */; };
 		90BB25571FBC24D700286398 /* XTRTextMeasurer.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25561FBC24D700286398 /* XTRTextMeasurer.m */; };
 		90BB255E1FBC3C4800286398 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB255A1FBC3C4800286398 /* AppDelegate.m */; };
 		90BB255F1FBC3C4800286398 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB255C1FBC3C4800286398 /* ViewController.m */; };
@@ -81,13 +85,8 @@
 		90689EF51FA99FE4007EF1D3 /* XTRButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRButton.m; sourceTree = "<group>"; };
 		90689EF61FA99FE4007EF1D3 /* XTRCanvasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRCanvasView.h; sourceTree = "<group>"; };
 		90689EF71FA99FE4007EF1D3 /* XTRCanvasView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRCanvasView.m; sourceTree = "<group>"; };
-		90689EF81FA99FE4007EF1D3 /* XTRComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRComponent.h; sourceTree = "<group>"; };
-		90689EF91FA99FE4007EF1D3 /* XTRContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRContext.h; sourceTree = "<group>"; };
-		90689EFA1FA99FE4007EF1D3 /* XTRContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRContext.m; sourceTree = "<group>"; };
 		90689EFB1FA99FE4007EF1D3 /* XTRCustomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRCustomView.h; sourceTree = "<group>"; };
 		90689EFC1FA99FE4007EF1D3 /* XTRCustomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRCustomView.m; sourceTree = "<group>"; };
-		90689EFD1FA99FE4007EF1D3 /* XTRDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRDebug.h; sourceTree = "<group>"; };
-		90689EFE1FA99FE4007EF1D3 /* XTRDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRDebug.m; sourceTree = "<group>"; };
 		90689EFF1FA99FE4007EF1D3 /* XTRDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRDevice.h; sourceTree = "<group>"; };
 		90689F001FA99FE4007EF1D3 /* XTRDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRDevice.m; sourceTree = "<group>"; };
 		90689F011FA99FE4007EF1D3 /* XTRFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRFont.h; sourceTree = "<group>"; };
@@ -140,6 +139,18 @@
 		90AFB4DB2016DC22001E9DA7 /* XTRSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRSlider.m; sourceTree = "<group>"; };
 		90AFB4DD20172FF1001E9DA7 /* XTRActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRActivityIndicatorView.h; sourceTree = "<group>"; };
 		90AFB4DE20172FF1001E9DA7 /* XTRActivityIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRActivityIndicatorView.m; sourceTree = "<group>"; };
+		90AFB4E720197F4E001E9DA7 /* XTMemoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTMemoryManager.m; sourceTree = "<group>"; };
+		90AFB4E820197F4E001E9DA7 /* XTPolyfill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTPolyfill.h; sourceTree = "<group>"; };
+		90AFB4E920197F4E001E9DA7 /* XTMemoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTMemoryManager.h; sourceTree = "<group>"; };
+		90AFB4EA20197F4E001E9DA7 /* XTManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTManagedObject.h; sourceTree = "<group>"; };
+		90AFB4EB20197F4E001E9DA7 /* XTComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTComponent.h; sourceTree = "<group>"; };
+		90AFB4EC20197F4E001E9DA7 /* XTDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTDebug.m; sourceTree = "<group>"; };
+		90AFB4ED20197F4E001E9DA7 /* XTDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTDebug.h; sourceTree = "<group>"; };
+		90AFB4EE20197F4E001E9DA7 /* XTContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTContext.m; sourceTree = "<group>"; };
+		90AFB4EF20197F4E001E9DA7 /* XTManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTManagedObject.m; sourceTree = "<group>"; };
+		90AFB4F020197F4E001E9DA7 /* XTPolyfill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTPolyfill.m; sourceTree = "<group>"; };
+		90AFB4F120197F4E001E9DA7 /* es6-shim.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "es6-shim.min.js"; sourceTree = "<group>"; };
+		90AFB4F220197F4E001E9DA7 /* XTContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTContext.h; sourceTree = "<group>"; };
 		90BB25551FBC24D700286398 /* XTRTextMeasurer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTRTextMeasurer.h; sourceTree = "<group>"; };
 		90BB25561FBC24D700286398 /* XTRTextMeasurer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTRTextMeasurer.m; sourceTree = "<group>"; };
 		90BB25591FBC3C4800286398 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -178,6 +189,7 @@
 		905707F81F4EB2AF00D5EC05 = {
 			isa = PBXGroup;
 			children = (
+				90AFB4E320197B09001E9DA7 /* Sources */,
 				90689EEC1FA99FE4007EF1D3 /* runtime */,
 				905708031F4EB2AF00D5EC05 /* XTSample */,
 				90A76FE81F7B97E600CB3EA5 /* FOOPlugin */,
@@ -234,13 +246,8 @@
 				90689EF51FA99FE4007EF1D3 /* XTRButton.m */,
 				90689EF61FA99FE4007EF1D3 /* XTRCanvasView.h */,
 				90689EF71FA99FE4007EF1D3 /* XTRCanvasView.m */,
-				90689EF81FA99FE4007EF1D3 /* XTRComponent.h */,
-				90689EF91FA99FE4007EF1D3 /* XTRContext.h */,
-				90689EFA1FA99FE4007EF1D3 /* XTRContext.m */,
 				90689EFB1FA99FE4007EF1D3 /* XTRCustomView.h */,
 				90689EFC1FA99FE4007EF1D3 /* XTRCustomView.m */,
-				90689EFD1FA99FE4007EF1D3 /* XTRDebug.h */,
-				90689EFE1FA99FE4007EF1D3 /* XTRDebug.m */,
 				90689EFF1FA99FE4007EF1D3 /* XTRDevice.h */,
 				90689F001FA99FE4007EF1D3 /* XTRDevice.m */,
 				90689F011FA99FE4007EF1D3 /* XTRFont.h */,
@@ -305,6 +312,49 @@
 				90A76FEC1F7B999000CB3EA5 /* foo.xtplugin.json */,
 			);
 			path = FOOPlugin;
+			sourceTree = "<group>";
+		};
+		90AFB4E320197B09001E9DA7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				90AFB4E420197B09001E9DA7 /* Core */,
+				90AFB4E520197B09001E9DA7 /* Foundation */,
+				90AFB4E620197B09001E9DA7 /* UIKit */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		90AFB4E420197B09001E9DA7 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				90AFB4F120197F4E001E9DA7 /* es6-shim.min.js */,
+				90AFB4EA20197F4E001E9DA7 /* XTManagedObject.h */,
+				90AFB4EF20197F4E001E9DA7 /* XTManagedObject.m */,
+				90AFB4E920197F4E001E9DA7 /* XTMemoryManager.h */,
+				90AFB4E720197F4E001E9DA7 /* XTMemoryManager.m */,
+				90AFB4E820197F4E001E9DA7 /* XTPolyfill.h */,
+				90AFB4F020197F4E001E9DA7 /* XTPolyfill.m */,
+				90AFB4EB20197F4E001E9DA7 /* XTComponent.h */,
+				90AFB4F220197F4E001E9DA7 /* XTContext.h */,
+				90AFB4EE20197F4E001E9DA7 /* XTContext.m */,
+				90AFB4ED20197F4E001E9DA7 /* XTDebug.h */,
+				90AFB4EC20197F4E001E9DA7 /* XTDebug.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		90AFB4E520197B09001E9DA7 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		90AFB4E620197B09001E9DA7 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UIKit;
 			sourceTree = "<group>";
 		};
 		90BB25581FBC3C4800286398 /* Applicationize */ = {
@@ -402,6 +452,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90AFB4F820197F4E001E9DA7 /* es6-shim.min.js in Resources */,
 				905708141F4EB2AF00D5EC05 /* LaunchScreen.storyboard in Resources */,
 				90A76FED1F7B999000CB3EA5 /* foo.xtplugin.json in Resources */,
 				90BB25671FBC3D0F00286398 /* ModulizeStartViewController.xib in Resources */,
@@ -480,13 +531,14 @@
 				90689F3A1FA99FE4007EF1D3 /* XTRUtils.m in Sources */,
 				90689F2A1FA99FE4007EF1D3 /* XTRCustomView.m in Sources */,
 				90689F261FA99FE4007EF1D3 /* XTRBridge.m in Sources */,
+				90AFB4F620197F4E001E9DA7 /* XTManagedObject.m in Sources */,
 				90689F281FA99FE4007EF1D3 /* XTRCanvasView.m in Sources */,
-				90689F2B1FA99FE4007EF1D3 /* XTRDebug.m in Sources */,
 				90689F2E1FA99FE4007EF1D3 /* XTRImage.m in Sources */,
 				90BB255F1FBC3C4800286398 /* ViewController.m in Sources */,
 				90689F301FA99FE4007EF1D3 /* XTRLabel.m in Sources */,
 				90689F371FA99FE4007EF1D3 /* XTRTextField.m in Sources */,
 				90689F2F1FA99FE4007EF1D3 /* XTRImageView.m in Sources */,
+				90AFB4F320197F4E001E9DA7 /* XTMemoryManager.m in Sources */,
 				90689F2C1FA99FE4007EF1D3 /* XTRDevice.m in Sources */,
 				90689F321FA99FE4007EF1D3 /* XTRListCell.m in Sources */,
 				90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */,
@@ -502,14 +554,16 @@
 				90A76FE71F7A647000CB3EA5 /* FOOView.m in Sources */,
 				905708061F4EB2AF00D5EC05 /* main.m in Sources */,
 				90689F361FA99FE4007EF1D3 /* XTRScrollView.m in Sources */,
+				90AFB4F520197F4E001E9DA7 /* XTContext.m in Sources */,
 				90BB255E1FBC3C4800286398 /* AppDelegate.m in Sources */,
 				90BB25621FBC3CB100286398 /* ModulizeAppDelegate.m in Sources */,
 				90689F351FA99FE4007EF1D3 /* XTRScreen.m in Sources */,
 				90AFB4DC2016DC22001E9DA7 /* XTRSlider.m in Sources */,
+				90AFB4F720197F4E001E9DA7 /* XTPolyfill.m in Sources */,
 				90689F331FA99FE4007EF1D3 /* XTRListView.m in Sources */,
-				90689F291FA99FE4007EF1D3 /* XTRContext.m in Sources */,
 				902527592015EE2C0034988F /* XTRWebView.m in Sources */,
 				90689F241FA99FE4007EF1D3 /* XTRApplication.m in Sources */,
+				90AFB4F420197F4E001E9DA7 /* XTDebug.m in Sources */,
 				90689F3C1FA99FE4007EF1D3 /* XTRViewController.m in Sources */,
 				90689F391FA99FE4007EF1D3 /* XTRuntime.m in Sources */,
 				902527562015CD350034988F /* XTRModal.m in Sources */,

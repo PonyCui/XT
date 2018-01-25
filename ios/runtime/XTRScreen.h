@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @protocol XTRScreenExport <JSExport>
 
@@ -16,7 +16,7 @@
 
 @end
 
-@interface XTRScreen : NSObject<XTRComponent, XTRScreenExport>
+@interface XTRScreen : NSObject<XTComponent, XTRScreenExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 

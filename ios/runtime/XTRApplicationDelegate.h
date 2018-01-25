@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRBridge, XTRApplicationDelegate;
 
@@ -20,7 +20,7 @@
 
 @end
 
-@interface XTRApplicationDelegate : UIResponder<UIApplicationDelegate, XTRComponent, XTRApplicationDelegateExport>
+@interface XTRApplicationDelegate : UIResponder<UIApplicationDelegate, XTComponent, XTRApplicationDelegateExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) XTRBridge *bridge;

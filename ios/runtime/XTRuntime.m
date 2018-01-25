@@ -9,7 +9,7 @@
 #import "XTRuntime.h"
 #import "XTRApplicationDelegate.h"
 #import "XTRViewController.h"
-#import "XTRDebug.h"
+#import "XTDebug.h"
 
 @implementation XTRuntime
 
@@ -104,7 +104,7 @@ static UINavigationController *currentDebugNavigationViewController;
 
 + (void)debugWithIP:(NSString *)IP port:(NSInteger)port navigationController:(UINavigationController *)navigationController {
     currentDebugNavigationViewController = navigationController;
-    [[XTRDebug sharedDebugger] connectWithIP:IP port:port];
+    [[XTDebug sharedDebugger] connectWithIP:IP port:port];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
@@ -128,7 +128,7 @@ static UINavigationController *currentDebugNavigationViewController;
     }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self startWithURL:[[XTRDebug sharedDebugger] sourceURL]
+        [self startWithURL:[[XTDebug sharedDebugger] sourceURL]
       navigationController:currentDebugNavigationViewController
            completionBlock:nil
               failureBlock:nil];

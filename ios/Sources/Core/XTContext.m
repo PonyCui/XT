@@ -6,14 +6,14 @@
 //  Copyright © 2017年 UED Center, YY Inc. All rights reserved.
 //
 
-#import "XTRContext.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTContext.h"
+#import "XTMemoryManager.h"
 
-@interface XTRContext ()
+@interface XTContext ()
 
 @end
 
-@implementation XTRContext
+@implementation XTContext
 
 #ifdef LOGDEALLOC
 - (void)dealloc {

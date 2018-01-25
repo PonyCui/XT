@@ -8,9 +8,9 @@
 
 #import "XTRLayoutConstraint.h"
 #import "XTRUtils.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRView.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRLayoutConstraint ()
 

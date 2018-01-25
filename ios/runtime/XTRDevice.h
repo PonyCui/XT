@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRDevice;
 
@@ -22,7 +22,7 @@
 
 @end
 
-@interface XTRDevice : NSObject<XTRComponent, XTRDeviceExport>
+@interface XTRDevice : NSObject<XTComponent, XTRDeviceExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 

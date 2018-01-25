@@ -8,7 +8,7 @@
 
 #import "XTRHRView.h"
 #import "XTRUtils.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRHRView()
 

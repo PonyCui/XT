@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRListCell;
 
@@ -19,7 +19,7 @@
 
 @end
 
-@interface XTRListCell : XTRView<XTRComponent, XTRListCellExport>
+@interface XTRListCell : XTRView<XTComponent, XTRListCellExport>
 
 @property (nonatomic, weak) UITableViewCell *realCell;
 

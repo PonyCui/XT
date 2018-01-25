@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRWebView;
 
@@ -18,6 +18,6 @@
 
 @end
 
-@interface XTRWebView : XTRView<XTRComponent, XTRWebViewExport>
+@interface XTRWebView : XTRView<XTComponent, XTRWebViewExport>
 
 @end

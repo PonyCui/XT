@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRImage;
 
@@ -22,7 +22,7 @@
 
 @end
 
-@interface XTRImage : NSObject<XTRComponent, XTRImageExport>
+@interface XTRImage : NSObject<XTComponent, XTRImageExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, readonly) UIImage *image;

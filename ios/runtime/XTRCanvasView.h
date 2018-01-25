@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRCanvasView;
 
@@ -52,6 +52,6 @@
 
 @end
 
-@interface XTRCanvasView : XTRView<XTRComponent, XTRCanvasViewExport>
+@interface XTRCanvasView : XTRView<XTComponent, XTRCanvasViewExport>
 
 @end

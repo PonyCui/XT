@@ -7,8 +7,8 @@
 //
 
 #import "XTRActivityIndicatorView.h"
-#import "XTRContext.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTContext.h"
+#import "XTMemoryManager.h"
 
 @interface XTRActivityIndicatorView()
 

@@ -9,7 +9,7 @@
 #import "XTRTextMeasurer.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @implementation XTRTextMeasurer
 

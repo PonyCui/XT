@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRView;
 
@@ -93,7 +93,7 @@
 
 @end
 
-@interface XTRView : UIView<XTRComponent, XTRViewExport>
+@interface XTRView : UIView<XTComponent, XTRViewExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, weak) JSContext *context;

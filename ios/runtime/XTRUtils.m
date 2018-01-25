@@ -10,7 +10,7 @@
 #import "XTRImage.h"
 #import "XTRFont.h"
 #import "XTRLayoutConstraint.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 
 #define FloatValue(VAL) [VAL isKindOfClass:[NSNumber class]] ? [VAL floatValue] : 0.0
 
@@ -75,8 +75,8 @@
     return nil;
 }
 
-+ (JSValue *)fromObject:(id<XTRComponent>)object context:(JSContext *)context {
-    if ([object conformsToProtocol:@protocol(XTRComponent)]) {
++ (JSValue *)fromObject:(id<XTComponent>)object context:(JSContext *)context {
+    if ([object conformsToProtocol:@protocol(XTComponent)]) {
         return [context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", object.objectUUID]];
     }
     return [JSValue valueWithUndefinedInContext:context];

@@ -8,7 +8,7 @@
 
 #import "XTRDevice.h"
 #import "XTRuntime.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 
 @implementation XTRDevice
 

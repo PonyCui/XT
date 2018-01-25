@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRLayoutConstraint;
 
@@ -35,7 +35,7 @@
 
 @end
 
-@interface XTRLayoutConstraint : NSObject<XTRComponent, XTRLayoutConstraintExport>
+@interface XTRLayoutConstraint : NSObject<XTComponent, XTRLayoutConstraintExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) NSLayoutConstraint *innerObject;

@@ -10,9 +10,7 @@
 
 @class XTRBridge;
 
-typedef void (^JSValueAsynchronousResult)(JSValue * _Nullable value);
-
-@interface XTRContext : JSContext
+@interface XTContext : JSContext
 
 @property (nonatomic, weak) XTRBridge * _Nullable bridge;
 

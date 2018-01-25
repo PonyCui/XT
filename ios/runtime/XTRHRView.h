@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @protocol XTRHRViewExport <JSExport>
 
@@ -19,6 +19,6 @@
 
 @end
 
-@interface XTRHRView : XTRView<XTRComponent, XTRHRViewExport>
+@interface XTRHRView : XTRView<XTComponent, XTRHRViewExport>
 
 @end

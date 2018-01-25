@@ -9,7 +9,7 @@
 #import "XTRNavigationBar.h"
 #import "XTRViewController.h"
 #import "XTRImage.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRNavigationBar()
 

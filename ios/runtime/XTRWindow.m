@@ -9,10 +9,10 @@
 #import "XTRWindow.h"
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRBridge.h"
 #import "XTRViewController.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRWindow ()
 
@@ -62,7 +62,7 @@
     UIWindow *window = [XTMemoryManager find:objectRef];
     if ([window isKindOfClass:[UIWindow class]]) {
         id viewController = (id)window.rootViewController;
-        if ([viewController conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([viewController conformsToProtocol:@protocol(XTComponent)]) {
             return [viewController objectUUID];
         }
     }
@@ -82,14 +82,14 @@
     [[UIApplication sharedApplication].keyWindow endEditing:YES];
 }
 
-static id<XTRComponent> currentFirstResponder;
+static id<XTComponent> currentFirstResponder;
 
-+ (void)setCurrentFirstResponder:(id<XTRComponent>)argCurrentFirstResponder {
++ (void)setCurrentFirstResponder:(id<XTComponent>)argCurrentFirstResponder {
     currentFirstResponder = argCurrentFirstResponder;
 }
 
 + (NSString *)xtr_firstResponder:(NSString *)objectRef {
-    if ([currentFirstResponder conformsToProtocol:@protocol(XTRComponent)]) {
+    if ([currentFirstResponder conformsToProtocol:@protocol(XTComponent)]) {
         return currentFirstResponder.objectUUID;
     }
     return nil;
@@ -109,7 +109,7 @@ static id<XTRComponent> currentFirstResponder;
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                    ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -118,7 +118,7 @@ static id<XTRComponent> currentFirstResponder;
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                        ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -127,7 +127,7 @@ static id<XTRComponent> currentFirstResponder;
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTComponent)]
                                                                          ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
@@ -144,7 +144,7 @@ static id<XTRComponent> currentFirstResponder;
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTComponent)]
                                                                       ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }

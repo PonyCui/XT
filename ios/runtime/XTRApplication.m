@@ -8,15 +8,15 @@
 
 #import "XTRApplication.h"
 #import "XTRUtils.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRBridge.h"
 #import "XTRViewController.h"
 #import "XTRWindow.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRApplication ()
 
-@property (nonatomic, weak) XTRContext *context;
+@property (nonatomic, weak) XTContext *context;
 
 @end
 

@@ -10,8 +10,8 @@
 #import "XTRUtils.h"
 #import "XTRImage.h"
 #import "XTRFont.h"
-#import "XTRContext.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTContext.h"
+#import "XTMemoryManager.h"
 
 @interface XTRButton ()
 

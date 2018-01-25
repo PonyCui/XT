@@ -7,8 +7,8 @@
 //
 
 #import "XTRBridge.h"
-#import "XTRContext.h"
-#import "XTRComponent.h"
+#import "XTContext.h"
+#import "XTComponent.h"
 #import "XTRApplication.h"
 #import "XTRView.h"
 #import "XTRWindow.h"
@@ -29,7 +29,7 @@
 #import "XTRListCell.h"
 #import "XTRTextField.h"
 #import "XTRTextView.h"
-#import "XTRDebug.h"
+#import "XTDebug.h"
 #import "XTRCanvasView.h"
 #import "XTRCustomView.h"
 #import "XTRDevice.h"
@@ -40,9 +40,9 @@
 #import "XTRSwitch.h"
 #import "XTRSlider.h"
 #import "XTRActivityIndicatorView.h"
-#import "XTRDebug.h"
+#import "XTDebug.h"
 #import <JavaScriptCore/JavaScriptCore.h>
-#import <XT-Polyfill/XTPolyfill.h>
+#import "XTPolyfill.h"
 
 @protocol XTRPluginProtocol
 
@@ -52,7 +52,7 @@
 
 @interface XTRBridge ()
 
-@property (nonatomic, strong) XTRContext *context;
+@property (nonatomic, strong) XTContext *context;
 @property (nonatomic, weak) XTRApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
 @property (nonatomic, copy) NSArray *pluginInstances;
@@ -88,7 +88,7 @@ static NSString *globalBridgeScript;
         _appDelegate = appDelegate;
         _appDelegate.bridge = self;
         _sourceURL = sourceURL;
-        _context = [[XTRContext alloc] init];
+        _context = [[XTContext alloc] init];
         _context.bridge = self;
         [_context evaluateScript:@"var window = {}; var objectRefs = {};"];
         [XTPolyfill addPolyfills:_context];
@@ -207,9 +207,9 @@ static NSString *globalBridgeScript;
                               [XTRSwitch class],
                               [XTRSlider class],
                               [XTRActivityIndicatorView class],
-                              [XTRDebug class],
+                              [XTDebug class],
                               ]) {
-        if ([component conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([component conformsToProtocol:@protocol(XTComponent)]) {
             self.context[[component name]] = component;
         }
     }

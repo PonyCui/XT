@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @protocol XTRModalExport<JSExport>
 
@@ -17,7 +17,7 @@
 
 @end
 
-@interface XTRModal : NSObject<XTRComponent, XTRModalExport>
+@interface XTRModal : NSObject<XTComponent, XTRModalExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 

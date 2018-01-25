@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @protocol XTRDebugExport<JSExport>
 
@@ -16,11 +16,11 @@
 
 @end
 
-@interface XTRDebug : NSObject<XTRComponent, XTRDebugExport>
+@interface XTDebug : NSObject<XTComponent, XTRDebugExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 
-+ (XTRDebug *)sharedDebugger;
++ (XTDebug *)sharedDebugger;
 - (NSURL *)sourceURL;
 - (void)connectWithIP:(NSString *)IP port:(NSInteger)port;
 - (void)sendLog:(NSString *)string;

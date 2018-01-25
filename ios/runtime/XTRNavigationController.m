@@ -8,8 +8,8 @@
 
 #import "XTRNavigationController.h"
 #import "XTRUtils.h"
-#import "XTRContext.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTContext.h"
+#import "XTMemoryManager.h"
 
 @interface XTRNavigationController ()
 
@@ -76,7 +76,7 @@
     XTRNavigationController *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTRNavigationController class]]) {
         id target = [(obj.innerObject ?: obj) popViewControllerAnimated:animated];
-        if ([target conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([target conformsToProtocol:@protocol(XTComponent)]) {
             return [target objectUUID];
         }
     }
@@ -93,7 +93,7 @@
             NSArray *returns = [(obj.innerObject ?: obj) popToViewController:targetViewController animated:animated];
             NSMutableArray *output = [NSMutableArray array];
             for (id r in returns) {
-                if ([r conformsToProtocol:@protocol(XTRComponent)]) {
+                if ([r conformsToProtocol:@protocol(XTComponent)]) {
                     [output addObject:[r objectUUID] ?: @""];
                 }
             }
@@ -109,7 +109,7 @@
         NSArray *returns = [(obj.innerObject ?: obj) popToRootViewControllerAnimated:animated];
         NSMutableArray *output = [NSMutableArray array];
         for (id r in returns) {
-            if ([r conformsToProtocol:@protocol(XTRComponent)]) {
+            if ([r conformsToProtocol:@protocol(XTComponent)]) {
                 [output addObject:[r objectUUID] ?: @""];
             }
         }
@@ -204,7 +204,7 @@
         JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"_willMoveToParentViewController"
-                  withArguments:[parent conformsToProtocol:@protocol(XTRComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
+                  withArguments:[parent conformsToProtocol:@protocol(XTComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
 }
@@ -215,7 +215,7 @@
         JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"_didMoveToParentViewController"
-                  withArguments:[parent conformsToProtocol:@protocol(XTRComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
+                  withArguments:[parent conformsToProtocol:@protocol(XTComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
 }

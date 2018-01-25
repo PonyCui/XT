@@ -9,9 +9,9 @@
 #import "XTRTextView.h"
 #import "XTRUtils.h"
 #import "XTRFont.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRWindow.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRTextView ()<UITextViewDelegate>
 

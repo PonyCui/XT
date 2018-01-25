@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRFont;
 
@@ -25,7 +25,7 @@
 
 @end
 
-@interface XTRFont : NSObject<XTRComponent, XTRFontExport>
+@interface XTRFont : NSObject<XTComponent, XTRFontExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) UIFont *innerObject;

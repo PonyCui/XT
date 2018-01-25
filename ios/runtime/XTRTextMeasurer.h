@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @protocol XTRTextMeasurer <JSExport>
 
@@ -15,7 +15,7 @@
 
 @end
 
-@interface XTRTextMeasurer : NSObject<XTRComponent, XTRTextMeasurer>
+@interface XTRTextMeasurer : NSObject<XTComponent, XTRTextMeasurer>
 
 @property (nonatomic, copy) NSString *objectUUID;
 

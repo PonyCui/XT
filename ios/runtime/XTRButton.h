@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRButton;
 
@@ -29,6 +29,6 @@
 
 @end
 
-@interface XTRButton : XTRView<XTRComponent, XTRButtonExport>
+@interface XTRButton : XTRView<XTComponent, XTRButtonExport>
 
 @end

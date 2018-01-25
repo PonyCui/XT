@@ -8,7 +8,7 @@
 
 #import "ModulizeStartViewController.h"
 #import "XTRuntime.h"
-#import "XTRDebug.h"
+#import "XTDebug.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 
 @interface ModulizeStartViewController ()

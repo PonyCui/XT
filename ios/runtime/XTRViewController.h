@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRViewController;
 
@@ -31,7 +31,7 @@
 
 typedef void(^XTRViewControllerExitAction)(XTRViewController *keyViewController);
 
-@interface XTRViewController : UIViewController<XTRComponent, XTRViewControllerExport>
+@interface XTRViewController : UIViewController<XTComponent, XTRViewControllerExport>
 
 @property (nonatomic, assign) BOOL shouldRestoreNavigationBar;
 @property (nonatomic, copy) XTRViewControllerExitAction exitAction;

@@ -9,14 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "XTRApplicationDelegate.h"
 
-@class XTRContext, XTRViewController;
+@class XTContext, XTRViewController;
 
 typedef void(^XTRBridgeCompletionBlock)(void);
 typedef void(^XTRBridgeFailureBlock)(NSError * _Nonnull error);
 
 @interface XTRBridge : NSObject
 
-@property (nonatomic, readonly) XTRContext * _Nonnull context;
+@property (nonatomic, readonly) XTContext * _Nonnull context;
 @property (nonatomic, strong) UIApplication * _Nullable application;
 @property (nonatomic, weak) XTRViewController * _Nullable keyViewController;
 @property (nonatomic, weak) UIWindow * _Nullable keyWindow;

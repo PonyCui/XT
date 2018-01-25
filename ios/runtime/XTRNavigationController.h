@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRComponent.h"
+#import "XTComponent.h"
 #import "XTRViewController.h"
 
 @class XTRNavigationController;
@@ -25,7 +25,7 @@
 
 @end
 
-@interface XTRNavigationController : UINavigationController<XTRComponent, XTRNavigationControllerExport>
+@interface XTRNavigationController : UINavigationController<XTComponent, XTRNavigationControllerExport>
 
 + (NSString *)clone:(UINavigationController *)navigationController;
 

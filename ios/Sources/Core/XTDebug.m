@@ -6,29 +6,29 @@
 //  Copyright © 2017年 UED Center, YY Inc. All rights reserved.
 //
 
-#import "XTRDebug.h"
-#import "XTRContext.h"
+#import "XTDebug.h"
+#import "XTContext.h"
 #import "XTRuntime.h"
 #import <SocketRocket/SRWebSocket.h>
 
-@interface XTRDebug ()<SRWebSocketDelegate>
+@interface XTDebug ()<SRWebSocketDelegate>
 
 @property (nonatomic, strong) NSURL *sourceURL;
 @property (nonatomic, strong) SRWebSocket *socket;
 
 @end
 
-@implementation XTRDebug
+@implementation XTDebug
 
 + (NSString *)name {
     return @"XTRDebug";
 }
 
-+ (XTRDebug *)sharedDebugger {
-    static XTRDebug *debuger;
++ (XTDebug *)sharedDebugger {
+    static XTDebug *debuger;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        debuger = [XTRDebug new];
+        debuger = [XTDebug new];
     });
     return debuger;
 }
@@ -41,6 +41,10 @@
     self.socket = [[SRWebSocket alloc] initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLString]]];
     self.socket.delegate = self;
     [self.socket open];
+}
+
+- (void)sendLog:(NSString *)string {
+    
 }
 
 + (void)xtr_breakpoint:(NSString *)bpIdentifier {

@@ -9,11 +9,11 @@
 #import "XTRListView.h"
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRListCell.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRWindow.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -167,7 +167,7 @@
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                    ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -176,7 +176,7 @@
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                        ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -185,7 +185,7 @@
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTComponent)]
                                                                          ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
@@ -202,7 +202,7 @@
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTComponent)]
                                                                       ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }

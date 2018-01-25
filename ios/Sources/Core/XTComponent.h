@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@protocol XTRComponent <NSObject>
+@protocol XTComponent <NSObject>
 
 @property (nonatomic, copy) NSString *objectUUID;
 

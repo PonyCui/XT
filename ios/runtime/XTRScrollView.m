@@ -9,9 +9,9 @@
 #import "XTRScrollView.h"
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRWindow.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface UIScrollView (XTRScrollView)
 
@@ -254,7 +254,7 @@
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                     ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -263,7 +263,7 @@
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                         ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -272,7 +272,7 @@
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTComponent)]
                                                                           ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
@@ -289,7 +289,7 @@
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTComponent)]
                                                                        ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }

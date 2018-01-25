@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
-@class XTRWindow, XTRContext;
+@class XTRWindow, XTContext;
 
 @protocol XTRWindowExport <JSExport>
 
@@ -23,12 +23,12 @@
 
 @end
 
-@interface XTRWindow : UIWindow<XTRComponent, XTRWindowExport>
+@interface XTRWindow : UIWindow<XTComponent, XTRWindowExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-@property (nonatomic, weak) XTRContext *context;
+@property (nonatomic, weak) XTContext *context;
 @property (nonatomic, readonly) JSValue *scriptObject;
 
-+ (void)setCurrentFirstResponder:(id<XTRComponent>)argCurrentFirstResponder;
++ (void)setCurrentFirstResponder:(id<XTComponent>)argCurrentFirstResponder;
 
 @end

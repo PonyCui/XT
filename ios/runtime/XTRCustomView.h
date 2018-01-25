@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRCustomView;
 
@@ -25,7 +25,7 @@
 
 @end
 
-@interface XTRCustomView : XTRView<XTRComponent, XTRCustomViewExport>
+@interface XTRCustomView : XTRView<XTComponent, XTRCustomViewExport>
 
 + (void)registerClass:(nonnull Class)viewClass className:(nonnull NSString *)className;
 - (nullable JSValue *)emitMessage:(nonnull id)value;

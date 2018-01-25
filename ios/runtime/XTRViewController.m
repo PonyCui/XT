@@ -8,12 +8,12 @@
 
 #import "XTRViewController.h"
 #import "XTRUtils.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRNavigationController.h"
 #import "XTRNavigationBar.h"
 #import "XTRView.h"
 #import <objc/runtime.h>
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRViewController ()
 
@@ -154,7 +154,7 @@
     UIViewController *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIViewController class]]) {
         id parentViewController = [obj parentViewController];
-        if ([parentViewController conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([parentViewController conformsToProtocol:@protocol(XTComponent)]) {
             return [parentViewController objectUUID];
         }
     }
@@ -166,7 +166,7 @@
     NSMutableArray *childViewControllers = [NSMutableArray array];
     if ([obj isKindOfClass:[UIViewController class]]) {
         for (id viewController in obj.childViewControllers) {
-            if ([viewController conformsToProtocol:@protocol(XTRComponent)]) {
+            if ([viewController conformsToProtocol:@protocol(XTComponent)]) {
                 [childViewControllers addObject:[viewController objectUUID] ?: @""];
             }
         }
@@ -342,7 +342,7 @@ static BOOL onPanning;
         JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"_willMoveToParentViewController"
-                  withArguments:[parent conformsToProtocol:@protocol(XTRComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
+                  withArguments:[parent conformsToProtocol:@protocol(XTComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
     if ([parent isKindOfClass:[UINavigationController class]] && self.shouldRestoreNavigationBar) {
@@ -358,7 +358,7 @@ static BOOL onPanning;
         JSValue *value = self.scriptObject;
         if (value != nil) {
             [value invokeMethod:@"_didMoveToParentViewController"
-                  withArguments:[parent conformsToProtocol:@protocol(XTRComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
+                  withArguments:[parent conformsToProtocol:@protocol(XTComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
     if (parent == nil && self.exitAction) {

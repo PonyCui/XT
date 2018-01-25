@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRNavigationBar, XTRViewController;
 
@@ -25,7 +25,7 @@
 
 @end
 
-@interface XTRNavigationBar : XTRView<XTRComponent, XTRNavigationBarExport>
+@interface XTRNavigationBar : XTRView<XTComponent, XTRNavigationBarExport>
 
 @property (nonatomic, weak) XTRViewController *viewController;
 @property (nonatomic, readonly) UINavigationItem *innerItem;

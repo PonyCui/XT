@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRLabel;
 
@@ -32,6 +32,6 @@
 
 @end
 
-@interface XTRLabel : XTRView<XTRComponent, XTRLabelExport>
+@interface XTRLabel : XTRView<XTComponent, XTRLabelExport>
 
 @end

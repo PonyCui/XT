@@ -7,8 +7,8 @@
 //
 
 #import "XTRWebView.h"
-#import "XTRContext.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTContext.h"
+#import "XTMemoryManager.h"
 #import <WebKit/WebKit.h>
 
 @interface XTRWebView()<WKNavigationDelegate>

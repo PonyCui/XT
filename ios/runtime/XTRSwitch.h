@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRSwitch;
 
@@ -19,6 +19,6 @@
 
 @end
 
-@interface XTRSwitch : XTRView<XTRComponent, XTRSwitchExport>
+@interface XTRSwitch : XTRView<XTComponent, XTRSwitchExport>
 
 @end

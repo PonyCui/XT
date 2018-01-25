@@ -8,9 +8,9 @@
 
 #import "XTRImage.h"
 #import "XTRUtils.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRBridge.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRImage ()
 

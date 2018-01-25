@@ -9,10 +9,10 @@
 #import "XTRView.h"
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRWindow.h"
 #import "XTRBridge.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRView ()
 
@@ -204,7 +204,7 @@
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
         id maskView = (id)obj.maskView;
-        if ([maskView conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([maskView conformsToProtocol:@protocol(XTComponent)]) {
             return [maskView objectUUID];
         }
     }
@@ -363,7 +363,7 @@
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
         id superview = (id)obj.superview;
-        if ([superview conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([superview conformsToProtocol:@protocol(XTComponent)]) {
             return [superview objectUUID];
         }
     }
@@ -375,7 +375,7 @@
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
         for (id subview in obj.subviews) {
-            if ([subview conformsToProtocol:@protocol(XTRComponent)]) {
+            if ([subview conformsToProtocol:@protocol(XTComponent)]) {
                 [subviews addObject:[subview objectUUID] ?: @""];
             }
         }
@@ -387,11 +387,11 @@
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
         id window = (id)obj.window;
-        if ([window conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([window conformsToProtocol:@protocol(XTComponent)]) {
             return [window objectUUID];
         }
         else if ([obj isKindOfClass:[XTRView class]]) {
-            XTRWindow *window = (id)[[(XTRContext *)[(XTRView *)obj context] bridge] keyWindow];
+            XTRWindow *window = (id)[[(XTContext *)[(XTRView *)obj context] bridge] keyWindow];
             if ([window isKindOfClass:[XTRWindow class]]) {
                 return window.objectUUID;
             }
@@ -473,7 +473,7 @@
     [super didAddSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                    ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -482,7 +482,7 @@
     [super willRemoveSubview:subview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
                                                                        ? @[[subview objectUUID] ?: @""] : @[])];
     }
 }
@@ -491,7 +491,7 @@
     [super willMoveToSuperview:newSuperview];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTComponent)]
                                                                          ? @[[newSuperview objectUUID] ?: @""] : @[])];
     }
 }
@@ -508,7 +508,7 @@
     [super willMoveToWindow:newWindow];
     JSValue *scriptObject = self.scriptObject;
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"_willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTRComponent)]
+        [scriptObject invokeMethod:@"_willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTComponent)]
                                                                       ? @[[newWindow objectUUID] ?: @""] : @[])];
     }
 }
@@ -534,7 +534,7 @@
     UIView *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[UIView class]]) {
         id view = [obj viewWithTag:tag];
-        if ([view conformsToProtocol:@protocol(XTRComponent)]) {
+        if ([view conformsToProtocol:@protocol(XTComponent)]) {
             return [view objectUUID];
         }
     }

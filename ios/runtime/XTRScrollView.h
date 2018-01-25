@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRScrollView;
 
@@ -38,7 +38,7 @@
 
 @end
 
-@interface XTRScrollView : UIScrollView<XTRComponent, XTRScrollViewExport>
+@interface XTRScrollView : UIScrollView<XTComponent, XTRScrollViewExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, weak) JSContext *context;

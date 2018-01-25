@@ -18,7 +18,7 @@
 
 @end
 
-@interface XTRListView : UITableView<XTRComponent, XTRListViewExport>
+@interface XTRListView : UITableView<XTComponent, XTRListViewExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, weak) JSContext *context;

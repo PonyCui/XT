@@ -7,7 +7,7 @@
 //
 
 #import "XTRView.h"
-#import "XTRComponent.h"
+#import "XTComponent.h"
 
 @class XTRActivityIndicatorView;
 
@@ -24,6 +24,6 @@
 
 @end
 
-@interface XTRActivityIndicatorView : XTRView<XTRComponent, XTRActivityIndicatorViewExport>
+@interface XTRActivityIndicatorView : XTRView<XTComponent, XTRActivityIndicatorViewExport>
 
 @end

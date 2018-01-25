@@ -9,10 +9,10 @@
 #import "XTRApplicationDelegate.h"
 #import "XTRBridge.h"
 #import "XTRUtils.h"
-#import "XTRContext.h"
+#import "XTContext.h"
 #import "XTRuntime.h"
 #import "XTRWindow.h"
-#import <XT-Mem/XTMemoryManager.h>
+#import "XTMemoryManager.h"
 
 @interface XTRuntime (Private)
 
