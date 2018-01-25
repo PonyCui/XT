@@ -1,5 +1,5 @@
 //
-//  XTRApplication.h
+//  XTUIApplication.h
 //  XTSample
 //
 //  Created by 崔明辉 on 2017/8/24.
@@ -9,18 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "XTComponent.h"
 
-@class XTRApplication;
+@class XTUIApplication, XTUIApplicationDelegate;
 
-@protocol XTRApplicationExport <JSExport>
+@protocol XTUIApplicationExport <JSExport>
 
-+ (NSString *)create;
++ (NSString *)create:(NSString *)delegateRef;
 + (NSString *)xtr_keyWindow:(NSString *)objectRef;
 + (void)xtr_exit:(NSString *)objectRef;
 
 @end
 
-@interface XTRApplication : NSObject<XTComponent, XTRApplicationExport>
+@interface XTUIApplication : NSObject<XTComponent, XTUIApplicationExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, strong) XTUIApplicationDelegate *delegate;
 
 @end

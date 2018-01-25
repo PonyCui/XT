@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRApplicationDelegate.h"
+#import "XTUIApplicationDelegate.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

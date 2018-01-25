@@ -1,5 +1,5 @@
-declare var XTRApplication: any
-declare var XTRApplicationDelegate: any
+declare var XTUIApplication: any
+declare var XTUIApplicationDelegate: any
 declare var XTRView: any
 declare var XTRWindow: any
 declare var XTRViewController: any

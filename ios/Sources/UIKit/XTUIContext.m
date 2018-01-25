@@ -9,10 +9,10 @@
 #import "XTUIContext.h"
 #import "XTContext.h"
 #import "XTComponent.h"
-#import "XTRApplication.h"
+#import "XTUIApplication.h"
 #import "XTRView.h"
 #import "XTRWindow.h"
-#import "XTRApplicationDelegate.h"
+#import "XTUIApplicationDelegate.h"
 #import "XTRViewController.h"
 #import "XTRNavigationBar.h"
 #import "XTRNavigationController.h"
@@ -45,7 +45,7 @@
 
 @interface XTUIContext ()<UINavigationControllerDelegate>
 
-@property (nonatomic, weak) XTRApplicationDelegate *appDelegate;
+@property (nonatomic, weak) XTUIApplicationDelegate *appDelegate;
 @property (nonatomic, readwrite) NSURL *sourceURL;
 @property (nonatomic, copy) NSArray *pluginInstances;
 
@@ -59,28 +59,24 @@
 }
 #endif
 
-- (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
-{
-    return [self initWithAppDelegate:appDelegate sourceURL:nil completionBlock:nil failureBlock:nil];
-}
-
-- (instancetype)initWithAppDelegate:(XTRApplicationDelegate *)appDelegate
-                          sourceURL:(NSURL *)sourceURL
-                    completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
-                       failureBlock:(XTUIContextFailureBlock)failureBlock
+- (instancetype)initWithSourceURL:(NSURL *)sourceURL
+                  completionBlock:(XTUIContextCompletionBlock)completionBlock
+                     failureBlock:(XTUIContextFailureBlock)failureBlock
 {
     self = [super init];
     if (self) {
-        _appDelegate = appDelegate;
-        _appDelegate.bridge = self;
         _sourceURL = sourceURL;
-        [self loadComponents];
-        [self loadRuntime];
-        if (_sourceURL != nil) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             [self loadViaSourceURL:completionBlock failureBlock:failureBlock];
-        }
+        }];
     }
     return self;
+}
+
+- (void)setup {
+    [super setup];
+    [self loadComponents];
+    [self loadScript];
 }
 
 - (void)loadViaSourceURL:(XTUIContextCompletionBlock)completionBlock failureBlock:(XTUIContextFailureBlock)failureBlock {
@@ -88,76 +84,46 @@
         NSString *script = [[NSString alloc] initWithContentsOfURL:self.sourceURL encoding:NSUTF8StringEncoding error:NULL];
         if (script) {
             [self evaluateScript:script];
-            if (((JSValue *)[self evaluateScript:@"window._xtrDelegate"]).isUndefined) {
-                if (failureBlock) {
-                    failureBlock([NSError errorWithDomain:@"XTUIContext" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"Fail to create AppDelegate."}]);
-                }
-                return ;
-            }
+            [self.application.delegate didFinishLaunchingWithOptions:@{}];
             if (completionBlock) {
                 completionBlock();
             }
         }
-        return;
-    }
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL
-                                             cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                         timeoutInterval:15.0];
-    if (failureBlock) {
-        [[[NSURLSession sharedSession] dataTaskWithRequest:request
-                                         completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            if (error == nil && data != nil) {
-                NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                if (script) {
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                        [self evaluateScript:script];
-                        if (((JSValue *)[self evaluateScript:@"window._xtrDelegate"]).isUndefined) {
-                            if (failureBlock) {
-                                failureBlock([NSError errorWithDomain:@"XTUIContext" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"Fail to create AppDelegate."}]);
-                            }
-                            return ;
-                        }
-                        if (completionBlock) {
-                            completionBlock();
-                        }
-                    }];
-                }
-            }
-            else {
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    failureBlock(error ?: [NSError errorWithDomain:@"XTUIContext" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"unknown error."}]);
-                }];
-            }
-        }] resume];
     }
     else {
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        NSURLRequest *request = [NSURLRequest requestWithURL:self.sourceURL
+                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                             timeoutInterval:15.0];
         [[[NSURLSession sharedSession] dataTaskWithRequest:request
                                          completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                                              if (error == nil && data != nil) {
                                                  NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                  if (script) {
-                                                     [self evaluateScript:script];
-                                                     if (completionBlock) {
-                                                         completionBlock();
-                                                     }
+                                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                         [self evaluateScript:script];
+                                                         [self.application.delegate didFinishLaunchingWithOptions:@{}];
+                                                         if (completionBlock) {
+                                                             completionBlock();
+                                                         }
+                                                     }];
                                                  }
                                              }
                                              else {
-                                                 if (failureBlock) {
-                                                     failureBlock(error);
-                                                 }
+                                                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                     if (failureBlock) {
+                                                         failureBlock(error ?: [NSError errorWithDomain:@"XTUIContext" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"unknown error."}]);
+                                                     }
+                                                     
+                                                 }];
                                              }
-                                             dispatch_semaphore_signal(semaphore);
                                          }] resume];
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     }
 }
 
 - (void)loadComponents {
     for (Class component in @[
-                              [XTRApplication class],
-                              [XTRApplicationDelegate class],
+                              [XTUIApplication class],
+                              [XTUIApplicationDelegate class],
                               [XTRView class],
                               [XTRWindow class],
                               [XTRViewController class],
@@ -193,7 +159,7 @@
     }
 }
 
-- (void)loadRuntime {
+- (void)loadScript {
     [self evaluateScript:@"var XT = {}"];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.ios.min" ofType:@"js"];
     if (path) {
@@ -204,31 +170,9 @@
 
 #pragma mark - Start Application Static Methods
 
-static NSSet<XTRApplicationDelegate *> *moduleDelegates;
-
-+ (XTRApplicationDelegate *)requestDelegateWithObjectUUID:(NSString *)objectUUID {
-    for (XTRApplicationDelegate *moduleDelegate in moduleDelegates) {
-        if ([moduleDelegate.objectUUID isEqualToString:objectUUID]) {
-            return moduleDelegate;
-        }
-    }
-    return nil;
-}
-
-+ (void)retainDelegate:(XTRApplicationDelegate *)delegate {
-    NSMutableSet *mutable = [(moduleDelegates ?: [NSSet set]) mutableCopy];
-    [mutable addObject:delegate];
-    moduleDelegates = [mutable copy];
-}
-
-+ (void)releaseDelegate:(XTRApplicationDelegate *)delegate {
-    NSMutableSet *mutable = [(moduleDelegates ?: [NSSet set]) mutableCopy];
-    [mutable removeObject:delegate];
-    moduleDelegates = [mutable copy];
-    [delegate exit];
-}
-
-+ (void)startWithNamed:(NSString *)name inBundle:(NSBundle *)bundle navigationController:(UINavigationController *)navigationController {
++ (void)startWithNamed:(NSString *)name
+              inBundle:(NSBundle *)bundle
+  navigationController:(UINavigationController *)navigationController {
     [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
   navigationController:navigationController
        completionBlock:nil
@@ -239,52 +183,46 @@ static NSSet<XTRApplicationDelegate *> *moduleDelegates;
       navigationController:(UINavigationController *)navigationController
            completionBlock:(XTUIContextCompletionBlock)completionBlock
               failureBlock:(XTUIContextFailureBlock)failureBlock {
-    [self startWithURL:[NSURL URLWithString:URLString] navigationController:navigationController completionBlock:completionBlock failureBlock:failureBlock];
+    [self startWithURL:[NSURL URLWithString:URLString]
+  navigationController:navigationController
+       completionBlock:completionBlock
+          failureBlock:failureBlock];
 }
 
 + (void)startWithURL:(NSURL *)sourceURL
 navigationController:(UINavigationController *)navigationController
      completionBlock:(XTUIContextCompletionBlock)completionBlock
         failureBlock:(XTUIContextFailureBlock)failureBlock {
-    XTRApplicationDelegate *moduleDelegate = [[XTRApplicationDelegate alloc] init];
-    [self retainDelegate:moduleDelegate];
-    moduleDelegate.bridge = [[XTUIContext alloc]
-                             initWithAppDelegate:moduleDelegate
-                             sourceURL:sourceURL
-                             completionBlock:^{
-                                 [moduleDelegate didFinishLaunchingWithOptions:@{}];
-                                 if (moduleDelegate.window != nil && [moduleDelegate.window.rootViewController isKindOfClass:[UINavigationController class]]) {
-                                     XTRViewController *viewController = [(UINavigationController *)moduleDelegate.window.rootViewController viewControllers].firstObject;
-                                     viewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
-                                     moduleDelegate.bridge.keyViewController = viewController;
-                                     [UIView animateWithDuration:0.25 animations:^{
-                                         [navigationController pushViewController:viewController
-                                                                         animated:YES];
-                                         navigationController.navigationBar.alpha = 0.0;
-                                     } completion:^(BOOL finished) {
-                                         navigationController.navigationBar.alpha = 1.0;
-                                         navigationController.navigationBar.hidden = YES;
-                                     }];
-                                     __weak XTRApplicationDelegate *weakModuleDelegate = moduleDelegate;
-                                     [viewController setExitAction:^(XTRViewController *keyViewController) {
-                                         if (keyViewController.navigationController) {
-                                             NSUInteger keyIndex = [keyViewController.navigationController.childViewControllers indexOfObject:keyViewController];
-                                             if (keyIndex > 0 && keyIndex != NSNotFound) {
-                                                 [keyViewController.navigationController popToViewController:keyViewController.navigationController.childViewControllers[keyIndex - 1]
-                                                                                                    animated:YES];
+    __block XTUIContext *context = [[XTUIContext alloc] initWithSourceURL:sourceURL
+                                      completionBlock:^{
+                                          UINavigationController *rootViewController = (id)context.application.delegate.window.rootViewController;
+                                          if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+                                              XTRViewController *firstViewController = [rootViewController childViewControllers].firstObject;
+                                              if ([firstViewController isKindOfClass:[XTRViewController class]]) {
+                                                  firstViewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
+                                                  [UIView animateWithDuration:0.25 animations:^{
+                                                      [navigationController pushViewController:firstViewController
+                                                                                      animated:YES];
+                                                      navigationController.navigationBar.alpha = 0.0;
+                                                  } completion:^(BOOL finished) {
+                                                      navigationController.navigationBar.alpha = 1.0;
+                                                      navigationController.navigationBar.hidden = YES;
+                                                  }];
+                                                  [firstViewController setExitAction:^(XTRViewController *keyViewController) {
+                                                      [context terminal];
+                                                  }];
+                                              }
+                                          }
+                                          if (completionBlock) {
+                                              completionBlock();
+                                          }
+                                      }
+                                         failureBlock:^(NSError * _Nonnull error) {
+                                             if (failureBlock) {
+                                                 failureBlock(error);
                                              }
-                                         }
-                                         __strong XTRApplicationDelegate *strongModuleDelegate = weakModuleDelegate;
-                                         if (strongModuleDelegate) {
-                                             [self releaseDelegate:strongModuleDelegate];
-                                         }
-                                     }];
-                                     if (completionBlock) {
-                                         completionBlock();
-                                     }
-                                 }
-                             }
-                             failureBlock:failureBlock];
+                                             [context terminal];
+                                         }];
 }
 
 static UINavigationController *currentDebugNavigationViewController;

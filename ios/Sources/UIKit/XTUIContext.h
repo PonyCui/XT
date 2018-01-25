@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "XTContext.h"
-#import "XTRApplicationDelegate.h"
+#import "XTUIApplication.h"
+#import "XTUIApplicationDelegate.h"
 
 @class XTContext, XTRViewController;
 
@@ -17,9 +18,10 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 
 @interface XTUIContext : XTContext
 
-@property (nonatomic, weak) XTRViewController * _Nullable keyViewController;
-@property (nonatomic, weak) UIWindow * _Nullable keyWindow;
+//@property (nonatomic, weak) XTRViewController * _Nullable keyViewController;
+//@property (nonatomic, weak) UIWindow * _Nullable keyWindow;
 @property (nonatomic, readonly) NSURL * _Nullable sourceURL;
+@property (nonatomic, strong) XTUIApplication * _Nullable application;
 
 #pragma mark - Public methods
 
@@ -32,12 +34,9 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
            completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
               failureBlock:(nullable XTUIContextFailureBlock)failureBlock;
 
-- (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate;
-
-- (instancetype _Nonnull )initWithAppDelegate:(nonnull XTRApplicationDelegate *)appDelegate
-                                    sourceURL:(nullable NSURL *)sourceURL
-                              completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
-                                 failureBlock:(nullable XTUIContextFailureBlock)failureBlock;
+- (instancetype _Nonnull )initWithSourceURL:(nullable NSURL *)sourceURL
+                            completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
+                               failureBlock:(nullable XTUIContextFailureBlock)failureBlock;
 
 
 #pragma mark - Debugger

@@ -7,13 +7,13 @@ export class ApplicationDelegate {
 
     objectRef: any
 
-    public resetNativeObject(objectRef: any) {
-        this.objectRef = objectRef;
+    constructor() {
+        this.objectRef = XTUIApplicationDelegate.create();
         objectRefs[this.objectRef] = this;
     }
 
     public get window(): Window | undefined {
-        const windowRef = XTRApplicationDelegate.xtr_window(this.objectRef)
+        const windowRef = XTUIApplicationDelegate.xtr_window(this.objectRef)
         if (typeof windowRef !== "string") {
             return undefined
         }
@@ -22,7 +22,7 @@ export class ApplicationDelegate {
 
     public set window(value: Window | undefined) {
         if (value) {
-            XTRApplicationDelegate.xtr_setWindowObjectRef(value.objectRef, this.objectRef)
+            XTUIApplicationDelegate.xtr_setWindowObjectRef(value.objectRef, this.objectRef)
         }
     }
 
@@ -37,7 +37,7 @@ export class Application {
     delegate: ApplicationDelegate
 
     public get keyWindow(): Window | undefined {
-        const ref = XTRApplication.xtr_keyWindow(this.objectRef)
+        const ref = XTUIApplication.xtr_keyWindow(this.objectRef)
         if (typeof ref !== "string") { return undefined }
         return new Window(ref);
     }
@@ -46,9 +46,8 @@ export class Application {
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }
-        this.objectRef = XTRApplication.create();
+        this.objectRef = XTUIApplication.create(delegate.objectRef);
         objectRefs[this.objectRef] = this;
-        (window as any)._xtrDelegate = delegate;
         this.delegate = delegate;
     }
 
@@ -57,7 +56,7 @@ export class Application {
     }
 
     exit(): void {
-        XTRApplication.xtr_exit(this.objectRef);
+        XTUIApplication.xtr_exit(this.objectRef);
     }
 
 }

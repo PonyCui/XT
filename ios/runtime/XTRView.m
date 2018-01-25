@@ -393,7 +393,7 @@
         else if ([obj isKindOfClass:[XTRView class]]) {
             XTUIContext *bridge = (id)[(XTRView *)obj context];
             if ([bridge isKindOfClass:[XTUIContext class]]) {
-                XTRWindow *window = (id)bridge.keyWindow;
+                XTRWindow *window = (id)bridge.application.delegate.window;
                 if ([window isKindOfClass:[XTRWindow class]]) {
                     return window.objectUUID;
                 }

@@ -12,6 +12,10 @@
 
 @interface XTContext ()
 
+@property (nonatomic, assign) BOOL isGlobalVariableDidSetup;
+@property (nonatomic, copy) NSArray<XTContext *> *childContext;
+@property (nonatomic, weak) XTContext *parentContext;
+
 @end
 
 @implementation XTContext
@@ -26,14 +30,75 @@
 {
     self = [super init];
     if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (instancetype)initWithParentContext:(XTContext *)context {
+    self = [super init];
+    if (self) {
+        NSMutableArray<XTContext *> *mutableChildContexts = (_parentContext.childContext ?: @[]).mutableCopy;
+        [mutableChildContexts addObject:self];
+        _parentContext.childContext = [mutableChildContexts copy];
+        _parentContext = context;
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    __weak XTContext *welf = self;
+    if (!self.isGlobalVariableDidSetup) {
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];
         [self evaluateScript:@"var window = {}; var global = window; var objectRefs = {};"];
+        self[@"XTTerminal"] = ^(){
+            [welf terminal];
+        };
         [XTPolyfill addPolyfills:self];
         [XTMemoryManager attachContext:self];
+        [self keepAlive];
+        self.isGlobalVariableDidSetup = YES;
     }
-    return self;
+}
+
+static NSSet *aliveContexts;
+
+- (void)keepAlive {
+    NSMutableSet *mutable = (aliveContexts ?: [NSSet set]).mutableCopy;
+    [mutable addObject:self];
+    aliveContexts = mutable.copy;
+}
+
+- (void)terminal {
+    NSMutableSet *mutable = (aliveContexts ?: [NSSet set]).mutableCopy;
+    [mutable removeObject:self];
+    aliveContexts = mutable.copy;
+}
+
+- (JSValue *)evaluateScript:(NSString *)script {
+    if (self.parentContext != nil) {
+        return [self.parentContext evaluateScript:script];
+    }
+    return [super evaluateScript:script];
+}
+
+- (JSValue *)evaluateScript:(NSString *)script withSourceURL:(NSURL *)sourceURL {
+    if (self.parentContext != nil) {
+        return [self.parentContext evaluateScript:script withSourceURL:sourceURL];
+    }
+    return [super evaluateScript:script withSourceURL:sourceURL];
+}
+
+- (void)setObject:(id)object forKeyedSubscript:(NSObject<NSCopying> *)key {
+    if (self.parentContext) {
+        [self.parentContext setObject:object forKeyedSubscript:key];
+    }
+    else {
+        [super setObject:object forKeyedSubscript:key];
+    }
 }
 
 @end

@@ -10,4 +10,9 @@
 
 @interface XTContext : JSContext
 
+- (instancetype)init;
+- (instancetype)initWithParentContext:(XTContext *)context;
+- (void)setup;
+- (void)terminal;
+
 @end

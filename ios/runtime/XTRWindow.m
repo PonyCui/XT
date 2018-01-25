@@ -52,7 +52,7 @@
     if ([window isKindOfClass:[XTRWindow class]]) {
         window.frame = [UIScreen mainScreen].bounds;
         if ([window.context isKindOfClass:[XTUIContext class]]) {
-            [(XTUIContext *)window.context setKeyWindow:window];
+            [(XTUIContext *)window.context application].delegate.window = window;
         }
     }
 }

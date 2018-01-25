@@ -14,8 +14,6 @@
 		905708111F4EB2AF00D5EC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905708101F4EB2AF00D5EC05 /* Assets.xcassets */; };
 		905708141F4EB2AF00D5EC05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 905708121F4EB2AF00D5EC05 /* LaunchScreen.storyboard */; };
 		90689F231FA99FE4007EF1D3 /* xt.ios.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90689EED1FA99FE4007EF1D3 /* xt.ios.min.js */; };
-		90689F241FA99FE4007EF1D3 /* XTRApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EEF1FA99FE4007EF1D3 /* XTRApplication.m */; };
-		90689F251FA99FE4007EF1D3 /* XTRApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EF11FA99FE4007EF1D3 /* XTRApplicationDelegate.m */; };
 		90689F271FA99FE4007EF1D3 /* XTRButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EF51FA99FE4007EF1D3 /* XTRButton.m */; };
 		90689F281FA99FE4007EF1D3 /* XTRCanvasView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EF71FA99FE4007EF1D3 /* XTRCanvasView.m */; };
 		90689F2A1FA99FE4007EF1D3 /* XTRCustomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90689EFC1FA99FE4007EF1D3 /* XTRCustomView.m */; };
@@ -58,6 +56,8 @@
 		90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25641FBC3D0F00286398 /* ModulizeStartViewController.m */; };
 		90BB25671FBC3D0F00286398 /* ModulizeStartViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90BB25651FBC3D0F00286398 /* ModulizeStartViewController.xib */; };
 		90EA879720198F5A0012A985 /* XTUIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA879620198F5A0012A985 /* XTUIContext.m */; };
+		90EA879C201992860012A985 /* XTUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA8798201992850012A985 /* XTUIApplication.m */; };
+		90EA879D201992860012A985 /* XTUIApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA879A201992850012A985 /* XTUIApplicationDelegate.m */; };
 		B8D72A0A1105D65D76D476D3 /* libPods-XTSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E64B919FD46226B773416D45 /* libPods-XTSample.a */; };
 /* End PBXBuildFile section */
 
@@ -74,10 +74,6 @@
 		905708131F4EB2AF00D5EC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		905708151F4EB2AF00D5EC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		90689EED1FA99FE4007EF1D3 /* xt.ios.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = xt.ios.min.js; sourceTree = "<group>"; };
-		90689EEE1FA99FE4007EF1D3 /* XTRApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRApplication.h; sourceTree = "<group>"; };
-		90689EEF1FA99FE4007EF1D3 /* XTRApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRApplication.m; sourceTree = "<group>"; };
-		90689EF01FA99FE4007EF1D3 /* XTRApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRApplicationDelegate.h; sourceTree = "<group>"; };
-		90689EF11FA99FE4007EF1D3 /* XTRApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRApplicationDelegate.m; sourceTree = "<group>"; };
 		90689EF41FA99FE4007EF1D3 /* XTRButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRButton.h; sourceTree = "<group>"; };
 		90689EF51FA99FE4007EF1D3 /* XTRButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRButton.m; sourceTree = "<group>"; };
 		90689EF61FA99FE4007EF1D3 /* XTRCanvasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRCanvasView.h; sourceTree = "<group>"; };
@@ -160,6 +156,10 @@
 		90BB25651FBC3D0F00286398 /* ModulizeStartViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ModulizeStartViewController.xib; sourceTree = "<group>"; };
 		90EA879520198F5A0012A985 /* XTUIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTUIContext.h; sourceTree = "<group>"; };
 		90EA879620198F5A0012A985 /* XTUIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTUIContext.m; sourceTree = "<group>"; };
+		90EA8798201992850012A985 /* XTUIApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTUIApplication.m; sourceTree = "<group>"; };
+		90EA8799201992850012A985 /* XTUIApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTUIApplication.h; sourceTree = "<group>"; };
+		90EA879A201992850012A985 /* XTUIApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTUIApplicationDelegate.m; sourceTree = "<group>"; };
+		90EA879B201992860012A985 /* XTUIApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTUIApplicationDelegate.h; sourceTree = "<group>"; };
 		E2362DDEEAB492E0B2DFC3DA /* Pods-XTSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XTSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-XTSample/Pods-XTSample.debug.xcconfig"; sourceTree = "<group>"; };
 		E64B919FD46226B773416D45 /* libPods-XTSample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XTSample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -234,10 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				90689EED1FA99FE4007EF1D3 /* xt.ios.min.js */,
-				90689EEE1FA99FE4007EF1D3 /* XTRApplication.h */,
-				90689EEF1FA99FE4007EF1D3 /* XTRApplication.m */,
-				90689EF01FA99FE4007EF1D3 /* XTRApplicationDelegate.h */,
-				90689EF11FA99FE4007EF1D3 /* XTRApplicationDelegate.m */,
 				90689EF41FA99FE4007EF1D3 /* XTRButton.h */,
 				90689EF51FA99FE4007EF1D3 /* XTRButton.m */,
 				90689EF61FA99FE4007EF1D3 /* XTRCanvasView.h */,
@@ -350,6 +346,10 @@
 			children = (
 				90EA879520198F5A0012A985 /* XTUIContext.h */,
 				90EA879620198F5A0012A985 /* XTUIContext.m */,
+				90EA8799201992850012A985 /* XTUIApplication.h */,
+				90EA8798201992850012A985 /* XTUIApplication.m */,
+				90EA879B201992860012A985 /* XTUIApplicationDelegate.h */,
+				90EA879A201992850012A985 /* XTUIApplicationDelegate.m */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -521,6 +521,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90689F3B1FA99FE4007EF1D3 /* XTRView.m in Sources */,
+				90EA879C201992860012A985 /* XTUIApplication.m in Sources */,
 				90689F381FA99FE4007EF1D3 /* XTRTextView.m in Sources */,
 				90689F271FA99FE4007EF1D3 /* XTRButton.m in Sources */,
 				90689F341FA99FE4007EF1D3 /* XTRNavigationController.m in Sources */,
@@ -539,6 +540,7 @@
 				90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */,
 				90AFB501201988A9001E9DA7 /* XTCore.m in Sources */,
 				90EA879720198F5A0012A985 /* XTUIContext.m in Sources */,
+				90EA879D201992860012A985 /* XTUIApplicationDelegate.m in Sources */,
 				909009E51FFE108100B27F2D /* XTRHRView.m in Sources */,
 				909009DE1FFC87BC00B27F2D /* XTRNavigationBar.m in Sources */,
 				90689F2D1FA99FE4007EF1D3 /* XTRFont.m in Sources */,
@@ -559,11 +561,9 @@
 				90AFB4F720197F4E001E9DA7 /* XTPolyfill.m in Sources */,
 				90689F331FA99FE4007EF1D3 /* XTRListView.m in Sources */,
 				902527592015EE2C0034988F /* XTRWebView.m in Sources */,
-				90689F241FA99FE4007EF1D3 /* XTRApplication.m in Sources */,
 				90AFB4F420197F4E001E9DA7 /* XTDebug.m in Sources */,
 				90689F3C1FA99FE4007EF1D3 /* XTRViewController.m in Sources */,
 				902527562015CD350034988F /* XTRModal.m in Sources */,
-				90689F251FA99FE4007EF1D3 /* XTRApplicationDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
