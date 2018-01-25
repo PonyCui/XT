@@ -11,7 +11,7 @@
 #import "XTRLayoutConstraint.h"
 #import "XTContext.h"
 #import "XTRWindow.h"
-#import "XTRBridge.h"
+#import "XTUIContext.h"
 #import "XTMemoryManager.h"
 
 @interface XTRView ()
@@ -391,9 +391,12 @@
             return [window objectUUID];
         }
         else if ([obj isKindOfClass:[XTRView class]]) {
-            XTRWindow *window = (id)[[(XTContext *)[(XTRView *)obj context] bridge] keyWindow];
-            if ([window isKindOfClass:[XTRWindow class]]) {
-                return window.objectUUID;
+            XTUIContext *bridge = (id)[(XTRView *)obj context];
+            if ([bridge isKindOfClass:[XTUIContext class]]) {
+                XTRWindow *window = (id)bridge.keyWindow;
+                if ([window isKindOfClass:[XTRWindow class]]) {
+                    return window.objectUUID;
+                }
             }
         }
         else if ([window isKindOfClass:[UIWindow class]]) {

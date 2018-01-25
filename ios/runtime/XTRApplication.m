@@ -9,7 +9,7 @@
 #import "XTRApplication.h"
 #import "XTRUtils.h"
 #import "XTContext.h"
-#import "XTRBridge.h"
+#import "XTUIContext.h"
 #import "XTRViewController.h"
 #import "XTRWindow.h"
 #import "XTMemoryManager.h"
@@ -43,8 +43,8 @@
 
 + (NSString *)xtr_keyWindow:(NSString *)objectRef {
     XTRApplication *obj = [XTMemoryManager find:objectRef];
-    if ([obj isKindOfClass:[XTRApplication class]]) {
-        XTRWindow *keyWindow = (id)obj.context.bridge.keyWindow;
+    if ([obj isKindOfClass:[XTRApplication class]] && [obj.context isKindOfClass:[XTUIContext class]]) {
+        XTRWindow *keyWindow = (id)[(XTUIContext *)obj.context keyWindow];
         if ([keyWindow isKindOfClass:[XTRWindow class]]) {
             return keyWindow.objectUUID;
         }
@@ -54,8 +54,8 @@
 
 + (void)xtr_exit:(NSString *)objectRef {
     XTRApplication *obj = [XTMemoryManager find:objectRef];
-    if ([obj isKindOfClass:[XTRApplication class]]) {
-        XTRViewController *keyViewController = obj.context.bridge.keyViewController;
+    if ([obj isKindOfClass:[XTRApplication class]] && [obj.context isKindOfClass:[XTUIContext class]]) {
+        XTRViewController *keyViewController = [(XTUIContext *)obj.context keyViewController];
         if ([keyViewController isKindOfClass:[XTRViewController class]] && keyViewController.exitAction) {
             keyViewController.exitAction(keyViewController);
         }

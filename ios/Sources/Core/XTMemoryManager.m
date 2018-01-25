@@ -26,10 +26,10 @@
 }
 
 + (void)attachContext:(JSContext *)context {
-    context[@"XTMemoryManager_Retain"] = ^(NSString *objectUUID){
+    context[@"XTRetain"] = ^(NSString *objectUUID){
         [XTMemoryManager retain:objectUUID];
     };
-    context[@"XTMemoryManager_Release"] = ^(NSString *objectUUID){
+    context[@"XTRelease"] = ^(NSString *objectUUID){
         [XTMemoryManager release:objectUUID];
     };
 }

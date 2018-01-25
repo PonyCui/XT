@@ -7,7 +7,7 @@
 //
 
 #import "FOOView.h"
-#import "XTRuntime.h"
+#import "XTRCustomView.h"
 
 @interface FOOView()<XTRCustomViewProtocol>
 

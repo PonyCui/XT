@@ -7,7 +7,7 @@
 //
 
 #import "XTRDevice.h"
-#import "XTRuntime.h"
+#import "XTCore.h"
 #import "XTContext.h"
 
 @implementation XTRDevice
@@ -29,7 +29,7 @@
 }
 
 + (NSString *)xtr_xtRuntimeVersion {
-    return [XTRuntime version];
+    return [XTCore version];
 }
 
 + (NSString *)xtr_model {

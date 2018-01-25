@@ -8,7 +8,7 @@
 
 #import "XTDebug.h"
 #import "XTContext.h"
-#import "XTRuntime.h"
+#import "XTUIContext.h"
 #import <SocketRocket/SRWebSocket.h>
 
 @interface XTDebug ()<SRWebSocketDelegate>
@@ -101,7 +101,7 @@
             NSString *tmpPath = [NSString stringWithFormat:@"%@/%u.min.js", NSTemporaryDirectory(), arc4random()];
             [sourceData writeToFile:tmpPath atomically:YES];
             self.sourceURL = [NSURL fileURLWithPath:tmpPath];
-            [XTRuntime reloadDebugging];
+            [XTUIContext reloadDebugging];
         }
     }
 }

@@ -10,12 +10,12 @@ const AutoLayout = require("autolayout");
 export class View implements Releasable {
 
     retain(): this {
-        XTMemoryManager_Retain(this.objectRef)
+        XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        XTMemoryManager_Release(this.objectRef)
+        XTRelease(this.objectRef)
         return this
     }
 

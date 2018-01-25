@@ -7,7 +7,7 @@
 //
 
 #import "ModulizeStartViewController.h"
-#import "XTRuntime.h"
+#import "XTUIContext.h"
 #import "XTDebug.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 
@@ -23,7 +23,7 @@
 }
 
 - (IBAction)onStart:(id)sender {
-    [XTRuntime startWithNamed:@"sample.min" inBundle:nil navigationController:self.navigationController];
+    [XTUIContext startWithNamed:@"sample.min" inBundle:nil navigationController:self.navigationController];
 }
 
 - (IBAction)onDebug:(id)sender {
@@ -44,9 +44,9 @@
     [alertController addAction:[UIAlertAction actionWithTitle:@"Go" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[NSUserDefaults standardUserDefaults] setValue:alertController.textFields[0].text ?: @"" forKey:@"XTDebugIP"];
         [[NSUserDefaults standardUserDefaults] setValue:alertController.textFields[1].text ?: @"" forKey:@"XTDebugPort"];
-        [XTRuntime debugWithIP:alertController.textFields[0].text
-                          port:alertController.textFields[1].text.integerValue
-          navigationController:self.navigationController];
+        [XTUIContext debugWithIP:alertController.textFields[0].text
+                            port:alertController.textFields[1].text.integerValue
+            navigationController:self.navigationController];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
 }

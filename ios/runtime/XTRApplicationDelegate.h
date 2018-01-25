@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "XTComponent.h"
 
-@class XTRBridge, XTRApplicationDelegate;
+@class XTUIContext, XTRApplicationDelegate;
 
 @class XTRApplication;
 
@@ -20,13 +20,13 @@
 
 @end
 
-@interface XTRApplicationDelegate : UIResponder<UIApplicationDelegate, XTComponent, XTRApplicationDelegateExport>
+@interface XTRApplicationDelegate : NSObject<XTComponent, XTRApplicationDelegateExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
-@property (nonatomic, strong) XTRBridge *bridge;
+@property (nonatomic, strong) XTUIContext *bridge;
 @property (strong, nonatomic) UIWindow *window;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+- (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 - (void)exit;
 
 @end

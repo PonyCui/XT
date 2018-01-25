@@ -20,7 +20,6 @@
         [self addImmediatePolyfill:context];
         [self addRAFPolyfill:context];
         [self addConsolePolyfill:context];
-        [self addES6Shim:context];
         objc_setAssociatedObject(context, &kPolyfillAddToken, @(YES), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
 }
@@ -153,16 +152,6 @@ static NSMutableDictionary *RAFHandlers;
         [[XTDebug sharedDebugger] sendLog:value.toString];
     };
     [context evaluateScript:@"(function(){ var originMethod = console.log; console.log = function() { originMethod.apply(console, arguments); for (var i = 0; i < arguments.length; i ++) {XTLog(arguments[i])} } })()"];
-}
-
-+ (void)addES6Shim:(JSContext *)context {
-    NSString *scriptPath = [[NSBundle mainBundle] pathForResource:@"es6-shim.min" ofType:@"js"];
-    if (scriptPath != nil) {
-        NSString *script = [NSString stringWithContentsOfFile:scriptPath encoding:NSUTF8StringEncoding error:NULL];
-        if (script != nil) {
-            [context evaluateScript:script];
-        }
-    }
 }
 
 @end

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "XTRApplicationDelegate.h"
 
-@interface AppDelegate : XTRApplicationDelegate <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @end
 

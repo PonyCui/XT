@@ -10,7 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
 #import "XTContext.h"
-#import "XTRBridge.h"
+#import "XTUIContext.h"
 #import "XTRViewController.h"
 #import "XTMemoryManager.h"
 
@@ -51,9 +51,8 @@
     XTRWindow *window = [XTMemoryManager find:objectRef];
     if ([window isKindOfClass:[XTRWindow class]]) {
         window.frame = [UIScreen mainScreen].bounds;
-        window.context.bridge.keyWindow = window;
-        if (window.context.bridge.application == [UIApplication sharedApplication]) {
-            [window makeKeyAndVisible];
+        if ([window.context isKindOfClass:[XTUIContext class]]) {
+            [(XTUIContext *)window.context setKeyWindow:window];
         }
     }
 }

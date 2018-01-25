@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "XTRuntime.h"
 
 @interface AppDelegate ()
 
@@ -16,18 +15,18 @@
 @implementation AppDelegate
 
 + (void)load {
-    [XTRBridge setGlobalBridgeScript:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"sample.min"
-                                                                                                        ofType:@"js"]
-                                                               encoding:NSUTF8StringEncoding
-                                                                  error:NULL]];
+//    [XTUIContext setGlobalBridgeScript:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"sample.min"
+//                                                                                                        ofType:@"js"]
+//                                                               encoding:NSUTF8StringEncoding
+//                                                                  error:NULL]];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 //    if (self.bridge == nil) {
-//        self.bridge = [[XTRBridge alloc] initWithAppDelegate:self
+//        self.bridge = [[XTUIContext alloc] initWithAppDelegate:self
 //                                                   sourceURL:[NSURL URLWithString:@"http://localhost:8083/sample.ios.min.js"]];
 //    }
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
+//    [super application:application didFinishLaunchingWithOptions:launchOptions];
     return YES;
 }
 

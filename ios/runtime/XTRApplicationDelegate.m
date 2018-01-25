@@ -7,14 +7,14 @@
 //
 
 #import "XTRApplicationDelegate.h"
-#import "XTRBridge.h"
+#import "XTUIContext.h"
 #import "XTRUtils.h"
 #import "XTContext.h"
-#import "XTRuntime.h"
+#import "XTUIContext.h"
 #import "XTRWindow.h"
 #import "XTMemoryManager.h"
 
-@interface XTRuntime (Private)
+@interface XTUIContext (Private)
 
 + (XTRApplicationDelegate *)requestDelegateWithObjectUUID:(NSString *)objectUUID;
 
@@ -31,7 +31,7 @@
 }
 
 + (XTRApplicationDelegate *)xtr_delegate:(NSString *)objectUUID {
-    return [XTRuntime requestDelegateWithObjectUUID:objectUUID];
+    return [XTUIContext requestDelegateWithObjectUUID:objectUUID];
 }
 
 - (void)dealloc {
@@ -40,24 +40,18 @@
 #endif
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if (application != nil) {
-        [XTRuntime retainDelegate:self];
+- (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    if (self.bridge != nil) {
+        XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:self];
+        [XTMemoryManager add:managedObject];
+        [XTMemoryManager retain:managedObject.objectUUID];
+        self.objectUUID = managedObject.objectUUID;
+        JSValue *scriptObject = [self.bridge evaluateScript:@"window._xtrDelegate"];
+        if (scriptObject != nil) {
+            [scriptObject invokeMethod:@"resetNativeObject" withArguments:@[self.objectUUID]];
+            [scriptObject invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
+        }
     }
-    if (self.bridge == nil) {
-        self.bridge = [[XTRBridge alloc] initWithAppDelegate:self];
-    }
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:self];
-    [XTMemoryManager add:managedObject];
-    [XTMemoryManager retain:managedObject.objectUUID];
-    self.objectUUID = managedObject.objectUUID;
-    self.bridge.application = application;
-    JSValue *scriptObject = [self.bridge.context evaluateScript:@"window._xtrDelegate"];
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"resetNativeObject" withArguments:@[self.objectUUID]];
-        [scriptObject invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
-    }
-    return YES;
 }
 
 + (NSString *)xtr_window:(NSString *)objectRef {
@@ -82,7 +76,7 @@
     _bridge = nil;
 }
 
-- (void)setBridge:(XTRBridge *)bridge {
+- (void)setBridge:(XTUIContext *)bridge {
     if (_bridge == nil) {
         _bridge = bridge;
     }

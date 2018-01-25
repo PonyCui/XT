@@ -7,6 +7,7 @@
 //
 
 #import "XTContext.h"
+#import "XTPolyfill.h"
 #import "XTMemoryManager.h"
 
 @interface XTContext ()
@@ -25,10 +26,12 @@
 {
     self = [super init];
     if (self) {
-        [XTMemoryManager attachContext:self];
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];
+        [self evaluateScript:@"var window = {}; var global = window; var objectRefs = {};"];
+        [XTPolyfill addPolyfills:self];
+        [XTMemoryManager attachContext:self];
     }
     return self;
 }

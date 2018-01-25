@@ -8,10 +8,6 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@class XTRBridge;
-
 @interface XTContext : JSContext
-
-@property (nonatomic, weak) XTRBridge * _Nullable bridge;
 
 @end

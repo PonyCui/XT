@@ -8,12 +8,12 @@ import { Releasable } from "../../interface/Releasable";
 export class Image implements Releasable {
 
     retain(): this {
-        XTMemoryManager_Retain(this.objectRef)
+        XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        XTMemoryManager_Release(this.objectRef)
+        XTRelease(this.objectRef)
         return this
     }
 
