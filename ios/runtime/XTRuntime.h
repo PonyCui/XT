@@ -28,4 +28,7 @@ typedef void(^XTRuntimeFailureBlock)(NSError *error);
 
 + (void)retainDelegate:(XTRApplicationDelegate *)delegate;
 
++ (void)debugWithIP:(NSString *)IP port:(NSInteger)port navigationController:(UINavigationController *)navigationController;
++ (void)reloadDebugging;
+
 @end

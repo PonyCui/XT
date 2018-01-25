@@ -41,33 +41,35 @@
         [[[NSURLSession sharedSession] dataTaskWithURL:URL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             if (error == nil && data != nil) {
                 UIImage *image = [[UIImage imageWithData:data scale:scale] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-                if (image != nil) {
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    if (image != nil) {
                         XTRImage *obj = [[XTRImage alloc] initWithImage:image];
                         XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
                         obj.objectUUID = managedObject.objectUUID;
                         [XTMemoryManager add:managedObject];
                         if (success != nil) {
-                            [success xtr_callWithArguments:@[managedObject.objectUUID ?: @""] asyncResult:nil];
+                            [success callWithArguments:@[managedObject.objectUUID ?: @""]];
                         }
-                    }];
-                }
-                else {
-                    if (failure) {
-                        [failure xtr_callWithArguments:@[error.localizedDescription ?: @"invalid image data."]];
                     }
-                }
+                    else {
+                        if (failure) {
+                            [failure callWithArguments:@[error.localizedDescription ?: @"invalid image data."]];
+                        }
+                    }
+                }];
             }
             else {
-                if (failure) {
-                    [failure xtr_callWithArguments:@[error.localizedDescription ?: @"unknown error."]];
-                }
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    if (failure) {
+                        [failure callWithArguments:@[error.localizedDescription ?: @"unknown error."]];
+                    }
+                }];
             }
         }] resume];
     }
     else {
         if (failure) {
-            [failure xtr_callWithArguments:@[@"invalid URL"]];
+            [failure callWithArguments:@[@"invalid URL"]];
         }
     }
 }

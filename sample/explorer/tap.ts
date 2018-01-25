@@ -1,4 +1,5 @@
 /// <reference path="../../src/xt.d.ts" />
+declare var XTRDebug: any
 
 export class TapSample extends XT.ViewController {
 
@@ -43,6 +44,7 @@ export class TapSample extends XT.ViewController {
         view.backgroundColor = XT.Color.grayColor
         view.userInteractionEnabled = true
         view.onTap = () => {
+            XTRDebug.xtr_breakpoint("123123")
             view.backgroundColor = XT.Color.greenColor
         }
         // } Sample Code 

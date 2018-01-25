@@ -40,6 +40,7 @@
 #import "XTRSwitch.h"
 #import "XTRSlider.h"
 #import "XTRActivityIndicatorView.h"
+#import "XTRDebug.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <XT-Polyfill/XTPolyfill.h>
 
@@ -87,10 +88,9 @@ static NSString *globalBridgeScript;
         _appDelegate = appDelegate;
         _appDelegate.bridge = self;
         _sourceURL = sourceURL;
-        _context = [[XTRContext alloc] initWithThread:[NSThread mainThread]];
+        _context = [[XTRContext alloc] init];
         _context.bridge = self;
         [_context evaluateScript:@"var window = {}; var objectRefs = {};"];
-        [XTRBreakpoint attachBreakpoint:_context];
         [XTPolyfill addPolyfills:_context];
         [self loadComponents];
         [self loadRuntime];
@@ -207,6 +207,7 @@ static NSString *globalBridgeScript;
                               [XTRSwitch class],
                               [XTRSlider class],
                               [XTRActivityIndicatorView class],
+                              [XTRDebug class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTRComponent)]) {
             self.context[[component name]] = component;

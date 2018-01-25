@@ -726,11 +726,11 @@
                        completion:(JSValue *)completion {
     [UIView animateWithDuration:duration animations:^{
         if ([animation isObject]) {
-            [animation xtr_callWithArguments:@[]];
+            [animation callWithArguments:@[]];
         }
     } completion:^(BOOL finished) {
         if ([completion isObject]) {
-            [completion xtr_callWithArguments:@[]];
+            [completion callWithArguments:@[]];
         }
     }];
 }
@@ -748,11 +748,11 @@
                         options:kNilOptions
                      animations:^{
                          if ([animation isObject]) {
-                             [animation xtr_callWithArguments:@[]];
+                             [animation callWithArguments:@[]];
                          }
                      } completion:^(BOOL finished) {
                          if ([completion isObject]) {
-                             [completion xtr_callWithArguments:@[]];
+                             [completion callWithArguments:@[]];
                          }
                      }];
 }

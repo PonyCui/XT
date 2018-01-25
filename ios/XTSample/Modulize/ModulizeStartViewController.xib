@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,17 +20,26 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbg-vd-bdl">
-                    <rect key="frame" x="143.5" y="318.5" width="89" height="30"/>
-                    <state key="normal" title="Start Module"/>
+                    <rect key="frame" x="123.5" y="296.5" width="129" height="30"/>
+                    <state key="normal" title="Start Local Module"/>
                     <connections>
                         <action selector="onStart:" destination="-1" eventType="touchUpInside" id="fZA-kA-hFS"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsO-Lz-Yd6">
+                    <rect key="frame" x="118" y="340.5" width="139" height="30"/>
+                    <state key="normal" title="Start Debug Module"/>
+                    <connections>
+                        <action selector="onDebug:" destination="-1" eventType="touchUpInside" id="kIV-2i-ffK"/>
                     </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="lbg-vd-bdl" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="5Am-Z9-cif"/>
+                <constraint firstItem="lbg-vd-bdl" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="-22" id="5Am-Z9-cif"/>
                 <constraint firstItem="lbg-vd-bdl" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="7TE-uE-Zop"/>
+                <constraint firstItem="GsO-Lz-Yd6" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="22" id="SMQ-Om-nbV"/>
+                <constraint firstItem="GsO-Lz-Yd6" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="WcC-at-IFk"/>
             </constraints>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
         </view>

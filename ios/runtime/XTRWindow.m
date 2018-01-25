@@ -10,7 +10,7 @@
 #import "XTRUtils.h"
 #import "XTRLayoutConstraint.h"
 #import "XTRContext.h"
-#import "XTRDebug.h"
+#import "XTRBridge.h"
 #import "XTRViewController.h"
 #import <XT-Mem/XTMemoryManager.h>
 
@@ -26,7 +26,6 @@
 
 + (NSString *)create {
     XTRWindow *view = [[XTRWindow alloc] initWithFrame:CGRectZero];
-    [view setupDebug];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];
     view.context = (id)[JSContext currentContext];
@@ -156,28 +155,6 @@ static id<XTRComponent> currentFirstResponder;
     if (scriptObject != nil) {
         [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
     }
-}
-
-#pragma mark - XTRDEBUG
-
-- (void)setupDebug {
-    UITapGestureRecognizer *debugGesture = [[UITapGestureRecognizer alloc] init];
-    debugGesture.numberOfTouchesRequired = 3;
-    debugGesture.numberOfTapsRequired = 3;
-    [debugGesture addTarget:self action:@selector(onDebug)];
-    [self addGestureRecognizer:debugGesture];
-}
-
-#if TARGET_OS_SIMULATOR
-
-- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-    [self onDebug];
-}
-
-#endif
-
-- (void)onDebug {
-    [XTRDebug showMenu:self.context.bridge];
 }
 
 @end

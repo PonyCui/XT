@@ -7,16 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "XTRBridge.h"
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "XTRComponent.h"
 
-@interface XTRDebug : NSObject<UIAlertViewDelegate>
+@protocol XTRDebugExport<JSExport>
 
-+ (void)showMenu:(XTRBridge *)bridge;
++ (void)xtr_breakpoint:(NSString *)bpIdentifier;
 
 @end
 
-@interface XTRBreakpoint: NSObject
+@interface XTRDebug : NSObject<XTRComponent, XTRDebugExport>
 
-+ (void)attachBreakpoint:(JSContext *)context;
+@property (nonatomic, copy) NSString *objectUUID;
+
++ (XTRDebug *)sharedDebugger;
+- (NSURL *)sourceURL;
+- (void)connectWithIP:(NSString *)IP port:(NSInteger)port;
+- (void)sendLog:(NSString *)string;
 
 @end

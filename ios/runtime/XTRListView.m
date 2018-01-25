@@ -92,7 +92,7 @@
     }
     if ([[cell contentView] viewWithTag:1000] == nil) {
         if (self.scriptObject != nil) {
-            NSString *innerViewRef = [self.scriptObject xtr_invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]].toString;
+            NSString *innerViewRef = [self.scriptObject invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]].toString;
             UIView *innerView = [XTMemoryManager find:innerViewRef];
             if ([innerView isKindOfClass:[UIView class]]) {
                 innerView.tag = 1000;
@@ -106,7 +106,7 @@
         XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
         [fakeCell setRealCell:cell];
         if (self.scriptObject != nil) {
-            [self.scriptObject xtr_invokeMethod:@"handleRenderItem"
+            [self.scriptObject invokeMethod:@"handleRenderItem"
                                         withArguments:@[
                                                         @(indexPath.row),
                                                         (fakeCell.objectUUID ?: [NSNull null]),
@@ -118,7 +118,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.scriptObject != nil) {
-        return [[self.scriptObject xtr_invokeMethod:@"requestRowHeight"
+        return [[self.scriptObject invokeMethod:@"requestRowHeight"
                                             withArguments:@[@(tableView.bounds.size.width), @(indexPath.row)]] toDouble];
     }
     return 88.0;
@@ -130,7 +130,7 @@
         if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
             XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
             if (fakeCell.scriptObject != nil) {
-                [fakeCell.scriptObject xtr_invokeMethod:@"didSelected" withArguments:@[]];
+                [fakeCell.scriptObject invokeMethod:@"didSelected" withArguments:@[]];
             }
         }
     }
@@ -143,7 +143,7 @@
         if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
             XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
             if (fakeCell.scriptObject != nil) {
-                [fakeCell.scriptObject xtr_invokeMethod:@"didHighlighted" withArguments:@[@(YES)]];
+                [fakeCell.scriptObject invokeMethod:@"didHighlighted" withArguments:@[@(YES)]];
             }
         }
     }
@@ -155,7 +155,7 @@
         if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTRListCell class]]) {
             XTRListCell *fakeCell = [[cell contentView] viewWithTag:1000];
             if (fakeCell.scriptObject != nil) {
-                [fakeCell.scriptObject xtr_invokeMethod:@"didHighlighted" withArguments:@[@(NO)]];
+                [fakeCell.scriptObject invokeMethod:@"didHighlighted" withArguments:@[@(NO)]];
             }
         }
     }

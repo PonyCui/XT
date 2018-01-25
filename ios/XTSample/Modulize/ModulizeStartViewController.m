@@ -8,6 +8,7 @@
 
 #import "ModulizeStartViewController.h"
 #import "XTRuntime.h"
+#import "XTRDebug.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 
 @interface ModulizeStartViewController ()
@@ -23,21 +24,31 @@
 
 - (IBAction)onStart:(id)sender {
     [XTRuntime startWithNamed:@"sample.min" inBundle:nil navigationController:self.navigationController];
-//    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    [XTRuntime startWithURLString:@"http://172.26.80.14:8080/dist/sample.min.js"
-//             navigationController:self.navigationController
-//                  completionBlock:^{
-//                      [MBProgressHUD hideHUDForView:self.view animated:YES];
-//                  }
-//                     failureBlock:^(NSError *error) {
-//                         [MBProgressHUD hideHUDForView:self.view animated:YES];
-//                         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Failure"
-//                                                                             message:@"Open XTApp Failure"
-//                                                                            delegate:nil
-//                                                                   cancelButtonTitle:@"OK"
-//                                                                   otherButtonTitles:nil, nil];
-//                         [alertView show];
-//    }];
+}
+
+- (IBAction)onDebug:(id)sender {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Enter IP & Port"
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"XTDebugIP"] ?: @"127.0.0.1";
+        textField.placeholder = @"IP Address";
+    }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"XTDebugPort"] ?: @"8081";
+        textField.placeholder = @"Port";
+    }];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Go" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[NSUserDefaults standardUserDefaults] setValue:alertController.textFields[0].text ?: @"" forKey:@"XTDebugIP"];
+        [[NSUserDefaults standardUserDefaults] setValue:alertController.textFields[1].text ?: @"" forKey:@"XTDebugPort"];
+        [XTRuntime debugWithIP:alertController.textFields[0].text
+                          port:alertController.textFields[1].text.integerValue
+          navigationController:self.navigationController];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

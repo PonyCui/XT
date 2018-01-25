@@ -9,6 +9,7 @@
 #import "XTRuntime.h"
 #import "XTRApplicationDelegate.h"
 #import "XTRViewController.h"
+#import "XTRDebug.h"
 
 @implementation XTRuntime
 
@@ -97,8 +98,41 @@ navigationController:(UINavigationController *)navigationController
                                 }
                              }
                              failureBlock:failureBlock];
-    return;
-    
+}
+
+static UINavigationController *currentDebugNavigationViewController;
+
++ (void)debugWithIP:(NSString *)IP port:(NSInteger)port navigationController:(UINavigationController *)navigationController {
+    currentDebugNavigationViewController = navigationController;
+    [[XTRDebug sharedDebugger] connectWithIP:IP port:port];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
++ (void)reloadDebugging {
+    UIViewController *targetViewController = nil;
+    BOOL found = NO;
+    for (id item in [currentDebugNavigationViewController childViewControllers]) {
+        if ([item isKindOfClass:[XTRViewController class]]) {
+            found = YES;
+            break;
+        }
+        targetViewController = item;
+    }
+    if (found) {
+        if (targetViewController == nil) {
+            [currentDebugNavigationViewController setViewControllers:@[] animated:NO];
+        }
+        else {
+            [currentDebugNavigationViewController popToViewController:targetViewController animated:NO];
+        }
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self startWithURL:[[XTRDebug sharedDebugger] sourceURL]
+      navigationController:currentDebugNavigationViewController
+           completionBlock:nil
+              failureBlock:nil];
+    });
 }
 
 @end
