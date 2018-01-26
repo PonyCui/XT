@@ -4,21 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -w & http-server -c-1",
-    "dev.android": "webpack --env.devandroid -w",
-    "dev.ios": "webpack --env.devios -w",
-    "dev.web": "webpack --env.devweb -w",
-    "dev.xtib": "webpack --env.devxtib -w",
-    "dev.xtml": "tsc ./xtml/*.ts -w",
-    "debug": "node service/index.js",
-    "test": "webpack --env.test && node dist/tests.js"
+    "sample": "webpack --env.src_Sample -w & http-server -c-1",
+    "uikit_android": "webpack --env.src_UIKit_android -w",
+    "uikit_ios": "webpack --env.src_UIKit_ios -w",
+    "uikit_web": "webpack --env.src_UIKit_web -w",
+    "assets_loader": "tsc ./src/AssetsLoader/loader.ts",
+    "xtml": "tsc ./src/XTML/*.ts -w"
   },
   "bin": {
-    "create-xtml-types": "./xtml/create-xtml-types.js"
+    "create-xtml-types": "./src/XTML/create-xtml-types.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "imagemin": "^5.3.1",
+    "imagemin-pngquant": "^5.0.1",
+    "jimp": "^0.2.28",
+    "jsdom": "^11.5.1"
+  },
+  "devDependencies": {
     "autolayout": "^0.7.0",
     "awesome-typescript-loader": "^3.2.2",
     "babel-core": "^6.24.1",
@@ -27,20 +31,10 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "copy-webpack-plugin": "^4.0.1",
-    "imagemin": "^5.3.1",
-    "imagemin-pngquant": "^5.0.1",
-    "install": "^0.10.1",
-    "jimp": "^0.2.28",
-    "npm": "^5.3.0",
     "rebound": "0.0.15",
-    "scroller": "git+https://github.com/yyued/scroller.git",
     "typescript": "^2.5.2",
     "uglifyjs": "^2.4.11",
     "webpack": "^3.5.2",
     "webpack-shell-plugin": "^0.5.0"
-  },
-  "devDependencies": {
-    "jsdom": "^11.5.1",
-    "zip-webpack-plugin": "^2.1.0"
   }
 }

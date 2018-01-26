@@ -843,6 +843,7 @@ export class ActivityIndicatorView extends View {
 }
 
 declare global {
+    var require: (path: string) => any
     const UI: {
         Releasable: Releasable,
         InteractionState: typeof InteractionState,
