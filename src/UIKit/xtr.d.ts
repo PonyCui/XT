@@ -1,3 +1,6 @@
+declare var objectRefs: any
+declare var _XTRetain: any
+declare var _XTRelease: any
 declare var _XTUIApplication: any
 declare var _XTUIApplicationDelegate: any
 declare var _XTUIView: any

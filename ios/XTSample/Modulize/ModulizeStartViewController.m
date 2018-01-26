@@ -8,6 +8,7 @@
 
 #import "ModulizeStartViewController.h"
 #import "XTUIContext.h"
+#import "XTFoundationContext.h"
 #import "XTDebug.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 
@@ -23,7 +24,10 @@
 }
 
 - (IBAction)onStart:(id)sender {
-    [XTUIContext startWithNamed:@"sample.min" inBundle:nil navigationController:self.navigationController];
+    XTUIContext *context = [XTUIContext startWithNamed:@"sample.min"
+                                              inBundle:nil
+                                  navigationController:self.navigationController];
+    [XTFoundationContext attachToContext:context];
 }
 
 - (IBAction)onDebug:(id)sender {

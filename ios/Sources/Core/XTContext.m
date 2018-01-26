@@ -97,7 +97,7 @@ static NSSet *aliveContexts;
 }
 
 - (void)setObject:(id)object forKeyedSubscript:(NSObject<NSCopying> *)key {
-    if (self.parentContext) {
+    if (self.parentContext != nil) {
         [self.parentContext setObject:object forKeyedSubscript:key];
     }
     else {

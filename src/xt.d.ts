@@ -1,10 +1,9 @@
-export as namespace UI;
-
 export interface Releasable {
     retain(): this;
     release(): this;
-    addOwner(owner: any): this;
 }
+
+export as namespace UI;
 
 export enum InteractionState {
     Began,
@@ -842,6 +841,121 @@ export class ActivityIndicatorView extends View {
     stopAnimating(): void
 }
 
+export as namespace NS;
+
+export class Data implements Releasable {
+    retain(): this
+    release(): this
+    static initWithString(value: string): Data
+    static initWithRef(objectRef: string): Data
+    static initWithBytes(bytes: Uint8Array): Data
+    static initWithData(data: Data): Data
+    static initWithBase64EncodedString(string: string): Data | undefined
+    static initWithBase64EncodedData(data: Data): Data | undefined
+    protected constructor()
+    isEqualTo(data: Data): boolean
+    length(): number
+    getBytes(): Uint8Array
+    base64EncodedString(): string
+    base64EncodedData(): Data
+    utf8String(): string | undefined
+    md5(): string
+    sha1(): string
+}
+
+export class FileManager {
+    static document: FileManager
+    static cache: FileManager
+    static tmp: FileManager
+    static sdcard: FileManager
+    protected constructor()
+    writeData(data: Data, path: string): boolean
+    readData(path: string): Data | undefined
+    isFileExist(path: string): boolean
+    deleteFile(path: string): boolean
+    list(path: string): string[]
+}
+
+export class Notification {
+    readonly name: string
+    readonly object: any
+    readonly userInfo: { [key: string]: any }
+}
+
+export class NotificationCenter {
+    static default: NotificationCenter
+    protected constructor()
+    addObserver(name: string, triggerBlock: (notification: Notification) => void): string
+    removeObserver(handler: string): void
+    postNotification(name: string, object: any, userInfo: { [key: string]: any }): void
+}
+
+export enum URLCachePolily {
+    UseProtocolCachePolicy = 0,
+    ReloadIgnoringLocalCacheData = 1,
+    ReturnCacheDataElseLoad = 2,
+    ReturnCacheDataDontLoad = 3,
+}
+
+export class URLRequest implements Releasable {
+    readonly url: string
+    readonly timeout: number
+    readonly cachePolicy: URLCachePolily
+    constructor(url: string, timeout?: number, cachePolicy?: URLCachePolily) 
+    setHTTPMethod(value: string): void
+    setHTTPHeader(value: string, key: string): void
+    setHTTPBody(value: string | Data): void
+    setHTTPShouldHandleCookies(value: boolean): void
+    setHTTPShouldUsePipelining(value: boolean): void
+    setAllowsCellularAccess(value: boolean): void
+    retain(): this
+    release(): this
+}
+
+export class URLResponse {
+    expectedContentLength: number
+    suggestedFilename?: string
+    mimeType?: string
+    textEncodingName?: string
+    url?: string
+    allHeaderFields: { [key: string]: any }
+    statusCode: number
+}
+
+export class URLSession {
+    static sharedSession: URLSession
+    dataTaskWithURL(url: string, completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void): URLSessionTask
+    dataTaskWithRequest(req: URLRequest, completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void): URLSessionTask
+}
+
+export class URLSessionTask implements Releasable {
+    retain(): this
+    release(): this
+    cancel(): void
+    resume(): void
+}
+
+export class UserDefaults {
+    static standard: UserDefaults
+    constructor(suite: string | undefined)
+    set(object: any, forKey: string): void
+    get(forKey: string): any
+}
+
+export class WebSocket implements Releasable {
+    retain(): this
+    release(): this
+    constructor(url: string)
+    onOpen?: () => void
+    onClose?: (code: number, reason: string) => void
+    onFail?: (error: Error) => void
+    onMessage?: (message: Data | string) => void
+    sendData(data: Data): void
+    sendString(string: string): void
+    close(): void
+}
+
+
 declare global {
     var require: (path: string) => any
     const UI: {
@@ -914,6 +1028,18 @@ declare global {
         Slider: typeof Slider,
         ActivityIndicatorViewStyle: typeof ActivityIndicatorViewStyle,
         ActivityIndicatorView: typeof ActivityIndicatorView,
-
     };
+    const NS: {
+        Data: typeof Data,
+        FileManager: typeof FileManager,
+        Notification: typeof Notification,
+        NotificationCenter: typeof NotificationCenter,
+        URLCachePolily: typeof URLCachePolily,
+        URLRequest: typeof URLRequest,
+        URLResponse: typeof URLResponse,
+        URLSession: typeof URLSession,
+        URLSessionTask: typeof URLSessionTask,
+        UserDefaults: typeof UserDefaults,
+        WebSocket: typeof WebSocket,
+    }
 }

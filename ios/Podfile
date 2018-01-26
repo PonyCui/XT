@@ -2,9 +2,8 @@ platform :ios, '8.0'
 
 target 'XTSample' do
   
-#  pod 'XT-Mem', :podspec => 'https://raw.githubusercontent.com/yyued/XT-Mem/master/XT-Mem.podspec?0.0.1'
-#  pod 'XT-Polyfill', :podspec => 'https://raw.githubusercontent.com/yyued/XT-Polyfill/master/XT-Polyfill.podspec'
   pod 'MBProgressHUD'
+  pod 'CocoaSecurity'
   pod 'SocketRocket'
 
 end

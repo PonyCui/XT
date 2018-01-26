@@ -15,6 +15,7 @@ import { AutoLayoutSample } from "./autolayout";
 import { LinearAnimationSample } from "./linearanimation";
 import { SpringAnimationSample } from "./springanimation";
 import { WebViewSample } from "./webview";
+import { FoundationList } from "../foundation/list";
 
 class Header extends UI.ListCell {
 
@@ -216,6 +217,31 @@ export class List extends UI.ViewController {
             {
                 reuseIdentifier: "Header",
                 rowHeight: () => 160,
+            },
+            {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
+                name: "Frameworks",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Core",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new FoundationList())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Foundation",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new FoundationList())
+                    }
+                },
             },
             {
                 reuseIdentifier: "SectionHeader",
