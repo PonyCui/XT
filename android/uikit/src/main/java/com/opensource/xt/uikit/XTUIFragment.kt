@@ -14,9 +14,13 @@ import java.lang.ref.WeakReference
  * Created by cuiminghui on 2018/1/9.
  */
 
-private var velocityTracker = VelocityTracker.obtain()
-
 open class XTUIFragment: Fragment() {
+
+    companion object {
+
+        private var velocityTracker = VelocityTracker.obtain()
+
+    }
 
     var rootView: RootView? = null
 
