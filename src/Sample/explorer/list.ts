@@ -16,6 +16,7 @@ import { LinearAnimationSample } from "./linearanimation";
 import { SpringAnimationSample } from "./springanimation";
 import { WebViewSample } from "./webview";
 import { FoundationList } from "../foundation/list";
+import { CoreList } from "../core/list";
 
 class Header extends UI.ListCell {
 
@@ -229,7 +230,7 @@ export class List extends UI.ViewController {
                 name: "Core",
                 action: () => {
                     if (this.navigationController) {
-                        this.navigationController.pushViewController(new FoundationList())
+                        this.navigationController.pushViewController(new CoreList())
                     }
                 },
             },

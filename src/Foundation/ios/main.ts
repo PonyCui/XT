@@ -1,4 +1,3 @@
-import { ClassType, ClassLoader } from './ClassLoader'
 import { Data } from './Data'
 import { FileManager } from './FileManager'
 import { Notification, NotificationCenter } from './Notification'
@@ -11,8 +10,6 @@ import { WebSocket } from './WebSocket'
 
 declare var module: any
 module.exports = {
-    ClassType,
-    ClassLoader,
     Data,
     FileManager,
     Notification,

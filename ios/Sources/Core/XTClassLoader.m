@@ -6,9 +6,9 @@
 //  Copyright © 2018年 Pony. All rights reserved.
 //
 
-#import "XTFClassLoader.h"
+#import "XTClassLoader.h"
 
-@implementation XTFClassLoader
+@implementation XTClassLoader
 
 + (BOOL)loadClass:(NSString *)className globalName:(NSString *)globalName {
     Class clazz = NSClassFromString(className);

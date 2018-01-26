@@ -16,7 +16,6 @@
 #import "XTFUserDefaults.h"
 #import "XTFFileManager.h"
 #import "XTFNotification.h"
-#import "XTFClassLoader.h"
 #import "XTFWebSocket.h"
 
 @implementation XTFoundationContext
@@ -27,7 +26,6 @@
 }
 
 - (void)loadComponents {
-    self[@"_XTFClassLoader"] = [XTFClassLoader class];
     self[@"_XTFURLRequest"] = [XTFURLRequest class];
     self[@"_XTFURLResponse"] = [XTFURLResponse class];
     self[@"_XTFURLSession"] = [XTFURLSession class];

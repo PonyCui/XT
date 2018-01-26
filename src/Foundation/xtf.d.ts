@@ -10,5 +10,4 @@ declare var _XTFUserDefaults: any
 declare var _XTFFileManager: any
 declare var _XTFNotification: any
 declare var _XTFNotificationCenter: any
-declare var _XTFClassLoader: any
 declare var _XTFWebSocket: any

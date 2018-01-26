@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@class XTFClassLoader;
+@class XTClassLoader;
 
-@protocol XTFClassLoaderExport<JSExport>
+@protocol XTClassLoaderExport<JSExport>
 
 + (BOOL)loadClass:(NSString *)className globalName:(NSString *)globalName;
 
 @end
 
-@interface XTFClassLoader : NSObject<XTFClassLoaderExport>
+@interface XTClassLoader : NSObject<XTClassLoaderExport>
 
 @end

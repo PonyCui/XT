@@ -9,6 +9,7 @@
 #import "XTContext.h"
 #import "XTPolyfill.h"
 #import "XTMemoryManager.h"
+#import "XTClassLoader.h"
 
 @interface XTContext ()
 
@@ -52,19 +53,31 @@
 }
 
 - (void)setup {
-    __weak XTContext *welf = self;
     if (!self.isGlobalVariableDidSetup) {
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];
         [self evaluateScript:@"var window = {}; var global = window; var objectRefs = {};"];
-        self[@"XTTerminal"] = ^(){
-            [welf terminal];
-        };
-        [XTPolyfill addPolyfills:self];
-        [XTMemoryManager attachContext:self];
+        [self loadCoreComponents];
+        [self loadCoreScript];
         [self keepAlive];
         self.isGlobalVariableDidSetup = YES;
+    }
+}
+
+- (void)loadCoreComponents {
+    __weak XTContext *welf = self;
+    self[@"_XTTerminal"] = ^(){ [welf terminal]; };
+    self[@"_XTClassLoader"] = [XTClassLoader class];
+    [XTPolyfill addPolyfills:self];
+    [XTMemoryManager attachContext:self];
+}
+
+- (void)loadCoreScript {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.core.ios.min" ofType:@"js"];
+    if (path) {
+        NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+        [self evaluateScript:script];
     }
 }
 

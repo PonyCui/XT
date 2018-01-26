@@ -3,6 +3,18 @@ export interface Releasable {
     release(): this;
 }
 
+export as namespace XT;
+
+export enum ClassType {
+    Unknown,
+    ObjC,
+    Java,
+}
+
+export class ClassLoader {
+    static loadClass(classType: ClassType, className: string, globalName: string): void
+}
+
 export as namespace UI;
 
 export enum InteractionState {
@@ -958,6 +970,10 @@ export class WebSocket implements Releasable {
 
 declare global {
     var require: (path: string) => any
+    const XT: {
+        ClassType: typeof ClassType,
+        ClassLoader: typeof ClassLoader,
+    }
     const UI: {
         Releasable: Releasable,
         InteractionState: typeof InteractionState,
