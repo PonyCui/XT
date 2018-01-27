@@ -93,7 +93,9 @@ export class ViewController implements Releasable, NavigationBarDelegate {
     viewDidAppear(): void { this.childViewControllers.map(v => v.viewDidAppear()) }
     viewWillDisappear(): void { this.childViewControllers.map(v => v.viewWillDisappear()) }
     viewDidDisappear(): void { this.childViewControllers.map(v => v.viewDidDisappear()) }
-    viewWillLayoutSubviews(): void { }
+    viewWillLayoutSubviews(): void {
+        this.navigationBar.reload()
+    }
     viewDidLayoutSubviews(): void { }
 
     public get parentViewController(): ViewController | undefined {
@@ -131,9 +133,9 @@ export class ViewController implements Releasable, NavigationBarDelegate {
     }
 
     didMoveToParentViewController(parent?: ViewController): void {
-        console.log("didMoveToParentViewController");
-        
-        this.navigationBar.reload()
+        if (parent) {
+            this.navigationBar.reload()
+        }
     }
 
     public get navigationController(): NavigationControllerInterface | undefined {
