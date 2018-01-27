@@ -25,12 +25,12 @@ export enum KeyboardAvoidingMode {
 export class ViewController implements Releasable, NavigationBarDelegate {
 
     retain(): this {
-        XTMemoryManager.retain(this.objectRef)
+        _XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        XTMemoryManager.release(this.objectRef)
+        _XTRelease(this.objectRef)
         return this
     }
 
