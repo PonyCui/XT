@@ -6,13 +6,14 @@ import android.widget.EditText
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
+import com.opensource.xt.core.XTComponentExport
 
 /**
  * Created by cuiminghui on 2018/1/22.
  */
 class XTUIModal {
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIModal"
 

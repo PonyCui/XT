@@ -7,13 +7,15 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xt.core.XTManagedObject
 import com.opensource.xt.core.XTMemoryManager
+import com.opensource.xt.core.XTComponentExport
+import com.opensource.xt.core.XTComponentInstance
 
 /**
  * Created by cuiminghui on 2017/9/8.
  */
 class XTUIButton @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     val XTUILabel: XTUILabel.JSExports = xtrContext?.registeredComponents?.get("_XTUILabel") as XTUILabel.JSExports
     val XTUIImageView: XTUIImageView.JSExports = xtrContext?.registeredComponents?.get("_XTUIImageView") as XTUIImageView.JSExports
@@ -80,7 +82,7 @@ class XTUIButton @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         val XTUILabel: XTUILabel.JSExports
             get() = context?.registeredComponents?.get("_XTUILabel") as XTUILabel.JSExports

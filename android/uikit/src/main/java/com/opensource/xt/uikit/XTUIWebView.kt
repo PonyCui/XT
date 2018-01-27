@@ -5,16 +5,14 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.webkit.*
 import com.eclipsesource.v8.V8Object
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 
 /**
  * Created by cuiminghui on 2018/1/22.
  */
 class XTUIWebView @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     private val innerView = WebView(context)
 
@@ -50,7 +48,7 @@ class XTUIWebView @JvmOverloads constructor(
         addView(innerView, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIWebView"
 

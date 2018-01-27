@@ -21,7 +21,6 @@ class XTPolyfill {
         val sharedHandler = Handler()
 
         fun addPolyfills(runtime: V8) {
-            runtime.executeVoidScript("if (typeof window === 'undefined') {var window = {};}")
             attachTimeout(runtime)
             attachInterval(runtime)
             attachImmediate(runtime)

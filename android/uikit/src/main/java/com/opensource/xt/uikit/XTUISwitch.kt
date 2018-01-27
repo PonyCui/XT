@@ -5,9 +5,7 @@ import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.widget.Switch
 import com.eclipsesource.v8.V8Object
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 
 
 /**
@@ -15,7 +13,7 @@ import com.opensource.xt.core.XTContext
  */
 class XTUISwitch @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     private val innerView = Switch(context)
 
@@ -53,7 +51,7 @@ class XTUISwitch @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUISwitch"
 

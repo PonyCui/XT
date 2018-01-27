@@ -28,6 +28,7 @@ open class XTContext(val appContext: android.content.Context, parentContext: XTC
 
     open protected fun setup() {
         if (!isGlobalVariableDidSetup) {
+            this.evaluateScript("let objectRefs = {}; let window = {}; let global = window;")
             XTMemoryManager.attachContext(runtime)
             XTPolyfill.addPolyfills(runtime)
             XTPolyfill.exceptionHandler = {
@@ -36,7 +37,43 @@ open class XTContext(val appContext: android.content.Context, parentContext: XTC
             XTPolyfill.consoleMessageHandler = {
                 handleConsoleMessage(it)
             }
+            this.loadCoreComponents()
+            this.loadCoreScript()
             isGlobalVariableDidSetup = true
+        }
+    }
+
+    lateinit open protected var _registeredComponents: MutableMap<String, XTComponentExport>
+
+    var registeredComponents: Map<String, XTComponentExport> = mapOf()
+        get() { return this._registeredComponents.toMap() }
+
+    fun addComponent(exportInstance: XTComponentExport, globalName: String?) {
+        val obj = exportInstance.exports()
+        this.runtime.add(globalName ?: exportInstance.name, obj)
+        obj.release()
+        _registeredComponents.put(globalName ?: exportInstance.name, exportInstance)
+    }
+
+    private fun loadCoreComponents() {
+        _registeredComponents = mutableMapOf()
+        val components: List<XTComponentExport> = listOf(
+                XTClassLoader.JSExports(this)
+        )
+        components.forEach {
+            val obj = it.exports()
+            this.runtime.add(it.name, obj)
+            obj.release()
+            _registeredComponents.put(it.name, it)
+        }
+    }
+
+    private fun loadCoreScript() {
+        this.appContext.assets.open("xt.core.android.min.js")?.let {
+            val byteArray = ByteArray(it.available())
+            it.read(byteArray)
+            String(byteArray).let { this.evaluateScript(it) }
+            it.close()
         }
     }
 

@@ -16,6 +16,8 @@ import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xt.core.XTManagedObject
 import com.opensource.xt.core.XTMemoryManager
+import com.opensource.xt.core.XTComponentExport
+import com.opensource.xt.core.XTComponentInstance
 import kotlin.concurrent.timerTask
 
 /**
@@ -23,7 +25,7 @@ import kotlin.concurrent.timerTask
  */
 class XTUILabel @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     val textView: TextView = TextView(context)
     val listener: OnLayoutChangeListener = OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> resetTextViewPosition() }
@@ -170,7 +172,7 @@ class XTUILabel @JvmOverloads constructor(
         return XTUISize(Math.ceil(this.textView.measuredWidth.toDouble() / this.resources.displayMetrics.density), Math.ceil(this.textView.measuredHeight.toDouble() / this.resources.displayMetrics.density))
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUILabel"
 

@@ -1,4 +1,4 @@
-package com.opensource.xt.uikit
+package com.opensource.xt.core
 
 import com.eclipsesource.v8.V8Object
 
@@ -6,7 +6,7 @@ import com.eclipsesource.v8.V8Object
  * Created by cuiminghui on 2017/8/31.
  */
 
-abstract class XTUIComponentExport {
+abstract class XTComponentExport {
 
     abstract val name: String
 
