@@ -1,5 +1,6 @@
 package com.opensource.xt.core
 
+import android.os.Handler
 import com.eclipsesource.v8.*
 import java.lang.ref.WeakReference
 import java.util.*
@@ -7,26 +8,22 @@ import java.util.*
 /**
  * Created by cuiminghui on 2017/8/31.
  */
-open class XTContext(val appContext: android.content.Context, parentContext: XTContext? = null) {
+open class XTContext(val appContext: android.content.Context, val attachingContext: XTContext? = null) {
 
-    val runtime: V8 = V8.createV8Runtime()
+    val runtime: V8 = attachingContext?.runtime ?: V8.createV8Runtime()
     val sharedTimer = Timer()
-    private var parentContext: WeakReference<XTContext>? = null
-    private var childContexts: List<XTContext> = listOf()
+    private var childContexts: MutableList<XTContext> = mutableListOf()
     private var isGlobalVariableDidSetup = false
 
     init {
-        parentContext?.let { parentContext ->
-            this.parentContext = WeakReference(parentContext)
-            childContexts.toMutableList().let {
-                it.add(parentContext)
-                childContexts = it.toList()
-            }
-        }
         setup()
+        Handler().post {
+            attachingContext?.childContexts?.add(this)
+        }
     }
 
     open protected fun setup() {
+        attachingContext?.let { return }
         if (!isGlobalVariableDidSetup) {
             this.evaluateScript("let objectRefs = {}; let window = {}; let global = window;")
             XTMemoryManager.attachContext(runtime)
@@ -43,7 +40,7 @@ open class XTContext(val appContext: android.content.Context, parentContext: XTC
         }
     }
 
-    lateinit open protected var _registeredComponents: MutableMap<String, XTComponentExport>
+    lateinit open var _registeredComponents: MutableMap<String, XTComponentExport>
 
     var registeredComponents: Map<String, XTComponentExport> = mapOf()
         get() { return this._registeredComponents.toMap() }
@@ -96,9 +93,6 @@ open class XTContext(val appContext: android.content.Context, parentContext: XTC
     }
 
     open fun evaluateScript(script: String): Any? {
-        this.parentContext?.let {
-            return it?.get()?.evaluateScript(script)
-        }
         if (runtime.isReleased) { return null }
         return try {
             runtime.executeScript(script)
