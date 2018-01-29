@@ -9,6 +9,11 @@ module.exports = function (env) {
         throw Error("Nothing to build.")
     }
     else {
+        let onDebug = false;
+        if (env['debug']) {
+            onDebug = true;
+            delete env['debug'];
+        }
         const target = Object.keys(env)[0];
         eval(fs.readFileSync(target.replace(/_/ig, '/') + '/webpack.config.js', 'utf-8'))
         return setting;

@@ -167,6 +167,16 @@
 
 #pragma mark - Start Application Static Methods
 
+static NSArray *defaultAttachContextClasses;
+
++ (void)addDefaultAttachContext:(Class)attachContextClass {
+    if ([attachContextClass isSubclassOfClass:[XTContext class]]) {
+        NSMutableArray *classes = (defaultAttachContextClasses ?: @[]).mutableCopy;
+        [classes addObject:NSStringFromClass(attachContextClass)];
+        defaultAttachContextClasses = [classes copy];
+    }
+}
+
 + (XTUIContext *)startWithNamed:(NSString *)name
                        inBundle:(NSBundle *)bundle
            navigationController:(UINavigationController *)navigationController {
@@ -220,6 +230,9 @@ navigationController:(UINavigationController *)navigationController
                                              }
                                              [context terminal];
                                          }];
+    for (NSString *contextClassName in defaultAttachContextClasses) {
+        [NSClassFromString(contextClassName) attachToContext:context];
+    }
     return context;
 }
 

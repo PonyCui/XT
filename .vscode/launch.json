@@ -8,8 +8,9 @@
             "type": "mock",
             "request": "launch",
             "name": "Run Application",
-            "program": "${workspaceFolder}/dist/sample.min.js",
-            "stopOnEntry": true
+            "program": "${workspaceFolder}/dist/Sample/sample.min.js",
+            "stopOnEntry": true,
+            "debugServer": 4711
         }
     ]
 }

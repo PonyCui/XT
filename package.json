@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "sample": "webpack --env.src_Sample -w & http-server -c-1",
+    "sample_debug": "webpack --env.src_Sample --env.debug -w & http-server -c-1",
     "core_ios": "webpack --env.src_Core_ios -w",
     "foundation_ios": "webpack --env.src_Foundation_ios -w",
     "uikit_android": "webpack --env.src_UIKit_android -w",

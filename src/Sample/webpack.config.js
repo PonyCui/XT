@@ -16,9 +16,9 @@ var setting = {
     },
     module: {
         rules: [
-            // { test: /\.xtml?$/, loader: require.resolve('./src/XTML/index') },
             { test: /\.png?$/, loader: require.resolve('./src/AssetsLoader/loader') },
             { test: /\.ts?$/, loader: "awesome-typescript-loader" },
+            { test: onDebug ? /\.ts?$/ : /\.none?$/, loader: require.resolve('./src/DebugLoader/loader') },
         ],
     },
     externals: {

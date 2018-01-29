@@ -23,6 +23,8 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 
 #pragma mark - Public methods
 
++ (void)addDefaultAttachContext:(nonnull Class)attachContextClass;
+
 + (nonnull XTUIContext *)startWithNamed:(nonnull NSString *)name
                                inBundle:(nullable NSBundle *)bundle
                    navigationController:(nonnull UINavigationController *)navigationController;

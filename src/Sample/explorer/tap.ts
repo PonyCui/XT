@@ -44,7 +44,6 @@ export class TapSample extends UI.ViewController {
         view.backgroundColor = UI.Color.grayColor
         view.userInteractionEnabled = true
         view.onTap = () => {
-            XTRDebug.xtr_breakpoint("123123")
             view.backgroundColor = UI.Color.greenColor
         }
         // } Sample Code 

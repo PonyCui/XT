@@ -8,6 +8,8 @@
 
 #import "ModulizeAppDelegate.h"
 #import "ModulizeStartViewController.h"
+#import "XTFoundationContext.h"
+#import "XTUIContext.h"
 
 @interface ModulizeNavigationController: UINavigationController
 
@@ -27,6 +29,10 @@
 @end
 
 @implementation ModulizeAppDelegate
+
++ (void)load {
+    [XTUIContext addDefaultAttachContext:[XTFoundationContext class]];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

@@ -10,6 +10,7 @@
 #import "XTPolyfill.h"
 #import "XTMemoryManager.h"
 #import "XTClassLoader.h"
+#import "XTDebug.h"
 
 @interface XTContext ()
 
@@ -69,6 +70,7 @@
     __weak XTContext *welf = self;
     self[@"_XTTerminal"] = ^(){ [welf terminal]; };
     self[@"_XTClassLoader"] = [XTClassLoader class];
+    self[@"_XTDebug"] = [XTDebug class];
     [XTPolyfill addPolyfills:self];
     [XTMemoryManager attachContext:self];
 }
