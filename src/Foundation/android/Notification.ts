@@ -25,7 +25,7 @@ export class NotificationCenter extends INotificationCenter {
     }
 
     postNotification(name: string, object: any, userInfo: { [key: string]: any }): void {
-        _XTFNotification.postNotificationObjectUserInfo(name, object, userInfo)
+        _XTFNotification.postNotification(name, object, userInfo)
     }
 
     onNotification(name: string, object: any, userInfo: { [key: string]: any }): void {

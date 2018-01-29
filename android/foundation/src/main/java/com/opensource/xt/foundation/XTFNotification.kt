@@ -3,6 +3,7 @@ package com.opensource.xt.foundation
 import android.os.Handler
 import android.os.Looper
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.opensource.xt.core.XTComponentExport
 import com.opensource.xt.core.XTContext
 import java.lang.ref.WeakReference
@@ -17,10 +18,16 @@ class XTFNotification {
 
         val observers: MutableMap<String, Observer> = mutableMapOf()
 
-        fun postNotification(name: String, obj: Object, userInfo: Map<String, Any>) {
-            observers.keys.filter { it == name }.mapNotNull { return@mapNotNull observers[it] }.forEach {
-                it.threadHandler.post {
-                    
+        fun postNotification(name: String, obj: Object, userInfo: Map<String?, Any?>) {
+            observers.values.filter { it.name == name }.forEach { observer ->
+                observer.threadHandler.post {
+                    observer.context?.get()?.let {
+                        (it.evaluateScript("window.XTFNotificationCenter.default") as? V8Object)?.let {
+                            val userInfoV8Object = V8ObjectUtils.toV8Object(it.runtime, userInfo)
+                            XTContext.invokeMethod(it, "onNotification", listOf(name, obj, userInfoV8Object))
+                            userInfoV8Object.release()
+                        }
+                    }
                 }
             }
         }
@@ -50,6 +57,17 @@ class XTFNotification {
             val observer = Observer(name, WeakReference(context))
             XTFNotification.observers.put(observer.handler, observer)
             return observer.handler
+        }
+
+        fun removeObserver(handler: String) {
+            XTFNotification.observers.remove(handler)
+        }
+
+        fun postNotification(name: String, obj: Object, userInfo: Object) {
+            val userInfoObject: Map<String?, Any?> = (userInfo as? V8Object)?.let {
+                return@let V8ObjectUtils.toMap(it).toMap()
+            } ?: mapOf<String?, Any?>()
+            XTFNotification.postNotification(name, obj, userInfoObject)
         }
 
     }
