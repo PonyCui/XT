@@ -1,5 +1,5 @@
 import { Data } from './Data'
-// import { FileManager } from './FileManager'
+import { FileManager } from './FileManager'
 import { Notification, NotificationCenter } from './Notification'
 // import { URLRequest, URLCachePolily } from './URLRequest'
 // import { URLResponse } from './URLResponse'
@@ -11,7 +11,7 @@ import { UserDefaults } from './UserDefaults'
 declare var module: any
 module.exports = {
     Data,
-    // FileManager,
+    FileManager,
     Notification,
     NotificationCenter,
     // URLRequest,

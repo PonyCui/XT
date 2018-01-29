@@ -26,7 +26,8 @@ class XTFoundationContext(appContext: Context, attachingContext: XTContext?) : X
         val components: List<XTComponentExport> = listOf(
                 XTFData.JSExports(this),
                 XTFUserDefaults.JSExports(this),
-                XTFNotification.JSExports(this)
+                XTFNotification.JSExports(this),
+                XTFFileManager.JSExports(this)
         )
         components.forEach {
             val obj = it.exports()
