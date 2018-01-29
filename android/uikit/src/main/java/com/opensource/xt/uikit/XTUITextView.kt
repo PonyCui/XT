@@ -16,9 +16,7 @@ import android.widget.EditText
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 
 
 /**
@@ -26,7 +24,7 @@ import com.opensource.xt.core.XTContext
  */
 class XTUITextView @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     val XTUITextView: XTUITextView.JSExports = xtrContext?.registeredComponents?.get("_XTUITextView") as XTUITextView.JSExports
     val editText = EditText(context)
@@ -168,7 +166,7 @@ class XTUITextView @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUITextView"
 

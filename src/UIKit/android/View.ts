@@ -30,12 +30,12 @@ export enum SwipeDirection {
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
 
     retain(): this {
-        XTMemoryManager.retain(this.objectRef)
+        _XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        XTMemoryManager.release(this.objectRef)
+        _XTRelease(this.objectRef)
         return this
     }
 

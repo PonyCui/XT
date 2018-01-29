@@ -6,6 +6,7 @@ import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
 import com.opensource.xt.core.XTManagedObject
 import com.opensource.xt.core.XTMemoryManager
+import com.opensource.xt.core.XTComponentExport
 import java.lang.ref.WeakReference
 
 /**
@@ -17,7 +18,7 @@ class XTUINavigationController: XTUIViewController() {
         return childViewControllers.firstOrNull() ?: this
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUINavigationController"
 

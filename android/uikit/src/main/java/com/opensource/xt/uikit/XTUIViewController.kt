@@ -4,9 +4,7 @@ import android.app.Activity
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 import com.opensource.xt.uikit.libraries.keyboard.KeyboardHeightObserver
 import com.opensource.xt.uikit.libraries.keyboard.KeyboardHeightProvider
 import java.lang.ref.WeakReference
@@ -14,7 +12,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by cuiminghui on 2017/9/5.
  */
-open class XTUIViewController: XTUIFragment(), XTUIComponentInstance, KeyboardHeightObserver {
+open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeightObserver {
 
     override var objectUUID: String? = null
     lateinit var xtrContext: XTUIContext
@@ -164,7 +162,7 @@ open class XTUIViewController: XTUIFragment(), XTUIComponentInstance, KeyboardHe
         }
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIViewController"
 

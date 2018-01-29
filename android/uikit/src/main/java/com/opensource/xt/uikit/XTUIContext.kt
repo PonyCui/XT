@@ -3,6 +3,7 @@ package com.opensource.xt.uikit
 import android.os.Handler
 import android.util.Log
 import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.XTComponentExport
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -32,17 +33,25 @@ class XTUIContext(appContext: android.content.Context,
     }
 
     var application: XTUIApplication? = null
-
-    var registeredComponents: Map<String, XTUIComponentExport> = mapOf()
+    private var isUIContextDidSetup = false
 
     init {
-        loadComponents()
-        loadScript()
-        loadViaSourceURL()
+        Handler().post({
+            loadViaSourceURL()
+        })
+    }
+
+    override fun setup() {
+        super.setup()
+        if (!isUIContextDidSetup) {
+            loadComponents()
+            loadScript()
+            isUIContextDidSetup = true
+        }
     }
 
     private fun loadComponents() {
-        val components: List<XTUIComponentExport> = listOf(
+        val components: List<XTComponentExport> = listOf(
                 XTUIImage.JSExports(this),
                 XTUIApplication.JSExports(this),
                 XTUIApplicationDelegate.JSExports(this),
@@ -70,18 +79,15 @@ class XTUIContext(appContext: android.content.Context,
                 XTUISlider.JSExports(this),
                 XTUIActivityIndicatorView.JSExports(this)
         )
-        val registeredComponents: MutableMap<String, XTUIComponentExport> = mutableMapOf()
         components.forEach {
             val obj = it.exports()
             this.runtime.add(it.name, obj)
             obj.release()
-            registeredComponents.put(it.name, it)
+            _registeredComponents.put(it.name, it)
         }
-        this.registeredComponents = registeredComponents.toMap()
     }
 
     private fun loadScript() {
-        this.evaluateScript("let objectRefs = {};")
         this.appContext.assets.open("xt.uikit.android.min.js")?.let {
             val byteArray = ByteArray(it.available())
             it.read(byteArray)

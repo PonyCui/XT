@@ -5,16 +5,14 @@ import android.view.ViewGroup
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 
 /**
  * Created by cuiminghui on 2017/9/8.
  */
 class XTUIScrollView @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     val XTUIView: XTUIView.JSExports
         get() = xtrContext?.registeredComponents?.get("_XTUIView") as XTUIView.JSExports
@@ -59,7 +57,7 @@ class XTUIScrollView @JvmOverloads constructor(
         this.innerView.frame = this.bounds
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIScrollView"
 

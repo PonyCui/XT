@@ -5,9 +5,7 @@ import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.widget.SeekBar
 import com.eclipsesource.v8.V8Object
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 
 
 /**
@@ -15,7 +13,7 @@ import com.opensource.xt.core.XTContext
  */
 class XTUISlider @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : XTUIView(xtrContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     private val innerView = SeekBar(context)
     private val innerViewLayoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -54,7 +52,7 @@ class XTUISlider @JvmOverloads constructor(
         innerView.progressDrawable.setColorFilter(this.tintColor?.intColor() ?: Color.BLACK, PorterDuff.Mode.SRC_ATOP)
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUISlider"
 

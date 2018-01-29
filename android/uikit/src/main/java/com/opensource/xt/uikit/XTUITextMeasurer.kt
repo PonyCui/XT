@@ -6,13 +6,14 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.eclipsesource.v8.V8Value
 import com.opensource.xt.core.XTMemoryManager
+import com.opensource.xt.core.XTComponentExport
 
 /**
  * Created by cuiminghui on 2017/11/15.
  */
 class XTUITextMeasurer {
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUITextMeasurer"
 

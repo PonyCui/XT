@@ -15,10 +15,8 @@ class XTMemoryManager {
         private var sharedHandler = Handler()
 
         fun attachContext(runtime: V8) {
-            val exports = V8Object(runtime)
-            exports.registerJavaMethod(this, "retain", "retain", arrayOf(String::class.java))
-            exports.registerJavaMethod(this, "release", "release", arrayOf(String::class.java))
-            runtime.add("XTMemoryManager", exports)
+            runtime.registerJavaMethod(this, "retain", "_XTRetain", arrayOf(String::class.java))
+            runtime.registerJavaMethod(this, "release", "_XTRelease", arrayOf(String::class.java))
         }
 
         fun add(obj: XTManagedObject) {

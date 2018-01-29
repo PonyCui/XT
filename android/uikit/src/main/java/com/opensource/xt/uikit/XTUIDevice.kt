@@ -3,6 +3,7 @@ package com.opensource.xt.uikit
 import android.os.Build
 import com.eclipsesource.v8.V8Object
 import com.opensource.xt.core.XTCore
+import com.opensource.xt.core.XTComponentExport
 
 /**
  * Created by cuiminghui on 2017/9/28.
@@ -21,7 +22,7 @@ class XTUIDevice {
         FaceDown,
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIDevice"
 

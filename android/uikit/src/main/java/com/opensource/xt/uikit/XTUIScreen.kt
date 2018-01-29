@@ -3,13 +3,14 @@ package com.opensource.xt.uikit
 import android.app.Activity
 import android.util.DisplayMetrics
 import com.eclipsesource.v8.V8Object
+import com.opensource.xt.core.XTComponentExport
 
 /**
  * Created by cuiminghui on 2017/10/27.
  */
 class XTUIScreen {
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIScreen"
 

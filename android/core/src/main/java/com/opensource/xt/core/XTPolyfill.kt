@@ -3,10 +3,7 @@ package com.opensource.xt.core
 import android.os.Build
 import android.os.Handler
 import android.view.Choreographer
-import com.eclipsesource.v8.Releasable
-import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Function
-import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.*
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -17,49 +14,41 @@ class XTPolyfill {
 
     companion object {
 
-        private val implementation = PolyfillImplementation()
+        val timerStack: MutableMap<String, Boolean> = mutableMapOf()
         var exceptionHandler: ((e: Exception) -> Unit)? = null
         var consoleMessageHandler: ((message: String) -> Unit)? = null
+        val sharedTimer = Timer()
+        val sharedHandler = Handler()
 
         fun addPolyfills(runtime: V8) {
-            val scope = V8Object(runtime)
-            runtime.add("_PolyfillImplementation", scope)
-            runtime.executeVoidScript("if (typeof window === 'undefined') {var window = {};}")
-            attachTimeout(runtime, scope)
-            attachInterval(runtime, scope)
-            attachImmediate(runtime, scope)
-            attachRAF(runtime, scope)
-            scope.release()
+            attachTimeout(runtime)
+            attachInterval(runtime)
+            attachImmediate(runtime)
+            attachRAF(runtime)
             val console = V8Object(runtime)
             runtime.add("console", console)
             attachConsole(runtime, console)
             console.release()
         }
 
-        private fun attachTimeout(runtime: V8, scope: V8Object) {
-            scope.registerJavaMethod(implementation, "setTimeout", "setTimeout", arrayOf(V8Function::class.java, Int::class.java))
-            scope.registerJavaMethod(implementation, "clearTimeout", "clearTimeout", arrayOf(String::class.java))
-            runtime.executeVoidScript("let setTimeout = function(callback, ms) { return _PolyfillImplementation.setTimeout(callback, ms) }; window.setTimeout = setTimeout;")
-            runtime.executeVoidScript("let clearTimeout = function(handler) { if (typeof handler !== 'string') { return ; }; _PolyfillImplementation.clearTimeout(handler) }; window.clearTimeout = clearTimeout;")
+        private fun attachTimeout(runtime: V8) {
+            runtime.registerJavaMethod(this, "setTimeout", "setTimeout", arrayOf(V8Function::class.java, Int::class.java))
+            runtime.registerJavaMethod(this, "clearTimeout", "clearTimeout", arrayOf(Object::class.java))
         }
 
-        private fun attachInterval(runtime: V8, scope: V8Object) {
-            scope.registerJavaMethod(implementation, "setInterval", "setInterval", arrayOf(V8Function::class.java, Int::class.java))
-            scope.registerJavaMethod(implementation, "clearInterval", "clearInterval", arrayOf(String::class.java))
-            runtime.executeVoidScript("let setInterval = function(callback, ms) { return _PolyfillImplementation.setInterval(callback, ms) }; window.setInterval = setInterval;")
-            runtime.executeVoidScript("let clearInterval = function(handler) { if (typeof handler !== 'string') { return ; }; _PolyfillImplementation.clearInterval(handler) }; window.clearInterval = clearInterval;")
+        private fun attachInterval(runtime: V8) {
+            runtime.registerJavaMethod(this, "setInterval", "setInterval", arrayOf(V8Function::class.java, Int::class.java))
+            runtime.registerJavaMethod(this, "clearInterval", "clearInterval", arrayOf(Object::class.java))
         }
 
-        private fun attachImmediate(runtime: V8, scope: V8Object) {
-            runtime.executeVoidScript("let setImmediate = function(callback) { return _PolyfillImplementation.setTimeout(callback, 0) }; window.setTimeout = setTimeout;")
-            runtime.executeVoidScript("let clearImmediate = function(handler) { if (typeof handler !== 'string') { return ; }; _PolyfillImplementation.clearTimeout(handler) }; window.clearTimeout = clearTimeout;")
+        private fun attachImmediate(runtime: V8) {
+            runtime.registerJavaMethod(this, "setImmediate", "setImmediate", arrayOf(V8Function::class.java))
+            runtime.registerJavaMethod(this, "clearImmediate", "clearImmediate", arrayOf(Object::class.java))
         }
 
-        private fun attachRAF(runtime: V8, scope: V8Object) {
-            scope.registerJavaMethod(implementation, "requestAnimationFrame", "requestAnimationFrame", arrayOf(V8Function::class.java))
-            scope.registerJavaMethod(implementation, "clearAnimationFrame", "clearAnimationFrame", arrayOf(String::class.java))
-            runtime.executeVoidScript("var requestAnimationFrame = function(callback) { return _PolyfillImplementation.requestAnimationFrame(callback) }; window.requestAnimationFrame = requestAnimationFrame;")
-            runtime.executeVoidScript("var clearAnimationFrame = function(handler) { if (typeof handler !== 'string') { return ; }; return _PolyfillImplementation.clearAnimationFrame(handler) }; window.clearAnimationFrame = clearAnimationFrame;")
+        private fun attachRAF(runtime: V8) {
+            runtime.registerJavaMethod(this, "requestAnimationFrame", "requestAnimationFrame", arrayOf(V8Function::class.java))
+            runtime.registerJavaMethod(this, "clearAnimationFrame", "clearAnimationFrame", arrayOf(Object::class.java))
         }
 
         private fun attachConsole(runtime: V8, scope: V8Object) {
@@ -92,19 +81,10 @@ class XTPolyfill {
             }, "info")
         }
 
-    }
-
-    class PolyfillImplementation {
-
-        companion object {
-            val timerStack: MutableMap<String, Boolean> = mutableMapOf()
-        }
-
-        val sharedTimer = Timer()
-        val sharedHandler = Handler()
-
-        fun clearTimeout(handler: String) {
-            timerStack.remove(handler)
+        fun clearTimeout(handler: Object) {
+            (handler as? String)?.let {
+                timerStack.remove(it)
+            }
         }
 
         fun setTimeout(callback: V8Function, ms: Int): String {
@@ -129,8 +109,10 @@ class XTPolyfill {
             return timeoutHandler
         }
 
-        fun clearInterval(handler: String) {
-            timerStack.remove(handler)
+        fun clearInterval(handler: Object) {
+            (handler as? String)?.let {
+                timerStack.remove(it)
+            }
         }
 
         fun setInterval(callback: V8Function, ms: Int): String {
@@ -155,6 +137,14 @@ class XTPolyfill {
             }, ms.toLong(), ms.toLong())
             timerStack[intervalHandler] = true
             return intervalHandler
+        }
+
+        fun clearImmediate(handler: Object) {
+            clearTimeout(handler)
+        }
+
+        fun setImmediate(callback: V8Function): String {
+            return setTimeout(callback, 0)
         }
 
         fun requestAnimationFrame(callback: V8Function): String  {
@@ -185,8 +175,10 @@ class XTPolyfill {
             return animationFrameHandler
         }
 
-        fun clearAnimationFrame(handler: String) {
-            timerStack.remove(handler)
+        fun clearAnimationFrame(handler: Object) {
+            (handler as? String)?.let {
+                timerStack.remove(it)
+            }
         }
 
     }

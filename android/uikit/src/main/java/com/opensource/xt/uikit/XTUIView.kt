@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
 import com.eclipsesource.v8.*
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 import java.lang.ref.WeakReference
 
 open class XTUIView @JvmOverloads constructor(
         val xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(xtrContext.appContext, attrs, defStyleAttr), XTUIComponentInstance {
+) : FrameLayout(xtrContext.appContext, attrs, defStyleAttr), XTComponentInstance {
 
     override var objectUUID: String? = null
     internal var viewDelegate: WeakReference<XTUIViewController>? = null
@@ -338,7 +336,7 @@ open class XTUIView @JvmOverloads constructor(
 
     fun didAddSubview(subview: View) {
         scriptObject()?.let {
-            XTContext.invokeMethod(it, "_didAddSubview", listOf((subview as? XTUIComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTContext.invokeMethod(it, "_didAddSubview", listOf((subview as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
             (subview as? XTUIView)?.tintColorDidChange()
         }
@@ -346,14 +344,14 @@ open class XTUIView @JvmOverloads constructor(
 
     fun willRemoveSubView(subview: View) {
         scriptObject()?.let {
-            XTContext.invokeMethod(it, "_willRemoveSubview", listOf((subview as? XTUIComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTContext.invokeMethod(it, "_willRemoveSubview", listOf((subview as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
         }
     }
 
     fun willMoveToSuperview(newSuperview: View?) {
         scriptObject()?.let {
-            XTContext.invokeMethod(it, "_willMoveToSuperview", listOf((newSuperview as? XTUIComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTContext.invokeMethod(it, "_willMoveToSuperview", listOf((newSuperview as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
         }
     }
@@ -367,7 +365,7 @@ open class XTUIView @JvmOverloads constructor(
 
     fun willMoveToWindow(newWindow: XTUIWindow?) {
         scriptObject()?.let {
-            XTContext.invokeMethod(it, "_willMoveToWindow", listOf((newWindow as? XTUIComponentInstance)?.objectUUID ?: V8.getUndefined()))
+            XTContext.invokeMethod(it, "_willMoveToWindow", listOf((newWindow as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
             it.release()
         }
     }
@@ -404,7 +402,7 @@ open class XTUIView @JvmOverloads constructor(
         return false
     }
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIView"
 
@@ -623,14 +621,14 @@ open class XTUIView @JvmOverloads constructor(
         }
 
         fun xtr_superview(objectRef: String): String? {
-            return (XTMemoryManager.find(objectRef) as? View)?.let { (it.parent as? XTUIComponentInstance)?.objectUUID }
+            return (XTMemoryManager.find(objectRef) as? View)?.let { (it.parent as? XTComponentInstance)?.objectUUID }
         }
 
         fun xtr_subviews(objectRef: String): V8Array? {
             return (XTMemoryManager.find(objectRef) as? ViewGroup)?.let {
                 val v8Array = V8Array(context.runtime)
                 (0 until it.childCount).mapNotNull { idx ->
-                    return@mapNotNull (it.getChildAt(idx) as? XTUIComponentInstance)?.objectUUID
+                    return@mapNotNull (it.getChildAt(idx) as? XTComponentInstance)?.objectUUID
                 }.forEach { v8Array.push(it) }
                 return@let v8Array
             }
@@ -748,7 +746,7 @@ open class XTUIView @JvmOverloads constructor(
                 return view.objectUUID
             }
             (0 until view.childCount).forEach {
-                (view.getChildAt(it) as? XTUIComponentInstance)?.let {
+                (view.getChildAt(it) as? XTComponentInstance)?.let {
                     val foundView = xtr_viewWithTag(tag, it.objectUUID ?: "")
                     if (foundView != null) {
                         return foundView

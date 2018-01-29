@@ -11,6 +11,7 @@ export class ClassLoaderSample extends TestBase {
 
     loadClassTests() {
         XT.ClassLoader.loadClass(XT.ClassType.ObjC, "FooClass", "Foo")
+        XT.ClassLoader.loadClass(XT.ClassType.Java, "com.opensource.xtsample.FooClass", "Foo") 
         this.assert(Foo.sayHello() === "Hello, World!")
     }
 

@@ -6,9 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.http.HttpResponseCache
 import android.util.Base64
 import com.eclipsesource.v8.*
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.*
 import java.io.File
 import java.io.InputStream
 import java.net.URL
@@ -17,13 +15,13 @@ import java.net.URL
 /**
  * Created by cuiminghui on 2017/9/6.
  */
-class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTUIComponentInstance {
+class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTComponentInstance {
 
     override var objectUUID: String? = null
 
     var size: XTUISize = XTUISize(bitmap.width.toDouble() / scale.toDouble(), bitmap.height.toDouble() / scale.toDouble())
 
-    class JSExports(val context: XTUIContext): XTUIComponentExport() {
+    class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIImage"
 
