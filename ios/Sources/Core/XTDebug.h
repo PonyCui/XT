@@ -12,17 +12,29 @@
 
 @protocol XTRDebugExport<JSExport>
 
-+ (void)xtr_breakpoint:(NSString *)bpIdentifier;
++ (void)xtr_bp:(NSString *)bpIdentifier T:(JSValue *)T S:(JSValue *)S;
+
+@end
+
+@protocol XTDebugDelegate
+
+- (void)debuggerDidTerminal;
+- (void)debuggerDidReload;
+- (NSString *)debuggerEval:(NSString *)code;
 
 @end
 
 @interface XTDebug : NSObject<XTComponent, XTRDebugExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
+@property (nonatomic, strong) id<XTDebugDelegate> delegate;
 
 + (XTDebug *)sharedDebugger;
+
++ (void)debugWithIP:(NSString *)IP port:(NSInteger)port navigationController:(UINavigationController *)navigationController;
+
 - (NSURL *)sourceURL;
-- (void)connectWithIP:(NSString *)IP port:(NSInteger)port;
+
 - (void)sendLog:(NSString *)string;
 
 @end

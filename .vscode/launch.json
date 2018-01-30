@@ -5,12 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "mock",
+            "type": "xt",
             "request": "launch",
             "name": "Run Application",
-            "program": "${workspaceFolder}/dist/Sample/sample.min.js",
-            "stopOnEntry": true,
-            "debugServer": 4711
+            "program": "${workspaceFolder}/dist/Sample/sample.min.js"
         }
     ]
 }

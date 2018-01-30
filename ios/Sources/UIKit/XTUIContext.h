@@ -41,8 +41,8 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 
 #pragma mark - Debugger
 
-+ (void)debugWithIP:(nonnull NSString *)IP port:(NSInteger)port navigationController:(nonnull UINavigationController *)navigationController;
-
-+ (void)reloadDebugging;
++ (void)debugWithIP:(nonnull NSString *)IP
+               port:(NSInteger)port
+               navigationController:(nonnull UINavigationController *)navigationController;
 
 @end

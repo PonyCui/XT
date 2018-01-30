@@ -12,21 +12,32 @@ export default function (source: string) {
         return source
     }
     let breakingLines: number[] = []
-    const findBreakables = (node: any) => {
-        if (node.kind === ts.SyntaxKind.ExpressionStatement) {
-            breakingLines.push(sourceFile.getLineAndCharacterOfPosition(node.pos + 1).line)
+    let breakingVariables: any = {}
+    const findBreakables = (node: any, currentVariables: any) => {
+        if (node.kind === ts.SyntaxKind.ExpressionStatement ||
+            node.kind === ts.SyntaxKind.VariableStatement ||
+            node.kind === ts.SyntaxKind.ReturnStatement) {
+            const lineNum = sourceFile.getLineAndCharacterOfPosition(node.pos + 1).line
+            breakingLines.push(lineNum)
+            breakingVariables[lineNum] = Object.keys(currentVariables)
         }
+        if (node.kind === ts.SyntaxKind.VariableStatement) {
+            node.declarationList.declarations.forEach((it: any) => {
+                currentVariables[it.name.escapedText] = true
+            })
+        }
+        let nextScopeVariables = {}
         node.forEachChild((it: any) => {
-            findBreakables(it)
+            findBreakables(it, nextScopeVariables)
         })
     }
-    findBreakables(sourceFile)
+    findBreakables(sourceFile, {})
     const content = "declare var _XTDebug: any; const __FILE__ = '" + this.resourcePath + "'; \n" + source.split("\n").map((content, idx) => {
         if (content.indexOf("super(") >= 0) {
             return content
         }
         else if (breakingLines.indexOf(idx) >= 0 && content.indexOf("{") < 0) {
-            return `;_XTDebug.xtr_breakpoint(__FILE__ + ':` + idx + `');` + content;
+            return `;_XTDebug.xtr_bpTS(__FILE__ + ':` + idx + `', this, {` + (breakingVariables[idx] || []).join(',') + `});` + content;
         }
         return content
     }).join("\n")

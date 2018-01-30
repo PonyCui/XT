@@ -11,4 +11,5 @@ class AppDelegate extends UI.ApplicationDelegate {
     }
     
 }
+
 const sampleApplication = new UI.Application('app', new AppDelegate());

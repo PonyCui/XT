@@ -43,7 +43,7 @@
 #import "XTDebug.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@interface XTUIContext ()<UINavigationControllerDelegate>
+@interface XTUIContext ()<UINavigationControllerDelegate, XTDebugDelegate>
 
 @property (nonatomic, readwrite) NSURL *sourceURL;
 
@@ -237,14 +237,15 @@ navigationController:(UINavigationController *)navigationController
 }
 
 static UINavigationController *currentDebugNavigationViewController;
+static XTUIContext *currentDebugContext;
 
 + (void)debugWithIP:(NSString *)IP port:(NSInteger)port navigationController:(UINavigationController *)navigationController {
+    [[XTDebug sharedDebugger] setDelegate:(id)self];
+    [XTDebug debugWithIP:IP port:port navigationController:navigationController];
     currentDebugNavigationViewController = navigationController;
-    [[XTDebug sharedDebugger] connectWithIP:IP port:port];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
-+ (void)reloadDebugging {
++ (void)debuggerDidTerminal {
     UIViewController *targetViewController = nil;
     BOOL found = NO;
     for (id item in [currentDebugNavigationViewController childViewControllers]) {
@@ -262,13 +263,28 @@ static UINavigationController *currentDebugNavigationViewController;
             [currentDebugNavigationViewController popToViewController:targetViewController animated:NO];
         }
     }
+}
+
++ (void)debuggerDidReload {
+    [self debuggerDidTerminal];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        [self startWithURL:[[XTDebug sharedDebugger] sourceURL]
-      navigationController:currentDebugNavigationViewController
-           completionBlock:nil
-              failureBlock:nil];
+        currentDebugContext = [self startWithURL:[[XTDebug sharedDebugger] sourceURL]
+                            navigationController:currentDebugNavigationViewController
+                                 completionBlock:nil
+                                    failureBlock:nil];
     });
 }
+
++ (NSString *)debuggerEval:(NSString *)code {
+    if (currentDebugContext != nil) {
+        return [currentDebugContext evaluateScript:code].toString;
+    }
+    return nil;
+}
+
+- (void)debuggerDidReload {}
+- (void)debuggerDidTerminal {}
+- (NSString *)debuggerEval:(NSString *)code { return nil; }
 
 @end
