@@ -38,18 +38,6 @@ export class URLRequest extends IURLRequest {
         }
     }
 
-    setHTTPShouldHandleCookies(value: boolean): void {
-        _XTFURLRequest.xtr_setHTTPShouldHandleCookiesObjectRef(value, this.objectRef)
-    }
-    
-    setHTTPShouldUsePipelining(value: boolean): void {
-        _XTFURLRequest.xtr_setHTTPShouldUsePipeliningObjectRef(value, this.objectRef)
-    }
-
-    setAllowsCellularAccess(value: boolean): void {
-        _XTFURLRequest.xtr_setAllowsCellularAccessObjectRef(value, this.objectRef)
-    }
-
     retain(): this {
         _XTRetain(this.objectRef)
         return this

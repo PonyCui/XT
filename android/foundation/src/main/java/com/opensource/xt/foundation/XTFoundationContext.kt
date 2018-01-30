@@ -28,7 +28,11 @@ class XTFoundationContext(appContext: Context, attachingContext: XTContext?) : X
                 XTFUserDefaults.JSExports(this),
                 XTFNotification.JSExports(this),
                 XTFFileManager.JSExports(this),
-                XTFWebSocket.JSExports(this)
+                XTFWebSocket.JSExports(this),
+                XTFURLRequest.JSExports(this),
+                XTFURLResponse.JSExports(this),
+                XTFURLSession.JSExports(this),
+                XTFURLSessionTask.JSExports(this)
         )
         components.forEach {
             val obj = it.exports()

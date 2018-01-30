@@ -99,6 +99,7 @@ export class TestBase extends UI.ViewController {
             resultLabel.textColor = UI.Color.redColor
             resultLabel.text = "Fail >>> " + description
         }
+        console.log(resultLabel.text);
         this.currentY += 28.0
         this.view.addSubview(resultLabel)
     }

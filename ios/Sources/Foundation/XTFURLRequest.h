@@ -18,9 +18,6 @@
 + (void)xtr_setHTTPHeaderValue:(NSString *)headedValue headerKey:(NSString *)headerKey objectRef:(NSString *)objectRef;
 + (void)xtr_setHTTPBodyFromString:(NSString *)stringValue objectRef:(NSString *)objectRef;
 + (void)xtr_setHTTPBodyFromData:(NSString *)dataRef objectRef:(NSString *)objectRef;
-+ (void)xtr_setHTTPShouldHandleCookies:(BOOL)value objectRef:(NSString *)objectRef;
-+ (void)xtr_setHTTPShouldUsePipelining:(BOOL)value objectRef:(NSString *)objectRef;
-+ (void)xtr_setAllowsCellularAccess:(BOOL)value objectRef:(NSString *)objectRef;
 
 @end
 

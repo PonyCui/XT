@@ -18,36 +18,24 @@ export class URLRequest extends IURLRequest {
 
     constructor(url: string, timeout = 15, cachePolicy: IURLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
         super(url, timeout, cachePolicy);
-        this.objectRef = _XTFURLRequest.createTimeoutCachePolicy(url, timeout, cachePolicy);
+        this.objectRef = _XTFURLRequest.create(url, timeout, cachePolicy);
     }
 
     setHTTPMethod(value: string): void {
-        _XTFURLRequest.xtr_setHTTPMethodObjectRef(value, this.objectRef)
+        _XTFURLRequest.xtr_setHTTPMethod(value, this.objectRef)
     }
 
     setHTTPHeader(value: string, key: string): void {
-        _XTFURLRequest.xtr_setHTTPHeaderValueHeaderKeyObjectRef(value, key, this.objectRef)
+        _XTFURLRequest.xtr_setHTTPHeader(value, key, this.objectRef)
     }
 
     setHTTPBody(value: string | Data): void {
         if (typeof value === "string") {
-            _XTFURLRequest.xtr_setHTTPBodyFromStringObjectRef(value, this.objectRef)
+            _XTFURLRequest.xtr_setHTTPBodyFromString(value, this.objectRef)
         }
         else if (value instanceof Data) {
-            _XTFURLRequest.xtr_setHTTPBodyFromDataObjectRef(value.objectRef, this.objectRef)
+            _XTFURLRequest.xtr_setHTTPBodyFromData(value.objectRef, this.objectRef)
         }
-    }
-
-    setHTTPShouldHandleCookies(value: boolean): void {
-        _XTFURLRequest.xtr_setHTTPShouldHandleCookiesObjectRef(value, this.objectRef)
-    }
-    
-    setHTTPShouldUsePipelining(value: boolean): void {
-        _XTFURLRequest.xtr_setHTTPShouldUsePipeliningObjectRef(value, this.objectRef)
-    }
-
-    setAllowsCellularAccess(value: boolean): void {
-        _XTFURLRequest.xtr_setAllowsCellularAccessObjectRef(value, this.objectRef)
     }
 
     retain(): this {

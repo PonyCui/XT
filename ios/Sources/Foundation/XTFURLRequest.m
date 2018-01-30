@@ -55,25 +55,4 @@
     }
 }
 
-+ (void)xtr_setHTTPShouldHandleCookies:(BOOL)value objectRef:(NSString *)objectRef {
-    NSMutableURLRequest *request = [XTMemoryManager find:objectRef];
-    if ([request isKindOfClass:[NSMutableURLRequest class]]) {
-        request.HTTPShouldHandleCookies = value;
-    }
-}
-
-+ (void)xtr_setHTTPShouldUsePipelining:(BOOL)value objectRef:(NSString *)objectRef {
-    NSMutableURLRequest *request = [XTMemoryManager find:objectRef];
-    if ([request isKindOfClass:[NSMutableURLRequest class]]) {
-        request.HTTPShouldUsePipelining = value;
-    }
-}
-
-+ (void)xtr_setAllowsCellularAccess:(BOOL)value objectRef:(NSString *)objectRef {
-    NSMutableURLRequest *request = [XTMemoryManager find:objectRef];
-    if ([request isKindOfClass:[NSMutableURLRequest class]]) {
-        request.allowsCellularAccess = value;
-    }
-}
-
 @end

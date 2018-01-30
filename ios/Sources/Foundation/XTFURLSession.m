@@ -93,6 +93,7 @@
     [result.completionHandler callWithArguments:@[
                                                   dataRef ?: [NSNull null],
                                                   responseRef ?: [NSNull null],
+                                                  result.error.localizedDescription ?: [NSNull null],
                                                   ]];
 }
 

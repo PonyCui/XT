@@ -28,9 +28,6 @@ export class URLRequest implements Releasable {
     setHTTPMethod(value: string): void { }
     setHTTPHeader(value: string, key: string): void { }
     setHTTPBody(value: string | Data): void { }
-    setHTTPShouldHandleCookies(value: boolean): void { }
-    setHTTPShouldUsePipelining(value: boolean): void { }
-    setAllowsCellularAccess(value: boolean): void { }
 
     retain(): this {
         throw new Error("Method not implemented.");
