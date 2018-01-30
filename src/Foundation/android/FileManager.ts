@@ -15,28 +15,24 @@ export class FileManager extends IFileManager {
     static sdcard: FileManager = new FileManager(3)
 
     writeData(data: Data, path: string): boolean {
-        return _XTFFileManager.writeDataPathLocation(data.objectRef, path, this.location)
+        return _XTFFileManager.writeData(data.objectRef, path, this.location)
     }
 
     readData(path: string): Data | undefined {
-        const dataRef = _XTFFileManager.readDataLocation(path, this.location)
+        const dataRef = _XTFFileManager.readData(path, this.location)
         return typeof dataRef === "string" ? Data.initWithRef(dataRef) : undefined
     }
 
     isFileExist(path: string): boolean {
-        return _XTFFileManager.fileExistsLocation(path, this.location)
+        return _XTFFileManager.fileExists(path, this.location)
     }
 
     deleteFile(path: string): boolean {
-        return _XTFFileManager.deleteFileLocation(path, this.location)
+        return _XTFFileManager.deleteFile(path, this.location)
     }
 
     list(path: string): string[] {
-        return _XTFFileManager.listLocation(path, this.location)
-    }
-
-    fileInfo(path: string) {
-
+        return _XTFFileManager.list(path, this.location)
     }
 
 }

@@ -35,8 +35,4 @@ export class FileManager extends IFileManager {
         return _XTFFileManager.listLocation(path, this.location)
     }
 
-    fileInfo(path: string) {
-
-    }
-
 }
