@@ -12,6 +12,7 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
 
     val runtime: V8 = attachingContext?.runtime ?: V8.createV8Runtime()
     val sharedTimer = Timer()
+    val sharedHandler = Handler()
     private var childContexts: MutableList<XTContext> = mutableListOf()
     private var isGlobalVariableDidSetup = false
 

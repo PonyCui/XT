@@ -6,7 +6,7 @@ import { Notification, NotificationCenter } from './Notification'
 // import { URLSession } from './URLSession'
 // import { URLSessionTask } from './URLSessionTask'
 import { UserDefaults } from './UserDefaults'
-// import { WebSocket } from './WebSocket'
+import { WebSocket } from './WebSocket'
 
 declare var module: any
 module.exports = {
@@ -20,5 +20,5 @@ module.exports = {
     // URLSession,
     // URLSessionTask,
     UserDefaults,
-    // WebSocket,
+    WebSocket,
 }

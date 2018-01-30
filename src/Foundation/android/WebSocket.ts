@@ -46,15 +46,15 @@ export class WebSocket extends IWebSocket {
     }
 
     sendData(data: Data): void {
-        _XTFWebSocket.xtr_sendDataObjectRef(data.objectRef, this.objectRef)
+        _XTFWebSocket.xtr_sendData(data.objectRef, this.objectRef)
     }
 
     sendString(string: string): void {
-        _XTFWebSocket.xtr_sendStringObjectRef(string, this.objectRef)
+        _XTFWebSocket.xtr_sendString(string, this.objectRef)
     }
 
     close(): void {
-        _XTFWebSocket.xtr_close()
+        _XTFWebSocket.xtr_close(this.objectRef)
     }
 
     retain(): this {

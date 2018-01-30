@@ -20,8 +20,8 @@ class XTFNotification {
 
         fun postNotification(name: String, obj: Object, userInfo: Map<String?, Any?>) {
             observers.values.filter { it.name == name }.forEach { observer ->
-                observer.threadHandler.post {
-                    observer.context?.get()?.let {
+                observer.context?.get()?.let {
+                    it.sharedHandler.post {
                         (it.evaluateScript("window.XTFNotificationCenter.default") as? V8Object)?.let {
                             val userInfoV8Object = V8ObjectUtils.toV8Object(it.runtime, userInfo)
                             XTContext.invokeMethod(it, "onNotification", listOf(name, obj, userInfoV8Object))
@@ -37,7 +37,6 @@ class XTFNotification {
     class Observer(val name: String, val context: WeakReference<XTContext>) {
 
         val handler: String = UUID.randomUUID().toString()
-        val threadHandler = Handler()
 
     }
 

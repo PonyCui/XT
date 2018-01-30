@@ -54,7 +54,7 @@ export class WebSocket extends IWebSocket {
     }
 
     close(): void {
-        _XTFWebSocket.xtr_close()
+        _XTFWebSocket.xtr_close(this.objectRef)
     }
 
     retain(): this {
