@@ -8,6 +8,7 @@
     "sample_debug": "webpack --env.src_Sample --env.debug -w & http-server -c-1",
     "core_ios": "webpack --env.src_Core_ios -w",
     "core_android": "webpack --env.src_Core_android -w",
+    "core_web": "webpack --env.src_Core_web -w",
     "foundation_ios": "webpack --env.src_Foundation_ios -w",
     "foundation_android": "webpack --env.src_Foundation_android -w",
     "uikit_android": "webpack --env.src_UIKit_android -w",

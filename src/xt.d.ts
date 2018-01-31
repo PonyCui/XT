@@ -9,10 +9,11 @@ export enum ClassType {
     Unknown,
     ObjC,
     Java,
+    JavaScript,
 }
 
 export class ClassLoader {
-    static loadClass(classType: ClassType, className: string, globalName: string): void
+    static loadClass(classType: ClassType, className: string | Object, globalName: string): void
 }
 
 export as namespace UI;

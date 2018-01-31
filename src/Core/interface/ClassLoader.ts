@@ -7,10 +7,11 @@ export enum ClassType {
     Unknown,
     ObjC,
     Java,
+    JavaScript,
 }
 
 export class ClassLoader {
 
-    static loadClass(classType: ClassType, className: string, globalName: string): void { throw Error("Not Implemented") }
+    static loadClass(classType: ClassType, className: string | Object, globalName: string): void { throw Error("Not Implemented") }
 
 }

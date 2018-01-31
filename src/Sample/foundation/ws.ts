@@ -13,7 +13,7 @@ export class WSSample extends TestBase {
         _.isAsync = true
         var connected = false
         var send_and_received = false
-        this.socket = new NS.WebSocket("ws://echo.websocket.org").retain()
+        this.socket = new NS.WebSocket("ws://sandbox.kaazing.net/echo").retain()
         this.socket.onOpen = () => {
             connected = true
             this.socket.sendString("Hello, World!");
@@ -34,7 +34,7 @@ export class WSSample extends TestBase {
         _.isAsync = true
         var connected = false
         var send_and_received = false
-        this.socket = new NS.WebSocket("wss://echo.websocket.org").retain()
+        this.socket = new NS.WebSocket("wss://sandbox.kaazing.net/echo").retain()
         this.socket.onOpen = () => {
             connected = true
             this.socket.sendString("Hello, World!");
