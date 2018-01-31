@@ -10,7 +10,7 @@ export class NotificationCenter extends INotificationCenter {
     private observers: { handler: string, name: string, triggerBlock: (notification: Notification) => void }[] = []
 
     addObserver(name: string, triggerBlock: (notification: Notification) => void): string {
-        const handler = _XTFNotification.addObserver(name)
+        const handler = performance.now().toString() + "-" + Math.random() + "-" + Math.random()
         this.observers.push({
             name,
             handler,
@@ -20,12 +20,11 @@ export class NotificationCenter extends INotificationCenter {
     }
 
     removeObserver(handler: string): void {
-        _XTFNotification.removeObserver(handler)
         this.observers = this.observers.filter(it => it.handler !== handler)
     }
 
     postNotification(name: string, object: any, userInfo: { [key: string]: any }): void {
-        _XTFNotification.postNotificationObjectUserInfo(name, object, userInfo)
+        this.onNotification(name, object, userInfo)
     }
 
     onNotification(name: string, object: any, userInfo: { [key: string]: any }): void {
@@ -38,5 +37,3 @@ export class NotificationCenter extends INotificationCenter {
     }
 
 }
-
-(window as any).XTFNotificationCenter = NotificationCenter;
