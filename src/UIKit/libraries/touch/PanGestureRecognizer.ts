@@ -53,9 +53,11 @@ export class PanGestureRecognizer implements GestureRecongnizer {
             this.velocity = touches[0].velocity as any
         }
         else {
-            this.velocity = {
-                x: (rawLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
-                y: (rawLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+            if (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0) > 0) {
+                this.velocity = {
+                    x: (rawLocation.x - (this.touchPreviousPoint ? this.touchPreviousPoint.x : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+                    y: (rawLocation.y - (this.touchPreviousPoint ? this.touchPreviousPoint.y : 0.0)) / (touches[0].timestamp / 1000 - (this.touchPreviousTimestamp || 0)),
+                }
             }
         }
         if (this.recognized) {
