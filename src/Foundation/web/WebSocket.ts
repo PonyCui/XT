@@ -9,61 +9,55 @@ import { Data } from './Data';
 
 export class WebSocket extends IWebSocket {
 
-    objectRef: string
+    socket: any
 
     constructor(url: string) {
         super(url)
-        this.objectRef = _XTFWebSocket.create(url)
-        objectRefs[this.objectRef] = this
+        this.socket = new (window as any).WebSocket(url)
+        this.socket.addEventListener('open', () => {
+            this.onOpen && this.onOpen()
+        })
+        this.socket.addEventListener('close', (_: any, e: CloseEvent) => {
+            this.onClose && this.onClose(e.code, e.reason)
+        })
+        this.socket.addEventListener('error', (_: any, e: ErrorEvent) => {
+            this.onFail && this.onFail(new Error(e.message))
+        })
+        this.socket.addEventListener('message', (e: MessageEvent) => {
+            if (e.data instanceof ArrayBuffer) {
+                this.onMessage && this.onMessage(Data.initWithBytes(new Uint8Array(e.data)))
+            }
+            else if (typeof e.data === "string") {
+                this.onMessage && this.onMessage(e.data)
+            }
+        })
     }
 
     onOpen?: () => void
 
-    handleOpen() {
-        this.onOpen && this.onOpen()
-    }
-
     onClose?: (code: number, reason: string) => void
-
-    handleClose(code: number, reason: string) {
-        this.onClose && this.onClose(code, reason)
-    }
 
     onFail?: (error: Error) => void
 
-    handleFail(message: string) {
-        this.onFail && this.onFail(new Error(message))
-    }
-
     onMessage?: (message: Data | string) => void
 
-    handleDataMessage(dataRef: string) {
-        this.onMessage && this.onMessage(Data.initWithRef(dataRef))
-    }
-
-    handleStringMessage(value: string) {
-        this.onMessage && this.onMessage(value)
-    }
-
     sendData(data: Data): void {
-        _XTFWebSocket.xtr_sendDataObjectRef(data.objectRef, this.objectRef)
+        this.socket.send(data.buffer)
     }
 
     sendString(string: string): void {
-        _XTFWebSocket.xtr_sendStringObjectRef(string, this.objectRef)
+        this.socket.send(string)
     }
 
     close(): void {
-        _XTFWebSocket.xtr_close(this.objectRef)
+        this.socket.close()
     }
 
     retain(): this {
-        _XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        _XTRelease(this.objectRef)
         return this
     }
 

@@ -14,13 +14,22 @@ export class UserDefaults extends IUserDefaults {
     }
 
     set(object: any, forKey: string): void {
-        try {
-            _XTFUserDefaults.xtr_setObjectForKeySuite(object, forKey, this.suite || "")
-        } catch (error) { }
+        const storageKey = JSON.stringify({ forKey, suite: this.suite || "Default" })
+        if (object === undefined) {
+            localStorage.removeItem(storageKey)
+        }
+        else {
+            localStorage.setItem(storageKey, JSON.stringify({ value: object }))
+        }
     }
 
     get(forKey: string): any {
-        return _XTFUserDefaults.xtr_objectForKeySuite(forKey, this.suite || "")
+        const storageKey = JSON.stringify({ forKey, suite: this.suite || "Default" })
+        try {
+            return JSON.parse(localStorage.getItem(storageKey) || "{}").value
+        } catch (error) {
+            return undefined
+        }
     }
 
 }

@@ -5,8 +5,8 @@ import { Data } from './Data'
 // import { URLResponse } from './URLResponse'
 // import { URLSession } from './URLSession'
 // import { URLSessionTask } from './URLSessionTask'
-// import { UserDefaults } from './UserDefaults'
-// import { WebSocket } from './WebSocket'
+import { UserDefaults } from './UserDefaults'
+import { WebSocket } from './WebSocket'
 
 declare var module: any
 module.exports = {
@@ -19,6 +19,6 @@ module.exports = {
     // URLResponse,
     // URLSession,
     // URLSessionTask,
-    // UserDefaults,
-    // WebSocket,
+    UserDefaults,
+    WebSocket,
 }
