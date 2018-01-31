@@ -44,10 +44,9 @@ class XTUIButton @JvmOverloads constructor(
     }
 
     private fun resetContents() {
-        val scale = resources.displayMetrics.density
         val imageWidth = (this.imageView.image?.size?.width ?: 0.0)
         val imageHeight = (this.imageView.image?.size?.height ?: 0.0)
-        val textSize = this.titleLabel.intrinsicContentSize(this.bounds.width / scale  - imageWidth - inset) ?: XTUISize(0.0, 0.0)
+        val textSize = this.titleLabel.intrinsicContentSize(this.bounds.width  - imageWidth - inset) ?: XTUISize(0.0, 0.0)
         val textWidth = textSize.width
         val textHeight = textSize.height
         if (isVertical) {

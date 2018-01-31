@@ -39,6 +39,7 @@ class XTUISlider @JvmOverloads constructor(
         if (changed) {
             innerViewLayoutParams.width = right - left
             innerView.y = (((bottom - top) - innerView.height) / 2.0).toFloat()
+            innerView.requestLayout()
         }
     }
 
