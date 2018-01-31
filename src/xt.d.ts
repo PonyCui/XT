@@ -860,7 +860,6 @@ export class Data implements Releasable {
     retain(): this
     release(): this
     static initWithString(value: string): Data
-    static initWithRef(objectRef: string): Data
     static initWithBytes(bytes: Uint8Array): Data
     static initWithData(data: Data): Data
     static initWithBase64EncodedString(string: string): Data | undefined

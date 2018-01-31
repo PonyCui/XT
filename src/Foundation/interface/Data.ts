@@ -16,7 +16,6 @@ export class Data implements Releasable {
     public objectRef?: string
 
     static initWithString(value: string): Data { throw Error("Not implemented.") }
-    static initWithRef(objectRef: string): Data { throw Error("Not implemented.") }
     static initWithBytes(bytes: Uint8Array): Data { throw Error("Not implemented.") }
     static initWithData(data: Data): Data { throw Error("Not implemented.") }
     static initWithBase64EncodedString(string: string): Data | undefined { throw Error("Not implemented.") }

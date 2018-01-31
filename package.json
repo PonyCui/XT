@@ -11,6 +11,7 @@
     "core_web": "webpack --env.src_Core_web -w",
     "foundation_ios": "webpack --env.src_Foundation_ios -w",
     "foundation_android": "webpack --env.src_Foundation_android -w",
+    "foundation_web": "webpack --env.src_Foundation_web -w",
     "uikit_android": "webpack --env.src_UIKit_android -w",
     "uikit_ios": "webpack --env.src_UIKit_ios -w",
     "uikit_web": "webpack --env.src_UIKit_web -w",
