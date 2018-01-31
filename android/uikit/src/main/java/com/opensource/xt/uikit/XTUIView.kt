@@ -177,28 +177,27 @@ open class XTUIView @JvmOverloads constructor(
             if (XTUIViewAnimator.animationEnabled) {
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.backgroundColor.r", (this.backgroundColor.r).toFloat() as Any, value.r.toFloat() as Any, { r ->
                     this.backgroundColor?.let {
-                        this.backgroundColor = XTUIColor((r as Float).toDouble(), it.g, it.b, it.a)
+                        this.backgroundColor = XTUIColor(Math.max(0.0, Math.min(1.0, (r as Float).toDouble())), it.g, it.b, it.a)
                     }
                 }))
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.backgroundColor.g", (this.backgroundColor.g).toFloat() as Any, value.g.toFloat() as Any, { g ->
                     this.backgroundColor?.let {
-                        this.backgroundColor = XTUIColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                        this.backgroundColor = XTUIColor(it.r, Math.max(0.0, Math.min(1.0, (g as Float).toDouble())), it.b, it.a)
                     }
                 }))
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.backgroundColor.b", (this.backgroundColor.b).toFloat() as Any, value.b.toFloat() as Any, { b ->
                     this.backgroundColor?.let {
-                        this.backgroundColor = XTUIColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                        this.backgroundColor = XTUIColor(it.r, it.g, Math.max(0.0, Math.min(1.0, (b as Float).toDouble())), it.a)
                     }
                 }))
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.backgroundColor.a", (this.backgroundColor.a).toFloat() as Any, value.a.toFloat() as Any, { a ->
                     this.backgroundColor?.let {
-                        this.backgroundColor = XTUIColor(it.r, it.g, it.b, (a as Float).toDouble())
+                        this.backgroundColor = XTUIColor(it.r, it.g, it.b, Math.max(0.0, Math.min(1.0, (a as Float).toDouble())))
                     }
                 }))
                 return
             }
             field = value
-            setBackgroundColor(value.intColor())
             invalidate()
         }
 
@@ -257,22 +256,22 @@ open class XTUIView @JvmOverloads constructor(
             if (XTUIViewAnimator.animationEnabled) {
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.borderColor.r", (this.borderColor.r).toFloat() as Any, value.r.toFloat() as Any, { r ->
                     this.borderColor?.let {
-                        this.borderColor = XTUIColor((r as Float).toDouble(), it.g, it.b, it.a)
+                        this.borderColor = XTUIColor(Math.max(0.0, Math.min(1.0, (r as Float).toDouble())), it.g, it.b, it.a)
                     }
                 }))
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.borderColor.g", (this.borderColor.g).toFloat() as Any, value.g.toFloat() as Any, { g ->
                     this.borderColor?.let {
-                        this.borderColor = XTUIColor(it.r, (g as Float).toDouble(), it.b, it.a)
+                        this.borderColor = XTUIColor(it.r, Math.max(0.0, Math.min(1.0, (g as Float).toDouble())), it.b, it.a)
                     }
                 }))
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.borderColor.b", (this.borderColor.b).toFloat() as Any, value.b.toFloat() as Any, { b ->
                     this.borderColor?.let {
-                        this.borderColor = XTUIColor(it.r, it.g, (b as Float).toDouble(), it.a)
+                        this.borderColor = XTUIColor(it.r, it.g, Math.max(0.0, Math.min(1.0, (b as Float).toDouble())), it.a)
                     }
                 }))
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.borderColor.a", (this.borderColor.a).toFloat() as Any, value.a.toFloat() as Any, { a ->
                     this.borderColor?.let {
-                        this.borderColor = XTUIColor(it.r, it.g, it.b, (a as Float).toDouble())
+                        this.borderColor = XTUIColor(it.r, it.g, it.b, Math.max(0.0, Math.min(1.0, (a as Float).toDouble())))
                     }
                 }))
                 return
@@ -290,7 +289,6 @@ open class XTUIView @JvmOverloads constructor(
         outerPath.addRoundRect(RectF(0.0f, 0.0f, (bounds.width * scale).toFloat(), (bounds.height * scale).toFloat()), (cornerRadius * scale).toFloat(), (cornerRadius * scale).toFloat(), Path.Direction.CCW)
     }
 
-
     override fun draw(canvas: Canvas?) {
         canvas?.save()
         if (!transformMatrix.isIdentity()) {
@@ -304,7 +302,14 @@ open class XTUIView @JvmOverloads constructor(
             matrix.postTranslate((this.width / 2.0).toFloat(), (this.height / 2.0).toFloat())
             canvas?.concat(matrix)
         }
-        if (cornerRadius > 0 || clipsToBounds) {
+        if (backgroundColor.a > 0.0) {
+            sharedPaint.reset()
+            sharedPaint.isAntiAlias = true
+            sharedPaint.style = Paint.Style.FILL
+            sharedPaint.color = backgroundColor.intColor()
+            canvas?.drawPath(outerPath, sharedPaint)
+        }
+        if (clipsToBounds) {
             canvas?.save()
             canvas?.clipPath(outerPath)
             super.draw(canvas)

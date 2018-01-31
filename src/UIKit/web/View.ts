@@ -77,8 +77,14 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
             if (this.frame.height != value.height) { View.addAnimation(this, "frameHeight", this.frame.height, value.height); }
             return;
         }
+        const field = this.nativeObject.xtr_frame()
+        if (field.x === value.x && field.y === value.y && field.width === value.width && field.height === value.height) {
+            return;
+        }
         this.nativeObject.xtr_setFrame(value);
-        this.layoutSubviews();
+        if (field.width !== value.width || field.height !== value.height) {
+            this.layoutSubviews();
+        }
     }
 
     public get bounds(): Rect {

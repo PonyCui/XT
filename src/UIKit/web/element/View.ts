@@ -69,23 +69,40 @@ export class ViewElement extends BaseElement {
         }
     }
 
+    private _cacheTransform: any = undefined
+    private _cacheNewTransform: any = undefined
+    private _cacheWidth: any = undefined
+    private _cacheHeight: any = undefined
+
     private resetTransform() {
         if (!this.transform.isIdentity()) {
-            const obj = new TransformMatrixAlgorithm()
-            const unMatrix = TransformMatrix.unmatrix(this.transform)
-            obj.translate(-this.frame.width / 2.0, -this.frame.height / 2.0, 0.0)
-            obj.rotate(-(unMatrix.degree * Math.PI / 180))
-            obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
-            obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
-            obj.translate(this.frame.width / 2.0, this.frame.height / 2.0, 0.0)
-            const newTransform = new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
-            this.nativeObject.setAttribute('transform', 'matrix(' + newTransform.a + ', ' + newTransform.b + ', ' + newTransform.c + ', ' + newTransform.d + ', ' + (newTransform.tx + this.frame.x) + ', ' + (newTransform.ty + this.frame.y) + ')')
+            if (this._cacheTransform === this.transform && this._cacheNewTransform !== undefined) {
+                const newTransform = this._cacheNewTransform
+                this.nativeObject.setAttribute('transform', 'matrix(' + newTransform.a + ', ' + newTransform.b + ', ' + newTransform.c + ', ' + newTransform.d + ', ' + (newTransform.tx + this.frame.x) + ', ' + (newTransform.ty + this.frame.y) + ')')
+            }
+            else {
+                const obj = new TransformMatrixAlgorithm()
+                const unMatrix = TransformMatrix.unmatrix(this.transform)
+                obj.translate(-this.frame.width / 2.0, -this.frame.height / 2.0, 0.0)
+                obj.rotate(-(unMatrix.degree * Math.PI / 180))
+                obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
+                obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
+                obj.translate(this.frame.width / 2.0, this.frame.height / 2.0, 0.0)
+                const newTransform = new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
+                this.nativeObject.setAttribute('transform', 'matrix(' + newTransform.a + ', ' + newTransform.b + ', ' + newTransform.c + ', ' + newTransform.d + ', ' + (newTransform.tx + this.frame.x) + ', ' + (newTransform.ty + this.frame.y) + ')')
+                this._cacheTransform = this.transform
+                this._cacheNewTransform = newTransform
+            }
         }
         else {
             this.nativeObject.setAttribute('transform', 'matrix(' + this.transform.a + ', ' + this.transform.b + ', ' + this.transform.c + ', ' + this.transform.d + ', ' + (this.transform.tx + this.frame.x) + ', ' + (this.transform.ty + this.frame.y) + ')')
         }
-        this.backgroundObject.setAttribute('width', this.frame.width.toString())
-        this.backgroundObject.setAttribute('height', this.frame.height.toString())
+        if (!(this._cacheWidth === this.frame.width && this._cacheHeight === this.frame.height)) {
+            this._cacheWidth = this.frame.width
+            this._cacheHeight = this.frame.height
+            this.backgroundObject.setAttribute('width', this.frame.width.toString())
+            this.backgroundObject.setAttribute('height', this.frame.height.toString())
+        }
     }
 
     private clipsToBounds = false
