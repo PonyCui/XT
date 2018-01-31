@@ -172,7 +172,7 @@ open class XTUIView @JvmOverloads constructor(
         super.setAlpha(alpha)
     }
 
-    var backgroundColor: XTUIColor = XTUIColor(0.0, 0.0, 0.0, 0.0)
+    open var backgroundColor: XTUIColor = XTUIColor(0.0, 0.0, 0.0, 0.0)
         set(value) {
             if (XTUIViewAnimator.animationEnabled) {
                 XTUIViewAnimator.addAnimation(XTUIViewAnimationProperty("$objectUUID.backgroundColor.r", (this.backgroundColor.r).toFloat() as Any, value.r.toFloat() as Any, { r ->

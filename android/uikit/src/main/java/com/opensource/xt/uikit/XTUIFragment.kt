@@ -2,6 +2,7 @@ package com.opensource.xt.uikit
 
 import android.app.Fragment
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.*
@@ -53,7 +54,12 @@ open class XTUIFragment: Fragment() {
         val navigationHidden = this.navigationBarHidden || this.navigationBar == null
         rootView.removeAllViews()
         this.view?.let { rootView.removeView(it) }
-        this.navigationBar?.let { rootView.removeView(it) }
+        this.navigationBar?.let {
+            rootView.removeView(it)
+            activity?.window?.let { window ->
+                it.window = WeakReference(window)
+            }
+        }
         this.view?.let { innerView ->
             rootView.view = WeakReference(innerView)
             rootView.addView(innerView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -62,7 +68,7 @@ open class XTUIFragment: Fragment() {
         this.navigationBar?.takeIf { !navigationHidden }?.let { navigationBar ->
             rootView.navigationBar = WeakReference(navigationBar)
             rootView.addView(navigationBar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            rootView.topLayoutLength = 68.0
+            rootView.topLayoutLength = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) 48.0 else 68.0
         } ?: kotlin.run { rootView.navigationBar = null }
         rootView.resetLayout()
     }
@@ -95,7 +101,7 @@ open class XTUIFragment: Fragment() {
 
         fun resetLayout() {
             navigationBar?.get()?.let {
-                it.frame = XTUIRect(0.0, 0.0, (this.width / resources.displayMetrics.density).toDouble(), 68.0)
+                it.frame = XTUIRect(0.0, 0.0, (this.width / resources.displayMetrics.density).toDouble(), this.topLayoutLength)
             }
             view?.get()?.let {
                 it.frame = XTUIRect(0.0, this.topLayoutLength, (this.width / resources.displayMetrics.density).toDouble(), (this.height / resources.displayMetrics.density).toDouble() - this.topLayoutLength - this.bottomLayoutLength)

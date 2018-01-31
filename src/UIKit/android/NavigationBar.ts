@@ -156,6 +156,7 @@ export class NavigationBar extends View {
     public set lightContent(value: boolean) {
         this._lightContent = value
         this.tintColor = Color.whiteColor
+        _XTUINavigationBar.xtr_setLightContent(value, this.objectRef)
     }
 
     private leftButtonItems: NavigationBarButtonItem[]
