@@ -74,14 +74,16 @@ export class Data extends IData {
 
     md5(): string {
         if (typeof SparkMD5 === "undefined") {
-            throw Error("Please add <script src='https://cdn.jsdelivr.net/npm/spark-md5@3.0.0/spark-md5.min.js'></script> to HTML")
+            console.error("Please add <script src='https://cdn.jsdelivr.net/npm/spark-md5@3.0.0/spark-md5.min.js'></script> to HTML");
+            return "";
         }
         return (SparkMD5.ArrayBuffer.hash(this.buffer) as String).toUpperCase()
     }
 
     sha1(): string {
         if (typeof sha1 === "undefined") {
-            throw Error("Please add <script src='https://cdn.jsdelivr.net/npm/js-sha1@0.6.0/build/sha1.min.js'></script> to HTML")
+            console.error("Please add <script src='https://cdn.jsdelivr.net/npm/js-sha1@0.6.0/build/sha1.min.js'></script> to HTML");
+            return "";
         }
         return (sha1(new Uint8Array(this.buffer)) as String).toUpperCase();
     }
