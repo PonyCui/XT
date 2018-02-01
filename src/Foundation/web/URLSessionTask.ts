@@ -5,32 +5,48 @@
  */
 
 import { URLSessionTask as IURLSessionTask } from '../interface/URLSessionTask'
+import { Data } from './Data';
+import { URLResponse } from './URLResponse';
 
 export class URLSessionTask extends IURLSessionTask {
 
-    readonly objectRef: any
-
-    constructor(objectRef: string) {
+    constructor(
+        readonly xmlReuqest: XMLHttpRequest,
+        readonly body: string | Data | undefined,
+        readonly completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void) {
         super()
-        this.objectRef = objectRef
     }
 
     retain(): this {
-        _XTRetain(this.objectRef)
         return this
     }
-    
+
     release(): this {
-        _XTRelease(this.objectRef)
         return this
     }
 
     cancel(): void {
-        _XTFURLSessionTask.cancel(this.objectRef)
+        this.xmlReuqest.abort()
     }
 
     resume(): void {
-        _XTFURLSessionTask.resume(this.objectRef)
+        this.xmlReuqest.addEventListener("loadend", () => {
+            const data: Data | undefined = this.xmlReuqest.response instanceof ArrayBuffer ? Data.initWithBytes(new Uint8Array(this.xmlReuqest.response)) : undefined
+            const response = new URLResponse(this.xmlReuqest)
+            this.completionHandler(data, response, undefined)
+        })
+        this.xmlReuqest.addEventListener("error", ((_: any, e: ErrorEvent) => {
+            this.completionHandler(undefined, undefined, e.error)
+        }) as any)
+        if (this.body instanceof Data) {
+            this.xmlReuqest.send(this.body.buffer)
+        }
+        else if (typeof this.body === "string") {
+            this.xmlReuqest.send(this.body)
+        }
+        else {
+            this.xmlReuqest.send()
+        }
     }
 
 }

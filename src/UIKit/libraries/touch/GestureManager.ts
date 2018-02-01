@@ -107,17 +107,15 @@ export class GestureManager {
             if (this.activeGesture.owner == owner) {
                 this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
-            if (!this.activeGesture.cancellable) {
-                return;
-            }
+            return;
         }
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
             let gesture = owner.gestureRecongnizers[index];
             if (gesture.enabled) {
                 if (gesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this))) {
-                    if (this.activeGesture && this.activeGesture.cancellable) {
-                        this.activeGesture.touchesCancelled(this.activeGesture.owner as any, [], {}, undefined, undefined)
-                    }
+                    // if (this.activeGesture && this.activeGesture.cancellable) {
+                    //     this.activeGesture.touchesCancelled(this.activeGesture.owner as any, [], {}, undefined, undefined)
+                    // }
                     this.activeGesture = gesture;
                     break;
                 }

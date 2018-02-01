@@ -19,7 +19,9 @@ export class URLSessionSample extends TestBase {
                 this.assert(strValue !== undefined && JSON.parse(strValue)["args"]["foo"] === "Hello, World!", "Response Data Content Check", _)
                 this.assert(response.url === "http://www.httpbin.org/get?foo=Hello,%20World!", "Response URL Check", _)
                 this.assert(response.statusCode < 400, "Response statusCode Check", _)
-                this.assert(response.allHeaderFields["X-Powered-By"] === "Flask", "Response allHeaderFields Check", _)
+                if (typeof navigator === "undefined") {
+                    this.assert(response.allHeaderFields["X-Powered-By"] === "Flask", "Response allHeaderFields Check", _)    
+                }
                 _.asyncResolover()
             }
         }).resume()

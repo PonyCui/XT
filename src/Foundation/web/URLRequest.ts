@@ -11,40 +11,44 @@ export const URLCachePolily = IURLCachePolily
 
 export class URLRequest extends IURLRequest {
 
-    readonly url: string
-    readonly timeout: number
-    readonly cachePolicy: number
-    readonly objectRef: any
+    private HTTPMethod: string = "GET"
+    private HTTPBody: string | Data | undefined = undefined
+    private HTTPHeaders: { [key: string]: string } = {}
 
-    constructor(url: string, timeout = 15, cachePolicy: IURLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
+    constructor(readonly url: string, readonly timeout = 15, readonly cachePolicy: IURLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
         super(url, timeout, cachePolicy);
-        this.objectRef = _XTFURLRequest.createTimeoutCachePolicy(url, timeout, cachePolicy);
+    }
+
+    buildRequest(): { request: XMLHttpRequest, body: string | Data | undefined } {
+        const xmlRequest = new XMLHttpRequest()
+        xmlRequest.timeout = this.timeout * 1000
+        xmlRequest.responseType = "arraybuffer"
+        xmlRequest.open(this.HTTPMethod, this.url, true)
+        for (const key in this.HTTPHeaders) {
+            if (this.HTTPHeaders.hasOwnProperty(key)) {
+                xmlRequest.setRequestHeader(key, this.HTTPHeaders[key])
+            }
+        }
+        return { request: xmlRequest, body: this.HTTPBody }
     }
 
     setHTTPMethod(value: string): void {
-        _XTFURLRequest.xtr_setHTTPMethodObjectRef(value, this.objectRef)
+        this.HTTPMethod = value
     }
 
     setHTTPHeader(value: string, key: string): void {
-        _XTFURLRequest.xtr_setHTTPHeaderValueHeaderKeyObjectRef(value, key, this.objectRef)
+        this.HTTPHeaders[key] = value
     }
 
     setHTTPBody(value: string | Data): void {
-        if (typeof value === "string") {
-            _XTFURLRequest.xtr_setHTTPBodyFromStringObjectRef(value, this.objectRef)
-        }
-        else if (value instanceof Data) {
-            _XTFURLRequest.xtr_setHTTPBodyFromDataObjectRef(value.objectRef, this.objectRef)
-        }
+        this.HTTPBody = value
     }
 
     retain(): this {
-        _XTRetain(this.objectRef)
         return this
     }
 
     release(): this {
-        _XTRelease(this.objectRef)
         return this
     }
 
