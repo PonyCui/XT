@@ -104,7 +104,9 @@ export class GestureManager {
             if (this.activeGesture.owner == owner) {
                 this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
-            this.activeGesture = undefined
+            setTimeout(() => {
+                this.activeGesture = undefined
+            })
             return;
         }
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {
