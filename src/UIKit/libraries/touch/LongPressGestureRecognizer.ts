@@ -78,6 +78,7 @@ export class LongPressGestureRecognizer implements GestureRecongnizer {
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
         const lastTouch = touches[0] || this.lastZeroTouch
+        this.recognized = false
         this.lastZeroTouch = lastTouch
         this.state = GestureRecognizerState.Cancelled
         this.fire && this.fire(this.state, lastTouch ? lastTouch.rawLocation : { x: 0, y: 0 })
