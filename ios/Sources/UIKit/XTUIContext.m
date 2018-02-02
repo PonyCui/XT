@@ -273,6 +273,7 @@ static XTUIContext *currentDebugContext;
                             navigationController:currentDebugNavigationViewController
                                  completionBlock:nil
                                     failureBlock:nil];
+        [[XTDebug sharedDebugger] setDebugContext:currentDebugContext];
     });
 }
 

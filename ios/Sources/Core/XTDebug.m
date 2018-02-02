@@ -15,11 +15,8 @@
 
 @property (nonatomic, strong) NSURL *sourceURL;
 @property (nonatomic, strong) SRWebSocket *socket;
-@property (nonatomic, copy) NSSet<NSString *> *activeBreakpoints;
-@property (nonatomic, strong) NSString *currentBpIdentifier;
 @property (nonatomic, assign) BOOL breakpointLocking;
 @property (nonatomic, assign) BOOL breakpointStepping;
-@property (nonatomic, strong) NSCondition *breakpointCondition;
 
 @end
 
@@ -43,6 +40,22 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
++ (void)xtr_break:(NSString *)bpIdentifier T:(NSString *)T S:(NSString *)S {
+    [[XTDebug sharedDebugger] handleBreak:bpIdentifier T:T S:S];
+}
+
++ (void)xtr_wait {
+    [NSThread sleepForTimeInterval:0.1];
+}
+
++ (BOOL)xtr_locking {
+    return [XTDebug sharedDebugger].breakpointLocking;
+}
+
++ (BOOL)xtr_stepping {
+    return [XTDebug sharedDebugger].breakpointStepping;
+}
+
 - (void)connectWithIP:(NSString *)IP port:(NSInteger)port {
     NSString *URLString = [NSString stringWithFormat:@"ws://%@:%ld", IP, (long)port];
     if (self.socket != nil) {
@@ -54,14 +67,17 @@
     [self.socket open];
 }
 
-- (void)sendLog:(NSString *)string {
-    NSDictionary *obj = @{
-                          @"type": @"console.log",
-                          @"payload": ([[string dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:kNilOptions] ?: @""),
-                          @"bpIdentifier": self.currentBpIdentifier ?: @"",
-                          };
-    NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:kNilOptions error:NULL];
-    [self.socket send:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+- (void)sendLog:(NSString *)string isEval:(BOOL)isEval {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSString *currentBpIdentifier = [self.debugContext evaluateScript:@"window.XTDebug.currentBpIdentifier"].toString;
+        NSDictionary *obj = @{
+                              @"type": @"console.log",
+                              @"payload": ([[string dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:kNilOptions] ?: @""),
+                              @"bpIdentifier": isEval ? @"console" : currentBpIdentifier,
+                              };
+        NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:kNilOptions error:NULL];
+        [self.socket send:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+    }];
 }
 
 #pragma mark - Breakpoint
@@ -80,21 +96,6 @@
 - (void)handleBreak:(NSString *)bpIdentifier T:(NSString *)T S:(NSString *)S {
     [self sendBreak:bpIdentifier T:T S:S];
     self.breakpointLocking = YES;
-    self.breakpointCondition = [NSCondition new];
-    [self.breakpointCondition lock];
-    while (self.breakpointLocking) {
-        [self.breakpointCondition wait];
-    }
-}
-
-+ (void)xtr_bp:(NSString *)bpIdentifier T:(JSValue *)T S:(JSValue *)S {
-    [XTDebug sharedDebugger].currentBpIdentifier = bpIdentifier;
-    if ([XTDebug sharedDebugger].breakpointStepping ||
-        [[[XTDebug sharedDebugger] activeBreakpoints] containsObject:bpIdentifier]) {
-        [[XTDebug sharedDebugger] handleBreak:bpIdentifier
-                                            T:[[[JSContext currentContext] evaluateScript:@"JSON.stringify"] callWithArguments:@[T]].toString
-                                            S:[[[JSContext currentContext] evaluateScript:@"JSON.stringify"] callWithArguments:@[S]].toString];
-    }
 }
 
 #pragma mark - WebSocket Deleagte
@@ -162,7 +163,6 @@
             self.sourceURL = [NSURL fileURLWithPath:tmpPath];
             self.breakpointStepping = NO;
             self.breakpointLocking = NO;
-            [self.breakpointCondition signal];
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [self.delegate debuggerDidReload];
             }];
@@ -171,38 +171,37 @@
 }
 
 - (void)handleClearBreakPoint:(NSDictionary *)obj {
-    NSMutableSet *mutable = self.activeBreakpoints.mutableCopy ?: [NSMutableSet set];
-    [mutable removeObject:[NSString stringWithFormat:@"%@:%@", obj[@"path"], obj[@"line"]]];
-    self.activeBreakpoints = mutable;
+    NSString *bpIdentifier = [NSString stringWithFormat:@"%@:%@", obj[@"path"], obj[@"line"]];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        JSValue *obj = [self.debugContext evaluateScript:@"window.XTDebug"];
+        [obj invokeMethod:@"clearBreakpoint" withArguments:@[bpIdentifier]];
+    }];
 }
 
 - (void)handleClearBreakPoints:(NSDictionary *)obj {
-    NSMutableSet *mutable = [NSMutableSet set];
-    for (NSString *bpID in self.activeBreakpoints.copy) {
-        if ([bpID hasPrefix:obj[@"path"]]) {
-            continue;
-        }
-        [mutable addObject:bpID];
-    }
-    self.activeBreakpoints = mutable;
+    NSString *path = obj[@"path"] ?: @"";
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        JSValue *obj = [self.debugContext evaluateScript:@"window.XTDebug"];
+        [obj invokeMethod:@"clearBreakpoints" withArguments:@[path]];
+    }];
 }
 
 - (void)handleSetBreakPoint:(NSDictionary *)obj {
-    NSMutableSet *mutable = self.activeBreakpoints.mutableCopy ?: [NSMutableSet set];
-    [mutable addObject:[NSString stringWithFormat:@"%@:%@", obj[@"path"], obj[@"line"]]];
-    self.activeBreakpoints = mutable;
+    NSString *bpIdentifier = [NSString stringWithFormat:@"%@:%@", obj[@"path"], obj[@"line"]];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        JSValue *obj = [self.debugContext evaluateScript:@"window.XTDebug"];
+        [obj invokeMethod:@"setBreakpoint" withArguments:@[bpIdentifier]];
+    }];
 }
 
 - (void)handleContinue {
     self.breakpointStepping = NO;
     self.breakpointLocking = NO;
-    [self.breakpointCondition signal];
 }
 
 - (void)handleStep {
     self.breakpointStepping = YES;
     self.breakpointLocking = NO;
-    [self.breakpointCondition signal];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.breakpointStepping = NO;
     });
@@ -211,7 +210,6 @@
 - (void)handleStop {
     self.breakpointStepping = NO;
     self.breakpointLocking = NO;
-    [self.breakpointCondition signal];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [self.delegate debuggerDidTerminal];
     }];
@@ -224,7 +222,7 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         NSString *result = [self.delegate debuggerEval:obj[@"expression"]];
         if ([result isKindOfClass:[NSString class]]) {
-            [self sendLog:result];
+            [self sendLog:result isEval:YES];
         }
     }];
 }

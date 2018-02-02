@@ -74,7 +74,7 @@ class XTUIContext(appContext: android.content.Context,
                         currentDebugContext = XTUIContext.createWithSourceURL(currentDebugApplicationContext, it, {
                             it.start()
                         })
-                        XTDebug.sharedDebugger.xtContext = currentDebugContext
+                        XTDebug.sharedDebugger.debugContext = currentDebugContext
                     }
                 }
             }

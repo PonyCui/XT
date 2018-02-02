@@ -12,7 +12,10 @@
 
 @protocol XTRDebugExport<JSExport>
 
-+ (void)xtr_bp:(NSString *)bpIdentifier T:(JSValue *)T S:(JSValue *)S;
++ (void)xtr_break:(NSString *)bpIdentifier T:(NSString *)T S:(NSString *)S;
++ (void)xtr_wait;
++ (BOOL)xtr_locking;
++ (BOOL)xtr_stepping;
 
 @end
 
@@ -24,10 +27,13 @@
 
 @end
 
+@class XTContext;
+
 @interface XTDebug : NSObject<XTComponent, XTRDebugExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, strong) id<XTDebugDelegate> delegate;
+@property (nonatomic, strong) XTContext *debugContext;
 
 + (XTDebug *)sharedDebugger;
 
@@ -35,6 +41,6 @@
 
 - (NSURL *)sourceURL;
 
-- (void)sendLog:(NSString *)string;
+- (void)sendLog:(NSString *)string isEval:(BOOL)isEval;
 
 @end

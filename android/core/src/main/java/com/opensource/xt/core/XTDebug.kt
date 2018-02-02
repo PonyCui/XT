@@ -28,7 +28,7 @@ class XTDebug {
 
     var sourceURL: String? = null
     var delegate: XTDebugDelegate? = null
-    var xtContext: XTContext? = null
+    var debugContext: XTContext? = null
     private var context: Context? = null
     private var socketHandler = Handler()
     private var socket: WebSocket? = null
@@ -115,9 +115,9 @@ class XTDebug {
 
     private fun handleClearBreakPoint(obj: JSONObject) {
         val bpIdentifier = obj.optString("path") + ":" + obj.optString("line")
-        xtContext?.sharedHandler?.post {
+        debugContext?.sharedHandler?.post {
             try {
-                (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "clearBreakpoint", listOf(bpIdentifier))
                 }
             } catch (e: Exception) {}
@@ -126,9 +126,9 @@ class XTDebug {
 
     private fun handleClearBreakPoints(obj: JSONObject) {
         val path = obj.optString("path")
-        xtContext?.sharedHandler?.post {
+        debugContext?.sharedHandler?.post {
             try {
-                (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "clearBreakpoints", listOf(path))
                 }
             } catch (e: Exception) {}
@@ -137,9 +137,9 @@ class XTDebug {
 
     private fun handleSetBreakPoint(obj: JSONObject) {
         val bpIdentifier = obj.optString("path") + ":" + obj.optString("line")
-        xtContext?.sharedHandler?.post {
+        debugContext?.sharedHandler?.post {
             try {
-                (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "setBreakpoint", listOf(bpIdentifier))
                 }
             } catch (e: Exception) {}
@@ -185,9 +185,9 @@ class XTDebug {
 
     private fun handleEval(obj: JSONObject) {
         val expression = obj.optString("expression") ?: return
-        xtContext?.sharedHandler?.post {
+        debugContext?.sharedHandler?.post {
             try {
-                (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     sendLog(XTContext.invokeMethod(it, "eval", listOf(expression)) as? String ?: "undefined", true)
                 }
             } catch (e: Exception) {}
@@ -195,9 +195,9 @@ class XTDebug {
     }
 
     fun sendLog(content: String, isEval: Boolean = false) {
-        xtContext?.sharedHandler?.post {
+        debugContext?.sharedHandler?.post {
             try {
-                val bpIdentifier = xtContext?.evaluateScript("window.XTDebug.currentBpIdentifier") as? String ?: ""
+                val bpIdentifier = debugContext?.evaluateScript("window.XTDebug.currentBpIdentifier") as? String ?: ""
                 val obj = JSONObject()
                 obj.put("type", "console.log")
                 obj.put("payload", Base64.encodeToString(content.toByteArray(), 0))

@@ -149,7 +149,7 @@ static NSMutableDictionary *RAFHandlers;
 + (void)addConsolePolyfill:(JSContext *)context {
     context[@"XTLog"] = ^(JSValue *value) {
         NSLog(@"%@", value.toString);
-        [[XTDebug sharedDebugger] sendLog:value.toString];
+        [[XTDebug sharedDebugger] sendLog:value.toString isEval:NO];
     };
     [context evaluateScript:@"(function(){ var originMethod = console.log; console.log = function() { originMethod.apply(console, arguments); for (var i = 0; i < arguments.length; i ++) {XTLog(arguments[i])} } })()"];
 }
