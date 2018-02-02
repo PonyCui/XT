@@ -5,7 +5,7 @@ export class ViewSample extends UI.ViewController {
     contentView = new UI.ScrollView()
 
     viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()    
         this.navigationBar.backgroundColor = UI.Color.blackColor
         this.navigationBar.lightContent = true
         this.title = "View"

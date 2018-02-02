@@ -32,12 +32,12 @@ function default_1(source) {
         });
     };
     findBreakables(sourceFile, {});
-    var content = "declare var _XTDebug: any; const __FILE__ = '" + this.resourcePath + "'; \n" + source.split("\n").map(function (content, idx) {
+    var content = "const __FILE__ = '" + this.resourcePath + "'; \n" + source.split("\n").map(function (content, idx) {
         if (content.indexOf("super(") >= 0) {
             return content;
         }
         else if (breakingLines.indexOf(idx) >= 0 && content.indexOf("{") < 0) {
-            return ";_XTDebug.xtr_bpTS(__FILE__ + ':" + idx + "', this, {" + (breakingVariables[idx] || []).join(',') + "});" + content;
+            return ";XT.Debug.run(__FILE__ + ':" + idx + "', this, {" + (breakingVariables[idx] || []).join(',') + "});" + content;
         }
         return content;
     }).join("\n");

@@ -5,7 +5,7 @@ var Jimp = require("jimp");
 var imagemin = require('imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var compressed = [];
-function default_1(source) {
+function default_1() {
     var callback = this.async();
     var resourcePath = this.resourcePath;
     var baseDir = (function (path) {

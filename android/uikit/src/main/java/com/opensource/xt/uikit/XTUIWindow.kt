@@ -17,27 +17,6 @@ class XTUIWindow @JvmOverloads constructor(
 
     var rootViewController: XTUIViewController? = null
 
-    fun keyboardWillShow(height: Int) {
-//        xtrContext.invokeMethod(scriptObject, "handleKeyboardShow", listOf(
-//                XTUIRect(0.0, 0.0, this.bounds.width, height.toDouble() / resources.displayMetrics.density),
-//                0.15
-//        ))
-    }
-
-    fun keyboardWillHide() {
-//        xtrContext.invokeMethod(scriptObject, "handleKeyboardHide", listOf(
-//                0.0
-//        ))
-//        firstResponder?.let {
-//            (it as? XTUITextField.InnerObject)?.xtr_blur()
-//            (it as? XTUITextView.InnerObject)?.xtr_blur()
-//        }
-    }
-
-    fun orientationChanged() {
-//        xtrContext.invokeMethod(scriptObject, "handleOrientationChange", null)
-    }
-
     class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIWindow"
@@ -49,7 +28,6 @@ class XTUIWindow @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_rootViewController", "xtr_rootViewController", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setRootViewController", "xtr_setRootViewController", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_makeKeyAndVisible", "xtr_makeKeyAndVisible", arrayOf(String::class.java))
-            exports.registerJavaMethod(this, "xtr_setStatusBarHidden", "xtr_setStatusBarHidden", arrayOf(Boolean::class.java))
             exports.registerJavaMethod(this, "xtr_firstResponder", "xtr_firstResponder", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_endEditing", "xtr_endEditing", arrayOf(String::class.java))
             return exports
@@ -89,10 +67,6 @@ class XTUIWindow @JvmOverloads constructor(
             (XTMemoryManager.find(objectRef) as? XTUIWindow)?.let {
                 context?.application?.delegate?.window = it
             }
-        }
-
-        fun xtr_setStatusBarHidden(hidden: Boolean) {
-//            this.systemUiVisibility = if (hidden) View.SYSTEM_UI_FLAG_FULLSCREEN else 0
         }
 
         fun xtr_endEditing(objectRef: String) {

@@ -1,6 +1,7 @@
 package com.opensource.xt.uikit
 
 import android.app.Activity
+import android.app.Fragment
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object

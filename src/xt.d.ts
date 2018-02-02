@@ -16,6 +16,10 @@ export class ClassLoader {
     static loadClass(classType: ClassType, className: string | Object, globalName: string): void
 }
 
+export class Debug {
+    static run(id: string, t: any, s: any): void
+}
+
 export as namespace UI;
 
 export enum InteractionState {
@@ -913,7 +917,7 @@ export class URLRequest implements Releasable {
     readonly url: string
     readonly timeout: number
     readonly cachePolicy: URLCachePolily
-    constructor(url: string, timeout?: number, cachePolicy?: URLCachePolily) 
+    constructor(url: string, timeout?: number, cachePolicy?: URLCachePolily)
     setHTTPMethod(value: string): void
     setHTTPHeader(value: string, key: string): void
     setHTTPBody(value: string | Data): void
@@ -973,6 +977,7 @@ declare global {
     const XT: {
         ClassType: typeof ClassType,
         ClassLoader: typeof ClassLoader,
+        Debug: typeof Debug,
     }
     const UI: {
         Releasable: Releasable,

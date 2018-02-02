@@ -18,7 +18,7 @@
 @property (nonatomic, copy) NSSet<NSString *> *activeBreakpoints;
 @property (nonatomic, strong) NSString *currentBpIdentifier;
 @property (nonatomic, assign) BOOL breakpointLocking;
-@property (nonatomic, assign) BOOL breakpointSteping;
+@property (nonatomic, assign) BOOL breakpointStepping;
 @property (nonatomic, strong) NSCondition *breakpointCondition;
 
 @end
@@ -89,7 +89,7 @@
 
 + (void)xtr_bp:(NSString *)bpIdentifier T:(JSValue *)T S:(JSValue *)S {
     [XTDebug sharedDebugger].currentBpIdentifier = bpIdentifier;
-    if ([XTDebug sharedDebugger].breakpointSteping ||
+    if ([XTDebug sharedDebugger].breakpointStepping ||
         [[[XTDebug sharedDebugger] activeBreakpoints] containsObject:bpIdentifier]) {
         [[XTDebug sharedDebugger] handleBreak:bpIdentifier
                                             T:[[[JSContext currentContext] evaluateScript:@"JSON.stringify"] callWithArguments:@[T]].toString
@@ -153,8 +153,6 @@
 
 #pragma mark - Message Handler
 
-
-
 - (void)handleReload:(NSDictionary *)obj {
     if ([obj[@"source"] isKindOfClass:[NSString class]]) {
         NSData *sourceData = [[NSData alloc] initWithBase64EncodedString:obj[@"source"] options:kNilOptions];
@@ -162,7 +160,7 @@
             NSString *tmpPath = [NSString stringWithFormat:@"%@/%u.min.js", NSTemporaryDirectory(), arc4random()];
             [sourceData writeToFile:tmpPath atomically:YES];
             self.sourceURL = [NSURL fileURLWithPath:tmpPath];
-            self.breakpointSteping = NO;
+            self.breakpointStepping = NO;
             self.breakpointLocking = NO;
             [self.breakpointCondition signal];
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -196,22 +194,22 @@
 }
 
 - (void)handleContinue {
-    self.breakpointSteping = NO;
+    self.breakpointStepping = NO;
     self.breakpointLocking = NO;
     [self.breakpointCondition signal];
 }
 
 - (void)handleStep {
-    self.breakpointSteping = YES;
+    self.breakpointStepping = YES;
     self.breakpointLocking = NO;
     [self.breakpointCondition signal];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.breakpointSteping = NO;
+        self.breakpointStepping = NO;
     });
 }
 
 - (void)handleStop {
-    self.breakpointSteping = NO;
+    self.breakpointStepping = NO;
     self.breakpointLocking = NO;
     [self.breakpointCondition signal];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{

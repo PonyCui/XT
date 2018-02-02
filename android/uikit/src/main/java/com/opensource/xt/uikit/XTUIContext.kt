@@ -1,13 +1,16 @@
 package com.opensource.xt.uikit
 
+import android.app.Activity
+import android.app.Fragment
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
-import com.opensource.xt.core.XTContext
 import com.opensource.xt.core.XTComponentExport
+import com.opensource.xt.core.XTContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
+import java.net.URI
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -31,14 +34,7 @@ class XTUIContext(appContext: android.content.Context,
         fun createWithAssets(appContext: android.content.Context,
                              assetsName: String,
                              completionBlock: ((uiContext: XTUIContext) -> Unit)? = null): XTUIContext {
-            val context = XTUIContext(appContext, "file:///android_asset/$assetsName", completionBlock)
-            defaultAttachContext.forEach {
-                try {
-                    it.getDeclaredConstructor(android.content.Context::class.java, XTContext::class.java)
-                            .newInstance(appContext, context)
-                } catch (e: Exception) { e.printStackTrace() }
-            }
-            return context
+            return createWithSourceURL(appContext, "file:///android_asset/$assetsName", completionBlock)
         }
 
         fun createWithSourceURL(appContext: android.content.Context,
@@ -70,6 +66,16 @@ class XTUIContext(appContext: android.content.Context,
     fun start() {
         XTUIContext.currentUIContextInstance = this
         appContext.startActivity(Intent(appContext, XTUIActivity::class.java))
+    }
+
+    fun attach(fragment: Fragment? = null) {
+        fragment?.let {
+
+        } ?: kotlin.run {
+            (appContext as? Activity)?.let {
+                this.application?.delegate?.window?.rootViewController?.setContentView(it)
+            }
+        }
     }
 
     override fun setup() {
@@ -131,22 +137,18 @@ class XTUIContext(appContext: android.content.Context,
         val handler = Handler()
         sourceURL?.let { sourceURL ->
             if (sourceURL.startsWith("file://")) {
-                if (sourceURL.startsWith("file:///android_asset/")) {
-                    sourceURL.replace("file:///android_asset/", "").let {
-                        try {
-                            val inputStream = appContext.assets.open(it)
-                            val byteArray = ByteArray(inputStream.available())
-                            inputStream.read(byteArray)
-                            inputStream.close()
-                            val script = String(byteArray)
-                            handler.post {
-                                this.evaluateScript(script)
-                                application?.delegate?.didFinishLaunchWithOptions(mapOf())
-                                completionBlock?.invoke(this)
-                            }
-                        } catch (e: java.lang.Exception) { handler.post { failureBlock?.invoke(e) };  e.printStackTrace() }
+                try {
+                    val inputStream = if (sourceURL.startsWith("file:///android_asset/")) appContext.assets.open(sourceURL.replace("file:///android_asset/", "")) else File(URI.create(sourceURL)).inputStream()
+                    val byteArray = ByteArray(inputStream.available())
+                    inputStream.read(byteArray)
+                    inputStream.close()
+                    val script = String(byteArray)
+                    handler.post {
+                        this.evaluateScript(script)
+                        application?.delegate?.didFinishLaunchWithOptions(mapOf())
+                        completionBlock?.invoke(this)
                     }
-                }
+                } catch (e: java.lang.Exception) { handler.post { failureBlock?.invoke(e) };  e.printStackTrace() }
             }
             else if (sourceURL.startsWith("http://") || sourceURL.startsWith("https://")) {
                 Thread(Thread.currentThread().threadGroup, {
@@ -167,6 +169,16 @@ class XTUIContext(appContext: android.content.Context,
             }
             return
         }
+    }
+
+    override fun release() {
+        super.release()
+        (application?.delegate?.window?.rootViewController as? XTUINavigationController)?.let {
+            it.childViewControllers?.forEach {
+                it.activity?.finish()
+            }
+        }
+        application?.delegate?.window?.rootViewController?.activity?.finish()
     }
 
 }

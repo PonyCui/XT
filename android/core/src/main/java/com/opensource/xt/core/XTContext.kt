@@ -56,7 +56,8 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
     private fun loadCoreComponents() {
         _registeredComponents = mutableMapOf()
         val components: List<XTComponentExport> = listOf(
-                XTClassLoader.JSExports(this)
+                XTClassLoader.JSExports(this),
+                XTDebug.JSExports(this)
         )
         components.forEach {
             val obj = it.exports()
@@ -84,7 +85,7 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
         System.out.println(message)
     }
 
-    fun release() {
+    open fun release() {
         sharedTimer.cancel()
         try {
             runtime.release(true)
