@@ -137,6 +137,8 @@
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
+    self.breakpointLocking = NO;
+    self.breakpointStepping = NO;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.socket = [[SRWebSocket alloc] initWithURL:[webSocket url]];
         self.socket.delegate = self;

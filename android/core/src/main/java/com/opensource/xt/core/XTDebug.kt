@@ -52,6 +52,8 @@ class XTDebug {
             }
 
             override fun onClose(code: Int, reason: String?, remote: Boolean) {
+                breakpointStepping = false
+                breakpointLocking = false
                 if (remote) {
                     handleStop()
                     socketHandler.postDelayed({
