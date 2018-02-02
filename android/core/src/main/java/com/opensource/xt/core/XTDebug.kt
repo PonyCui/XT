@@ -20,7 +20,7 @@ interface XTDebugDelegate {
 
     fun debuggerDidTerminal()
     fun debuggerDidReload()
-    fun debuggerEval(code: String): String
+    fun debuggerEval(code: String, callback: (value: String) -> Unit)
 
 }
 
@@ -30,14 +30,12 @@ class XTDebug {
     var delegate: XTDebugDelegate? = null
     var xtContext: XTContext? = null
     private var context: Context? = null
-    private var handler = Handler()
+    private var socketHandler = Handler()
     private var socket: WebSocket? = null
         set(value) {
             field?.let { it.close() }
             field = value
         }
-    private var activeBreakpoints: MutableSet<String> = mutableSetOf()
-    private var currentBpIdentifier: String? = null
     private var breakpointLocking = false
     private var breakpointStepping = false
 
@@ -56,7 +54,7 @@ class XTDebug {
             override fun onClose(code: Int, reason: String?, remote: Boolean) {
                 if (remote) {
                     handleStop()
-                    handler.postDelayed({
+                    socketHandler.postDelayed({
                         connectWithIP(IP, port, context)
                     }, 1000)
                 }
@@ -98,7 +96,7 @@ class XTDebug {
             }
 
             override fun onError(ex: Exception?) {
-                handler.postDelayed({
+                socketHandler.postDelayed({
                     connectWithIP(IP, port, context)
                 }, 1000)
             }
@@ -111,58 +109,46 @@ class XTDebug {
             val sourceFile = File(context?.cacheDir, System.currentTimeMillis().toString() + ".js")
             sourceFile.writeBytes(Base64.decode(it, 0))
             this.sourceURL = Uri.fromFile(sourceFile).toString()
-            handler.post {
-                this.delegate?.debuggerDidReload()
-            }
+            this.delegate?.debuggerDidReload()
         }
     }
 
     private fun handleClearBreakPoint(obj: JSONObject) {
         val bpIdentifier = obj.optString("path") + ":" + obj.optString("line")
-        handler.post {
+        xtContext?.sharedHandler?.post {
             try {
                 (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "clearBreakpoint", listOf(bpIdentifier))
                 }
             } catch (e: Exception) {}
         }
-        this.activeBreakpoints.remove(bpIdentifier)
     }
 
     private fun handleClearBreakPoints(obj: JSONObject) {
         val path = obj.optString("path")
-        handler.post {
+        xtContext?.sharedHandler?.post {
             try {
                 (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "clearBreakpoints", listOf(path))
                 }
             } catch (e: Exception) {}
         }
-        this.activeBreakpoints.filter { return@filter it.startsWith(path) }.forEach {
-            this.activeBreakpoints.remove(it)
-        }
     }
 
     private fun handleSetBreakPoint(obj: JSONObject) {
         val bpIdentifier = obj.optString("path") + ":" + obj.optString("line")
-        handler.post {
+        xtContext?.sharedHandler?.post {
             try {
                 (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "setBreakpoint", listOf(bpIdentifier))
                 }
             } catch (e: Exception) {}
         }
-        this.activeBreakpoints.add(bpIdentifier)
     }
 
     private fun handleBreak(bpIdentifier: String, T: String, S: String) {
         this.sendBreak(bpIdentifier, T, S)
         this.breakpointLocking = true
-        while (this.breakpointLocking) {
-            try {
-                Thread.sleep(100)
-            } catch (e: Exception) { this.breakpointLocking = false }
-        }
     }
 
     private fun handleContinue() {
@@ -173,7 +159,7 @@ class XTDebug {
     private fun handleStep() {
         this.breakpointStepping = true
         this.breakpointLocking = false
-        handler.postDelayed({
+        socketHandler.postDelayed({
             this.breakpointStepping = false
         }, 100)
     }
@@ -181,7 +167,7 @@ class XTDebug {
     private fun handleStop() {
         this.breakpointStepping = false
         this.breakpointLocking = false
-        handler.post {
+        socketHandler.post {
             this.delegate?.debuggerDidTerminal()
         }
     }
@@ -199,6 +185,26 @@ class XTDebug {
 
     private fun handleEval(obj: JSONObject) {
         val expression = obj.optString("expression") ?: return
+        xtContext?.sharedHandler?.post {
+            try {
+                (xtContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                    sendLog(XTContext.invokeMethod(it, "eval", listOf(expression)) as? String ?: "undefined", true)
+                }
+            } catch (e: Exception) {}
+        }
+    }
+
+    fun sendLog(content: String, isEval: Boolean = false) {
+        xtContext?.sharedHandler?.post {
+            try {
+                val bpIdentifier = xtContext?.evaluateScript("window.XTDebug.currentBpIdentifier") as? String ?: ""
+                val obj = JSONObject()
+                obj.put("type", "console.log")
+                obj.put("payload", Base64.encodeToString(content.toByteArray(), 0))
+                obj.put("bpIdentifier", if (isEval) "console" else bpIdentifier)
+                this.socket?.send(obj.toString())
+            } catch (e: Exception) {}
+        }
     }
 
     companion object {
@@ -218,15 +224,24 @@ class XTDebug {
         override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
             exports.registerJavaMethod(this, "xtr_break", "xtr_break", arrayOf(String::class.java, String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_wait", "xtr_wait", arrayOf())
+            exports.registerJavaMethod(this, "xtr_locking", "xtr_locking", arrayOf())
             exports.registerJavaMethod(this, "xtr_stepping", "xtr_stepping", arrayOf())
             return exports
         }
 
         fun xtr_break(bpIdentifier: String, T: String, S: String) {
-            sharedDebugger.currentBpIdentifier = bpIdentifier
-            if (sharedDebugger.breakpointStepping || sharedDebugger.activeBreakpoints.contains(bpIdentifier)) {
-                sharedDebugger.handleBreak(bpIdentifier, T, S)
-            }
+            sharedDebugger.handleBreak(bpIdentifier, T, S)
+        }
+
+        fun xtr_wait() {
+            try {
+                Thread.sleep(100)
+            } catch (e: Exception) { sharedDebugger.breakpointLocking = false }
+        }
+
+        fun xtr_locking(): Boolean {
+            return sharedDebugger.breakpointLocking
         }
 
         fun xtr_stepping(): Boolean {

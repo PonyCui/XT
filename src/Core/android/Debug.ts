@@ -4,8 +4,10 @@ export class Debug extends IDebug {
 
     private static activeBreakpoints: { [key: string]: boolean } = {}
     private static stepping = false
+    private static currentBpIdentifier: string = ""
 
     static run(id: string, t: any, s: any) {
+        this.currentBpIdentifier = id
         if (this.stepping === true || this.activeBreakpoints[id] === true) {
             this.stepping = false
             let tJSON = "{}"
@@ -17,6 +19,9 @@ export class Debug extends IDebug {
                 sJSON = JSON.stringify(s)
             } catch (error) { }
             _XTDebug.xtr_break(id, tJSON, sJSON)
+            while(_XTDebug.xtr_locking() === true) {
+                _XTDebug.xtr_wait()
+            }
             this.stepping = _XTDebug.xtr_stepping()
         }
     }
@@ -35,6 +40,10 @@ export class Debug extends IDebug {
 
     static setBreakpoint(id: string) {
         this.activeBreakpoints[id] = true
+    }
+
+    static eval(code: string): string {
+        return eval(code) + ""
     }
 
 }

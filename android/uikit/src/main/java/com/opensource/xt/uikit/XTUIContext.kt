@@ -2,11 +2,14 @@ package com.opensource.xt.uikit
 
 import android.app.Activity
 import android.app.Fragment
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import com.opensource.xt.core.XTComponentExport
 import com.opensource.xt.core.XTContext
+import com.opensource.xt.core.XTDebug
+import com.opensource.xt.core.XTDebugDelegate
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -20,9 +23,10 @@ class XTUIContext(appContext: android.content.Context,
                   val completionBlock: ((bridge: XTUIContext) -> Unit)? = null,
                   val failureBlock: ((e: Exception) -> Unit)? = null): XTContext(appContext) {
 
-    companion object {
+    companion object: XTDebugDelegate {
 
         internal var currentUIContextInstance: XTUIContext? = null
+
         private var defaultAttachContext: MutableList<Class<XTContext>> = mutableListOf()
 
         fun addDefaultAttachContext(attachContextClass: Class<XTContext>) {
@@ -49,6 +53,41 @@ class XTUIContext(appContext: android.content.Context,
                 } catch (e: Exception) { e.printStackTrace() }
             }
             return context
+        }
+
+        var currentDebugApplicationContext: Context? = null
+        var currentDebugContext: XTUIContext? = null
+
+        override fun debuggerDidTerminal() {
+            currentDebugContext?.let { currentDebugContext ->
+                currentDebugContext.sharedHandler.post {
+                    currentDebugContext.release()
+                    this.currentDebugContext = null
+                }
+            }
+        }
+
+        override fun debuggerDidReload() {
+            currentDebugApplicationContext?.let { currentDebugApplicationContext ->
+                Handler(currentDebugApplicationContext.mainLooper).post {
+                    XTDebug.sharedDebugger.sourceURL?.let {
+                        currentDebugContext = XTUIContext.createWithSourceURL(currentDebugApplicationContext, it, {
+                            it.start()
+                        })
+                        XTDebug.sharedDebugger.xtContext = currentDebugContext
+                    }
+                }
+            }
+        }
+
+        override fun debuggerEval(code: String, callback: (value: String) -> Unit) {
+            currentDebugContext?.let { currentDebugContext ->
+                currentDebugContext.sharedHandler.post {
+                    try {
+                        callback(currentDebugContext.evaluateScript(code) as? String ?: "")
+                    } catch (e: Exception) { callback(e.message ?: "") }
+                }
+            }
         }
 
     }

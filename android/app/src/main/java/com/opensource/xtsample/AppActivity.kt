@@ -7,12 +7,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import com.opensource.xt.core.XTContext
 import com.opensource.xt.core.XTDebug
-import com.opensource.xt.core.XTDebugDelegate
 import com.opensource.xt.foundation.XTFoundationContext
 import com.opensource.xt.uikit.XTUIActivity
 import com.opensource.xt.uikit.XTUIContext
 
-class AppActivity : XTUIActivity(), XTDebugDelegate {
+class AppActivity : XTUIActivity() {
 
     init {
         XTUIContext.addDefaultAttachContext(XTFoundationContext::class.java as Class<XTContext>)
@@ -62,28 +61,9 @@ class AppActivity : XTUIActivity(), XTDebugDelegate {
                 .apply()
         val IP = address.split(":").firstOrNull() ?: return
         val port = address.split(":").lastOrNull() ?: return
-        XTDebug.sharedDebugger.delegate = this
+        XTUIContext.currentDebugApplicationContext = this
+        XTDebug.sharedDebugger.delegate = XTUIContext
         XTDebug.debugWithIP(IP, port, this)
-    }
-
-    var currentDebugContext: XTUIContext? = null
-
-    override fun debuggerDidTerminal() {
-        currentDebugContext?.release()
-        currentDebugContext = null
-    }
-
-    override fun debuggerDidReload() {
-        XTDebug.sharedDebugger.sourceURL?.let {
-            currentDebugContext = XTUIContext.createWithSourceURL(this, it, {
-                it.start()
-            })
-            XTDebug.sharedDebugger.xtContext = currentDebugContext
-        }
-    }
-
-    override fun debuggerEval(code: String): String {
-        return ""
     }
 
 }

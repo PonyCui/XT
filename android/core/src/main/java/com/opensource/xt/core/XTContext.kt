@@ -31,9 +31,11 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
             XTPolyfill.addPolyfills(runtime)
             XTPolyfill.exceptionHandler = {
                 handleException(it)
+                XTDebug.sharedDebugger.sendLog("[XT,Error] >>>" + it.message)
             }
             XTPolyfill.consoleMessageHandler = {
                 handleConsoleMessage(it)
+                XTDebug.sharedDebugger.sendLog(it)
             }
             this.loadCoreComponents()
             this.loadCoreScript()
