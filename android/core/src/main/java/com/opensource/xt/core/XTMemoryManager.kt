@@ -3,6 +3,7 @@ package com.opensource.xt.core
 import android.os.Handler
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by cuiminghui on 2018/1/8.
@@ -11,7 +12,7 @@ class XTMemoryManager {
 
     companion object {
 
-        private var objectMapping: Map<String, XTManagedObject> = mapOf()
+        private var objectMapping: ConcurrentHashMap<String, XTManagedObject> = ConcurrentHashMap(2048)
         private var sharedHandler = Handler()
 
         fun attachContext(runtime: V8) {
@@ -25,10 +26,7 @@ class XTMemoryManager {
             sharedHandler.postDelayed({
                 obj.xtRetainCount--
             }, 1000)
-            objectMapping.toMutableMap()?.let {
-                it.put(obj.objectUUID, obj)
-                objectMapping = it.toMap()
-            }
+            objectMapping.put(obj.objectUUID, obj)
         }
 
         fun retain(objectUUID: String) {
@@ -50,9 +48,17 @@ class XTMemoryManager {
         }
 
         private fun runGC() {
-            if (System.nanoTime() % 10 < 2) {
-                objectMapping = objectMapping.filter {
-                    return@filter it.value.weakRef.get() != null
+            if (System.nanoTime() % 10 < 1) {
+                val removingKeys = objectMapping.values.mapNotNull {
+                    if (it.weakRef.get() == null) {
+                        return@mapNotNull it.objectUUID
+                    }
+                    else {
+                        return@mapNotNull null
+                    }
+                }
+                removingKeys.forEach {
+                    objectMapping.remove(it)
                 }
             }
         }

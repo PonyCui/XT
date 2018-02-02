@@ -1,11 +1,13 @@
 package com.opensource.xt.uikit
 
+import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import com.opensource.xt.core.XTContext
 import com.opensource.xt.core.XTComponentExport
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.File
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -17,28 +19,57 @@ class XTUIContext(appContext: android.content.Context,
 
     companion object {
 
+        internal var currentUIContextInstance: XTUIContext? = null
+        private var defaultAttachContext: MutableList<Class<XTContext>> = mutableListOf()
+
+        fun addDefaultAttachContext(attachContextClass: Class<XTContext>) {
+            if (XTContext::class.java.isAssignableFrom(attachContextClass) && !defaultAttachContext.contains(attachContextClass)) {
+                defaultAttachContext.add(attachContextClass)
+            }
+        }
+
         fun createWithAssets(appContext: android.content.Context,
                              assetsName: String,
-                             completionBlock: ((bridge: XTUIContext) -> Unit)? = null): XTUIContext {
-            return XTUIContext(appContext, "file:///android_asset/$assetsName", completionBlock)
+                             completionBlock: ((uiContext: XTUIContext) -> Unit)? = null): XTUIContext {
+            val context = XTUIContext(appContext, "file:///android_asset/$assetsName", completionBlock)
+            defaultAttachContext.forEach {
+                try {
+                    it.getDeclaredConstructor(android.content.Context::class.java, XTContext::class.java)
+                            .newInstance(appContext, context)
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+            return context
         }
 
         fun createWithSourceURL(appContext: android.content.Context,
                                 sourceURL: String?,
-                                completionBlock: ((bridge: XTUIContext) -> Unit)? = null,
+                                completionBlock: ((uiContext: XTUIContext) -> Unit)? = null,
                                 failureBlock: ((e: Exception) -> Unit)? = null): XTUIContext {
-            return XTUIContext(appContext, sourceURL, completionBlock, failureBlock)
+            val context = XTUIContext(appContext, sourceURL, completionBlock, failureBlock)
+            defaultAttachContext.forEach {
+                try {
+                    it.getDeclaredConstructor(android.content.Context::class.java, XTContext::class.java)
+                            .newInstance(appContext, context)
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+            return context
         }
 
     }
 
     var application: XTUIApplication? = null
+
     private var isUIContextDidSetup = false
 
     init {
         Handler().post({
             loadViaSourceURL()
         })
+    }
+
+    fun start() {
+        XTUIContext.currentUIContextInstance = this
+        appContext.startActivity(Intent(appContext, XTUIActivity::class.java))
     }
 
     override fun setup() {

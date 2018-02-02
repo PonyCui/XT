@@ -1,5 +1,6 @@
 package com.opensource.xt.uikit
 
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -27,7 +28,7 @@ class XTUIModal {
 
         fun showAlert(params: V8Object, callback: V8Object) {
             val callbackTwin = callback.twin()
-            val dialogBuilder = AlertDialog.Builder(context.appContext)
+            val dialogBuilder = AlertDialog.Builder(XTUIActivity.current ?: context.appContext)
             dialogBuilder.setTitle(params.getString("message") ?: "")
             dialogBuilder.setNegativeButton(params.getString("buttonTitle") ?: "好的", { _, _ ->
                 (callbackTwin as? V8Function)?.call(null, null)
@@ -39,7 +40,7 @@ class XTUIModal {
         fun showConfirm(params: V8Object, resolver: V8Object, rejected: V8Object) {
             val resolverTwin = resolver.twin()
             val rejectedTwin = rejected.twin()
-            val dialogBuilder = AlertDialog.Builder(context.appContext)
+            val dialogBuilder = AlertDialog.Builder(XTUIActivity.current ?: context.appContext)
             dialogBuilder.setTitle(params.getString("message") ?: "")
             dialogBuilder.setPositiveButton(params.getString("confirmTitle") ?: "确认", { _, _ ->
                 (resolverTwin as? V8Function)?.call(null, null)
@@ -62,7 +63,7 @@ class XTUIModal {
         fun showPrompt(params: V8Object, resolver: V8Object, rejected: V8Object) {
             val resolverTwin = resolver.twin()
             val rejectedTwin = rejected.twin()
-            val dialogBuilder = AlertDialog.Builder(context.appContext)
+            val dialogBuilder = AlertDialog.Builder(XTUIActivity.current ?: context.appContext)
             val editText = EditText(context.appContext)
             editText.setSingleLine(true)
             editText.imeOptions = EditorInfo.IME_ACTION_GO
