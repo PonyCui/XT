@@ -16,6 +16,15 @@ export class HRView extends View {
         super(ref || _XTUIHRView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.HRView",
+            position: this.position,
+            color: this.color,
+        }
+    }
+
 	public get position(): HRViewPosition  {
 		return _XTUIHRView.xtr_position(this.objectRef)
 	}
@@ -31,6 +40,5 @@ export class HRView extends View {
     public set color(value: Color) {
         _XTUIHRView.xtr_setColorObjectRef(value, this.objectRef)
     }
-
 
 }

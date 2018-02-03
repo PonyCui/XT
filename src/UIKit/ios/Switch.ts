@@ -6,6 +6,14 @@ export class Switch extends View {
         super(ref || _XTUISwitch)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Switch",
+            on: this.on,
+        }
+    }
+
     public get on(): boolean {
         return _XTUISwitch.xtr_on(this.objectRef);
     }

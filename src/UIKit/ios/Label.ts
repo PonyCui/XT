@@ -28,6 +28,20 @@ export class Label extends View {
         super(ref || _XTUILabel)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.Label",
+            text: this.text,
+            font: this.font,
+            textColor: this.textColor,
+            textAlignment: this.textAlignment,
+            numberOfLines: this.numberOfLines,
+            lineBreakMode: this.lineBreakMode,
+            lineSpace: this.lineSpace,
+        }
+    }
+
     public get text(): string {
         return _XTUILabel.xtr_text(this.objectRef);
     }
@@ -67,7 +81,6 @@ export class Label extends View {
     public set numberOfLines(value: number) {
         _XTUILabel.xtr_setNumberOfLinesObjectRef(value, this.objectRef);
     }
-
 
     public get lineBreakMode(): LineBreakMode {
         return _XTUILabel.xtr_lineBreakMode(this.objectRef);

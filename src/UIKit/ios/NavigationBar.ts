@@ -17,6 +17,16 @@ export class NavigationBar extends View {
         super(ref || _XTUINavigationBar)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.NavigationBar",
+            title: this.title,
+            translucent: this.translucent,
+            lightContent: this.lightContent,
+        }
+    }
+
     public get title(): string {
         return _XTUINavigationBar.xtr_title(this.objectRef)
     }

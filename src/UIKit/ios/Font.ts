@@ -27,6 +27,16 @@ export class Font {
         return new Font(pointSize, '400', 'italic')
     }
 
+    toObject(): any {
+        return {
+            class: "UI.Font",
+            familyName: this.familyName,
+            pointSize: this.pointSize,
+            fontWeight: this.fontWeight,
+            fontStyle: this.fontStyle,
+        }
+    }
+
     public get familyName(): string | undefined {
         return _XTUIFont.xtr_familyName(this.objectRef)
     }

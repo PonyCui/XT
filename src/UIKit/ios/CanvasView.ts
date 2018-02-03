@@ -8,6 +8,20 @@ export class CanvasView extends View {
         super(ref || _XTUICanvasView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.CanvasView",
+            globalAlpha: this.globalAlpha,
+            fillStyle: this.fillStyle,
+            strokeStyle: this.strokeStyle,
+            lineCap: this.lineCap,
+            lineJoin: this.lineJoin,
+            lineWidth: this.lineWidth,
+            miterLimit: this.miterLimit,
+        }
+    }
+
     public get globalAlpha(): number | undefined {
         return _XTUICanvasView.xtr_globalAlpha(this.objectRef)
     }

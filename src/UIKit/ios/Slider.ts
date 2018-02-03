@@ -6,6 +6,14 @@ export class Slider extends View {
         super(ref || _XTUISlider)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Slider",
+            value: this.value,
+        }
+    }
+
     public get value(): number {
         return _XTUISlider.xtr_value(this.objectRef);
     }

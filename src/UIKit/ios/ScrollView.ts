@@ -8,6 +8,23 @@ export class ScrollView extends View {
         super(ref || _XTUIScrollView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ScrollView",
+            contentOffset: this.contentOffset,
+            contentSize: this.contentSize,
+            isDirectionalLockEnabled: this.isDirectionalLockEnabled,
+            bounces: this.bounces,
+            isPagingEnabled: this.isPagingEnabled,
+            isScrollEnabled: this.isScrollEnabled,
+            showsHorizontalScrollIndicator: this.showsHorizontalScrollIndicator,
+            showsVerticalScrollIndicator: this.showsVerticalScrollIndicator,
+            alwaysBounceVertical: this.alwaysBounceVertical,
+            alwaysBounceHorizontal: this.alwaysBounceHorizontal,
+        }
+    }
+
     public get contentOffset(): Point {
         return _XTUIScrollView.xtr_contentOffset(this.objectRef);
     }

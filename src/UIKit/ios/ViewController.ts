@@ -59,6 +59,18 @@ export class ViewController implements Releasable {
         objectRefs[this.objectRef] = this;
     }
 
+    toObject(): any {
+        return {
+            class: "UI.ViewController",
+            title: this.title,
+            view: this.view,
+            safeAreaInsets: this.safeAreaInsets,
+            keyboardAvoidingMode: this.keyboardAvoidingMode,
+            supportOrientations: this.supportOrientations,
+            navigationBar: this.navigationBar,
+        }
+    }
+
     private _title: string = ""
 
     public get title(): string {
@@ -135,7 +147,7 @@ export class ViewController implements Releasable {
     public get navigationController(): NavigationControllerInterface | undefined {
         const ref = _XTUIViewController.xtr_navigationController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new (window as any)._NavigationControllerInterface(undefined, ref)
+        return new (UI as any).NavigationController(undefined, ref)
     }
 
     keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }

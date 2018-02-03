@@ -12,6 +12,7 @@
 
 @protocol XTRDebugExport<JSExport>
 
++ (NSArray<NSString *> *)xtr_activeBreakpoints;
 + (void)xtr_break:(NSString *)bpIdentifier T:(NSString *)T S:(NSString *)S;
 + (void)xtr_wait;
 + (BOOL)xtr_locking;

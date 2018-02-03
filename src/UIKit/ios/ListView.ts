@@ -21,6 +21,17 @@ export class ListCell extends View {
         super(ref || _XTUIListCell)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ListCell",
+            reuseIdentifier: this.reuseIdentifier,
+            currentItem: this.currentItem,
+            contentView: this.contentView,
+            selectionStyle: this.selectionStyle,
+        }
+    }
+
     public get contentView(): View {
         return this;
     }
@@ -52,6 +63,15 @@ export class ListView extends ScrollView {
 
     constructor(ref: any) {
         super(ref || _XTUIListView)
+    }
+
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ListView",
+            items: this.items,
+            subviews: undefined,
+        }
     }
 
     private _items: ListItem[];

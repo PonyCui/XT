@@ -18,6 +18,7 @@ export class ClassLoader {
 
 export class Debug {
     static run(id: string, t: any, s: any): void
+    static stringify(object: any): string
 }
 
 export as namespace UI;

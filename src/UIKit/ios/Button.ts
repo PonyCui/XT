@@ -12,6 +12,19 @@ export class Button extends View {
         super(ref || _XTUIButton)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.Button",
+            title: this.title,
+            font: this.font,
+            image: this.image,
+            color: this.color,
+            vertical: this.vertical,
+            inset: this.inset,
+        }
+    }
+
     public get title(): string | undefined {
         const value = _XTUIButton.xtr_title(this.objectRef)
         return typeof value === "string" ? value : undefined;

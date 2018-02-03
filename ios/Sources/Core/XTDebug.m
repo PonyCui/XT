@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSURL *sourceURL;
 @property (nonatomic, strong) SRWebSocket *socket;
+@property (nonatomic, strong) NSMutableSet *activeBreakpoints;
 @property (nonatomic, assign) BOOL breakpointLocking;
 @property (nonatomic, assign) BOOL breakpointStepping;
 
@@ -31,6 +32,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         debuger = [XTDebug new];
+        debuger.activeBreakpoints = [NSMutableSet set];
     });
     return debuger;
 }
@@ -38,6 +40,10 @@
 + (void)debugWithIP:(NSString *)IP port:(NSInteger)port navigationController:(UINavigationController *)navigationController {
     [[XTDebug sharedDebugger] connectWithIP:IP port:port];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
++ (NSArray<NSString *> *)xtr_activeBreakpoints {
+    return [[[XTDebug sharedDebugger] activeBreakpoints] allObjects] ?: @[];
 }
 
 + (void)xtr_break:(NSString *)bpIdentifier T:(NSString *)T S:(NSString *)S {
@@ -69,7 +75,7 @@
 
 - (void)sendLog:(NSString *)string isEval:(BOOL)isEval {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NSString *currentBpIdentifier = [self.debugContext evaluateScript:@"window.XTDebug.currentBpIdentifier"].toString;
+        NSString *currentBpIdentifier = [self.debugContext evaluateScript:@"XT.Debug.currentBpIdentifier"].toString ?: @"";
         NSDictionary *obj = @{
                               @"type": @"console.log",
                               @"payload": ([[string dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:kNilOptions] ?: @""),
@@ -174,24 +180,31 @@
 
 - (void)handleClearBreakPoint:(NSDictionary *)obj {
     NSString *bpIdentifier = [NSString stringWithFormat:@"%@:%@", obj[@"path"], obj[@"line"]];
+    [self.activeBreakpoints removeObject:bpIdentifier];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        JSValue *obj = [self.debugContext evaluateScript:@"window.XTDebug"];
+        JSValue *obj = [self.debugContext evaluateScript:@"XT.Debug"];
         [obj invokeMethod:@"clearBreakpoint" withArguments:@[bpIdentifier]];
     }];
 }
 
 - (void)handleClearBreakPoints:(NSDictionary *)obj {
     NSString *path = obj[@"path"] ?: @"";
+    for (NSString *bp in self.activeBreakpoints.copy) {
+        if ([bp hasPrefix:path]) {
+            [self.activeBreakpoints removeObject:bp];
+        }
+    }
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        JSValue *obj = [self.debugContext evaluateScript:@"window.XTDebug"];
+        JSValue *obj = [self.debugContext evaluateScript:@"XT.Debug"];
         [obj invokeMethod:@"clearBreakpoints" withArguments:@[path]];
     }];
 }
 
 - (void)handleSetBreakPoint:(NSDictionary *)obj {
     NSString *bpIdentifier = [NSString stringWithFormat:@"%@:%@", obj[@"path"], obj[@"line"]];
+    [self.activeBreakpoints addObject:bpIdentifier];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        JSValue *obj = [self.debugContext evaluateScript:@"window.XTDebug"];
+        JSValue *obj = [self.debugContext evaluateScript:@"XT.Debug"];
         [obj invokeMethod:@"setBreakpoint" withArguments:@[bpIdentifier]];
     }];
 }

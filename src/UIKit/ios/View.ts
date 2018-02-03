@@ -46,6 +46,33 @@ export class View implements Releasable {
         objectRefs[this.objectRef] = this;
     }
 
+    toString(): string {
+        return JSON.stringify(this.toObject())
+    }
+
+    toObject(): any {
+        return {
+            class: "UI.View",
+            frame: this.frame,
+            transform: this.transform,
+            clipsToBounds: this.clipsToBounds,
+            backgroundColor: this.backgroundColor,
+            alpha: this.alpha,
+            opaque: this.opaque,
+            hidden: this.hidden,
+            cornerRadius: this.cornerRadius,
+            borderWidth: this.borderWidth,
+            borderColor: this.borderColor,
+            shadowColor: this.shadowColor,
+            shadowOpacity: this.shadowOpacity,
+            shadowOffset: this.shadowOffset,
+            shadowRadius: this.shadowRadius,
+            tag: this.tag,
+            subviews: this.subviews.map(it => it.toObject()),
+            userInteractionEnabled: this.userInteractionEnabled,
+        }
+    }
+
     // Mark: View Geometry
 
     public get frame(): Rect {
@@ -245,7 +272,7 @@ export class View implements Releasable {
     public get window(): any | undefined {
         const ref = _XTUIView.xtr_window(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new (window as any)._Window(ref);
+        return new (UI as any).Window(ref);
     }
 
     removeFromSuperview() {

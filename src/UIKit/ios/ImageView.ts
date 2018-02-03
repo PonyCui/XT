@@ -42,6 +42,14 @@ export class Image implements Releasable {
         objectRefs[this.objectRef] = this;
     }
 
+    toObject(): any {
+        return {
+            class: "UI.Image",
+            size: this.size,
+            renderingMode: this.renderingMode,
+        }
+    }
+
     public get size(): Size {
         return _XTUIImage.xtr_size(this.objectRef)
     }
@@ -70,6 +78,14 @@ export class ImageView extends View {
 
     constructor(ref: any) {
         super(ref || _XTUIImageView)
+    }
+
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.ImageView",
+            image: this.image,
+        }
     }
 
     public get image(): Image | undefined {

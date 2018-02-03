@@ -9,6 +9,15 @@ export class Window extends View {
         super(ref || _XTUIWindow)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Window",
+            rootViewController: this.rootViewController,
+            firstResponder: this.firstResponder,
+        }
+    }
+
     public get rootViewController(): ViewController | undefined {
         const ref = _XTUIWindow.xtr_rootViewController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
@@ -34,5 +43,3 @@ export class Window extends View {
     }
 
 }
-
-(window as any)._Window = Window

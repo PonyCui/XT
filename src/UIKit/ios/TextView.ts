@@ -12,6 +12,25 @@ export class TextView extends View {
         super(ref || _XTUITextView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.TextView",
+            text: this.text,
+            font: this.font,
+            textColor: this.textColor,
+            textAlignment: this.textAlignment,
+            editing: this.editing,
+            allowAutocapitalization: this.allowAutocapitalization,
+            allowAutocorrection: this.allowAutocorrection,
+            allowSpellChecking: this.allowSpellChecking,
+            keyboardType: this.keyboardType,
+            returnKeyType: this.returnKeyType,
+            enablesReturnKeyAutomatically: this.enablesReturnKeyAutomatically,
+            secureTextEntry: this.secureTextEntry,
+        }
+    }
+
     public get text(): string {
         return _XTUITextView.xtr_text(this.objectRef);
     }

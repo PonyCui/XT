@@ -10,6 +10,13 @@ export class NavigationController extends ViewController {
         }
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.NavigationController",
+        }
+    }
+
     pushViewController(viewController: ViewController, animated: boolean = true): void {
         _XTUINavigationController.xtr_pushViewControllerAnimatedObjectRef(viewController.objectRef, animated, this.objectRef);
     }
@@ -33,5 +40,3 @@ export class NavigationController extends ViewController {
     }
 
 }
-
-(window as any)._NavigationControllerInterface = NavigationController
