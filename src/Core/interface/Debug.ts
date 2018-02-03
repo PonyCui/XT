@@ -27,7 +27,7 @@ export class Debug {
                     output[key] = this.objectifyRecursive(element.toObject())
                 }
                 else {
-                    output[key] = this.objectify(element)
+                    output[key] = element.toString()
                 }
             }
         }

@@ -45,6 +45,7 @@ export class TapSample extends UI.ViewController {
         view.userInteractionEnabled = true
         view.onTap = () => {
             var s = [1, 2, 3]
+            var k = summary
             view.backgroundColor = UI.Color.greenColor
             view.backgroundColor = UI.Color.yellowColor
         }
