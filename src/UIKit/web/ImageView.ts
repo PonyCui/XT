@@ -79,6 +79,14 @@ export class Image implements Releasable {
         readonly scale: number = 1.0,
         readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original) { }
 
+    toObject(): any {
+        return {
+            class: "UI.Image",
+            size: this.size,
+            renderingMode: this.renderingMode,
+        }
+    }
+
     public imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         return new Image(this.URLString, this.size, this.scale, renderingMode)
     }
@@ -98,6 +106,14 @@ export class ImageView extends View {
     constructor() {
         super(ImageViewElement)
         this.userInteractionEnabled = false
+    }
+
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ImageView",
+            image: this.image,
+        }
     }
 
     private _image?: Image;

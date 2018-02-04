@@ -17,6 +17,13 @@ export class NavigationController extends ViewController {
         this.setupHashChangeListener();
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.NavigationController",
+        }
+    }
+
     setupHashChangeListener() {
         window.addEventListener('hashchange', () => {
             for (let index = 0; index < this.childViewControllers.length - 1; index++) {

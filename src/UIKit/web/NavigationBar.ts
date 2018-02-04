@@ -23,6 +23,16 @@ export class NavigationBar extends View {
         document.title = value
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.NavigationBar",
+            title: this.title,
+            translucent: this.translucent,
+            lightContent: this.lightContent,
+        }
+    }
+
     translucent: boolean
     lightContent: boolean
     setLeftBarButtonItem(navigationItem?: NavigationBarButtonItem): void { }

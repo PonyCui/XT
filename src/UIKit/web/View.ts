@@ -47,6 +47,33 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         this.nativeObject = new nativeClazz(this, arg0, arg1, arg2)
     }
 
+    toString(): string {
+        return JSON.stringify(this.toObject())
+    }
+
+    toObject(): any {
+        return {
+            class: "UI.View",
+            frame: this.frame,
+            transform: this.transform,
+            clipsToBounds: this.clipsToBounds,
+            backgroundColor: this.backgroundColor,
+            alpha: this.alpha,
+            opaque: this.opaque,
+            hidden: this.hidden,
+            cornerRadius: this.cornerRadius,
+            borderWidth: this.borderWidth,
+            borderColor: this.borderColor,
+            shadowColor: this.shadowColor,
+            shadowOpacity: this.shadowOpacity,
+            shadowOffset: this.shadowOffset,
+            shadowRadius: this.shadowRadius,
+            tag: this.tag,
+            subviews: this.subviews.map(it => it.toObject()),
+            userInteractionEnabled: this.userInteractionEnabled,
+        }
+    }
+
     // Mark: View Geometry
 
     private set frameX(value: number) {

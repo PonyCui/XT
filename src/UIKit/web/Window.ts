@@ -17,6 +17,14 @@ export class Window extends View {
         this.userInteractionEnabled = true
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Window",
+            rootViewController: this.rootViewController,
+        }
+    }
+
     private _rootViewController?: ViewController
 
     public get rootViewController(): ViewController | undefined {

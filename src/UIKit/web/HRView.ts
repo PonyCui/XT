@@ -20,6 +20,15 @@ export class HRView extends View {
         this.color = Color.blackColor
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.HRView",
+            position: this.position,
+            color: this.color,
+        }
+    }
+
 	public get position(): HRViewPosition  {
 		return this.nativeObject.xtr_position();
 	}

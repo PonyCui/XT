@@ -21,6 +21,25 @@ export class TextView extends View {
         this.clipsToBounds = true;
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.TextView",
+            text: this.text,
+            font: this.font,
+            textColor: this.textColor,
+            textAlignment: this.textAlignment,
+            editing: this.editing,
+            allowAutocapitalization: this.allowAutocapitalization,
+            allowAutocorrection: this.allowAutocorrection,
+            allowSpellChecking: this.allowSpellChecking,
+            keyboardType: this.keyboardType,
+            returnKeyType: this.returnKeyType,
+            enablesReturnKeyAutomatically: this.enablesReturnKeyAutomatically,
+            secureTextEntry: this.secureTextEntry,
+        }
+    }
+
     touchesBegan(touches: Touch[], event: Event): void {
         super.touchesBegan(touches, event);
         if (this.editing) {

@@ -24,6 +24,33 @@ export class TextField extends View {
         this.clipsToBounds = true;
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.TextField",
+            text: this.text,
+            font: this.font,
+            textColor: this.textColor,
+            textAlignment: this.textAlignment,
+            placeholder: this.placeholder,
+            placeholderColor: this.placeholderColor,
+            clearsOnBeginEditing: this.clearsOnBeginEditing,
+            editing: this.editing,
+            clearButtonMode: this.clearButtonMode,
+            leftView: this.leftView,
+            leftViewMode: this.leftViewMode,
+            rightView: this.rightView,
+            rightViewMode: this.rightViewMode,
+            allowAutocapitalization: this.allowAutocapitalization,
+            allowAutocorrection: this.allowAutocorrection,
+            allowSpellChecking: this.allowSpellChecking,
+            keyboardType: this.keyboardType,
+            returnKeyType: this.returnKeyType,
+            enablesReturnKeyAutomatically: this.enablesReturnKeyAutomatically,
+            secureTextEntry: this.secureTextEntry,
+        }
+    }
+
     touchesBegan(touches: Touch[], event: Event): void {
         super.touchesBegan(touches, event);
         if (this.editing) {

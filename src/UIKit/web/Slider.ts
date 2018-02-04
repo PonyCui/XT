@@ -15,6 +15,14 @@ export class Slider extends View {
         this.addTouches()
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Slider",
+            value: this.value,
+        }
+    }
+
     private setupViews() {
         const tintColor = this.tintColor
         this.tintView.userInteractionEnabled = false

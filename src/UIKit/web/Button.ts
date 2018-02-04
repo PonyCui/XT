@@ -26,6 +26,19 @@ export class Button extends View {
         this.resetContentLayout();
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.Button",
+            title: this.title,
+            font: this.font,
+            image: this.image,
+            color: this.color,
+            vertical: this.vertical,
+            inset: this.inset,
+        }
+    }
+
     tintColorDidChange() {
         this.titleLabel.textColor = this.color || this.tintColor;
     }

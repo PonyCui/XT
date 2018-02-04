@@ -8,6 +8,16 @@ export class ActivityIndicatorView extends View {
         super(ActivityIndicatorViewElement)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.ActivityIndicatorView",
+            style: this.style,
+            animating: this.animating,
+            hidesWhenStopped: this.hidesWhenStopped,
+        }
+    }
+
     public get style(): ActivityIndicatorViewStyle {
         return this.nativeObject.xtr_style()
     }

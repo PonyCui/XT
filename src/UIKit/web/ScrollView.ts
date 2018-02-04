@@ -35,6 +35,23 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.setupTouches();
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ScrollView",
+            contentOffset: this.contentOffset,
+            contentSize: this.contentSize,
+            isDirectionalLockEnabled: this.isDirectionalLockEnabled,
+            bounces: this.bounces,
+            isPagingEnabled: this.isPagingEnabled,
+            isScrollEnabled: this.isScrollEnabled,
+            showsHorizontalScrollIndicator: this.showsHorizontalScrollIndicator,
+            showsVerticalScrollIndicator: this.showsVerticalScrollIndicator,
+            alwaysBounceVertical: this.alwaysBounceVertical,
+            alwaysBounceHorizontal: this.alwaysBounceHorizontal,
+        }
+    }
+
     hitTest(point: { x: number; y: number; }): Touchable | undefined {
         let target = undefined;
         if (this.alpha > 0.0 && this.userInteractionEnabled == true && isPointInside(point, this)) {

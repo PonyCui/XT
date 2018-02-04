@@ -13,10 +13,19 @@
 <script src='https://cdn.jsdelivr.net/npm/js-sha1@0.6.0/build/sha1.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/pako@1.0.6/dist/pako.min.js'></script>
 
-<!-- XT Libliries -->
+<!-- XT Libraries -->
 <script src="/dist/Core/xt.core.web.min.js?nocache"></script>
 <script src="/dist/Foundation/xt.foundation.web.min.js?nocache"></script>
 <script src="/dist/UIKit/xt.uikit.web.min.js?nocache"></script>
+
+<!-- XT Debugger Support Library -->
+
+<script>
+    if (typeof Worker !== "undefined") {
+        XT.Debug.worker = new Worker('/dist/Core/xt.debugWorker.web.min.js')
+        XT.Debug.connect("127.0.0.1", 8081)
+    }
+</script>
 
 <!-- Sample -->
 <script src="/dist/Sample/sample.min.js?nocache"></script>

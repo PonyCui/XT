@@ -15,6 +15,14 @@ export class Switch extends View {
         this.addSubview(this.contentView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Switch",
+            on: this.on,
+        }
+    }
+
     private setupViews() {
         this.tintView.userInteractionEnabled = false
         this.tintView.frame = RectMake(0, 0, 51, 31)

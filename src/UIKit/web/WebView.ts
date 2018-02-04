@@ -13,6 +13,13 @@ export class WebView extends View {
         super(WebViewElement)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.WebView",
+        }
+    }
+
     load(URLString: string): void {
         this.nativeObject.xtr_loadWithURLString(URLString)
     }

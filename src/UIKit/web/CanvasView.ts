@@ -12,6 +12,20 @@ export class CanvasView extends View {
         this.userInteractionEnabled = false
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.CanvasView",
+            globalAlpha: this.globalAlpha,
+            fillStyle: this.fillStyle,
+            strokeStyle: this.strokeStyle,
+            lineCap: this.lineCap,
+            lineJoin: this.lineJoin,
+            lineWidth: this.lineWidth,
+            miterLimit: this.miterLimit,
+        }
+    }
+
     public get globalAlpha(): number {
         return this.nativeObject.xtr_globalAlpha()
     }

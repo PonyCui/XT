@@ -33,6 +33,20 @@ export class Label extends View {
         this.userInteractionEnabled = false
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.Label",
+            text: this.text,
+            font: this.font,
+            textColor: this.textColor,
+            textAlignment: this.textAlignment,
+            numberOfLines: this.numberOfLines,
+            lineBreakMode: this.lineBreakMode,
+            lineSpace: this.lineSpace,
+        }
+    }
+
     public get text(): string {
         return this.nativeObject.xtr_text();
     }

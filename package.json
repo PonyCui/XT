@@ -8,7 +8,7 @@
     "sample_debug": "webpack --env.src_Sample --env.debug -w & http-server -c-1",
     "core_ios": "webpack --env.src_Core_ios -w",
     "core_android": "webpack --env.src_Core_android -w",
-    "core_web": "webpack --env.src_Core_web -w",
+    "core_web": "webpack --env.src_Core_web -w & tsc ./src/Core/web/DebugWorker.ts --outFile ./dist/Core/xt.debugWorker.web.min.js -w",
     "foundation_ios": "webpack --env.src_Foundation_ios -w",
     "foundation_android": "webpack --env.src_Foundation_android -w",
     "foundation_web": "webpack --env.src_Foundation_web -w",

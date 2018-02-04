@@ -47,6 +47,18 @@ export class ViewController implements Releasable {
         this.loadView()
     }
 
+    toObject(): any {
+        return {
+            class: "UI.ViewController",
+            title: this.title,
+            view: this.view,
+            safeAreaInsets: this.safeAreaInsets,
+            keyboardAvoidingMode: this.keyboardAvoidingMode,
+            supportOrientations: this.supportOrientations,
+            navigationBar: this.navigationBar,
+        }
+    }
+
     private _view: View
 
     public get view(): View {
