@@ -14,6 +14,33 @@ export class TextField extends View {
         super(ref || _XTUITextField)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.TextField",
+            text: this.text,
+            font: this.font,
+            textColor: this.textColor,
+            textAlignment: this.textAlignment,
+            placeholder: this.placeholder,
+            placeholderColor: this.placeholderColor,
+            clearsOnBeginEditing: this.clearsOnBeginEditing,
+            editing: this.editing,
+            clearButtonMode: this.clearButtonMode,
+            leftView: this.leftView,
+            leftViewMode: this.leftViewMode,
+            rightView: this.rightView,
+            rightViewMode: this.rightViewMode,
+            allowAutocapitalization: this.allowAutocapitalization,
+            allowAutocorrection: this.allowAutocorrection,
+            allowSpellChecking: this.allowSpellChecking,
+            keyboardType: this.keyboardType,
+            returnKeyType: this.returnKeyType,
+            enablesReturnKeyAutomatically: this.enablesReturnKeyAutomatically,
+            secureTextEntry: this.secureTextEntry,
+        }
+    }
+
     public get text(): string {
         return _XTUITextField.xtr_text(this.objectRef);
     }

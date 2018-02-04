@@ -18,6 +18,19 @@ export class Button extends View {
         this.setupTouches();
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.Button",
+            title: this.title,
+            font: this.font,
+            image: this.image,
+            color: this.color,
+            vertical: this.vertical,
+            inset: this.inset,
+        }
+    }
+
     private setupTouches() {
         this.userInteractionEnabled = true
         this.longPressDuration = 0.15

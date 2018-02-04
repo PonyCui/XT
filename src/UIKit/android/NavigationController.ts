@@ -14,6 +14,13 @@ export class NavigationController extends ViewController {
         }
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.NavigationController",
+        }
+    }
+
     loadView(): void {
         this.view = new View();
     }
@@ -52,5 +59,3 @@ export class NavigationController extends ViewController {
     }
 
 }
-
-(window as any)._NavigationControllerInterface = NavigationController

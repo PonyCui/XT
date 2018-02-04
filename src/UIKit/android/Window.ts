@@ -10,6 +10,15 @@ export class Window extends View {
         super(ref || _XTUIWindow)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.Window",
+            rootViewController: this.rootViewController,
+            firstResponder: this.firstResponder,
+        }
+    }
+
     public get bounds(): Rect {
         return _XTUIWindow.xtr_bounds(this.objectRef);
     }
@@ -41,5 +50,3 @@ export class Window extends View {
     }
 
 }
-
-(window as any)._Window = Window

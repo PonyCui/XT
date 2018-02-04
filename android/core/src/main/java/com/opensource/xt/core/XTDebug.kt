@@ -3,7 +3,9 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.util.Base64
+import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import org.java_websocket.WebSocket
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -36,6 +38,7 @@ class XTDebug {
             field?.let { it.close() }
             field = value
         }
+    private var activeBreakpoints: MutableSet<String> = mutableSetOf()
     private var breakpointLocking = false
     private var breakpointStepping = false
 
@@ -117,9 +120,10 @@ class XTDebug {
 
     private fun handleClearBreakPoint(obj: JSONObject) {
         val bpIdentifier = obj.optString("path") + ":" + obj.optString("line")
+        activeBreakpoints.remove(bpIdentifier)
         debugContext?.sharedHandler?.post {
             try {
-                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("XT.Debug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "clearBreakpoint", listOf(bpIdentifier))
                 }
             } catch (e: Exception) {}
@@ -128,9 +132,10 @@ class XTDebug {
 
     private fun handleClearBreakPoints(obj: JSONObject) {
         val path = obj.optString("path")
+        activeBreakpoints.toList().filter { it.startsWith(path) }.forEach { activeBreakpoints.remove(it) }
         debugContext?.sharedHandler?.post {
             try {
-                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("XT.Debug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "clearBreakpoints", listOf(path))
                 }
             } catch (e: Exception) {}
@@ -139,9 +144,10 @@ class XTDebug {
 
     private fun handleSetBreakPoint(obj: JSONObject) {
         val bpIdentifier = obj.optString("path") + ":" + obj.optString("line")
+        activeBreakpoints.add(bpIdentifier)
         debugContext?.sharedHandler?.post {
             try {
-                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("XT.Debug") as? V8Object)?.let {
                     XTContext.invokeMethod(it, "setBreakpoint", listOf(bpIdentifier))
                 }
             } catch (e: Exception) {}
@@ -189,7 +195,7 @@ class XTDebug {
         val expression = obj.optString("expression") ?: return
         debugContext?.sharedHandler?.post {
             try {
-                (debugContext?.evaluateScript("window.XTDebug") as? V8Object)?.let {
+                (debugContext?.evaluateScript("XT.Debug") as? V8Object)?.let {
                     sendLog(XTContext.invokeMethod(it, "eval", listOf(expression)) as? String ?: "undefined", true)
                 }
             } catch (e: Exception) {}
@@ -199,7 +205,7 @@ class XTDebug {
     fun sendLog(content: String, isEval: Boolean = false) {
         debugContext?.sharedHandler?.post {
             try {
-                val bpIdentifier = debugContext?.evaluateScript("window.XTDebug.currentBpIdentifier") as? String ?: ""
+                val bpIdentifier = debugContext?.evaluateScript("XT.Debug.currentBpIdentifier") as? String ?: ""
                 val obj = JSONObject()
                 obj.put("type", "console.log")
                 obj.put("payload", Base64.encodeToString(content.toByteArray(), 0))
@@ -229,6 +235,7 @@ class XTDebug {
             exports.registerJavaMethod(this, "xtr_wait", "xtr_wait", arrayOf())
             exports.registerJavaMethod(this, "xtr_locking", "xtr_locking", arrayOf())
             exports.registerJavaMethod(this, "xtr_stepping", "xtr_stepping", arrayOf())
+            exports.registerJavaMethod(this, "xtr_activeBreakpoints", "xtr_activeBreakpoints", arrayOf())
             return exports
         }
 
@@ -248,6 +255,10 @@ class XTDebug {
 
         fun xtr_stepping(): Boolean {
             return sharedDebugger.breakpointStepping
+        }
+
+        fun xtr_activeBreakpoints(): V8Array {
+            return V8ObjectUtils.toV8Array(context.runtime, sharedDebugger.activeBreakpoints.toList())
         }
 
     }

@@ -13,25 +13,12 @@ export class Debug {
         else if (object instanceof Array) {
             return object.map(it => this.objectify(it))
         }
-        let output: any = {}
-        for (const key in object) {
-            const element = object[key];
-            if (typeof element === "string" || typeof element === "number" || typeof element === "boolean" || element === null) {
-                output[key] = element
-            }
-            else if (element instanceof Array) {
-                output[key] = element.map(it => this.objectify(it))
-            }
-            else if (element instanceof Object && typeof element !== "function" && element !== null) {
-                if (typeof element.toObject === "function") {
-                    output[key] = this.objectifyRecursive(element.toObject())
-                }
-                else {
-                    output[key] = element.toString()
-                }
+        else if (object instanceof Object && typeof object !== "function" && object !== null) {
+            if (typeof object.toObject === "function") {
+                return this.objectifyRecursive(object.toObject())
             }
         }
-        return output
+        return this.objectifyRecursive({ ...object })
     }
 
     static objectifyRecursive(object: any): any {

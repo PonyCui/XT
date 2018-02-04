@@ -7,6 +7,16 @@ export class ActivityIndicatorView extends View {
         super(ref || _XTUIActivityIndicatorView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.ActivityIndicatorView",
+            style: this.style,
+            animating: this.animating,
+            hidesWhenStopped: this.hidesWhenStopped,
+        }
+    }
+
     public get style(): ActivityIndicatorViewStyle {
         return _XTUIActivityIndicatorView.xtr_style(this.objectRef);
     }

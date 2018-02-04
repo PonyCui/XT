@@ -69,6 +69,17 @@ export class ListCell extends View {
         })
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ListCell",
+            reuseIdentifier: this.reuseIdentifier,
+            currentItem: this.currentItem,
+            contentView: this.contentView,
+            selectionStyle: this.selectionStyle,
+        }
+    }
+
     layoutSubviews() {
         super.layoutSubviews();
         this.selectionView.frame = this.bounds;
@@ -92,6 +103,15 @@ export class ListView extends ScrollView {
     constructor(ref?: any) {
         super(ref)
         this.alwaysBounceVertical = true;
+    }
+
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.ListView",
+            items: this.items,
+            subviews: undefined,
+        }
     }
 
     private reuseMapping: { [key: string]: typeof ListCell } = {};

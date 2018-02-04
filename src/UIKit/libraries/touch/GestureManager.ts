@@ -106,7 +106,7 @@ export class GestureManager {
             }
             setTimeout(() => {
                 this.activeGesture = undefined
-            })
+            }, 0)
             return;
         }
         for (let index = 0; index < owner.gestureRecongnizers.length; index++) {

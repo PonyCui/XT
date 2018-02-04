@@ -42,6 +42,14 @@ export class Image implements Releasable {
         return typeof imageRef === "string" ? new Image(imageRef) : undefined
     }
 
+    toObject(): any {
+        return {
+            class: "UI.Image",
+            size: this.size,
+            renderingMode: this.renderingMode,
+        }
+    }
+
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
         const imageRef = _XTUIImage.xtr_imageWithImageRenderingMode(this.objectRef, renderingMode)
         if (typeof imageRef === "string") {
@@ -62,6 +70,14 @@ export class ImageView extends View {
 
     constructor(ref?: any) {
         super(ref || _XTUIImageView)
+    }
+
+    toObject(): any {
+        return {
+            ...super.toObject(), 
+            class: "UI.ImageView",
+            image: this.image,
+        }
     }
 
     public get image(): Image | undefined {

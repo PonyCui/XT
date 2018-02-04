@@ -12,11 +12,11 @@ export class Debug extends IDebug {
             this.stepping = false
             let tJSON = "{}"
             try {
-                tJSON = JSON.stringify(t)
+                tJSON = Debug.stringify(t)
             } catch (error) { }
             let sJSON = "{}"
             try {
-                sJSON = JSON.stringify(s)
+                sJSON = Debug.stringify(s)
             } catch (error) { }
             _XTDebug.xtr_break(id, tJSON, sJSON)
             while(_XTDebug.xtr_locking() === true) {
@@ -48,4 +48,6 @@ export class Debug extends IDebug {
 
 }
 
-(window as any).XTDebug = Debug
+_XTDebug.xtr_activeBreakpoints().forEach((it: string) => {
+    Debug.setBreakpoint(it)
+})

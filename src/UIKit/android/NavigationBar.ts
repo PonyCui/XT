@@ -57,6 +57,16 @@ export class NavigationBar extends View {
         }
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.NavigationBar",
+            title: this.title,
+            // translucent: this.translucent,
+            lightContent: this.lightContent,
+        }
+    }
+
     private _leftItems: View[] = []
     private _rightItems: View[] = []
 

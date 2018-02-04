@@ -10,6 +10,13 @@ export class WebView extends View {
         super(ref || _XTUIWebView)
     }
 
+    toObject(): any {
+        return {
+            ...super.toObject(),
+            class: "UI.WebView",
+        }
+    }
+
     load(URLString: string): void {
         _XTUIWebView.xtr_loadWithURLString(URLString, this.objectRef)
     }
