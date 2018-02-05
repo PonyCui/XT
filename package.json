@@ -1,8 +1,9 @@
 {
   "name": "xt",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "types": "./src/xt.d.ts",
   "scripts": {
     "sample": "webpack --env.src_Sample -w & http-server -c-1",
     "sample_debug": "webpack --env.src_Sample --env.debug -w & http-server -c-1",
@@ -22,8 +23,8 @@
   "bin": {
     "create-xtml-types": "./src/XTML/create-xtml-types.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "PonyCui",
+  "license": "MIT",
   "dependencies": {
     "imagemin": "^5.3.1",
     "imagemin-pngquant": "^5.0.1",
