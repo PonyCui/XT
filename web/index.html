@@ -23,7 +23,7 @@
 <script>
     if (typeof Worker !== "undefined") {
         XT.Debug.worker = new Worker('/dist/Core/xt.debugWorker.web.min.js')
-        XT.Debug.connect("127.0.0.1", 8081)
+        XT.Debug.connect()
     }
 </script>
 

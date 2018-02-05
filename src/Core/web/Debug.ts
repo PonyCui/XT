@@ -7,7 +7,7 @@ export class Debug extends IDebug {
     private static currentBpIdentifier: string = ""
 
     private static _worker: Worker | undefined = undefined
-    private static _workerIP: string = "127.0.0.1"
+    private static _workerIP: string = window.location.hostname
     private static _workerPort: number = 8081
 
     static get worker(): Worker | undefined {
@@ -36,7 +36,7 @@ export class Debug extends IDebug {
         }
     }
 
-    static connect(IP: string, port: number) {
+    static connect(IP: string = window.location.hostname, port: number = 8081) {
         if (this._worker) {
             this._workerIP = IP;
             this._workerPort = port;

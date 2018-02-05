@@ -107,7 +107,14 @@
 #pragma mark - WebSocket Deleagte
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
-    [webSocket send:@"Hello, World!"];
+    NSDictionary *obj = @{
+                          @"type": @"active",
+                          @"name": [NSString stringWithFormat:@"%@ %@",
+                                    [UIDevice currentDevice].model,
+                                    [UIDevice currentDevice].systemVersion],
+                          };
+    NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:kNilOptions error:NULL];
+    [self.socket send:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {

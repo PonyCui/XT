@@ -2,17 +2,28 @@ class XTDebugger {
 
     static sharedDebugger = new XTDebugger()
     socket: WebSocket | undefined = undefined
+    reconnectTimer: number = 0
     openTS: number = 0
 
     connect(IP: string, port: number) {
-        if (this.socket) {
+        if (this.socket && this.socket.readyState == 1) {
             this.socket.close()
         }
         this.socket = new WebSocket('ws://' + IP + ":" + port + "/")
         this.socket.onopen = () => {
             this.openTS = this.openTS == 0 ? performance.now() : this.openTS
             if (this.socket) {
-                this.socket.send("Hello, World!")
+                var name = "Browser"
+                if (navigator.userAgent.indexOf("iPhone") >= 0) {
+                    name = "iPhone Browser"
+                }
+                else if (navigator.userAgent.indexOf("Android") >= 0) {
+                    name = "Android Browser"
+                }
+                this.socket.send(JSON.stringify({
+                    type: "active",
+                    name,
+                }))
             }
         }
         this.socket.onmessage = ((ev: MessageEvent) => {
@@ -36,12 +47,14 @@ class XTDebugger {
             } catch (error) { }
         }) as any
         this.socket.onclose = () => {
-            setTimeout(() => {
+            clearTimeout(this.reconnectTimer)
+            this.reconnectTimer = setTimeout(() => {
                 this.connect(IP, port)
             }, 1000)
         }
         this.socket.onerror = () => {
-            setTimeout(() => {
+            clearTimeout(this.reconnectTimer)
+            this.reconnectTimer = setTimeout(() => {
                 this.connect(IP, port)
             }, 1000)
         }

@@ -1,6 +1,7 @@
 package com.opensource.xt.core
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.util.Base64
 import com.eclipsesource.v8.V8Array
@@ -51,7 +52,12 @@ class XTDebug {
             }
 
             override fun onOpen(data: ServerHandshake?) {
-                send("Hello, World!")
+                try {
+                    val obj = JSONObject()
+                    obj.put("type", "active")
+                    obj.put("name", "Android SDK " + Build.VERSION.SDK_INT)
+                    send(obj.toString())
+                } catch (e: Exception) { e.printStackTrace() }
             }
 
             override fun onClose(code: Int, reason: String?, remote: Boolean) {
