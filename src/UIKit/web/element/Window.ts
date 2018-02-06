@@ -17,38 +17,12 @@ export class WindowElement extends ViewElement {
     }
 
     private firstTouchIdentifier: any = undefined
+    private mouseClicked = false
 
     setupTouches() {
         (document.body as any).onresize = () => {
             this.scriptObject.frame = { ...this.xtr_frame(), width: window.outerWidth, height: window.outerHeight }
         }
-        document.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        });
-        document.addEventListener('mousewheel', (e) => {
-            this.scriptObject.handleWheelScroll(
-                { x: e.clientX, y: e.clientY },
-                { x: e.deltaX, y: e.deltaY }
-            );
-            e.preventDefault();
-        });
-        document.addEventListener("pointerdown", (e) => {
-            this.scriptObject.handlePointerDown("0", e.timeStamp, { x: e.clientX, y: e.clientY })
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
-        })
-        document.addEventListener("pointermove", (e) => {
-            const points: any = {};
-            points["0"] = { x: e.clientX, y: e.clientY };
-            this.scriptObject.handlePointersMove(e.timeStamp, points)
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
-        })
-        document.addEventListener("pointerup", (e) => {
-            this.scriptObject.handlePointerUp("0", e.timeStamp, { x: e.clientX, y: e.clientY })
-            if (!WindowElement._allowDefault) { e.preventDefault(); }
-            else { WindowElement._allowDefault = false; }
-        })
         document.addEventListener("touchstart", (e) => {
             if (this.firstTouchIdentifier !== undefined) { return }
             let touch: Touch | undefined = undefined
@@ -105,6 +79,42 @@ export class WindowElement extends ViewElement {
                 else { WindowElement._allowDefault = false; }
             }
         })
+        document.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousedown" : "pointerdown", (e) => {
+            if (e.which >= 2) { e.preventDefault(); return; }
+            this.mouseClicked = true
+            this.scriptObject.handlePointerDown("0", e.timeStamp, { x: e.clientX, y: e.clientY })
+            if (!WindowElement._allowDefault) { e.preventDefault(); }
+            else { WindowElement._allowDefault = false; }
+        })
+        document.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousemove" : "pointermove", (e) => {
+            if (!this.mouseClicked) { return }
+            const points: any = {};
+            points["0"] = { x: e.clientX, y: e.clientY };
+            this.scriptObject.handlePointersMove(e.timeStamp, points)
+            if (!WindowElement._allowDefault) { e.preventDefault(); }
+            else { WindowElement._allowDefault = false; }
+        })
+        document.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mouseup" : "pointerup", (e) => {
+            if (!this.mouseClicked) { return }
+            this.scriptObject.handlePointerUp("0", e.timeStamp, { x: e.clientX, y: e.clientY })
+            if (!WindowElement._allowDefault) { e.preventDefault(); }
+            else { WindowElement._allowDefault = false; }
+            this.mouseClicked = false
+        });
+        document.addEventListener("mouseover", (e) => {
+            e.preventDefault()
+        });
+        document.addEventListener('mousewheel', (e) => {
+            this.scriptObject.handleWheelScroll(
+                { x: e.clientX, y: e.clientY },
+                { x: e.deltaX, y: e.deltaY }
+            );
+            e.preventDefault();
+        });
+
+        document.addEventListener("contextmenu", (e) => {
+            e.preventDefault()
+        });
     }
 
 }

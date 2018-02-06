@@ -95,6 +95,7 @@ export class Button extends View {
                 this.onHighlighted && this.onHighlighted(false)
             }
         }
+        this.nativeObject.xtr_setHoverMode(true)
     }
 
     layoutSubviews() {
@@ -104,9 +105,11 @@ export class Button extends View {
 
     private highlighted: boolean = false
 
-    public onHighlighted?: (highligted: boolean) => void
+    public onHighlighted?: (highligted: boolean) => void = undefined
 
     public onTouchUpInside?: () => void = undefined;
+
+    public onHover?: (hovered: boolean) => void = undefined
 
     private _color: Color = this.tintColor
 

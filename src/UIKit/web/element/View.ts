@@ -34,6 +34,7 @@ export class ViewElement extends BaseElement {
             this.frame = value;
             this.resetTransform();
             this.resetMaskElement();
+            this.resetHover();
         }
     }
 
@@ -466,6 +467,42 @@ export class ViewElement extends BaseElement {
             }
         }
         return undefined
+    }
+
+    private hoverMode = false
+    private hoverElement: SVGRectElement | undefined
+
+    public xtr_setHoverMode(value: boolean) {
+        this.hoverMode = value
+    }
+
+    private resetHover() {
+        if (navigator.userAgent.indexOf("Mobile") >= 0) { return }
+        if (this.hoverMode) {
+            if (this.hoverElement === undefined) {
+                this.hoverElement = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                this.hoverElement.style.cursor = "pointer"
+                this.hoverElement.style.fill = "transparent"
+                this.nativeObject.appendChild(this.hoverElement)
+                this.hoverElement.addEventListener("mouseover", () => {
+                    if (this.scriptObject.onHover) {
+                        this.scriptObject.onHover(true)
+                    }
+                })
+                this.hoverElement.addEventListener("mouseout", () => {
+                    if (this.scriptObject.onHover) {
+                        this.scriptObject.onHover(false)
+                    }
+                })
+            }
+            this.hoverElement.style.width = this.frame.width.toString()
+            this.hoverElement.style.height = this.frame.height.toString()
+        }
+        else {
+            if (this.hoverElement !== undefined) {
+                this.nativeObject.removeChild(this.hoverElement)
+            }
+        }
     }
 
 }

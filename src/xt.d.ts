@@ -382,6 +382,7 @@ export class Button extends View {
     color?: Color
     onHighlighted?: (highligted: boolean) => void
     onTouchUpInside?: () => void
+    onHover?: (hovered: boolean) => void
 }
 
 export class Font {

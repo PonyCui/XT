@@ -19,5 +19,6 @@ export class Button extends View {
 
     onHighlighted?: (highligted: boolean) => void
     onTouchUpInside?: () => void
+    onHover?: (hovered: boolean) => void
 
 }

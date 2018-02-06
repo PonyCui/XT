@@ -48,6 +48,9 @@ export class ButtonSample extends UI.ViewController {
         view.onTouchUpInside = () => {
             view.title = "Hello, World!"
         }
+        view.onHover = (hover) => {
+            view.backgroundColor = hover ? new UI.Color(0xe2 / 0xff, 0xe2 / 0xff, 0xe2 / 0xff) : UI.Color.whiteColor
+        }
         // } Sample Code 
         wrapper.addSubview(view)
         this.contentView.addSubview(wrapper)
