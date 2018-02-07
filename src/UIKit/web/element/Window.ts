@@ -23,7 +23,7 @@ export class WindowElement extends ViewElement {
         (document.body as any).onresize = () => {
             this.scriptObject.frame = { ...this.xtr_frame(), width: window.outerWidth, height: window.outerHeight }
         }
-        document.addEventListener("touchstart", (e) => {
+        this.nativeObject.addEventListener("touchstart", (e) => {
             if (this.firstTouchIdentifier !== undefined) { return }
             let touch: Touch | undefined = undefined
             for (let index = 0; index < e.touches.length; index++) {
@@ -36,7 +36,7 @@ export class WindowElement extends ViewElement {
                 else { WindowElement._allowDefault = false; }
             }
         })
-        document.addEventListener("touchmove", (e) => {
+        this.nativeObject.addEventListener("touchmove", (e) => {
             let touch: Touch | undefined = undefined
             for (let index = 0; index < e.changedTouches.length; index++) {
                 if (e.changedTouches[index].identifier === this.firstTouchIdentifier) {
@@ -51,7 +51,7 @@ export class WindowElement extends ViewElement {
                 else { WindowElement._allowDefault = false; }
             }
         })
-        document.addEventListener("touchend", (e) => {
+        this.nativeObject.addEventListener("touchend", (e) => {
             let touch: Touch | undefined = undefined
             for (let index = 0; index < e.changedTouches.length; index++) {
                 if (e.changedTouches[index].identifier === this.firstTouchIdentifier) {
@@ -79,14 +79,14 @@ export class WindowElement extends ViewElement {
                 else { WindowElement._allowDefault = false; }
             }
         })
-        document.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousedown" : "pointerdown", (e) => {
+        this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousedown" : "pointerdown", (e) => {
             if (e.which >= 2) { e.preventDefault(); return; }
             this.mouseClicked = true
             this.scriptObject.handlePointerDown("0", e.timeStamp, { x: e.clientX, y: e.clientY })
             if (!WindowElement._allowDefault) { e.preventDefault(); }
             else { WindowElement._allowDefault = false; }
         })
-        document.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousemove" : "pointermove", (e) => {
+        this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousemove" : "pointermove", (e) => {
             if (!this.mouseClicked) { return }
             const points: any = {};
             points["0"] = { x: e.clientX, y: e.clientY };
@@ -94,25 +94,24 @@ export class WindowElement extends ViewElement {
             if (!WindowElement._allowDefault) { e.preventDefault(); }
             else { WindowElement._allowDefault = false; }
         })
-        document.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mouseup" : "pointerup", (e) => {
+        this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mouseup" : "pointerup", (e) => {
             if (!this.mouseClicked) { return }
             this.scriptObject.handlePointerUp("0", e.timeStamp, { x: e.clientX, y: e.clientY })
             if (!WindowElement._allowDefault) { e.preventDefault(); }
             else { WindowElement._allowDefault = false; }
             this.mouseClicked = false
         });
-        document.addEventListener("mouseover", (e) => {
+        this.nativeObject.addEventListener("mouseover", (e) => {
             e.preventDefault()
         });
-        document.addEventListener('mousewheel', (e) => {
+        this.nativeObject.addEventListener('mousewheel', (e: any) => {
             this.scriptObject.handleWheelScroll(
                 { x: e.clientX, y: e.clientY },
                 { x: e.deltaX, y: e.deltaY }
             );
             e.preventDefault();
         });
-
-        document.addEventListener("contextmenu", (e) => {
+        this.nativeObject.addEventListener("contextmenu", (e) => {
             e.preventDefault()
         });
     }

@@ -81,7 +81,12 @@ export const KeyboardAvoidingMode = IKeyboardAvoidingMode
 
 import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from '../interface/NavigationBar'
 import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './NavigationBar'
-export class NavigationBar extends MNavigationBar { }
+export class NavigationBar extends MNavigationBar {
+    static onResetNavigationBar(value: (navigationBar: NavigationBar) => void) {
+        MNavigationBar.resetNavigationBar = value
+    }
+}
+
 export class NavigationBarButtonItem extends MNavigationBarButtonItem { }
 
 import { NavigationController as INavigationController } from '../interface/NavigationController'

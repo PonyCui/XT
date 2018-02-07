@@ -10,6 +10,8 @@ export class Debug extends IDebug {
     private static _workerIP: string = window.location.hostname
     private static _workerPort: number = 8081
 
+    static reloadHandler?: (source: string, force: boolean) => void = undefined
+
     static get worker(): Worker | undefined {
         return this._worker
     }
@@ -20,7 +22,7 @@ export class Debug extends IDebug {
         if (value) {
             value.onmessage = (e) => {
                 if (e.data.action === "reload") {
-                    window.location.reload(true)
+                    this.reloadHandler ? this.reloadHandler(e.data.source, e.data.force) : (e.data.force === true && window.location.reload(true))
                 }
                 else if (e.data.action === "clearBreakPoint") {
                     this.clearBreakpoint(e.data.bpIdentifier)
@@ -50,9 +52,15 @@ export class Debug extends IDebug {
             window.console.log = function () {
                 originMethod.apply(window.console, arguments)
                 for (let index = 0; index < arguments.length; index++) {
+                    let description = ""
+                    try {
+                        description = arguments[index].toString()
+                    } catch (error) {
+                        description = typeof arguments[index]
+                    }
                     Debug._worker && Debug._worker.postMessage({
                         type: "log",
-                        payload: arguments[index].toString()
+                        payload: description,
                     })
                 }
             }
@@ -62,9 +70,15 @@ export class Debug extends IDebug {
             window.console.error = function () {
                 originMethod.apply(window.console, arguments)
                 for (let index = 0; index < arguments.length; index++) {
+                    let description = ""
+                    try {
+                        description = arguments[index].toString()
+                    } catch (error) {
+                        description = typeof arguments[index]
+                    }
                     Debug._worker && Debug._worker.postMessage({
                         type: "log",
-                        payload: arguments[index].toString()
+                        payload: description,
                     })
                 }
             }

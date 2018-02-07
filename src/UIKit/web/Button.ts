@@ -40,6 +40,7 @@ export class Button extends View {
     }
 
     tintColorDidChange() {
+        super.tintColorDidChange()
         this.titleLabel.textColor = this.color || this.tintColor;
     }
 

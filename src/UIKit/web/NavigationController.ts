@@ -54,6 +54,8 @@ export class NavigationController extends ViewController {
         const toViewController: ViewController = viewController
         this.addChildViewController(toViewController);
         this.view.addSubview(toViewController.view);
+        fromViewController && fromViewController.viewWillDisappear()
+        toViewController.viewWillAppear()
         if (animated) {
             this.isAnimating = true
             if (fromViewController) {
@@ -68,10 +70,14 @@ export class NavigationController extends ViewController {
             }, () => {
                 this.isAnimating = false
                 this.runAfterAnimated && this.runAfterAnimated();
+                fromViewController && fromViewController.viewDidDisappear()
+                toViewController.viewDidAppear()
             })
         }
         else {
             toViewController.view.frame = this.view.bounds;
+            fromViewController && fromViewController.viewDidDisappear()
+            toViewController.viewDidAppear()
         }
         document.title = viewController.title || ""
         window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
@@ -80,8 +86,10 @@ export class NavigationController extends ViewController {
     popViewController(animated: boolean = true): ViewController | undefined {
         if (this.isAnimating) { return undefined; }
         if (this.childViewControllers.length <= 1) { return undefined }
-        const fromViewController: ViewController | undefined = this.childViewControllers[this.childViewControllers.length - 1]
+        const fromViewController: ViewController = this.childViewControllers[this.childViewControllers.length - 1]
         const toViewController: ViewController = this.childViewControllers[this.childViewControllers.length - 2]
+        fromViewController.viewWillDisappear()
+        toViewController.viewWillAppear()
         if (animated) {
             this.isAnimating = true
             fromViewController.view.frame = this.view.bounds;
@@ -94,12 +102,16 @@ export class NavigationController extends ViewController {
                 fromViewController.removeFromParentViewController();
                 this.isAnimating = false
                 this.runAfterAnimated && this.runAfterAnimated();
+                fromViewController.viewDidDisappear()
+                toViewController.viewDidAppear()
             })
         }
         else {
             toViewController.view.frame = this.view.bounds
             fromViewController.view.removeFromSuperview();
             fromViewController.removeFromParentViewController();
+            fromViewController.viewDidDisappear()
+            toViewController.viewDidAppear()
         }
         document.title = toViewController.title || ""
         window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
@@ -113,6 +125,8 @@ export class NavigationController extends ViewController {
         const fromViewController: ViewController | undefined = this.childViewControllers[this.childViewControllers.length - 1]
         const targetViewControllers: ViewController[] = this.childViewControllers.filter((it, idx) => idx > targetIdx);
         const toViewController: ViewController = viewController
+        targetViewControllers.forEach(it => it.viewWillDisappear())
+        toViewController.viewWillAppear()
         if (animated) {
             this.isAnimating = true
             fromViewController.view.frame = this.view.bounds;
@@ -127,6 +141,8 @@ export class NavigationController extends ViewController {
                 })
                 this.isAnimating = false
                 this.runAfterAnimated && this.runAfterAnimated();
+                targetViewControllers.forEach(it => it.viewDidDisappear())
+                toViewController.viewDidAppear()
             })
         }
         else {
@@ -134,6 +150,8 @@ export class NavigationController extends ViewController {
             targetViewControllers.forEach(it => {
                 it.view.removeFromSuperview();
                 it.removeFromParentViewController();
+                targetViewControllers.forEach(it => it.viewDidDisappear())
+                toViewController.viewDidAppear()
             })
         }
         document.title = toViewController.title || ""

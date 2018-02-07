@@ -127,6 +127,11 @@ export class ImageView extends View {
         this.nativeObject.xtr_setImage(value);
     }
 
+    public tintColorDidChange() {
+        super.tintColorDidChange()
+        this.nativeObject.resetTintColor()
+    }
+
     public intrinsicContentSize(width?: number): Size | undefined {
         if (this.image) {
             return this.image.size

@@ -11,7 +11,7 @@ class XTDebugger {
         }
         this.socket = new WebSocket('ws://' + IP + ":" + port + "/")
         this.socket.onopen = () => {
-            this.openTS = this.openTS == 0 ? performance.now() : this.openTS
+            this.openTS = this.openTS == 0 ? new Date().getTime() : this.openTS
             if (this.socket) {
                 var name = "Browser"
                 if (navigator.userAgent.indexOf("iPhone") >= 0) {
@@ -30,7 +30,7 @@ class XTDebugger {
             try {
                 var obj = JSON.parse(ev.data)
                 if (obj.action === "reload") {
-                    this.handleReload()
+                    this.handleReload(_atob(obj.source))
                 }
                 else if (obj.action === "clearBreakPoint") {
                     this.handleClearBreakPoint(obj);
@@ -60,9 +60,8 @@ class XTDebugger {
         }
     }
 
-    handleReload() {
-        if (performance.now() - this.openTS < 2000) { return }
-        (postMessage as any)({ action: "reload" })
+    handleReload(source: string) {
+        (postMessage as any)({ action: "reload", source, force: !(new Date().getTime() - this.openTS < 2000) })
     }
 
     handleClearBreakPoint(obj: any) {
@@ -87,6 +86,12 @@ class XTDebugger {
         }
     }
 
+}
+
+var _atob = function(str: string): string {
+    return decodeURIComponent(Array.prototype.map.call(atob(str), function(c: any) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
 }
 
 onmessage = function (event: MessageEvent) {

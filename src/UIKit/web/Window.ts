@@ -81,14 +81,6 @@ export class Window extends View {
         this.touchManager.handlePointerCancelEvent(timestamp)
     }
 
-    // handleKeyboardShow(frame: Rect, duration: number) {
-    //     this.rootViewController && this.rootViewController.keyboardWillShow(frame, duration)
-    // }
-
-    // handleKeyboardHide(duration: number) {
-    //     this.rootViewController && this.rootViewController.keyboardWillHide(duration)
-    // }
-
     endEditing(): void {
         this.nativeObject.xtr_endEditing();
     }

@@ -471,7 +471,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     didAddSubview(subview: View) { }
     willRemoveSubview(subview: View) { }
     willMoveToSuperview(newSuperview?: View) { }
-    didMoveToSuperview() { }
+    didMoveToSuperview() { this.tintColorDidChange() }
     willMoveToWindow(newWindow?: Window) { }
     didMoveToWindow() { }
 

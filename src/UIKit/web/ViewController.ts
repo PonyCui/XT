@@ -76,7 +76,8 @@ export class ViewController implements Releasable {
         }
     }
 
-    safeAreaInsets: Insets = InsetsMake(0, 0, 0, 0)
+    static safeAreaInsets: Insets | undefined = undefined
+    safeAreaInsets: Insets = ViewController.safeAreaInsets || InsetsMake(0, 0, 0, 0)
 
     loadView(): void {
         const view = new View();
@@ -87,7 +88,12 @@ export class ViewController implements Releasable {
 
     viewDidLoad(): void { }
     viewWillAppear(): void { this.childViewControllers.map(v => v.viewWillAppear()) }
-    viewDidAppear(): void { this.childViewControllers.map(v => v.viewDidAppear()) }
+    viewDidAppear(): void {
+        this.childViewControllers.map(v => v.viewDidAppear())
+        if (NavigationBar.resetNavigationBar) {
+            NavigationBar.resetNavigationBar(this.navigationBar, this)
+        }
+    }
     viewWillDisappear(): void { this.childViewControllers.map(v => v.viewWillDisappear()) }
     viewDidDisappear(): void { this.childViewControllers.map(v => v.viewDidDisappear()) }
     viewWillLayoutSubviews(): void { }
@@ -143,8 +149,8 @@ export class ViewController implements Releasable {
 
     supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
-    navigationBar: NavigationBar = new NavigationBar()
-    showNavigationBar(animated: boolean = false): void { }
-    hideNavigationBar(animated: boolean = false): void { }
+    navigationBar: NavigationBar = new NavigationBar(this)
+    showNavigationBar(animated: boolean = false): void { this.navigationBar.show = true }
+    hideNavigationBar(animated: boolean = false): void { this.navigationBar.show = false }
 
 }
