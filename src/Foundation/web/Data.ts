@@ -2,6 +2,10 @@
 import { Data as IData } from '../interface/Data'
 declare var SparkMD5: any;
 declare var sha1: any;
+declare var unescape: any;
+declare var escape: any;
+declare var TextEncoder: any;
+declare var TextDecoder: any;
 
 export class Data extends IData {
 
@@ -14,12 +18,18 @@ export class Data extends IData {
     }
 
     static initWithString(value: string): Data {
-        var arrayBuffer = new ArrayBuffer(value.length);
-        var bufferView = new Uint8Array(arrayBuffer);
-        for (var i = 0, count = value.length; i < count; i++) {
-            bufferView[i] = value.charCodeAt(i);
+        if (typeof TextEncoder === "function") {
+            return new Data(new TextEncoder().encode(value).buffer)
         }
-        return new Data(arrayBuffer)
+        else {
+            var trimValue = unescape(encodeURIComponent(value))
+            var arrayBuffer = new ArrayBuffer(trimValue.length);
+            var bufferView = new Uint8Array(arrayBuffer);
+            for (var i = 0, count = trimValue.length; i < count; i++) {
+                bufferView[i] = trimValue.charCodeAt(i);
+            }
+            return new Data(arrayBuffer)
+        }
     }
 
     static initWithBytes(bytes: Uint8Array): Data {
@@ -69,7 +79,10 @@ export class Data extends IData {
     }
 
     utf8String(): string | undefined {
-        return String.fromCharCode.apply(null, new Uint8Array(this.buffer))
+        if (typeof TextDecoder === "function") {
+            return new TextDecoder().decode(this.buffer)
+        }
+        return decodeURIComponent(escape(String.fromCharCode.apply(null, new Uint8Array(this.buffer))))
     }
 
     md5(): string {
