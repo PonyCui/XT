@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AppDelegate.h"
 #import "ModulizeAppDelegate.h"
 
 int main(int argc, char * argv[]) {

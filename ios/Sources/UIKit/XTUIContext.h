@@ -13,7 +13,7 @@
 
 @class XTContext, XTUIViewController;
 
-typedef void(^XTUIContextCompletionBlock)(void);
+typedef void(^XTUIContextCompletionBlock)(UIViewController * _Nullable rootViewController);
 typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 
 @interface XTUIContext : XTContext
@@ -25,19 +25,9 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 
 + (void)addDefaultAttachContext:(nonnull Class)attachContextClass;
 
-+ (nonnull XTUIContext *)startWithNamed:(nonnull NSString *)name
-                               inBundle:(nullable NSBundle *)bundle
-                   navigationController:(nonnull UINavigationController *)navigationController;
-
-+ (nonnull XTUIContext *)startWithURLString:(nonnull NSString *)URLString
-                       navigationController:(nonnull UINavigationController *)navigationController
-                            completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
-                               failureBlock:(nullable XTUIContextFailureBlock)failureBlock;
-
 - (instancetype _Nonnull )initWithSourceURL:(nullable NSURL *)sourceURL
                             completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
                                failureBlock:(nullable XTUIContextFailureBlock)failureBlock;
-
 
 #pragma mark - Debugger
 

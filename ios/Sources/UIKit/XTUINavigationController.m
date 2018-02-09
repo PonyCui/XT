@@ -10,6 +10,39 @@
 #import "XTUIUtils.h"
 #import "XTContext.h"
 #import "XTMemoryManager.h"
+#import <objc/runtime.h>
+
+@interface UINavigationController (XTUIPatch)
+
+@end
+
+@implementation UINavigationController (XTUIPatch)
+
++ (void)load {
+    Method originMethod = class_getInstanceMethod([UINavigationController class], @selector(pushViewController:animated:));
+    Method replacingMethod = class_getInstanceMethod([UINavigationController class], @selector(xtui_pushViewController:animated:));
+    if (!class_addMethod([UINavigationController class],
+                         @selector(xtui_pushViewController:animated:),
+                         method_getImplementation(replacingMethod),
+                         method_getTypeEncoding(replacingMethod))) {
+        method_exchangeImplementations(originMethod, replacingMethod);
+    }
+}
+
+- (void)xtui_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if ([viewController isKindOfClass:[XTUINavigationController class]]) {
+        [self xtui_pushViewController:viewController.childViewControllers.firstObject animated:animated];
+    }
+    else {
+        [self xtui_pushViewController:viewController animated:animated];
+    }
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return self.childViewControllers.lastObject;
+}
+
+@end
 
 @interface XTUINavigationController ()
 

@@ -20,8 +20,6 @@
 		90AFB4F620197F4E001E9DA7 /* XTManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4EF20197F4E001E9DA7 /* XTManagedObject.m */; };
 		90AFB4F720197F4E001E9DA7 /* XTPolyfill.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB4F020197F4E001E9DA7 /* XTPolyfill.m */; };
 		90AFB501201988A9001E9DA7 /* XTCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AFB500201988A9001E9DA7 /* XTCore.m */; };
-		90BB255E1FBC3C4800286398 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB255A1FBC3C4800286398 /* AppDelegate.m */; };
-		90BB255F1FBC3C4800286398 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB255C1FBC3C4800286398 /* ViewController.m */; };
 		90BB25621FBC3CB100286398 /* ModulizeAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25611FBC3CB100286398 /* ModulizeAppDelegate.m */; };
 		90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25641FBC3D0F00286398 /* ModulizeStartViewController.m */; };
 		90BB25671FBC3D0F00286398 /* ModulizeStartViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90BB25651FBC3D0F00286398 /* ModulizeStartViewController.xib */; };
@@ -101,10 +99,6 @@
 		90AFB4F220197F4E001E9DA7 /* XTContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTContext.h; sourceTree = "<group>"; };
 		90AFB4FF201988A9001E9DA7 /* XTCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTCore.h; sourceTree = "<group>"; };
 		90AFB500201988A9001E9DA7 /* XTCore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTCore.m; sourceTree = "<group>"; };
-		90BB25591FBC3C4800286398 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		90BB255A1FBC3C4800286398 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		90BB255B1FBC3C4800286398 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		90BB255C1FBC3C4800286398 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		90BB25601FBC3CB100286398 /* ModulizeAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModulizeAppDelegate.h; sourceTree = "<group>"; };
 		90BB25611FBC3CB100286398 /* ModulizeAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModulizeAppDelegate.m; sourceTree = "<group>"; };
 		90BB25631FBC3D0F00286398 /* ModulizeStartViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModulizeStartViewController.h; sourceTree = "<group>"; };
@@ -247,7 +241,6 @@
 		905708031F4EB2AF00D5EC05 /* XTSample */ = {
 			isa = PBXGroup;
 			children = (
-				90BB25581FBC3C4800286398 /* Applicationize */,
 				90BB255D1FBC3C4800286398 /* Modulize */,
 				90A76FE51F7A647000CB3EA5 /* FOOView.h */,
 				90A76FE61F7A647000CB3EA5 /* FOOView.m */,
@@ -410,17 +403,6 @@
 				90EA879A201992850012A985 /* XTUIApplicationDelegate.m */,
 			);
 			path = UIKit;
-			sourceTree = "<group>";
-		};
-		90BB25581FBC3C4800286398 /* Applicationize */ = {
-			isa = PBXGroup;
-			children = (
-				90BB25591FBC3C4800286398 /* AppDelegate.h */,
-				90BB255A1FBC3C4800286398 /* AppDelegate.m */,
-				90BB255B1FBC3C4800286398 /* ViewController.h */,
-				90BB255C1FBC3C4800286398 /* ViewController.m */,
-			);
-			path = Applicationize;
 			sourceTree = "<group>";
 		};
 		90BB255D1FBC3C4800286398 /* Modulize */ = {
@@ -588,7 +570,6 @@
 				90EA87E42019C0BF0012A985 /* XTUINavigationBar.m in Sources */,
 				90EA87DD2019C0BF0012A985 /* XTUIView.m in Sources */,
 				90AFB4F620197F4E001E9DA7 /* XTManagedObject.m in Sources */,
-				90BB255F1FBC3C4800286398 /* ViewController.m in Sources */,
 				90EA8810201AE0F80012A985 /* XTFUserDefaults.m in Sources */,
 				90EA87D92019C0BF0012A985 /* XTUIListCell.m in Sources */,
 				90EA881B201B2A0C0012A985 /* XTClassLoader.m in Sources */,
@@ -625,7 +606,6 @@
 				90EA87EA2019C0BF0012A985 /* XTUISwitch.m in Sources */,
 				90EA87ED2019C0BF0012A985 /* XTUIViewController.m in Sources */,
 				90EA8815201AE0F80012A985 /* XTFURLRequest.m in Sources */,
-				90BB255E1FBC3C4800286398 /* AppDelegate.m in Sources */,
 				90BB25621FBC3CB100286398 /* ModulizeAppDelegate.m in Sources */,
 				90EA87E52019C0BF0012A985 /* XTUITextField.m in Sources */,
 				90EA87E92019C0BF0012A985 /* XTUIModal.m in Sources */,

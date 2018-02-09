@@ -84,7 +84,7 @@
             [self evaluateScript:script];
             [self.application.delegate didFinishLaunchingWithOptions:@{}];
             if (completionBlock) {
-                completionBlock();
+                completionBlock(self.application.delegate.window.rootViewController);
             }
         }
     }
@@ -101,7 +101,7 @@
                                                          [self evaluateScript:script];
                                                          [self.application.delegate didFinishLaunchingWithOptions:@{}];
                                                          if (completionBlock) {
-                                                             completionBlock();
+                                                             completionBlock(self.application.delegate.window.rootViewController);
                                                          }
                                                      }];
                                                  }
@@ -170,6 +170,9 @@
 static NSArray *defaultAttachContextClasses;
 
 + (void)addDefaultAttachContext:(Class)attachContextClass {
+    if ([defaultAttachContextClasses containsObject:attachContextClass]) {
+        return;
+    }
     if ([attachContextClass isSubclassOfClass:[XTContext class]]) {
         NSMutableArray *classes = (defaultAttachContextClasses ?: @[]).mutableCopy;
         [classes addObject:NSStringFromClass(attachContextClass)];
@@ -177,64 +180,64 @@ static NSArray *defaultAttachContextClasses;
     }
 }
 
-+ (XTUIContext *)startWithNamed:(NSString *)name
-                       inBundle:(NSBundle *)bundle
-           navigationController:(UINavigationController *)navigationController {
-    return [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
-         navigationController:navigationController
-              completionBlock:nil
-                 failureBlock:nil];
-}
-
-+ (XTUIContext *)startWithURLString:(NSString *)URLString
-      navigationController:(UINavigationController *)navigationController
-           completionBlock:(XTUIContextCompletionBlock)completionBlock
-              failureBlock:(XTUIContextFailureBlock)failureBlock {
-    return [self startWithURL:[NSURL URLWithString:URLString]
-         navigationController:navigationController
-              completionBlock:completionBlock
-                 failureBlock:failureBlock];
-}
-
-+ (XTUIContext *)startWithURL:(NSURL *)sourceURL
-navigationController:(UINavigationController *)navigationController
-     completionBlock:(XTUIContextCompletionBlock)completionBlock
-        failureBlock:(XTUIContextFailureBlock)failureBlock {
-    __block XTUIContext *context = [[XTUIContext alloc] initWithSourceURL:sourceURL
-                                      completionBlock:^{
-                                          UINavigationController *rootViewController = (id)context.application.delegate.window.rootViewController;
-                                          if ([rootViewController isKindOfClass:[UINavigationController class]]) {
-                                              XTUIViewController *firstViewController = [rootViewController childViewControllers].firstObject;
-                                              if ([firstViewController isKindOfClass:[XTUIViewController class]]) {
-                                                  firstViewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
-                                                  [UIView animateWithDuration:0.25 animations:^{
-                                                      [navigationController pushViewController:firstViewController
-                                                                                      animated:YES];
-                                                      navigationController.navigationBar.alpha = 0.0;
-                                                  } completion:^(BOOL finished) {
-                                                      navigationController.navigationBar.alpha = 1.0;
-                                                      navigationController.navigationBar.hidden = YES;
-                                                  }];
-                                                  [firstViewController setExitAction:^(XTUIViewController *keyViewController) {
-                                                      [context terminal];
-                                                  }];
-                                              }
-                                          }
-                                          if (completionBlock) {
-                                              completionBlock();
-                                          }
-                                      }
-                                         failureBlock:^(NSError * _Nonnull error) {
-                                             if (failureBlock) {
-                                                 failureBlock(error);
-                                             }
-                                             [context terminal];
-                                         }];
-    for (NSString *contextClassName in defaultAttachContextClasses) {
-        [NSClassFromString(contextClassName) attachToContext:context];
-    }
-    return context;
-}
+//+ (XTUIContext *)startWithNamed:(NSString *)name
+//                       inBundle:(NSBundle *)bundle
+//           navigationController:(UINavigationController *)navigationController {
+//    return [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
+//         navigationController:navigationController
+//              completionBlock:nil
+//                 failureBlock:nil];
+//}
+//
+//+ (XTUIContext *)startWithURLString:(NSString *)URLString
+//      navigationController:(UINavigationController *)navigationController
+//           completionBlock:(XTUIContextCompletionBlock)completionBlock
+//              failureBlock:(XTUIContextFailureBlock)failureBlock {
+//    return [self startWithURL:[NSURL URLWithString:URLString]
+//         navigationController:navigationController
+//              completionBlock:completionBlock
+//                 failureBlock:failureBlock];
+//}
+//
+//+ (XTUIContext *)startWithURL:(NSURL *)sourceURL
+//navigationController:(UINavigationController *)navigationController
+//     completionBlock:(XTUIContextCompletionBlock)completionBlock
+//        failureBlock:(XTUIContextFailureBlock)failureBlock {
+//    __block XTUIContext *context = [[XTUIContext alloc] initWithSourceURL:sourceURL
+//                                      completionBlock:^{
+//                                          UINavigationController *rootViewController = (id)context.application.delegate.window.rootViewController;
+//                                          if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+//                                              XTUIViewController *firstViewController = [rootViewController childViewControllers].firstObject;
+//                                              if ([firstViewController isKindOfClass:[XTUIViewController class]]) {
+//                                                  firstViewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
+//                                                  [UIView animateWithDuration:0.25 animations:^{
+//                                                      [navigationController pushViewController:firstViewController
+//                                                                                      animated:YES];
+//                                                      navigationController.navigationBar.alpha = 0.0;
+//                                                  } completion:^(BOOL finished) {
+//                                                      navigationController.navigationBar.alpha = 1.0;
+//                                                      navigationController.navigationBar.hidden = YES;
+//                                                  }];
+//                                                  [firstViewController setExitAction:^(XTUIViewController *keyViewController) {
+//                                                      [context terminal];
+//                                                  }];
+//                                              }
+//                                          }
+//                                          if (completionBlock) {
+//                                              completionBlock();
+//                                          }
+//                                      }
+//                                         failureBlock:^(NSError * _Nonnull error) {
+//                                             if (failureBlock) {
+//                                                 failureBlock(error);
+//                                             }
+//                                             [context terminal];
+//                                         }];
+//    for (NSString *contextClassName in defaultAttachContextClasses) {
+//        [NSClassFromString(contextClassName) attachToContext:context];
+//    }
+//    return context;
+//}
 
 static UINavigationController *currentDebugNavigationViewController;
 static XTUIContext *currentDebugContext;
@@ -269,10 +272,10 @@ static XTUIContext *currentDebugContext;
     [self debuggerDidTerminal];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        currentDebugContext = [self startWithURL:[[XTDebug sharedDebugger] sourceURL]
-                            navigationController:currentDebugNavigationViewController
-                                 completionBlock:nil
-                                    failureBlock:nil];
+        currentDebugContext = [[XTUIContext alloc] initWithSourceURL:[[XTDebug sharedDebugger] sourceURL]
+                                                     completionBlock:^(UIViewController * _Nullable rootViewController) {
+                                                         [currentDebugNavigationViewController pushViewController:rootViewController animated:YES];
+                                                     } failureBlock:nil];
         [[XTDebug sharedDebugger] setDebugContext:currentDebugContext];
     });
 }

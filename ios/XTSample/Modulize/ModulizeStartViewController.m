@@ -14,6 +14,8 @@
 
 @interface ModulizeStartViewController ()
 
+@property (nonatomic, strong) XTUIContext *context;
+
 @end
 
 @implementation ModulizeStartViewController
@@ -24,10 +26,28 @@
 }
 
 - (IBAction)onStart:(id)sender {
-    XTUIContext *context = [XTUIContext startWithNamed:@"sample.min"
-                                              inBundle:nil
-                                  navigationController:self.navigationController];
-    [XTFoundationContext attachToContext:context];
+    NSURL *sampleURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"sample.min" ofType:@"js"]
+                                  isDirectory:NO];
+    NSInteger startMode = 0;
+    self.context = [[XTUIContext alloc] initWithSourceURL:sampleURL
+                                          completionBlock:^(UIViewController * _Nullable rootViewController) {
+                                              if (startMode == 0) {
+                                                  [self.navigationController pushViewController:rootViewController
+                                                                                       animated:YES];
+                                              }
+                                              else if (startMode == 1) {
+                                                  [self presentViewController:rootViewController animated:YES completion:nil];
+                                              }
+                                              else if (startMode == 2) {
+                                                  [self addChildViewController:rootViewController];
+                                                  [self.view addSubview:rootViewController.view];
+                                                  rootViewController.view.frame = CGRectMake(self.view.bounds.size.width - 180,
+                                                                                             self.view.bounds.size.height - 180,
+                                                                                             180,
+                                                                                             180);
+                                              }
+                                          } failureBlock:nil];
+    [XTFoundationContext attachToContext:self.context];
 }
 
 - (IBAction)onDebug:(id)sender {
