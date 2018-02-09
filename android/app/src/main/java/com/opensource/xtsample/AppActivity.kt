@@ -1,15 +1,28 @@
 package com.opensource.xtsample
 
 import android.app.AlertDialog
+import android.app.Fragment
+import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.FrameLayout
 import com.opensource.xt.core.XTContext
 import com.opensource.xt.core.XTDebug
 import com.opensource.xt.foundation.XTFoundationContext
 import com.opensource.xt.uikit.XTUIActivity
 import com.opensource.xt.uikit.XTUIContext
+
+class FooFragment: Fragment() {
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return FrameLayout(inflater?.context)
+    }
+
+}
 
 class AppActivity : XTUIActivity() {
 
@@ -23,8 +36,13 @@ class AppActivity : XTUIActivity() {
     }
 
     fun startLocalApplication(sender: View) {
+        val mode = 0
         XTUIContext.createWithAssets(this, "sample.min.js", {
-            it.start()
+            when (mode) {
+                0 -> it.start()
+                1 -> it.attach(this)
+                2 -> it.attach(this, R.id.foo_fragment)
+            }
         })
     }
 

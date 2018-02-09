@@ -1,5 +1,6 @@
 package com.opensource.xt.uikit
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.eclipsesource.v8.V8Array
@@ -14,8 +15,51 @@ import java.lang.ref.WeakReference
  */
 class XTUINavigationController: XTUIViewController() {
 
+    private var attachingActivity: WeakReference<Activity>? = null
+    private var attachingFragmentID: Int = 0
+
     override fun requestFragment(): XTUIViewController {
         return childViewControllers.firstOrNull() ?: this
+    }
+
+    override fun attachFragment(activity: Activity, fragmentID: Int) {
+        super.attachFragment(activity, fragmentID)
+        attachingActivity = WeakReference(activity)
+        attachingFragmentID = fragmentID
+    }
+
+    fun doPush(viewController: XTUIViewController, animated: Boolean) {
+        attachingActivity?.get()?.let {
+            val transaction = it.fragmentManager.beginTransaction()
+            transaction.add(attachingFragmentID, viewController.requestFragment())
+            transaction.commit()
+        } ?: kotlin.run {
+            val intent = Intent(xtrContext.appContext, NextActivity::class.java)
+            if (!animated) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            }
+            intent.putExtra("ChildViewControllerObjectUUID", viewController.objectUUID)
+            xtrContext.appContext.startActivity(intent)
+        }
+    }
+
+    fun doPop(targetViewControllers: List<XTUIViewController>, animated: Boolean) {
+        attachingActivity?.get()?.let { attachingActivity ->
+            targetViewControllers.forEach {
+                val transaction = attachingActivity.fragmentManager.beginTransaction()
+                transaction.remove(it.requestFragment())
+                transaction.commit()
+            }
+        } ?: kotlin.run {
+            targetViewControllers.forEach {
+                it.requestFragment().activity?.let {
+                    if (!animated) {
+                        (it as? NextActivity)?.finishWithAnimation = true
+                    }
+                    it.finish()
+                }
+            }
+        }
     }
 
     class JSExports(val context: XTUIContext): XTComponentExport() {
@@ -56,12 +100,7 @@ class XTUINavigationController: XTUIViewController() {
                 navigationController.childViewControllers.toMutableList()?.let {
                     it.add(viewController)
                     navigationController.childViewControllers = it.toList()
-                    val intent = Intent(context.appContext, NextActivity::class.java)
-                    if (!animated) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    }
-                    intent.putExtra("ChildViewControllerObjectUUID", viewControllerRef)
-                    context.appContext.startActivity(intent)
+                    navigationController.doPush(viewController, animated)
                 }
             }
         }
@@ -71,13 +110,11 @@ class XTUINavigationController: XTUIViewController() {
                 if (navigationController.childViewControllers.count() > 1) {
                     val targetViewController = navigationController.childViewControllers.last()
                     navigationController.childViewControllers = navigationController.childViewControllers.filter { it != targetViewController }
-                    targetViewController.requestFragment().activity?.let {
-                        if (!animated) {
-                            (it as? NextActivity)?.finishWithAnimation = true
-                        }
-                        it.finish()
-                    }
+                    navigationController.doPop(listOf(targetViewController), animated)
                     return targetViewController.objectUUID
+                }
+                else {
+                    navigationController.childViewControllers.lastOrNull()?.activity?.finish()
                 }
             }
             return null
@@ -93,14 +130,7 @@ class XTUINavigationController: XTUIViewController() {
                     targetViewControllers.forEach {
                         returnValue.push(it.objectUUID ?: "")
                     }
-                    targetViewControllers.forEach {
-                        it.requestFragment().activity?.let {
-                            if (!animated) {
-                                (it as? NextActivity)?.finishWithAnimation = true
-                            }
-                            it.finish()
-                        }
-                    }
+                    navigationController.doPop(targetViewControllers, animated)
                 }
             }
             return returnValue

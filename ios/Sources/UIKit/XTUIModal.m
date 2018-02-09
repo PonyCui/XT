@@ -14,6 +14,21 @@
     return @"_XTUIModal";
 }
 
++ (UIViewController *)visibleViewController:(UIViewController *)next {
+    if ([next isKindOfClass:[UINavigationController class]] && next.childViewControllers.count > 0) {
+        return [self visibleViewController:[(UINavigationController *)next childViewControllers].lastObject];
+    }
+    else if ([next isKindOfClass:[UITabBarController class]] && [(UITabBarController *)next selectedViewController] != nil) {
+        return [self visibleViewController:[(UITabBarController *)next selectedViewController]];
+    }
+    else if ([next presentedViewController] != nil) {
+        return [self visibleViewController:[next presentedViewController]];
+    }
+    else {
+        return next;
+    }
+}
+
 + (void)showAlert:(JSValue *)params callback:(JSValue *)callback {
     NSString *message = params.isObject ? params.toDictionary[@"message"] ?: @"" : @"";
     NSString *buttonTitle = params.isObject ? params.toDictionary[@"buttonTitle"] ?: @"好的" : @"好的";
@@ -23,9 +38,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:buttonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [callback callWithArguments:@[]];
     }]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController
-                                                                                 animated:YES
-                                                                               completion:nil];
+    [[XTUIModal visibleViewController:[UIApplication sharedApplication].keyWindow.rootViewController] presentViewController:alertController animated:YES completion:nil];
 }
 
 + (void)showConfirm:(JSValue *)params resolver:(JSValue *)resolver rejected:(JSValue *)rejected {
@@ -41,9 +54,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [rejected callWithArguments:@[]];
     }]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController
-                                                                                 animated:YES
-                                                                               completion:nil];
+    [[XTUIModal visibleViewController:[UIApplication sharedApplication].keyWindow.rootViewController] presentViewController:alertController animated:YES completion:nil];
 }
 
 + (void)showPrompt:(JSValue *)params resolver:(JSValue *)resolver rejected:(JSValue *)rejected {
@@ -68,9 +79,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [rejected callWithArguments:@[]];
     }]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController
-                                                                                 animated:YES
-                                                                               completion:nil];
+    [[XTUIModal visibleViewController:[UIApplication sharedApplication].keyWindow.rootViewController] presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

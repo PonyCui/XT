@@ -17,7 +17,9 @@
 
 @interface XTUIViewController ()
 
+@property (nonatomic, assign) BOOL originalSettted;
 @property (nonatomic, assign) UIStatusBarStyle originalStatusBarStyle;
+@property (nonatomic, assign) BOOL originalNavigationBarHidden;
 @property (nonatomic, strong) XTUINavigationBar *navigationBar;
 @property (nonatomic, assign) BOOL navigationBarHidden;
 @property (nonatomic, strong) UIView *innerView;
@@ -236,6 +238,13 @@
             [value invokeMethod:@"viewWillAppear" withArguments:@[]];
         }
     }
+    if (self.navigationController != nil && !self.originalSettted) {
+        self.originalSettted = YES;
+        self.originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+        self.originalNavigationBarHidden = self.navigationController.navigationBar.hidden;
+    }
+    self.navigationController.navigationBar.hidden = YES;
+    [[UIApplication sharedApplication] setStatusBarStyle:self.navigationBarLightContent ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -247,9 +256,6 @@
             [value invokeMethod:@"viewDidAppear" withArguments:@[]];
         }
     }
-    if (self.navigationController != nil) {
-        self.navigationController.navigationBar.hidden = YES;
-    }
 }
 
 static UINavigationController *tmpNavigationController;
@@ -258,6 +264,8 @@ static BOOL onPanning;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationItem.hidesBackButton = YES;
+    [UIApplication sharedApplication].statusBarStyle = self.originalStatusBarStyle;
+    self.navigationController.navigationBar.hidden = self.originalNavigationBarHidden;
     tmpNavigationController = self.navigationController;
     if (!onPanning) {
         [self viewWillForceDisappear:animated];
@@ -279,17 +287,15 @@ static BOOL onPanning;
             [value invokeMethod:@"viewDidDisappear" withArguments:@[]];
         }
     }
-    if (self.shouldRestoreNavigationBar && self.navigationController == nil) {
-        tmpNavigationController.navigationBar.hidden = NO;
+    if (self.navigationController == nil && !self.originalNavigationBarHidden && tmpNavigationController != nil) {
         tmpNavigationController.navigationBar.alpha = 1.0;
-        [[UIApplication sharedApplication] setStatusBarStyle:self.originalStatusBarStyle];
     }
     tmpNavigationController = nil;
 }
 
 - (void)viewWillForceDisappear:(BOOL)animated {
-    if ([self.navigationController.childViewControllers indexOfObject:self] == NSNotFound && self.shouldRestoreNavigationBar && animated) {
-        tmpNavigationController.navigationBar.hidden = NO;
+    if (!tmpNavigationController.navigationBar.hidden && animated) {
+        tmpNavigationController.navigationBar.alpha = 0.0;
         [UIView animateWithDuration:0.25 animations:^{
             tmpNavigationController.navigationBar.alpha = 1.0;
         }];
@@ -345,7 +351,7 @@ static BOOL onPanning;
                   withArguments:[parent conformsToProtocol:@protocol(XTComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
     }
-    if ([parent isKindOfClass:[UINavigationController class]] && self.shouldRestoreNavigationBar) {
+    if (parent == nil) {
         [self.navigationController.interactivePopGestureRecognizer
          addTarget:self
          action:@selector(onPopGesture:)];
@@ -360,9 +366,6 @@ static BOOL onPanning;
             [value invokeMethod:@"_didMoveToParentViewController"
                   withArguments:[parent conformsToProtocol:@protocol(XTComponent)] ? @[[parent objectUUID] ?: [NSNull null]] : @[]];
         }
-    }
-    if (parent == nil && self.exitAction) {
-        self.exitAction(self);
     }
     if (parent == nil) {
         [tmpNavigationController.interactivePopGestureRecognizer
@@ -379,8 +382,7 @@ static BOOL onPanning;
         onPanning = NO;
     }
     CGFloat progress = [sender locationInView:self.view.window].x / self.view.window.bounds.size.width;
-    if (![tmpNavigationController.childViewControllers containsObject:self] && self.shouldRestoreNavigationBar) {
-        tmpNavigationController.navigationBar.hidden = NO;
+    if (![tmpNavigationController.childViewControllers containsObject:self] && !self.originalNavigationBarHidden) {
         tmpNavigationController.navigationBar.alpha = progress;
     }
 }

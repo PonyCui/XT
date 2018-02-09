@@ -33,8 +33,6 @@ typedef void(^XTUIViewControllerExitAction)(XTUIViewController *keyViewControlle
 
 @interface XTUIViewController : UIViewController<XTComponent, XTUIViewControllerExport>
 
-@property (nonatomic, assign) BOOL shouldRestoreNavigationBar;
-@property (nonatomic, copy) XTUIViewControllerExitAction exitAction;
 @property (nonatomic, copy) NSString *objectUUID;
 
 #pragma mark - Private Props & Methods

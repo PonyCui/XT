@@ -2,6 +2,7 @@ package com.opensource.xt.uikit
 
 import android.app.Activity
 import android.app.Fragment
+import android.view.ViewGroup
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
@@ -32,11 +33,21 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
     var childViewControllers: List<XTUIViewController> = listOf()
         internal set
 
-    fun setContentView(activity: Activity) {
+    open fun setContentView(activity: Activity) {
         XTUIScreen.resetScreenInfo(activity)
         this.requestFragment().let {
             val transaction = activity.fragmentManager.beginTransaction()
             transaction.replace(android.R.id.content, it)
+            transaction.commit()
+            it.setupKeyboardHeightProvider(activity)
+        }
+    }
+
+    open fun attachFragment(activity: Activity, fragmentID: Int) {
+        XTUIScreen.resetScreenInfo(activity)
+        this.requestFragment().let {
+            val transaction = activity.fragmentManager.beginTransaction()
+            transaction.replace(fragmentID, it)
             transaction.commit()
             it.setupKeyboardHeightProvider(activity)
         }
@@ -181,6 +192,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             exports.registerJavaMethod(this, "xtr_setNavigationBar", "xtr_setNavigationBar", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_showNavigationBar", "xtr_showNavigationBar", arrayOf(Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_hideNavigationBar", "xtr_hideNavigationBar", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_showBackButton", "xtr_showBackButton", arrayOf(String::class.java))
             return exports
         }
 
@@ -277,6 +289,10 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
 
         fun xtr_hideNavigationBar(value: Boolean, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTUIViewController)?.requestFragment()?.navigationBarHidden = true
+        }
+
+        fun xtr_showBackButton(objectRef: String): Boolean {
+            return (XTMemoryManager.find(objectRef) as? XTUIViewController)?.activity?.intent?.getBooleanExtra("XTUIShowBackButton", false) ?: false
         }
 
     }

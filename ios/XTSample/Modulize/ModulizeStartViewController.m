@@ -41,9 +41,9 @@
                                               else if (startMode == 2) {
                                                   [self addChildViewController:rootViewController];
                                                   [self.view addSubview:rootViewController.view];
-                                                  rootViewController.view.frame = CGRectMake(self.view.bounds.size.width - 180,
+                                                  rootViewController.view.frame = CGRectMake(0,
                                                                                              self.view.bounds.size.height - 180,
-                                                                                             180,
+                                                                                             self.view.bounds.size.width,
                                                                                              180);
                                               }
                                           } failureBlock:nil];

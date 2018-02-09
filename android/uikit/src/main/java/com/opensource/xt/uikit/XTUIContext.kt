@@ -1,7 +1,6 @@
 package com.opensource.xt.uikit
 
 import android.app.Activity
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
@@ -104,17 +103,17 @@ class XTUIContext(appContext: android.content.Context,
 
     fun start() {
         XTUIContext.currentUIContextInstance = this
-        appContext.startActivity(Intent(appContext, XTUIActivity::class.java))
+        val intent = Intent(appContext, XTUIActivity::class.java)
+        intent.putExtra("XTUIShowBackButton", true)
+        appContext.startActivity(intent)
     }
 
-    fun attach(fragment: Fragment? = null) {
-        fragment?.let {
+    fun attach(activity: Activity) {
+        this.application?.delegate?.window?.rootViewController?.setContentView(activity)
+    }
 
-        } ?: kotlin.run {
-            (appContext as? Activity)?.let {
-                this.application?.delegate?.window?.rootViewController?.setContentView(it)
-            }
-        }
+    fun attach(activity: Activity, fragmentID: Int) {
+        this.application?.delegate?.window?.rootViewController?.attachFragment(activity, fragmentID)
     }
 
     override fun setup() {

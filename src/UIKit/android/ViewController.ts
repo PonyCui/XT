@@ -193,6 +193,9 @@ export class ViewController implements Releasable, NavigationBarDelegate {
     }
 
     shouldShowBackButton() {
+        if (_XTUIViewController.xtr_showBackButton(this.objectRef) === true) {
+            return true
+        }
         return this.navigationController && this.navigationController.childViewControllers.indexOf(this) > 0 ? true : false
     }
 
