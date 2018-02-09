@@ -28,7 +28,7 @@ export default function () {
                     scale = 3.0
                 }
                 callback(null, `
-                    module.exports = UI.Image.fromBase64('`+ base64EncodedString + `', ` + scale.toFixed(0) + `, ` + width.toFixed(0) + `, ` + height.toFixed(0) + `);
+                    module.exports = UI.Image.fromBase64('`+ base64EncodedString + `', ` + scale.toFixed(0) + `, ` + width.toFixed(0) + `, ` + height.toFixed(0) + `).retain();
                 `)
             } catch (error) {
                 console.error(error)
