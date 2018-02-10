@@ -56,13 +56,14 @@ class XTUICanvasView @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUICanvasView"
 
+        override val viewClass: Class<XTUIView> = XTUICanvasView::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_globalAlpha", "xtr_globalAlpha", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setGlobalAlpha", "xtr_setGlobalAlpha", arrayOf(Double::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_fillStyle", "xtr_fillStyle", arrayOf(String::class.java))
@@ -99,14 +100,6 @@ class XTUICanvasView @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_restore", "xtr_restore", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_clear", "xtr_clear", arrayOf(String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUICanvasView(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_globalAlpha(objectRef: String): Double {

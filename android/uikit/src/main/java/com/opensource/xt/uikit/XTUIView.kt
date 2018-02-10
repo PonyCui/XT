@@ -407,9 +407,11 @@ open class XTUIView @JvmOverloads constructor(
         return false
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    open class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIView"
+
+        open val viewClass: Class<XTUIView> = XTUIView::class.java
 
         override fun exports(): V8Object {
             val exports = V8Object(context.runtime)
@@ -463,7 +465,7 @@ open class XTUIView @JvmOverloads constructor(
         }
 
         fun create(): String {
-            val view = XTUIView(context)
+            val view = viewClass.getDeclaredConstructor(XTUIContext::class.java).newInstance(context)
             val managedObject = XTManagedObject(view)
             view.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)
@@ -511,7 +513,7 @@ open class XTUIView @JvmOverloads constructor(
             }
         }
 
-        fun xtr_bounds(objectRef: String): V8Value {
+        open fun xtr_bounds(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
                 return@let XTUIUtils.fromRect(it.bounds, context.runtime)
             } ?: XTUIUtils.fromRect(XTUIRect(0.0,0.0,0.0,0.0), context.runtime)

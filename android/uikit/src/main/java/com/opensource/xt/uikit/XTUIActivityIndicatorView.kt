@@ -69,27 +69,20 @@ class XTUIActivityIndicatorView @JvmOverloads constructor(
         innerView.indeterminateDrawable.setColorFilter(this.tintColor?.intColor() ?: Color.BLACK, PorterDuff.Mode.MULTIPLY)
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUIActivityIndicatorView"
 
+        override val viewClass: Class<XTUIView> = XTUIActivityIndicatorView::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_style", "xtr_style", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setStyle", "xtr_setStyle", arrayOf(Int::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_animating", "xtr_animating", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_startAnimating", "xtr_startAnimating", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_stopAnimating", "xtr_stopAnimating", arrayOf(String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUIActivityIndicatorView(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_style(objectRef: String): Int {

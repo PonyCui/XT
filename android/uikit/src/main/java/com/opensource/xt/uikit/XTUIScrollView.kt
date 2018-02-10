@@ -57,27 +57,20 @@ class XTUIScrollView @JvmOverloads constructor(
         this.innerView.frame = this.bounds
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUIScrollView"
 
+        override val viewClass: Class<XTUIView> = XTUIScrollView::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_innerView", "xtr_innerView", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_horizontalScrollIndicator", "xtr_horizontalScrollIndicator", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_verticalScrollIndicator", "xtr_verticalScrollIndicator", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_contentOffset", "xtr_contentOffset", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setContentOffset", "xtr_setContentOffset", arrayOf(V8Object::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUIScrollView(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_innerView(objectRef: String): String? {

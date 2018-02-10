@@ -45,24 +45,16 @@ class XTUINavigationBar @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUINavigationBar"
 
+        override val viewClass: Class<XTUIView> = XTUINavigationBar::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_setLightContent", "xtr_setLightContent", arrayOf(Boolean::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUINavigationBar(context)
-            ViewCompat.setElevation(view, 4.0f)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_setLightContent(value: Boolean, objectRef: String) {

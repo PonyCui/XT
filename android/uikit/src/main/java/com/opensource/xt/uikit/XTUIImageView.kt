@@ -85,26 +85,19 @@ class XTUIImageView @JvmOverloads constructor(
         return image?.size
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUIImageView"
 
+        override val viewClass: Class<XTUIView> = XTUIImageView::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setImage", "xtr_setImage", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_contentMode", "xtr_contentMode", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setContentMode", "xtr_setContentMode", arrayOf(Int::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUIImageView(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_image(objectRef: String): String? {

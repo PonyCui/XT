@@ -17,13 +17,14 @@ class XTUIWindow @JvmOverloads constructor(
 
     var rootViewController: XTUIViewController? = null
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUIWindow"
 
+        override val viewClass: Class<XTUIView> = XTUIWindow::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_bounds", "xtr_bounds", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_rootViewController", "xtr_rootViewController", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setRootViewController", "xtr_setRootViewController", arrayOf(String::class.java, String::class.java))
@@ -33,15 +34,7 @@ class XTUIWindow @JvmOverloads constructor(
             return exports
         }
 
-        fun create(): String {
-            val view = XTUIWindow(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
-        }
-
-        fun xtr_bounds(objectRef: String): V8Value {
+        override fun xtr_bounds(objectRef: String): V8Value {
             return (XTMemoryManager.find(objectRef) as? XTUIWindow)?.rootViewController?.requestFragment()?.rootView?.let {
                 return XTUIUtils.fromRect(
                         XTUIRect(

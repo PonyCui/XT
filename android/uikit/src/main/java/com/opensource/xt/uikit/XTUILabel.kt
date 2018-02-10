@@ -172,13 +172,14 @@ class XTUILabel @JvmOverloads constructor(
         return XTUISize(Math.ceil(this.textView.measuredWidth.toDouble() / this.resources.displayMetrics.density), Math.ceil(this.textView.measuredHeight.toDouble() / this.resources.displayMetrics.density))
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUILabel"
 
+        override val viewClass: Class<XTUIView> = XTUILabel::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setText", "xtr_setText", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf(String::class.java))
@@ -195,14 +196,6 @@ class XTUILabel @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_setLineBreakMode", "xtr_setLineBreakMode", arrayOf(Int::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_textRectForBounds", "xtr_textRectForBounds", arrayOf(V8Object::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUILabel(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_text(objectRef: String): String {

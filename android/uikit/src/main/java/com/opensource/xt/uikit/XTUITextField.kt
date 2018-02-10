@@ -261,13 +261,14 @@ class XTUITextField @JvmOverloads constructor(
         }
     }
     
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUITextField"
 
+        override val viewClass: Class<XTUIView> = XTUITextField::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_text", "xtr_text", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setText", "xtr_setText", arrayOf(String::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_font", "xtr_font", arrayOf(String::class.java))
@@ -309,14 +310,6 @@ class XTUITextField @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_focus", "xtr_focus", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_blur", "xtr_blur", arrayOf(String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUITextField(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_text(objectRef: String): String {

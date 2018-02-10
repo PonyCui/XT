@@ -53,24 +53,17 @@ class XTUISlider @JvmOverloads constructor(
         innerView.progressDrawable.setColorFilter(this.tintColor?.intColor() ?: Color.BLACK, PorterDuff.Mode.SRC_ATOP)
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUISlider"
 
+        override val viewClass: Class<XTUIView> = XTUISlider::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_value", "xtr_value", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setValue", "xtr_setValue", arrayOf(Double::class.java, Boolean::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUISlider(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_value(objectRef: String): Double {

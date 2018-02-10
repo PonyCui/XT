@@ -51,24 +51,17 @@ class XTUISwitch @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUISwitch"
 
+        override val viewClass: Class<XTUIView> = XTUISwitch::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_on", "xtr_on", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setOn", "xtr_setOn", arrayOf(Boolean::class.java, Boolean::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUISwitch(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_on(objectRef: String): Boolean {

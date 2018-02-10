@@ -69,33 +69,19 @@ class XTUIHRView @JvmOverloads constructor(
         }
     }
 
-    override fun layoutSubviews() {
-        super.layoutSubviews()
-
-//        System.out.println("xt," + this.frame?.width)
-
-    }
-
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUIHRView"
 
+        override val viewClass: Class<XTUIView> = XTUIHRView::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_position", "xtr_position", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setPosition", "xtr_setPosition", arrayOf(Int::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_color", "xtr_color", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setColor", "xtr_setColor", arrayOf(V8Object::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUIHRView(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_position(objectRef: String): Int {

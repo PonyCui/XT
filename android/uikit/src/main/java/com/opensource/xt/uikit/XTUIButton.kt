@@ -81,7 +81,7 @@ class XTUIButton @JvmOverloads constructor(
         }
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    open class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         val XTUILabel: XTUILabel.JSExports
             get() = context?.registeredComponents?.get("_XTUILabel") as XTUILabel.JSExports
@@ -90,9 +90,10 @@ class XTUIButton @JvmOverloads constructor(
 
         override val name: String = "_XTUIButton"
 
+        override val viewClass: Class<XTUIView> = XTUIButton::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_titleLabel", "xtr_titleLabel", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_imageView", "xtr_imageView", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_title", "xtr_title", arrayOf(String::class.java))
@@ -108,14 +109,6 @@ class XTUIButton @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_inset", "xtr_inset", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setInset", "xtr_setInset", arrayOf(Double::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUIButton(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_titleLabel(objectRef: String): String {

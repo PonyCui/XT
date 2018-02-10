@@ -48,23 +48,16 @@ class XTUIWebView @JvmOverloads constructor(
         addView(innerView, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
-    class JSExports(val context: XTUIContext): XTComponentExport() {
+    class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         override val name: String = "_XTUIWebView"
 
+        override val viewClass: Class<XTUIView> = XTUIWebView::class.java as Class<XTUIView>
+
         override fun exports(): V8Object {
-            val exports = V8Object(context.runtime)
-            exports.registerJavaMethod(this, "create", "create", arrayOf())
+            val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_loadWithURLString", "xtr_loadWithURLString", arrayOf(String::class.java, String::class.java))
             return exports
-        }
-
-        fun create(): String {
-            val view = XTUIWebView(context)
-            val managedObject = XTManagedObject(view)
-            view.objectUUID = managedObject.objectUUID
-            XTMemoryManager.add(managedObject)
-            return managedObject.objectUUID
         }
 
         fun xtr_loadWithURLString(URLString: String, objectRef: String) {
