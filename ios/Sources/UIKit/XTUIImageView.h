@@ -11,9 +11,8 @@
 
 @class XTUIImageView;
 
-@protocol XTUIImageViewExport <JSExport>
+@protocol XTUIImageViewExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSString *)xtr_image:(NSString *)objectRef;
 + (void)xtr_setImage:(NSString *)imageRef objectRef:(NSString *)objectRef;
 

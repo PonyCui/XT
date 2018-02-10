@@ -9,11 +9,8 @@
 #import "XTUIView.h"
 #import "XTComponent.h"
 
-@class XTUIActivityIndicatorView;
+@protocol XTUIActivityIndicatorViewExport <XTUIViewExport, JSExport>
 
-@protocol XTUIActivityIndicatorViewExport <JSExport>
-
-+ (NSString *)create;
 + (NSInteger)xtr_style:(NSString *)objectRef;
 + (void)xtr_setStyle:(NSInteger)value objectRef:(NSString *)objectRef;
 + (BOOL)xtr_animating:(NSString *)objectRef;

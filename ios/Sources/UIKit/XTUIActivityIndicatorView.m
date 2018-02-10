@@ -22,15 +22,6 @@
     return @"_XTUIActivityIndicatorView";
 }
 
-+ (NSString *)create {
-    XTUIActivityIndicatorView *view = [[XTUIActivityIndicatorView alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (NSInteger)xtr_style:(NSString *)objectRef {
     XTUIActivityIndicatorView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUIActivityIndicatorView class]]) {

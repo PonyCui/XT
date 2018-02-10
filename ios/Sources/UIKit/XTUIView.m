@@ -31,12 +31,11 @@
 }
 
 + (NSString *)create {
-    XTUIView *view = [[XTUIView alloc] initWithFrame:CGRectZero];
+    XTUIView *view = [[self alloc] initWithFrame:CGRectZero];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];
     view.context = [JSContext currentContext];
     view.objectUUID = managedObject.objectUUID;
-    view.multipleTouchEnabled = YES;
     return managedObject.objectUUID;
 }
 

@@ -62,28 +62,8 @@
 
 @implementation XTUICanvasView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.userInteractionEnabled = NO;
-    }
-    return self;
-}
-
 + (NSString *)name {
     return @"_XTUICanvasView";
-}
-
-+ (NSString *)create {
-    XTUICanvasView *view = [[XTUICanvasView alloc] initWithFrame:CGRectZero];
-    view.currentState = [XTUICanvasState new];
-    view.backgroundColor = [UIColor clearColor];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
 }
 
 + (CGFloat)xtr_globalAlpha:(NSString *)objectRef {
@@ -395,6 +375,17 @@
         view.currentState = [XTUICanvasState new];
         view.currentPath = nil;
     }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _currentState = [XTUICanvasState new];
+        self.userInteractionEnabled = NO;
+        self.backgroundColor = [UIColor clearColor];
+    }
+    return self;
 }
 
 @end

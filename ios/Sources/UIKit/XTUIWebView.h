@@ -11,9 +11,8 @@
 
 @class XTUIWebView;
 
-@protocol XTUIWebViewExport <JSExport>
+@protocol XTUIWebViewExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (void)xtr_loadWithURLString:(NSString *)URLString objectRef:(NSString *)objectRef;
 
 @end

@@ -11,9 +11,8 @@
 
 @class XTUISwitch;
 
-@protocol XTUISwitchExport <JSExport>
+@protocol XTUISwitchExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (BOOL)xtr_on:(NSString *)objectRef;
 + (void)xtr_setOn:(BOOL)value animated:(BOOL)animated objectRef:(NSString *)objectRef;
 

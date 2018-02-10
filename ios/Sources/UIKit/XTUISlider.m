@@ -22,15 +22,6 @@
     return @"_XTUISlider";
 }
 
-+ (NSString *)create {
-    XTUISlider *view = [[XTUISlider alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (CGFloat)xtr_value:(NSString *)objectRef {
     XTUISlider *view =  [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUISlider class]]) {

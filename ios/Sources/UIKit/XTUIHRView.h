@@ -9,9 +9,8 @@
 #import "XTUIView.h"
 #import "XTComponent.h"
 
-@protocol XTUIHRViewExport <JSExport>
+@protocol XTUIHRViewExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSInteger)xtr_position:(NSString *)objectRef;
 + (void)xtr_setPosition:(NSInteger)value objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_color:(NSString *)objectRef;

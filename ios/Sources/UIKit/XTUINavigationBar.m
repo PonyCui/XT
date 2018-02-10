@@ -33,69 +33,6 @@ static UIImage *backButtonImage;
     return @"_XTUINavigationBar";
 }
 
-+ (NSString *)create {
-    XTUINavigationBar *view = [[XTUINavigationBar alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setupBlurView];
-        [self setupInnerView];
-        [self setupBackItem];
-        [self setTranslucent:NO];
-        [self setLightContent:NO];
-    }
-    return self;
-}
-
-- (void)setupBlurView {
-    UIVisualEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
-    [self addSubview:self.blurView];
-}
-
-- (void)setupInnerView {
-    _innerView = [UINavigationBar new];
-    [_innerView setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    _innerView.translucent = YES;
-    _innerItem = [[UINavigationItem alloc] init];
-    [_innerView setItems:@[_innerItem]];
-    [self addSubview:_innerView];
-}
-
-- (void)setupBackItem {
-    UIButton *customView = [UIButton buttonWithType:UIButtonTypeSystem];
-    customView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    [customView setImage:backButtonImage forState:UIControlStateNormal];
-    [customView addTarget:self action:@selector(onBack) forControlEvents:UIControlEventTouchUpInside];
-    customView.frame = CGRectMake(0, 0, 44, 44);
-    self.backItem = [[UIBarButtonItem alloc] initWithCustomView:customView];
-}
-
-- (void)setShouldShowBackBarButtonItem:(BOOL)shouldShowBackBarButtonItem {
-    _shouldShowBackBarButtonItem = shouldShowBackBarButtonItem;
-    [self resetItems];
-}
-
-- (void)resetItems {
-    if (self.shouldShowBackBarButtonItem) {
-        if (self.innerItem.leftBarButtonItems.count == 0) {
-            [self.innerItem setLeftBarButtonItem:self.backItem];
-        }
-    }
-}
-
-- (void)onBack {
-    [self.viewController.navigationController popViewControllerAnimated:YES];
-}
-
 + (NSString *)xtr_title:(NSString *)objectRef {
     XTUINavigationBar *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUINavigationBar class]]) {
@@ -184,12 +121,6 @@ static UIImage *backButtonImage;
     }
 }
 
-- (void)handleLeftButtonTouchUpInside:(UIBarButtonItem *)sender {
-    if (self.scriptObject) {
-        [self.scriptObject invokeMethod:@"handleLeftButtonTouchUpInside" withArguments:@[@(sender.tag)]];
-    }
-}
-
 + (void)xtr_setRightBarButtonItems:(JSValue *)value objectRef:(NSString *)objectRef {
     XTUINavigationBar *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUINavigationBar class]]) {
@@ -229,6 +160,66 @@ static UIImage *backButtonImage;
         }
         [obj.innerItem setRightBarButtonItems:barButtonItems];
         [obj resetItems];
+    }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setupBlurView];
+        [self setupInnerView];
+        [self setupBackItem];
+        [self setTranslucent:NO];
+        [self setLightContent:NO];
+    }
+    return self;
+}
+
+- (void)setupBlurView {
+    UIVisualEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
+    [self addSubview:self.blurView];
+}
+
+- (void)setupInnerView {
+    _innerView = [UINavigationBar new];
+    [_innerView setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    _innerView.translucent = YES;
+    _innerItem = [[UINavigationItem alloc] init];
+    [_innerView setItems:@[_innerItem]];
+    [self addSubview:_innerView];
+}
+
+- (void)setupBackItem {
+    UIButton *customView = [UIButton buttonWithType:UIButtonTypeSystem];
+    customView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    [customView setImage:backButtonImage forState:UIControlStateNormal];
+    [customView addTarget:self action:@selector(onBack) forControlEvents:UIControlEventTouchUpInside];
+    customView.frame = CGRectMake(0, 0, 44, 44);
+    self.backItem = [[UIBarButtonItem alloc] initWithCustomView:customView];
+}
+
+- (void)setShouldShowBackBarButtonItem:(BOOL)shouldShowBackBarButtonItem {
+    _shouldShowBackBarButtonItem = shouldShowBackBarButtonItem;
+    [self resetItems];
+}
+
+- (void)resetItems {
+    if (self.shouldShowBackBarButtonItem) {
+        if (self.innerItem.leftBarButtonItems.count == 0) {
+            [self.innerItem setLeftBarButtonItem:self.backItem];
+        }
+    }
+}
+
+- (void)onBack {
+    [self.viewController.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)handleLeftButtonTouchUpInside:(UIBarButtonItem *)sender {
+    if (self.scriptObject) {
+        [self.scriptObject invokeMethod:@"handleLeftButtonTouchUpInside" withArguments:@[@(sender.tag)]];
     }
 }
 

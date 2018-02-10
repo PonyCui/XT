@@ -11,9 +11,8 @@
 
 @class XTUINavigationBar, XTUIViewController;
 
-@protocol XTUINavigationBarExport <JSExport>
+@protocol XTUINavigationBarExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSString *)xtr_title:(NSString *)objectRef;
 + (void)xtr_setTitle:(NSString *)title objectRef:(NSString *)objectRef;
 + (BOOL)xtr_lightContent:(NSString *)objectRef;

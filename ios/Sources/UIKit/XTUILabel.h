@@ -11,9 +11,8 @@
 
 @class XTUILabel;
 
-@protocol XTUILabelExport <JSExport>
+@protocol XTUILabelExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSString *)xtr_text:(NSString *)objectRef;
 + (void)xtr_setText:(NSString *)text objectRef:(NSString *)objectRef;
 + (NSString *)xtr_font:(NSString *)objectRef;

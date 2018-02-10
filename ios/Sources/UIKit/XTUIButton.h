@@ -9,11 +9,8 @@
 #import "XTUIView.h"
 #import "XTComponent.h"
 
-@class XTUIButton;
+@protocol XTUIButtonExport <XTUIViewExport, JSExport>
 
-@protocol XTUIButtonExport <JSExport>
-
-+ (NSString *)create;
 + (NSString *)xtr_title:(NSString *)objectRef;
 + (void)xtr_setTitle:(NSString *)title objectRef:(NSString *)objectRef;
 + (NSString *)xtr_font:(NSString *)objectRef;

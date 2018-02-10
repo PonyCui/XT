@@ -9,11 +9,8 @@
 #import "XTUIView.h"
 #import "XTComponent.h"
 
-@class XTUICanvasView;
+@protocol XTUICanvasViewExport <XTUIViewExport, JSExport>
 
-@protocol XTUICanvasViewExport <JSExport>
-
-+ (NSString *)create;
 + (CGFloat)xtr_globalAlpha:(NSString *)objectRef;
 + (void)xtr_setGlobalAlpha:(CGFloat)globalAlpha objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_fillStyle:(NSString *)objectRef;

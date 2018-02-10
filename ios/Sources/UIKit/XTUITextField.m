@@ -26,28 +26,6 @@
     return @"_XTUITextField";
 }
 
-+ (NSString *)create {
-    XTUITextField *view = [[XTUITextField alloc] initWithFrame:CGRectZero];
-    view.userInteractionEnabled = YES;
-    view.innerView = [[UITextField alloc] init];
-    view.innerView.delegate = view;
-    [view addSubview:view.innerView];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
-- (void)dealloc {
-    self.innerView.delegate = nil;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    self.innerView.frame = self.bounds;
-}
-
 + (NSString *)xtr_text:(NSString *)objectRef {
     XTUITextField *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUITextField class]]) {
@@ -158,16 +136,6 @@
     if ([view isKindOfClass:[XTUITextField class]]) {
         view.placeholderColor = [placeholderColor toColor];
         [view resetAttributedPlaceholder];
-    }
-}
-
-- (void)resetAttributedPlaceholder {
-    if (self.innerView.placeholder != nil) {
-        [self.innerView setAttributedPlaceholder:[[NSAttributedString alloc]
-                                                  initWithString:self.innerView.placeholder
-                                                      attributes:@{
-                                                                   NSForegroundColorAttributeName: self.placeholderColor ?: [UIColor colorWithWhite:0.7 alpha:1.0]
-                                                                   }]];
     }
 }
 
@@ -403,6 +371,37 @@
     XTUITextField *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUITextField class]]) {
         [view.innerView resignFirstResponder];
+    }
+}
+
+- (void)dealloc {
+    self.innerView.delegate = nil;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _innerView = [[UITextField alloc] init];
+        _innerView.delegate = self;
+        [self addSubview:_innerView];
+    }
+    return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.innerView.frame = self.bounds;
+}
+
+
+- (void)resetAttributedPlaceholder {
+    if (self.innerView.placeholder != nil) {
+        [self.innerView setAttributedPlaceholder:[[NSAttributedString alloc]
+                                                  initWithString:self.innerView.placeholder
+                                                  attributes:@{
+                                                               NSForegroundColorAttributeName: self.placeholderColor ?: [UIColor colorWithWhite:0.7 alpha:1.0]
+                                                               }]];
     }
 }
 

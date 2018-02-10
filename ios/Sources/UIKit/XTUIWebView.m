@@ -23,15 +23,6 @@
     return @"_XTUIWebView";
 }
 
-+ (NSString *)create {
-    XTUIWebView *view = [[XTUIWebView alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (void)xtr_loadWithURLString:(NSString *)URLString objectRef:(NSString *)objectRef {
     XTUIWebView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUIWebView class]]) {

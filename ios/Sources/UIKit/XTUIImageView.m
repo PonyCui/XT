@@ -25,17 +25,6 @@
     return @"_XTUIImageView";
 }
 
-+ (NSString *)create {
-    XTUIImageView *view = [[XTUIImageView alloc] initWithFrame:CGRectZero];
-    view.innerView = [[UIImageView alloc] init];
-    [view addSubview:view.innerView];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (NSString *)xtr_image:(NSString *)objectRef {
     XTUIImageView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUIImageView class]]) {
@@ -63,6 +52,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        _innerView = [[UIImageView alloc] init];
+        [self addSubview:_innerView];
         self.userInteractionEnabled = NO;
     }
     return self;

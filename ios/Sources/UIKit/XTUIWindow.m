@@ -33,20 +33,6 @@
     return managedObject.objectUUID;
 }
 
-- (void)dealloc {
-#ifdef LOGDEALLOC
-    NSLog(@"XTUIWindow dealloc.");
-#endif
-}
-
-- (JSValue *)scriptObject {
-    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
-}
-
-- (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
-    [super setTranslatesAutoresizingMaskIntoConstraints:YES];
-}
-
 + (void)xtr_makeKeyAndVisible:(NSString *)objectRef {
     XTUIWindow *window = [XTMemoryManager find:objectRef];
     if ([window isKindOfClass:[XTUIWindow class]]) {
@@ -95,6 +81,21 @@ static id<XTComponent> currentFirstResponder;
 }
 
 #pragma mark - View Callbacks
+
+
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTUIWindow dealloc.");
+#endif
+}
+
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+- (void)setTranslatesAutoresizingMaskIntoConstraints:(BOOL)translatesAutoresizingMaskIntoConstraints {
+    [super setTranslatesAutoresizingMaskIntoConstraints:YES];
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];

@@ -25,28 +25,6 @@
     return @"_XTUITextView";
 }
 
-+ (NSString *)create {
-    XTUITextView *view = [[XTUITextView alloc] initWithFrame:CGRectZero];
-    view.userInteractionEnabled = YES;
-    view.innerView = [[UITextView alloc] init];
-    view.innerView.delegate = view;
-    [view addSubview:view.innerView];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
-- (void)dealloc {
-    self.innerView.delegate = nil;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    self.innerView.frame = self.bounds;
-}
-
 + (NSString *)xtr_text:(NSString *)objectRef {
     XTUITextView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUITextView class]]) {
@@ -254,6 +232,26 @@
     if ([view isKindOfClass:[XTUITextView class]]) {
         [view.innerView resignFirstResponder];
     }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _innerView = [[UITextView alloc] init];
+        _innerView.delegate = self;
+        [self addSubview:_innerView];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    self.innerView.delegate = nil;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.innerView.frame = self.bounds;
 }
 
 #pragma mark - UITextViewDelegate

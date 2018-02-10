@@ -22,15 +22,6 @@
     return @"_XTUISwitch";
 }
 
-+ (NSString *)create {
-    XTUISwitch *view = [[XTUISwitch alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (BOOL)xtr_on:(NSString *)objectRef {
     XTUISwitch *view =  [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUISwitch class]]) {

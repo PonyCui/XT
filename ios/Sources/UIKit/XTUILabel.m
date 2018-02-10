@@ -25,31 +25,6 @@
     return @"_XTUILabel";
 }
 
-+ (NSString *)create {
-    XTUILabel *view = [[XTUILabel alloc] initWithFrame:CGRectZero];
-    view.innerView = [[UILabel alloc] init];
-    [view addSubview:view.innerView];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.userInteractionEnabled = NO;
-    }
-    return self;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    self.innerView.frame = self.bounds;
-}
-
 + (NSString *)xtr_text:(NSString *)objectRef {
     XTUILabel *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUILabel class]]) {
@@ -198,6 +173,30 @@
     }
 }
 
++ (NSDictionary *)xtr_textRectForBounds:(JSValue *)bounds objectRef:(NSString *)objectRef {
+    XTUILabel *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTUILabel class]]) {
+        return [JSValue fromRect:[obj.innerView textRectForBounds:[bounds toRect] limitedToNumberOfLines:obj.innerView.numberOfLines]];
+    }
+    return @{};
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _innerView = [[UILabel alloc] init];
+        [self addSubview:_innerView];
+        self.userInteractionEnabled = NO;
+    }
+    return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.innerView.frame = self.bounds;
+}
+
 - (void)resetAttributedText {
     if (self.lineSpace > 0) {
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithAttributedString:self.innerView.attributedText];
@@ -209,14 +208,6 @@
                               } range:NSMakeRange(0, text.length)];
         self.innerView.attributedText = text;
     }
-}
-
-+ (NSDictionary *)xtr_textRectForBounds:(JSValue *)bounds objectRef:(NSString *)objectRef {
-    XTUILabel *obj = [XTMemoryManager find:objectRef];
-    if ([obj isKindOfClass:[XTUILabel class]]) {
-        return [JSValue fromRect:[obj.innerView textRectForBounds:[bounds toRect] limitedToNumberOfLines:obj.innerView.numberOfLines]];
-    }
-    return @{};
 }
 
 @end

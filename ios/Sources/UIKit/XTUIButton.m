@@ -28,27 +28,6 @@
     return @"_XTUIButton";
 }
 
-+ (NSString *)create {
-    XTUIButton *view = [[XTUIButton alloc] initWithFrame:CGRectZero];
-    view.innerView = [UIButton buttonWithType:UIButtonTypeSystem];
-    view.innerView.adjustsImageWhenHighlighted = NO;
-    [view.innerView setTitleColor:view.tintColor forState:UIControlStateNormal];
-    [view.innerView addTarget:view action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
-    [view.innerView addTarget:view action:@selector(onTouchStart) forControlEvents:UIControlEventTouchDown];
-    [view.innerView addTarget:view action:@selector(onTouchEvent) forControlEvents:UIControlEventAllTouchEvents];
-    [view addSubview:view.innerView];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    self.innerView.frame = self.bounds;
-}
-
 + (NSString *)xtr_title:(NSString *)objectRef {
     XTUIButton *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIButton class]]) {
@@ -155,6 +134,21 @@
     }
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _innerView = [UIButton buttonWithType:UIButtonTypeSystem];
+        _innerView.adjustsImageWhenHighlighted = NO;
+        [_innerView setTitleColor:self.tintColor forState:UIControlStateNormal];
+        [_innerView addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+        [_innerView addTarget:self action:@selector(onTouchStart) forControlEvents:UIControlEventTouchDown];
+        [_innerView addTarget:self action:@selector(onTouchEvent) forControlEvents:UIControlEventAllTouchEvents];
+        [self addSubview:_innerView];
+    }
+    return self;
+}
+
 - (void)resetInset {
     if (self.vertical) {
         [self.innerView setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -196,6 +190,11 @@
         }
         
     }
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.innerView.frame = self.bounds;
 }
 
 @end

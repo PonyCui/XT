@@ -11,9 +11,8 @@
 
 @class XTUISlider;
 
-@protocol XTUISliderExport <JSExport>
+@protocol XTUISliderExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (CGFloat)xtr_value:(NSString *)objectRef;
 + (void)xtr_setValue:(CGFloat)value animated:(BOOL)animated objectRef:(NSString *)objectRef;
 

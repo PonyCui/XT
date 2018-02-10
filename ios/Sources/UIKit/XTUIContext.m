@@ -31,7 +31,6 @@
 #import "XTUITextView.h"
 #import "XTDebug.h"
 #import "XTUICanvasView.h"
-#import "XTUICustomView.h"
 #import "XTUIDevice.h"
 #import "XTUITextMeasurer.h"
 #import "XTUIHRView.h"
@@ -140,7 +139,6 @@
                               [XTUITextField class],
                               [XTUITextView class],
                               [XTUICanvasView class],
-                              [XTUICustomView class],
                               [XTUIDevice class],
                               [XTUITextMeasurer class],
                               [XTUIHRView class],

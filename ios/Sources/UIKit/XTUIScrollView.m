@@ -13,12 +13,6 @@
 #import "XTUIWindow.h"
 #import "XTMemoryManager.h"
 
-@interface UIScrollView (XTUIScrollView)
-
-- (void)handlePan:(id)sender;
-
-@end
-
 @interface XTUIScrollView ()<UIScrollViewDelegate>
 
 @property (nonatomic, assign) NSTimeInterval longPressDuration;
@@ -36,42 +30,11 @@
 
 + (NSString *)create {
     XTUIScrollView *view = [[XTUIScrollView alloc] initWithFrame:CGRectZero];
-    view.delegate = view;
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
     [XTMemoryManager add:managedObject];
     view.context = [JSContext currentContext];
     view.objectUUID = managedObject.objectUUID;
     return managedObject.objectUUID;
-}
-
-- (void)dealloc {
-    self.delegate = nil;
-#ifdef LOGDEALLOC
-    NSLog(@"XTUIScrollView dealloc.");
-#endif
-}
-
-- (JSValue *)scriptObject {
-    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
-}
-
-- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated {
-    CGPoint targetContentOffset = self.contentOffset;
-    if (rect.origin.x < self.contentOffset.x) {
-        targetContentOffset.x = rect.origin.x;
-    }
-    else if (rect.origin.x + rect.size.width > self.contentOffset.x + self.bounds.size.width) {
-        targetContentOffset.x = rect.origin.x + rect.size.width - self.bounds.size.width;
-    }
-    if (rect.origin.y < self.contentOffset.y) {
-        targetContentOffset.y = rect.origin.y;
-    }
-    else if (rect.origin.y + rect.size.height > self.contentOffset.y + self.bounds.size.height) {
-        targetContentOffset.y = rect.origin.y + rect.size.height - self.bounds.size.height;
-    }
-    targetContentOffset.x = MAX(0, MIN(self.contentSize.width - self.bounds.size.width, targetContentOffset.x));
-    targetContentOffset.y = MAX(0, MIN(self.contentSize.height - self.bounds.size.height, targetContentOffset.y));
-    [self setContentOffset:targetContentOffset animated:animated];
 }
 
 #pragma mark - XTUIScrollViewExport
@@ -231,6 +194,45 @@
     if ([view isKindOfClass:[UIScrollView class]]) {
         [view setAlwaysBounceHorizontal:alwaysBounceHorizontal];
     }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    self.delegate = nil;
+#ifdef LOGDEALLOC
+    NSLog(@"XTUIScrollView dealloc.");
+#endif
+}
+
+- (JSValue *)scriptObject {
+    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated {
+    CGPoint targetContentOffset = self.contentOffset;
+    if (rect.origin.x < self.contentOffset.x) {
+        targetContentOffset.x = rect.origin.x;
+    }
+    else if (rect.origin.x + rect.size.width > self.contentOffset.x + self.bounds.size.width) {
+        targetContentOffset.x = rect.origin.x + rect.size.width - self.bounds.size.width;
+    }
+    if (rect.origin.y < self.contentOffset.y) {
+        targetContentOffset.y = rect.origin.y;
+    }
+    else if (rect.origin.y + rect.size.height > self.contentOffset.y + self.bounds.size.height) {
+        targetContentOffset.y = rect.origin.y + rect.size.height - self.bounds.size.height;
+    }
+    targetContentOffset.x = MAX(0, MIN(self.contentSize.width - self.bounds.size.width, targetContentOffset.x));
+    targetContentOffset.y = MAX(0, MIN(self.contentSize.height - self.bounds.size.height, targetContentOffset.y));
+    [self setContentOffset:targetContentOffset animated:animated];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

@@ -11,9 +11,8 @@
 
 @class XTUIListCell;
 
-@protocol XTUIListCellExport <JSExport>
+@protocol XTUIListCellExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSInteger)xtr_selectionStyle:(NSString *)objectRef;
 + (void)xtr_setSelectionStyle:(NSInteger)selectionStyle objectRef:(NSString *)objectRef;
 

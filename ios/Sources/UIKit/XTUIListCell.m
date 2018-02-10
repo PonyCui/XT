@@ -22,15 +22,6 @@
     return @"_XTUIListCell";
 }
 
-+ (NSString *)create {
-    XTUIListCell *view = [[XTUIListCell alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (NSInteger)xtr_selectionStyle:(NSString *)objectRef {
     XTUIListCell *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUIListCell class]]) {

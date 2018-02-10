@@ -24,15 +24,6 @@
     return @"_XTUIHRView";
 }
 
-+ (NSString *)create {
-    XTUIHRView *view = [[XTUIHRView alloc] initWithFrame:CGRectZero];
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
-
 + (NSInteger)xtr_position:(NSString *)objectRef {
     XTUIHRView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUIHRView class]]) {
