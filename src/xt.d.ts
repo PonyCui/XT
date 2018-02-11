@@ -60,7 +60,7 @@ export class View implements Releasable {
     /**
      * use transform to describe content's transforming
      */
-    transform?: TransformMatrix;
+    transform: TransformMatrix;
     // Mark: View Rendering
     /**
      * defaults to false, if true, contents will not render out of bounds.
@@ -69,7 +69,7 @@ export class View implements Releasable {
     /**
      * defaults to undefined,.
      */
-    backgroundColor?: Color;
+    backgroundColor: Color;
     /**
      * defaults to 1.0.
      */
@@ -85,7 +85,7 @@ export class View implements Releasable {
     /**
      * defaults to ContentMode.ScaleToFill
      */
-    contentMode?: ContentMode;
+    contentMode: ContentMode;
     /**
      * defaults to undefined, valid to maskView !== undefined and set clipsToBounds = true.
      */
@@ -110,11 +110,11 @@ export class View implements Releasable {
     /**
      * defaults to undefined.
      */
-    borderColor?: Color;
+    borderColor: Color;
     /**
      * defaults to undefined.
      */
-    shadowColor?: Color;
+    shadowColor: Color;
     /**
      * defaults to 0;
      */
@@ -122,7 +122,7 @@ export class View implements Releasable {
     /**
      * defaults to {width:0, height: -3};
      */
-    shadowOffset?: Size;
+    shadowOffset: Size;
     /**
      * defaults to 3;
      */
@@ -131,7 +131,7 @@ export class View implements Releasable {
     /**
      * add tag to view, view could be found with View.viewWithTag(number).
      */
-    tag?: number;
+    tag: number;
     /**
      * returns superview.
      */
@@ -377,9 +377,9 @@ export class Button extends View {
     vertical: boolean;
     inset: number;
     title?: string
-    font?: Font;
+    font: Font;
     image?: Image;
-    color?: Color
+    color: Color
     onHighlighted?: (highligted: boolean) => void
     onTouchUpInside?: () => void
     onHover?: (hovered: boolean) => void
@@ -409,8 +409,8 @@ export class Image implements Releasable {
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode;
     static assetsPath: string
-    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void): void
-    static fromBase64(value: string, scale: number): Image | undefined
+    static fromURL(url: string, success: (image: Image) => void, failure: (error: Error) => void): void
+    static fromBase64(value: string, scale: number, bitmapWidth?: number, bitmapHeight?: number): Image | undefined
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image
 }
 
@@ -443,8 +443,8 @@ export enum LineBreakMode {
 }
 
 export class Label extends View {
-    text?: string;
-    font?: Font;
+    text: string;
+    font: Font;
     textColor: Color
     textAlignment: TextAlignment
     numberOfLines: number
@@ -607,10 +607,10 @@ export class NavigationController extends ViewController {
 export class CanvasView extends View {
 
     globalAlpha: number
-    fillStyle?: Color
-    strokeStyle?: Color
-    lineCap?: string
-    lineJoin?: string
+    fillStyle: Color
+    strokeStyle: Color
+    lineCap: string
+    lineJoin: string
     lineWidth: number
     miterLimit: number
     rect(x: number, y: number, width: number, height: number): void
@@ -708,12 +708,12 @@ export enum ReturnKeyType {
 
 export class TextField extends View {
 
-    text?: string;
-    font?: Font;
+    text: string;
+    font: Font;
     textColor: Color
     textAlignment: TextAlignment
-    placeholder?: string;
-    placeholderColor?: Color
+    placeholder: string;
+    placeholderColor: Color
     clearsOnBeginEditing: Boolean
     readonly editing: Boolean
     clearButtonMode: TextFieldViewMode
@@ -748,8 +748,8 @@ export class TextField extends View {
 
 export class TextView extends View {
 
-    text?: string;
-    font?: Font;
+    text: string;
+    font: Font;
     textColor: Color
     textAlignment: TextAlignment
     readonly editing: Boolean
