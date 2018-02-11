@@ -43,9 +43,7 @@ export class ViewController implements Releasable {
         this.navigationBar.title = value
     }
 
-    constructor() {
-        this.loadView()
-    }
+    constructor() { }
 
     toObject(): any {
         return {
@@ -72,7 +70,7 @@ export class ViewController implements Releasable {
         if (this._view === undefined) {
             this._view = value;
             this._view.viewDelegate = this;
-            setTimeout(() => { this.viewDidLoad(); })
+            this.viewDidLoad();
         }
     }
 
