@@ -637,26 +637,6 @@ export class CanvasView extends View {
 
 }
 
-export class CustomView extends View {
-
-    onMessage?: (message: string) => any
-    props: any
-    constructor(className: string)
-    emitMessage(message: any): any
-    handleMessage(message: any): any
-
-}
-
-// Web Only
-export class CustomViewFactory {
-    static register(className: string, factory: typeof CustomViewFactory): void
-    requestInnerHTML(): string
-    requestProps(node: Node): any
-    setProps(node: Node, value: any): void
-    emitMessage(message: any): void
-    handleMessage(node: Node, message: any): void
-}
-
 export enum DeviceOrientation {
     Unknown = 0,
     Portrait = 1,
@@ -1031,8 +1011,6 @@ declare global {
         NavigationBar: typeof NavigationBar,
         NavigationController: typeof NavigationController,
         CanvasView: typeof CanvasView,
-        CustomView: typeof CustomView,
-        CustomViewFactory: typeof CustomViewFactory,
         DeviceOrientation: typeof DeviceOrientation,
         Device: typeof Device,
         TextFieldViewMode: typeof TextFieldViewMode,

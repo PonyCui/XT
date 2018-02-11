@@ -38,6 +38,9 @@ class XTUIViewAnimator {
             animations()
             animationEnabled = false
             var completed = false
+            if (animationProps.values.count() == 0) { completed = true; completion.invoke(); return }
+            val totalCount = animationProps.values.count()
+            var cancelCount = 0
             val animatingHandlers = mutableMapOf<String, () -> Unit> ()
             val animators = animationProps.values.map { aniProp ->
                 var animator: ValueAnimator? = null
@@ -67,6 +70,8 @@ class XTUIViewAnimator {
                     animator?.removeAllListeners()
                     animator?.removeAllUpdateListeners()
                     animator?.cancel()
+                    cancelCount++
+                    if (cancelCount >= totalCount) { completion() }
                 }
                 return@map animator
             }
@@ -86,6 +91,9 @@ class XTUIViewAnimator {
             animations()
             animationEnabled = false
             var completed = false
+            if (animationProps.values.count() == 0) { completed = true; completion.invoke(); return }
+            val totalCount = animationProps.values.count()
+            var cancelCount = 0
             val animatingHandlers = mutableMapOf<String, () -> Unit> ()
             val springSystem = SpringSystem.create()
             animationProps.values.forEach { aniProp ->
@@ -113,6 +121,8 @@ class XTUIViewAnimator {
                 animatingHandlers[aniProp.aniKey] = {
                     spring.removeAllListeners()
                     spring.destroy()
+                    cancelCount++
+                    if (cancelCount >= totalCount) { completion() }
                 }
                 spring.endValue = (aniProp.toValue as Float).toDouble()
             }

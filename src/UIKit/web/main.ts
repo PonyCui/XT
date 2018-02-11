@@ -108,12 +108,6 @@ import { CanvasView as ICanvasView } from '../interface/CanvasView'
 import { CanvasView as MCanvasView } from './CanvasView'
 export class CanvasView extends MCanvasView { }
 
-import { CustomView as ICustomView } from '../interface/CustomView'
-import { CustomView as MCustomView } from './CustomView'
-import { CustomViewFactory as MCustomViewFactory } from './element/CustomFactory'
-export class CustomView extends MCustomView { }
-export class CustomViewFactory extends MCustomViewFactory { }
-
 import { Device as IDevice, DeviceOrientation as IDeviceOrientation } from '../interface/Device'
 import { Device as MDevice } from './Device'
 export const DeviceOrientation = IDeviceOrientation

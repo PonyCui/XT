@@ -800,7 +800,9 @@ open class XTUIView @JvmOverloads constructor(
             XTUIViewAnimator.animationWithDuration(value, {
                 animationBlock.call(null, null)
             }, {
-                completionBlock.call(null, null)
+                if (!completionBlock.runtime.isReleased && !completionBlock.isReleased){
+                    completionBlock.call(null, null)
+                }
                 XTContext.release(animationBlock, completionBlock)
             })
         }
@@ -811,7 +813,9 @@ open class XTUIView @JvmOverloads constructor(
             XTUIViewAnimator.animationWithBouncinessAndSpeed(bounciness, speed, {
                 animationBlock.call(null, null)
             }, {
-                completionBlock.call(null, null)
+                if (!completionBlock.runtime.isReleased && !completionBlock.isReleased){
+                    completionBlock.call(null, null)
+                }
                 XTContext.release(animationBlock, completionBlock)
             })
         }

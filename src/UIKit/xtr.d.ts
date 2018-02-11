@@ -22,7 +22,6 @@ declare var _XTUITextField: any
 declare var _XTUITextView: any
 declare var _XTUITest: any
 declare var _XTUICanvasView: any
-declare var _XTUICustomView: any
 declare var _XTUIDevice: any
 declare var _XTUITextMeasurer: any
 declare var _XTUIHRView: any

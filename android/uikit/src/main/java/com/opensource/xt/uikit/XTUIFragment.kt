@@ -155,6 +155,7 @@ open class XTUIFragment: Fragment() {
                     currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points, velocities))
                     }
+                    velocities.release()
                     points.release()
                 }
                 MotionEvent.ACTION_UP -> {
