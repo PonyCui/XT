@@ -1,6 +1,7 @@
 package com.opensource.xt.uikit
 
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.opensource.xt.core.*
 
 /**
@@ -18,9 +19,11 @@ class XTUIApplicationDelegate(val context: XTUIContext): XTComponentInstance {
         return context.evaluateScript("objectRefs['$objectUUID']") as? V8Object
     }
 
-    fun didFinishLaunchWithOptions(options: Map<String, Any>) {
+    fun didFinishLaunchWithOptions(options: Map<String, Any>, application: XTUIApplication) {
         scriptObject()?.let {
-            XTContext.invokeMethod(it, "applicationDidFinishLaunchingWithOptions")
+            val v8Options = V8ObjectUtils.toV8Object(context.runtime, options)
+            XTContext.invokeMethod(it, "handleApplicationDidFinishLaunchingWithOptions", listOf(application.objectUUID ?: "", v8Options))
+            v8Options.release()
             it.release()
         }
     }

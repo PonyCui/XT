@@ -53,7 +53,13 @@ export class Application {
             }
         }
         this.delegate = delegate;
-        this.delegate.applicationDidFinishLaunchingWithOptions(this, {})
+        let options: any = {}
+        if (window.location.search.length > 0) {
+            window.location.search.substring(1).split('&').filter(it => it.indexOf("=") > 0).forEach(it => {
+                options[decodeURIComponent(it.split("=")[0])] = decodeURIComponent(it.split("=")[1])
+            })
+        }
+        this.delegate.applicationDidFinishLaunchingWithOptions(this, options)
     }
 
     static sharedApplication(): Application | undefined {

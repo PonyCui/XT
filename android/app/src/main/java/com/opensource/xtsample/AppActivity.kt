@@ -36,7 +36,7 @@ class AppActivity : XTUIActivity() {
 
     fun startLocalApplication(sender: View) {
         val mode = 0
-        XTUIContext.createWithAssets(this, "sample.min.js", {
+        XTUIContext.createWithAssets(this, "sample.min.js", mapOf(Pair("foo", "value")), {
             when (mode) {
                 0 -> it.start()
                 1 -> it.attach(this)

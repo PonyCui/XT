@@ -19,6 +19,7 @@ import java.net.URI
  */
 class XTUIContext(appContext: android.content.Context,
                   val sourceURL: String?,
+                  val options: Map<String, Any>?,
                   val completionBlock: ((bridge: XTUIContext) -> Unit)? = null,
                   val failureBlock: ((e: Exception) -> Unit)? = null): XTContext(appContext) {
 
@@ -36,15 +37,17 @@ class XTUIContext(appContext: android.content.Context,
 
         fun createWithAssets(appContext: android.content.Context,
                              assetsName: String,
+                             options: Map<String, Any>?,
                              completionBlock: ((uiContext: XTUIContext) -> Unit)? = null): XTUIContext {
-            return createWithSourceURL(appContext, "file:///android_asset/$assetsName", completionBlock)
+            return createWithSourceURL(appContext, "file:///android_asset/$assetsName", options, completionBlock)
         }
 
         fun createWithSourceURL(appContext: android.content.Context,
                                 sourceURL: String?,
+                                options: Map<String, Any>?,
                                 completionBlock: ((uiContext: XTUIContext) -> Unit)? = null,
                                 failureBlock: ((e: Exception) -> Unit)? = null): XTUIContext {
-            val context = XTUIContext(appContext, sourceURL, completionBlock, failureBlock)
+            val context = XTUIContext(appContext, sourceURL, options, completionBlock, failureBlock)
             defaultAttachContext.forEach {
                 try {
                     it.getDeclaredConstructor(android.content.Context::class.java, XTContext::class.java)
@@ -70,7 +73,7 @@ class XTUIContext(appContext: android.content.Context,
             currentDebugApplicationContext?.let { currentDebugApplicationContext ->
                 Handler(currentDebugApplicationContext.mainLooper).post {
                     XTDebug.sharedDebugger.sourceURL?.let {
-                        currentDebugContext = XTUIContext.createWithSourceURL(currentDebugApplicationContext, it, {
+                        currentDebugContext = XTUIContext.createWithSourceURL(currentDebugApplicationContext, it, mapOf(Pair("onDebug", true)), {
                             it.start()
                         })
                         XTDebug.sharedDebugger.debugContext = currentDebugContext
@@ -182,7 +185,7 @@ class XTUIContext(appContext: android.content.Context,
                     val script = String(byteArray)
                     handler.post {
                         this.evaluateScript(script)
-                        application?.delegate?.didFinishLaunchWithOptions(mapOf())
+                        application?.delegate?.didFinishLaunchWithOptions(options ?: mapOf(), application!!)
                         completionBlock?.invoke(this)
                     }
                 } catch (e: java.lang.Exception) { handler.post { failureBlock?.invoke(e) };  e.printStackTrace() }
@@ -195,7 +198,7 @@ class XTUIContext(appContext: android.content.Context,
                         val script = res.body()?.string() ?: return@Thread
                         handler.post {
                             this.evaluateScript(script)
-                            application?.delegate?.didFinishLaunchWithOptions(mapOf())
+                            application?.delegate?.didFinishLaunchWithOptions(options ?: mapOf(), application!!)
                             completionBlock?.invoke(this)
                         }
                     } catch (e: Exception) { handler.post { failureBlock?.invoke(e) }; e.printStackTrace() }
