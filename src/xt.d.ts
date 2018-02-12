@@ -409,7 +409,7 @@ export class Image implements Releasable {
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode;
     static assetsPath: string
-    static fromURL(url: string, success: (image: Image) => void, failure: (error: Error) => void): void
+    static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void): void
     static fromBase64(value: string, scale: number, bitmapWidth?: number, bitmapHeight?: number): Image | undefined
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image
 }
