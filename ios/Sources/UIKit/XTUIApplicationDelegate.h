@@ -26,6 +26,6 @@
 @property (nonatomic, copy) NSString *objectUUID;
 @property (strong, nonatomic) UIWindow *window;
 
-- (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+- (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions application:(XTUIApplication *)application;
 
 @end

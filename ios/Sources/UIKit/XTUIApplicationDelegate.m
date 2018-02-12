@@ -43,10 +43,10 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-- (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions application:(XTUIApplication *)application {
     JSValue *scriptObject = [self scriptObject];
     if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"applicationDidFinishLaunchingWithOptions" withArguments:@[@"", launchOptions ?: @{}]];
+        [scriptObject invokeMethod:@"handleApplicationDidFinishLaunchingWithOptions" withArguments:@[application.objectUUID ?: @"", launchOptions ?: @{}]];
     }
 }
 

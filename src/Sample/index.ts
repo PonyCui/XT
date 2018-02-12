@@ -3,11 +3,12 @@ import { List } from "./explorer/list";
 
 class AppDelegate extends UI.ApplicationDelegate {
 
-    applicationDidFinishLaunchingWithOptions() {
+    applicationDidFinishLaunchingWithOptions(application: UI.Application, options: Object) {
         this.window = new UI.Window();
         this.window.backgroundColor = UI.Color.grayColor;
         this.window.rootViewController = new UI.NavigationController(new List());
         this.window.makeKeyAndVisible();
+        console.log(JSON.stringify(options));
     }
     
 }

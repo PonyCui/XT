@@ -26,6 +26,7 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 + (void)addDefaultAttachContext:(nonnull Class)attachContextClass;
 
 - (instancetype _Nonnull )initWithSourceURL:(nullable NSURL *)sourceURL
+                                    options:(nullable NSDictionary *)options
                             completionBlock:(nullable XTUIContextCompletionBlock)completionBlock
                                failureBlock:(nullable XTUIContextFailureBlock)failureBlock;
 

@@ -26,7 +26,11 @@ export class ApplicationDelegate {
         }
     }
 
-    applicationDidFinishLaunchingWithOptions(launchOptions: Object): void { }
+    applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void { }
+
+    private handleApplicationDidFinishLaunchingWithOptions(applicationRef: string, launchOptions: Object): void {
+        this.applicationDidFinishLaunchingWithOptions(objectRefs[applicationRef], launchOptions)
+    }
 
 }
 

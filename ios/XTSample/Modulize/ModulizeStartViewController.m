@@ -30,6 +30,7 @@
                                   isDirectory:NO];
     NSInteger startMode = 0;
     self.context = [[XTUIContext alloc] initWithSourceURL:sampleURL
+                                                  options:@{@"foo": @"value"}
                                           completionBlock:^(UIViewController * _Nullable rootViewController) {
                                               if (startMode == 0) {
                                                   [self.navigationController pushViewController:rootViewController

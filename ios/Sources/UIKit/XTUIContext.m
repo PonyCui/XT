@@ -45,6 +45,7 @@
 @interface XTUIContext ()<UINavigationControllerDelegate, XTDebugDelegate>
 
 @property (nonatomic, readwrite) NSURL *sourceURL;
+@property (nonatomic, copy) NSDictionary *initialOptions;
 
 @end
 
@@ -57,12 +58,14 @@
 #endif
 
 - (instancetype)initWithSourceURL:(NSURL *)sourceURL
+                          options:(nullable NSDictionary *)options
                   completionBlock:(XTUIContextCompletionBlock)completionBlock
                      failureBlock:(XTUIContextFailureBlock)failureBlock
 {
     self = [super init];
     if (self) {
         _sourceURL = sourceURL;
+        _initialOptions = options;
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             [self loadViaSourceURL:completionBlock failureBlock:failureBlock];
         }];
@@ -81,7 +84,7 @@
         NSString *script = [[NSString alloc] initWithContentsOfURL:self.sourceURL encoding:NSUTF8StringEncoding error:NULL];
         if (script) {
             [self evaluateScript:script];
-            [self.application.delegate didFinishLaunchingWithOptions:@{}];
+            [self.application.delegate didFinishLaunchingWithOptions:self.initialOptions application:self.application];
             if (completionBlock) {
                 completionBlock(self.application.delegate.window.rootViewController);
             }
@@ -98,7 +101,7 @@
                                                  if (script) {
                                                      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                          [self evaluateScript:script];
-                                                         [self.application.delegate didFinishLaunchingWithOptions:@{}];
+                                                         [self.application.delegate didFinishLaunchingWithOptions:self.initialOptions application:self.application];
                                                          if (completionBlock) {
                                                              completionBlock(self.application.delegate.window.rootViewController);
                                                          }
@@ -271,6 +274,7 @@ static XTUIContext *currentDebugContext;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         currentDebugContext = [[XTUIContext alloc] initWithSourceURL:[[XTDebug sharedDebugger] sourceURL]
+                                                             options:@{@"onDebug": @(YES)}
                                                      completionBlock:^(UIViewController * _Nullable rootViewController) {
                                                          [currentDebugNavigationViewController pushViewController:rootViewController animated:YES];
                                                      } failureBlock:nil];
