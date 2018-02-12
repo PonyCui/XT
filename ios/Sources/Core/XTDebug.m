@@ -8,7 +8,6 @@
 
 #import "XTDebug.h"
 #import "XTContext.h"
-#import "XTUIContext.h"
 #import <SocketRocket/SRWebSocket.h>
 
 @interface XTDebug ()<SRWebSocketDelegate>
