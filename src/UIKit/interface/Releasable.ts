@@ -1,6 +1,6 @@
 export interface Releasable {
 
-    retain(): this;
+    retain(owner?: any): this;
     release(): this;
 
 }

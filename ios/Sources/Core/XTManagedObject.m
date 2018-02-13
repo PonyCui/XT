@@ -8,6 +8,10 @@
 
 #import "XTManagedObject.h"
 
+@implementation XTManagedOwner
+
+@end
+
 @interface XTManagedObject()
 
 @property (nonatomic, readwrite) NSString *objectUUID;

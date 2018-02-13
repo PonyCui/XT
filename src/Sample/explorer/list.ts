@@ -258,7 +258,7 @@ export class List extends UI.ViewController {
                         if (this.navigationController) {
                             this.navigationController.pushViewController(rootViewController)
                         }
-                    }).retain()
+                    }).retain(this)
                 },
             },
             {

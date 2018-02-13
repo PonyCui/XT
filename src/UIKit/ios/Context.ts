@@ -13,8 +13,8 @@ export class Context {
 
     static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context { throw Error("Not Implement.") }
 
-    retain(): this {
-        _XTRetain(this.objectRef)
+    retain(owner: any = undefined): this {
+        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
         return this
     }
 

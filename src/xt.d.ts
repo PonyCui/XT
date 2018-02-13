@@ -1,5 +1,5 @@
 export interface Releasable {
-    retain(): this;
+    retain(owner?: any): this;
     release(): this;
 }
 
@@ -39,7 +39,7 @@ export enum SwipeDirection {
 
 export class Context implements Releasable {
 
-    retain(): this
+    retain(owner?: any): this
     release(): this
 
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context
@@ -49,7 +49,7 @@ export class Context implements Releasable {
 
 export class View implements Releasable {
 
-    retain(): this;
+    retain(owner?: any): this;
     release(): this;
     constructor()
 
@@ -352,7 +352,7 @@ export enum LayoutRelation {
 }
 
 export class LayoutConstraint implements Releasable {
-    retain(): this;
+    retain(owner?: any): this;
     release(): this;
     
     readonly firstItem?: View;
@@ -411,7 +411,7 @@ export enum ImageRenderingMode {
 }
 
 export class Image implements Releasable {
-    retain(): this;
+    retain(owner?: any): this;
     release(): this;
     
     readonly size: Size;
@@ -554,7 +554,7 @@ export enum KeyboardAvoidingMode {
 }
 
 export class ViewController implements Releasable {
-    retain(): this;
+    retain(owner?: any): this;
     release(): this;
     
     title: string

@@ -22,11 +22,14 @@
 
 @implementation XTContext
 
-#ifdef LOGDEALLOC
 - (void)dealloc {
-    NSLog(@"XTRContext dealloc.");
-}
+#ifdef LOGDEALLOC
+    NSLog(@"XTContext dealloc.");
 #endif
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [XTMemoryManager runGC:YES];
+    }];
+}
 
 + (void)attachToContext:(XTContext *)context {
     [[[self alloc] initWithParentContext:context] description];

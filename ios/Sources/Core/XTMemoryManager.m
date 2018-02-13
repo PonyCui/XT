@@ -26,8 +26,8 @@
 }
 
 + (void)attachContext:(JSContext *)context {
-    context[@"_XTRetain"] = ^(NSString *objectUUID){
-        [XTMemoryManager retain:objectUUID];
+    context[@"_XTRetain"] = ^(NSString *objectUUID, JSValue *ownerUUID){
+        [XTMemoryManager retain:objectUUID owner:ownerUUID.isString ? ownerUUID.toString : nil];
     };
     context[@"_XTRelease"] = ^(NSString *objectUUID){
         [XTMemoryManager release:objectUUID];
@@ -35,13 +35,25 @@
 }
 
 + (void)add:(XTManagedObject *)managedObject {
+    [self runGC:NO];
     NSMutableDictionary *objectMapping = [(([XTMemoryManager sharedManager].objectMapping) ?: @{}) mutableCopy];
     objectMapping[managedObject.objectUUID] = managedObject;
     [XTMemoryManager sharedManager].objectMapping = objectMapping;
 }
 
-+ (void)retain:(NSString *)objectUUID {
-    [XTMemoryManager sharedManager].objectMapping[objectUUID].xtRetainCount++;
++ (void)retain:(NSString *)objectUUID owner:(NSString *)ownerUUID {
+    XTManagedObject *managedObject = [XTMemoryManager sharedManager].objectMapping[objectUUID];
+    if (managedObject != nil) {
+        managedObject.xtRetainCount++;
+        id owner = ownerUUID != nil ? [self find:ownerUUID] ?: [JSContext currentContext] : [JSContext currentContext] ;
+        if (owner != nil) {
+            NSMutableArray *mutableOwners = (managedObject.owners ?: @[]).mutableCopy;
+            XTManagedOwner *ownerObject = [XTManagedOwner new];
+            ownerObject.owner = owner;
+            [mutableOwners addObject:ownerObject];
+            managedObject.owners = mutableOwners.copy;
+        }
+    }
 }
 
 + (void)release:(NSString *)objectUUID {
@@ -54,6 +66,33 @@
         return nil;
     }
     return [managedObject weakRef];
+}
+
++ (void)runGC:(BOOL)force {
+    if (arc4random() % 100 < 5 || force) {
+        static NSNumber *syncToken;
+        @synchronized (syncToken) {
+            NSDictionary *immutable = [XTMemoryManager sharedManager].objectMapping.copy;
+            NSMutableDictionary *mutable = [XTMemoryManager sharedManager].objectMapping.mutableCopy;
+            [immutable enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, XTManagedObject * _Nonnull obj, BOOL * _Nonnull stop) {
+                if (obj.weakRef == nil) {
+                    [mutable removeObjectForKey:key];
+                }
+                else if (obj.owners != nil && obj.owners.count > 0) {
+                    BOOL ownersReleased = YES;
+                    for (XTManagedOwner *ownerRef in obj.owners) {
+                        if (ownerRef.owner != nil) {
+                            ownersReleased = NO;
+                        }
+                    }
+                    if (ownersReleased) {
+                        [mutable removeObjectForKey:key];
+                    }
+                }
+            }];
+            [XTMemoryManager sharedManager].objectMapping = mutable.copy;
+        }
+    }
 }
 
 @end

@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@interface XTManagedOwner : NSObject
+
+@property (nonatomic, weak) id owner;
+
+@end
+
 @interface XTManagedObject : NSObject
 
 @property (nonatomic, readonly) NSString *objectUUID;
@@ -16,6 +22,7 @@
 @property (nonatomic, weak)     id        weakRef;
 @property (nonatomic, strong)   id        strongRef;
 @property (nonatomic, assign)   NSInteger xtRetainCount;
+@property (nonatomic, copy)     NSArray  *owners;
 
 - (instancetype)initWithObject:(id)anObject;
 

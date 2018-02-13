@@ -18,10 +18,12 @@
 
 + (void)add:(XTManagedObject *)managedObject;
 
-+ (void)retain:(NSString *)objectUUID;
++ (void)retain:(NSString *)objectUUID owner:(NSString *)ownerUUID;
 
 + (void)release:(NSString *)objectUUID;
 
 + (id)find:(NSString *)objectUUID;
+
++ (void)runGC:(BOOL)force;
 
 @end

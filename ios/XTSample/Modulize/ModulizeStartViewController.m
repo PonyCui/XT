@@ -25,6 +25,11 @@
     self.title = @"XT Sample";
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.context = nil;
+}
+
 - (IBAction)onStart:(id)sender {
     NSURL *sampleURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"sample.min" ofType:@"js"]
                                   isDirectory:NO];

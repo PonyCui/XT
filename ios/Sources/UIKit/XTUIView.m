@@ -41,7 +41,7 @@
 
 #ifdef LOGDEALLOC
 - (void)dealloc {
-    NSLog(@"XTUIView dealloc.");
+    NSLog(@"%@ dealloc.", NSStringFromClass(self.class));
 }
 #endif
 

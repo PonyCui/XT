@@ -18,6 +18,12 @@
 
 @implementation XTUIImage
 
+#ifdef LOGDEALLOC
+- (void)dealloc {
+    NSLog(@"XTUIImage dealloc.");
+}
+#endif
+
 - (instancetype)initWithImage:(UIImage *)image
 {
     self = [super init];

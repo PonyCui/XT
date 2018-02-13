@@ -5,8 +5,12 @@ declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
 export class LayoutConstraint extends ILayoutConstraint implements Releasable {
-    
-    addOwner(owner: any): this {
+
+    retain(owner: any = undefined): this {
+        return this
+    }
+
+    release(): this {
         return this
     }
 
