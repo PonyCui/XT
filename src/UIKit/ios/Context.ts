@@ -11,7 +11,16 @@ export class Context {
         return new Context(contextRef)
     }
 
-    static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context { throw Error("Not Implement.") }
+    static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context { 
+        const contextRef = _XTUIContext.xtr_startWithURLOptionsCompletionFailure(url, options, (rootViewControllerRef: any) => {
+            if (typeof rootViewControllerRef === "string") {
+                completion(new ViewController(rootViewControllerRef))
+            }
+        }, (msg: string) => {
+            failure(new Error(msg))
+        })
+        return new Context(contextRef)
+     }
 
     retain(owner: any = undefined): this {
         _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)

@@ -75,7 +75,7 @@
                                                           [completion callWithArguments:@[rootViewController.objectUUID ?: [NSNull null]]];
                                                       }
                                                    } failureBlock:^(NSError * _Nonnull error) {
-                                                       
+                                                       [failure callWithArguments:@[error.localizedDescription ?: @""]];
                                                    }];
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:context];
     context.objectUUID = managedObject.objectUUID;
