@@ -9,6 +9,7 @@
 
         <activity android:name=".XTUIActivity" />
         <activity android:name=".XTUINavigationController$NextActivity" />
+        <activity android:name=".XTUIViewController$NextActivity" />
 
     </application>
 

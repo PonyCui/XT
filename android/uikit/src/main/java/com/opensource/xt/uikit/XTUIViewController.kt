@@ -2,7 +2,9 @@ package com.opensource.xt.uikit
 
 import android.app.Activity
 import android.app.Fragment
+import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +32,8 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             value.viewDelegate = WeakReference(this)
         }
 
+    internal var showBackButton = false
+
     var parentViewController: WeakReference<XTUIViewController>? = null
         internal set
 
@@ -52,6 +56,8 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             val transaction = activity.fragmentManager.beginTransaction()
             transaction.replace(fragmentID, it)
             transaction.commit()
+            it.noStatusBar = true
+            it.resetContents()
             it.setupKeyboardHeightProvider(activity)
         }
     }
@@ -196,6 +202,8 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             exports.registerJavaMethod(this, "xtr_showNavigationBar", "xtr_showNavigationBar", arrayOf(Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_hideNavigationBar", "xtr_hideNavigationBar", arrayOf(Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_showBackButton", "xtr_showBackButton", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_presentViewController", "xtr_presentViewController", arrayOf(String::class.java, Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_dismissViewController", "xtr_dismissViewController", arrayOf(Boolean::class.java, String::class.java))
             return exports
         }
 
@@ -295,7 +303,48 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
         }
 
         fun xtr_showBackButton(objectRef: String): Boolean {
-            return (XTMemoryManager.find(objectRef) as? XTUIViewController)?.activity?.intent?.getBooleanExtra("XTUIShowBackButton", false) ?: false
+            val viewController = (XTMemoryManager.find(objectRef) as? XTUIViewController) ?: return false
+            return viewController?.activity?.intent?.getBooleanExtra("XTUIShowBackButton", viewController.showBackButton) ?: viewController.showBackButton
+        }
+
+        fun xtr_presentViewController(viewControllerRef: String, animated: Boolean, objectRef: String) {
+            val targetViewController = (XTMemoryManager.find(viewControllerRef) as? XTUIViewController) ?: return
+            val intent = Intent(context.appContext, NextActivity::class.java)
+            if (!animated) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            }
+            intent.putExtra("ViewControllerObjectUUID", targetViewController.objectUUID)
+            context.appContext.startActivity(intent)
+        }
+
+        fun xtr_dismissViewController(animated: Boolean, objectRef: String) {
+            val viewController = (XTMemoryManager.find(objectRef) as? XTUIViewController) ?: return
+            viewController.requestFragment()?.let {
+                (it.activity as? NextActivity)?.finishWithAnimation = !animated
+                it.activity.finish()
+            }
+        }
+
+    }
+
+    class NextActivity: XTUIActivity() {
+
+        var viewController: XTUIViewController? = null
+        var finishWithAnimation = true
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            intent?.getStringExtra("ViewControllerObjectUUID")?.let {
+                this.viewController = XTMemoryManager.find(it) as? XTUIViewController
+            }
+            this.viewController?.setContentView(this)
+        }
+
+        override fun onPause() {
+            if (finishWithAnimation) {
+                this.overridePendingTransition(0, 0)
+            }
+            super.onPause()
         }
 
     }

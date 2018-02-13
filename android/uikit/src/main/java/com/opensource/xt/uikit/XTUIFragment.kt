@@ -39,6 +39,8 @@ open class XTUIFragment: Fragment() {
             resetContents()
         }
 
+    internal var noStatusBar = false
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         this.rootView = RootView(inflater?.context as Context)
         return this.rootView as View
@@ -68,7 +70,7 @@ open class XTUIFragment: Fragment() {
         this.navigationBar?.takeIf { !navigationHidden }?.let { navigationBar ->
             rootView.navigationBar = WeakReference(navigationBar)
             rootView.addView(navigationBar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            rootView.topLayoutLength = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) 48.0 else 68.0
+            rootView.topLayoutLength = if (noStatusBar || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) 48.0 else 68.0
         } ?: kotlin.run { rootView.navigationBar = null }
         rootView.resetLayout()
     }

@@ -209,6 +209,14 @@ export class ViewController implements Releasable, NavigationBarDelegate {
 
     keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }
 
+    presentViewController(viewController: ViewController, animated: boolean = true): void {
+        _XTUIViewController.xtr_presentViewController(viewController.objectRef, animated, this.objectRef)
+    }
+
+    dismissViewController(animated: boolean = true): void {
+        _XTUIViewController.xtr_dismissViewController(animated, this.objectRef)
+    }
+
     makeKeyboardAvoiding(keyboardHeight: number, keyboardDuration: number) {
         if (this.keyboardAvoidingMode() == KeyboardAvoidingMode.Pan && this.view.window) {
             const firstResponder = this.view.window.firstResponder

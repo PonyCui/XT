@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference
  */
 class XTUINavigationController: XTUIViewController() {
 
+    private var popFirst = false
     private var attachingActivity: WeakReference<Activity>? = null
     private var attachingFragmentID: Int = 0
 
@@ -30,9 +31,19 @@ class XTUINavigationController: XTUIViewController() {
 
     fun doPush(viewController: XTUIViewController, animated: Boolean) {
         attachingActivity?.get()?.let {
-            val transaction = it.fragmentManager.beginTransaction()
-            transaction.add(attachingFragmentID, viewController.requestFragment())
-            transaction.commit()
+            (viewController as? XTUINavigationController)?.let {
+                it.attachingActivity = attachingActivity
+                it.attachingFragmentID = attachingFragmentID
+                it.childViewControllers.firstOrNull()?.showBackButton = true
+                it.popFirst = true
+            }
+            viewController.requestFragment()?.let { viewController ->
+                val transaction = it.fragmentManager.beginTransaction()
+                transaction.add(attachingFragmentID, viewController.requestFragment())
+                transaction.commit()
+                viewController.noStatusBar = true
+                viewController.resetContents()
+            }
         } ?: kotlin.run {
             val intent = Intent(xtrContext.appContext, NextActivity::class.java)
             if (!animated) {
@@ -54,9 +65,7 @@ class XTUINavigationController: XTUIViewController() {
         } ?: kotlin.run {
             targetViewControllers.forEach {
                 it.requestFragment().activity?.let {
-                    if (!animated) {
-                        (it as? NextActivity)?.finishWithAnimation = true
-                    }
+                    (it as? NextActivity)?.finishWithAnimation = animated
                     it.finish()
                 }
             }
@@ -108,7 +117,7 @@ class XTUINavigationController: XTUIViewController() {
 
         fun xtr_popViewController(animated: Boolean, objectRef: String): String? {
             (XTMemoryManager.find(objectRef) as? XTUINavigationController)?.let { navigationController ->
-                if (navigationController.childViewControllers.count() > 1) {
+                if (navigationController.childViewControllers.count() > if (navigationController.popFirst) 0 else 1) {
                     val targetViewController = navigationController.childViewControllers.last()
                     navigationController.childViewControllers = navigationController.childViewControllers.filter { it != targetViewController }
                     navigationController.doPop(listOf(targetViewController), animated)
@@ -142,7 +151,7 @@ class XTUINavigationController: XTUIViewController() {
     class NextActivity: XTUIActivity() {
 
         var viewController: XTUIViewController? = null
-        var finishWithAnimation = false
+        var finishWithAnimation = true
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -153,7 +162,7 @@ class XTUINavigationController: XTUIViewController() {
         }
 
         override fun onPause() {
-            if (finishWithAnimation) {
+            if (!finishWithAnimation) {
                 this.overridePendingTransition(0, 0)
             }
             super.onPause()
