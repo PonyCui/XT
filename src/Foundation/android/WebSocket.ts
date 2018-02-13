@@ -57,8 +57,8 @@ export class WebSocket extends IWebSocket {
         _XTFWebSocket.xtr_close(this.objectRef)
     }
 
-    retain(): this {
-        _XTRetain(this.objectRef)
+    retain(owner: any = undefined): this {
+        _XTRetain(this.objectRef, owner)
         return this
     }
 

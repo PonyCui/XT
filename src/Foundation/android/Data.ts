@@ -3,8 +3,8 @@ import { Data as IData } from '../interface/Data'
 
 export class Data extends IData {
 
-    retain(): this {
-        _XTRetain(this.objectRef)
+    retain(owner: any = undefined): this {
+        _XTRetain(this.objectRef, owner)
         return this
     }
 
