@@ -4,11 +4,7 @@ import { Releasable } from "../interface/Releasable";
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
-export class LayoutConstraint extends ILayoutConstraint implements Releasable {
-    
-    addOwner(owner: any): this {
-        return this
-    }
+export class LayoutConstraint extends ILayoutConstraint {
 
     private static fromALObject(obj: any, views: { [key: string]: View }): LayoutConstraint {
         const toAttr = (attr: string): any => {

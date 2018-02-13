@@ -20,14 +20,7 @@ export enum LayoutRelation {
     Greater = 1,
 }
 
-export class LayoutConstraint implements Releasable {
-    
-    retain(): this {
-        throw new Error("Method not implemented.");
-    }
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
+export class LayoutConstraint {
 
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;

@@ -351,9 +351,7 @@ export enum LayoutRelation {
     Greater = 1,
 }
 
-export class LayoutConstraint implements Releasable {
-    retain(owner?: any): this;
-    release(): this;
+export class LayoutConstraint {
     
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;

@@ -3,6 +3,7 @@ package com.opensource.xt.core
 import android.os.Handler
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
+import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -10,13 +11,31 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class XTMemoryManager {
 
+    class RetainClass(val runtime: WeakReference<V8>) {
+
+        fun retain(objectUUID: String, ownerUUID: Object) {
+            objectMapping[objectUUID]?.let {
+                it.xtRetainCount++
+                val owner = (ownerUUID as? String)?.let { return@let find(objectUUID) } ?: runtime.get()
+                owner?.let { owner ->
+                    it.owners = (it.owners?.toMutableList() ?: mutableListOf()).let { list ->
+                        list.add(WeakReference(owner))
+                        return@let list.toList()
+                    }
+                }
+            }
+        }
+
+    }
+
     companion object {
 
         private var objectMapping: ConcurrentHashMap<String, XTManagedObject> = ConcurrentHashMap(2048)
         private var sharedHandler = Handler()
 
         fun attachContext(runtime: V8) {
-            runtime.registerJavaMethod(this, "retain", "_XTRetain", arrayOf(String::class.java))
+            val retainClass = RetainClass(WeakReference(runtime))
+            runtime.registerJavaMethod(retainClass, "retain", "_XTRetain", arrayOf(String::class.java, Object::class.java))
             runtime.registerJavaMethod(this, "release", "_XTRelease", arrayOf(String::class.java))
         }
 
@@ -27,12 +46,6 @@ class XTMemoryManager {
                 obj.xtRetainCount--
             }, 1000)
             objectMapping.put(obj.objectUUID, obj)
-        }
-
-        fun retain(objectUUID: String) {
-            objectMapping[objectUUID]?.let {
-                it.xtRetainCount++
-            }
         }
 
         fun release(objectUUID: String) {
@@ -47,19 +60,27 @@ class XTMemoryManager {
             }?.weakRef?.get()
         }
 
-        private fun runGC() {
-            if (System.nanoTime() % 10 < 1) {
-                val removingKeys = objectMapping.values.mapNotNull {
-                    if (it.weakRef.get() == null) {
-                        return@mapNotNull it.objectUUID
+        private var syncToken: Int = 0
+
+        private fun runGC(force: Boolean = false) {
+            if (System.nanoTime() % 100 < 2 || force) {
+                synchronized(syncToken, {
+                    val removingKeys = objectMapping.values.mapNotNull {
+                        if (it.weakRef.get() == null) {
+                            return@mapNotNull it.objectUUID
+                        }
+                        else if (it.owners?.count() ?: 0 > 0 &&
+                                it.owners?.filter { it.get() == null }?.size == 0) {
+                            return@mapNotNull it.objectUUID
+                        }
+                        else {
+                            return@mapNotNull null
+                        }
                     }
-                    else {
-                        return@mapNotNull null
+                    removingKeys.forEach {
+                        objectMapping.remove(it)
                     }
-                }
-                removingKeys.forEach {
-                    objectMapping.remove(it)
-                }
+                })
             }
         }
 

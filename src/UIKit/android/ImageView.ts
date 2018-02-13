@@ -10,10 +10,11 @@ export enum ImageRenderingMode {
 
 export class Image implements Releasable {
 
-    retain(): this {
-        _XTRetain(this.objectRef)
+    retain(owner: any = undefined): this {
+        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
         return this
     }
+    
     release(): this {
         _XTRelease(this.objectRef)
         return this

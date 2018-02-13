@@ -19,6 +19,7 @@ class XTManagedObject(obj: Any) {
     var objectThread = Thread.currentThread()
     var weakRef: WeakReference<Any> = WeakReference(obj)
     var strongRef: Any? = null
+    var owners: List<WeakReference<Any>>? = null
 
     init {
         sharedHandler.post { obj.toString() }

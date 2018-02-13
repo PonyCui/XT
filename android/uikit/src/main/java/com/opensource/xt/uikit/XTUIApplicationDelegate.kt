@@ -45,7 +45,6 @@ class XTUIApplicationDelegate(val context: XTUIContext): XTComponentInstance {
             val managedObject = XTManagedObject(application)
             application.objectUUID = managedObject.objectUUID
             XTMemoryManager.add(managedObject)
-            XTMemoryManager.retain(managedObject.objectUUID)
             return managedObject.objectUUID
         }
 

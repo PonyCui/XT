@@ -69,7 +69,7 @@
 }
 
 + (void)runGC:(BOOL)force {
-    if (arc4random() % 100 < 5 || force) {
+    if (arc4random() % 100 < 2 || force) {
         static NSNumber *syncToken;
         @synchronized (syncToken) {
             NSDictionary *immutable = [XTMemoryManager sharedManager].objectMapping.copy;
