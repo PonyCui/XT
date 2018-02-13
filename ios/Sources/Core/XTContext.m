@@ -61,14 +61,11 @@
         [self evaluateScript:@"var window = {}; var global = window; var objectRefs = {};"];
         [self loadCoreComponents];
         [self loadCoreScript];
-        [self keepAlive];
         self.isGlobalVariableDidSetup = YES;
     }
 }
 
 - (void)loadCoreComponents {
-    __weak XTContext *welf = self;
-    self[@"_XTTerminal"] = ^(){ [welf terminal]; };
     self[@"_XTClassLoader"] = [XTClassLoader class];
     self[@"_XTDebug"] = [XTDebug class];
     [XTPolyfill addPolyfills:self];
@@ -81,20 +78,6 @@
         NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
         [self evaluateScript:script];
     }
-}
-
-static NSSet *aliveContexts;
-
-- (void)keepAlive {
-    NSMutableSet *mutable = (aliveContexts ?: [NSSet set]).mutableCopy;
-    [mutable addObject:self];
-    aliveContexts = mutable.copy;
-}
-
-- (void)terminal {
-    NSMutableSet *mutable = (aliveContexts ?: [NSSet set]).mutableCopy;
-    [mutable removeObject:self];
-    aliveContexts = mutable.copy;
 }
 
 - (JSValue *)evaluateScript:(NSString *)script {

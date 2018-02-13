@@ -207,6 +207,21 @@
     return nil;
 }
 
++ (void)xtr_presentViewController:(NSString *)viewControllerRef animated:(BOOL)animated objectRef:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    UIViewController *target = [XTMemoryManager find:viewControllerRef];
+    if ([obj isKindOfClass:[UIViewController class]] && [target isKindOfClass:[UIViewController class]]) {
+        [obj presentViewController:target animated:animated completion:nil];
+    }
+}
+
++ (void)xtr_dismissViewController:(BOOL)animated objectRef:(NSString *)objectRef {
+    UIViewController *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[UIViewController class]]) {
+        [obj dismissViewControllerAnimated:animated completion:nil];
+    }
+}
+
 #pragma mark - ViewController callbacks
 
 - (void)loadView {

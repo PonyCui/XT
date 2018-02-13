@@ -48,6 +48,9 @@ export class ViewController implements Releasable {
     willMoveToParentViewController(parent?: ViewController): void { }
     didMoveToParentViewController(parent?: ViewController): void { }
 
+    presentViewController(viewController: ViewController, animated: boolean = true): void { }
+    dismissViewController(animated: boolean = true): void { }
+
     keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }
     keyboardWillShow(frame: Rect, duration: number): void { }
     keyboardWillHide(duration: number): void { }

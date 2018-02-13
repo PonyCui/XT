@@ -40,6 +40,7 @@
 #import "XTUISlider.h"
 #import "XTUIActivityIndicatorView.h"
 #import "XTDebug.h"
+#import "XTMemoryManager.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTUIContext ()<UINavigationControllerDelegate, XTDebugDelegate>
@@ -50,6 +51,37 @@
 @end
 
 @implementation XTUIContext
+
++ (NSString *)name {
+    return @"_XTUIContext";
+}
+
++ (NSString *)xtr_startWithNamed:(NSString *)name options:(JSValue *)options completion:(JSValue *)completion {
+    return [self xtr_startWithURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:name ofType:nil]
+                                             isDirectory:NO].absoluteString
+                          options:options
+                       completion:completion
+                          failure:nil];
+}
+
++ (NSString *)xtr_startWithURL:(NSString *)URLString
+                       options:(JSValue *)options
+                    completion:(JSValue *)completion
+                       failure:(JSValue *)failure {
+    XTUIContext *context = [[XTUIContext alloc] initWithSourceURL:[NSURL URLWithString:URLString]
+                                                          options:options.isObject ? options.toDictionary : nil
+                                                  completionBlock:^(UIViewController<XTComponent> * _Nullable rootViewController) {
+                                                      if ([rootViewController conformsToProtocol:@protocol(XTComponent)]) {
+                                                          [completion callWithArguments:@[rootViewController.objectUUID ?: [NSNull null]]];
+                                                      }
+                                                   } failureBlock:^(NSError * _Nonnull error) {
+                                                       
+                                                   }];
+    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:context];
+    context.objectUUID = managedObject.objectUUID;
+    [XTMemoryManager add:managedObject];
+    return managedObject.objectUUID;
+}
 
 #ifdef LOGDEALLOC
 - (void)dealloc {
@@ -122,6 +154,7 @@
 
 - (void)loadComponents {
     for (Class component in @[
+                              [XTUIContext class],
                               [XTUIApplication class],
                               [XTUIApplicationDelegate class],
                               [XTUIView class],
@@ -180,65 +213,6 @@ static NSArray *defaultAttachContextClasses;
         defaultAttachContextClasses = [classes copy];
     }
 }
-
-//+ (XTUIContext *)startWithNamed:(NSString *)name
-//                       inBundle:(NSBundle *)bundle
-//           navigationController:(UINavigationController *)navigationController {
-//    return [self startWithURL:[NSURL fileURLWithPath:[(bundle ?: [NSBundle mainBundle]) pathForResource:name ofType:@"js"]]
-//         navigationController:navigationController
-//              completionBlock:nil
-//                 failureBlock:nil];
-//}
-//
-//+ (XTUIContext *)startWithURLString:(NSString *)URLString
-//      navigationController:(UINavigationController *)navigationController
-//           completionBlock:(XTUIContextCompletionBlock)completionBlock
-//              failureBlock:(XTUIContextFailureBlock)failureBlock {
-//    return [self startWithURL:[NSURL URLWithString:URLString]
-//         navigationController:navigationController
-//              completionBlock:completionBlock
-//                 failureBlock:failureBlock];
-//}
-//
-//+ (XTUIContext *)startWithURL:(NSURL *)sourceURL
-//navigationController:(UINavigationController *)navigationController
-//     completionBlock:(XTUIContextCompletionBlock)completionBlock
-//        failureBlock:(XTUIContextFailureBlock)failureBlock {
-//    __block XTUIContext *context = [[XTUIContext alloc] initWithSourceURL:sourceURL
-//                                      completionBlock:^{
-//                                          UINavigationController *rootViewController = (id)context.application.delegate.window.rootViewController;
-//                                          if ([rootViewController isKindOfClass:[UINavigationController class]]) {
-//                                              XTUIViewController *firstViewController = [rootViewController childViewControllers].firstObject;
-//                                              if ([firstViewController isKindOfClass:[XTUIViewController class]]) {
-//                                                  firstViewController.shouldRestoreNavigationBar = !navigationController.navigationBar.hidden;
-//                                                  [UIView animateWithDuration:0.25 animations:^{
-//                                                      [navigationController pushViewController:firstViewController
-//                                                                                      animated:YES];
-//                                                      navigationController.navigationBar.alpha = 0.0;
-//                                                  } completion:^(BOOL finished) {
-//                                                      navigationController.navigationBar.alpha = 1.0;
-//                                                      navigationController.navigationBar.hidden = YES;
-//                                                  }];
-//                                                  [firstViewController setExitAction:^(XTUIViewController *keyViewController) {
-//                                                      [context terminal];
-//                                                  }];
-//                                              }
-//                                          }
-//                                          if (completionBlock) {
-//                                              completionBlock();
-//                                          }
-//                                      }
-//                                         failureBlock:^(NSError * _Nonnull error) {
-//                                             if (failureBlock) {
-//                                                 failureBlock(error);
-//                                             }
-//                                             [context terminal];
-//                                         }];
-//    for (NSString *contextClassName in defaultAttachContextClasses) {
-//        [NSClassFromString(contextClassName) attachToContext:context];
-//    }
-//    return context;
-//}
 
 static UINavigationController *currentDebugNavigationViewController;
 static XTUIContext *currentDebugContext;

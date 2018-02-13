@@ -144,6 +144,14 @@ export class ViewController implements Releasable {
 
     didMoveToParentViewController(parent?: ViewController): void { }
 
+    presentViewController(viewController: ViewController, animated: boolean = true): void {
+        _XTUIViewController.xtr_presentViewControllerAnimatedObjectRef(viewController.objectRef, animated, this.objectRef)
+    }
+
+    dismissViewController(animated: boolean = true): void {
+        _XTUIViewController.xtr_dismissViewControllerObjectRef(animated, this.objectRef)
+    }
+
     public get navigationController(): NavigationControllerInterface | undefined {
         const ref = _XTUIViewController.xtr_navigationController(this.objectRef)
         if (typeof ref !== "string") { return undefined }

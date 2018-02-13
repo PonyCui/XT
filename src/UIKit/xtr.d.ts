@@ -31,3 +31,4 @@ declare var _XTUISwitch: any
 declare var _XTUISlider: any
 declare var _XTUIActivityIndicatorView: any
 declare var _XTUIDebug: any
+declare var _XTUIContext: any

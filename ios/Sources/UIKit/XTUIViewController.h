@@ -21,6 +21,8 @@
 + (NSArray<NSString *> *)xtr_childViewControllers:(NSString *)objectRef;
 + (void)xtr_addChildViewController:(NSString *)childControllerRef objectRef:(NSString *)objectRef;
 + (void)xtr_removeFromParentViewController:(NSString *)objectRef;
++ (void)xtr_presentViewController:(NSString *)viewControllerRef animated:(BOOL)animated objectRef:(NSString *)objectRef;
++ (void)xtr_dismissViewController:(BOOL)animated objectRef:(NSString *)objectRef;
 + (NSString *)xtr_navigationController:(NSString *)objectRef;
 + (NSString *)xtr_navigationBar:(NSString *)objectRef;
 + (void)xtr_setNavigationBar:(NSString *)barRef objectRef:(NSString *)objectRef;

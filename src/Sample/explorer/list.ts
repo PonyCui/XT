@@ -247,6 +247,23 @@ export class List extends UI.ViewController {
             {
                 reuseIdentifier: "SectionHeader",
                 rowHeight: () => 52,
+                name: "上下文",
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Create UI Context",
+                action: () => {
+                    UI.Context.startWithNamed('sample.min.js', undefined, (rootViewController) => {
+                        if (this.navigationController) {
+                            this.navigationController.pushViewController(rootViewController)
+                        }
+                    }).retain()
+                },
+            },
+            {
+                reuseIdentifier: "SectionHeader",
+                rowHeight: () => 52,
                 name: "视图容器",
             },
             {

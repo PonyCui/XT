@@ -12,6 +12,5 @@
 
 + (void)attachToContext:(XTContext *)context;
 - (void)setup;
-- (void)terminal;
 
 @end
