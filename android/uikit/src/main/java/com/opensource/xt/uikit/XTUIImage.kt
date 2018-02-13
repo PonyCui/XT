@@ -68,15 +68,15 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
                             instance.objectUUID = managedObject.objectUUID
                             XTMemoryManager.add(managedObject)
                             XTContext.callWithArgument(success, managedObject.objectUUID)
-                            success.release()
-                            failure.release()
+                            XTContext.release(success)
+                            XTContext.release(failure)
                         }
                     }
                 } catch (e: Exception) {
                     handler.post {
                         XTContext.callWithArgument(failure, null)
-                        success.release()
-                        failure.release()
+                        XTContext.release(success)
+                        XTContext.release(failure)
                     }
                 } finally {
                     inputStream?.close()

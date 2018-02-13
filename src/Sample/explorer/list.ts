@@ -259,6 +259,11 @@ export class List extends UI.ViewController {
                             this.navigationController.pushViewController(rootViewController)
                         }
                     }).retain(this)
+                    // UI.Context.startWithURL('http://xt-studio.com/samples/RedView.js', undefined, (rootViewController) => {
+                    //     if (this.navigationController) {
+                    //         this.navigationController.pushViewController(rootViewController)
+                    //     }
+                    // }, () => {}).retain(this)
                 },
             },
             {

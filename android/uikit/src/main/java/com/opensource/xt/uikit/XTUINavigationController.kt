@@ -38,6 +38,7 @@ class XTUINavigationController: XTUIViewController() {
             if (!animated) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             }
+            intent.putExtra("XTUIShowBackButton", true)
             intent.putExtra("ChildViewControllerObjectUUID", viewController.objectUUID)
             xtrContext.appContext.startActivity(intent)
         }

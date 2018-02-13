@@ -1,45 +1,49 @@
+import { Context as IContext } from "../interface/Context";
+import { Context as MContext } from "./Context";
+export const Context = MContext;
+
 import { ApplicationDelegate as IApplicationDelegate, Application as IApplication } from '../interface/Application'
 import { ApplicationDelegate as MApplicationDelegate, Application as MApplication } from './Application'
 
-export class ApplicationDelegate extends MApplicationDelegate {}
-export class Application extends MApplication {}
+export const ApplicationDelegate = MApplicationDelegate
+export const Application = MApplication
 
 import { Button as IButton } from '../interface/Button'
 import { Button as MButton } from './Button'
-export class Button extends MButton {}
+export const Button = MButton
 
 import { Color as IColor } from '../interface/Color'
-export class Color extends IColor {}
+export const Color = IColor
 
 import { Font as IFont } from '../interface/Font';
 import { Font as MFont } from './Font';
-export class Font extends MFont {}
+export const Font = MFont
 
 import { ImageRenderingMode as IImageRenderingMode, Image as IImage, ContentMode as IContentMode, ImageView as IImageView } from '../interface/ImageView';
 import { Image as MImage, ImageView as MImageView } from './ImageView';
 export const ImageRenderingMode = IImageRenderingMode
-export class Image extends MImage {}
+export const Image = MImage
 export const ContentMode = IContentMode
-export class ImageView extends MImageView {}
+export const ImageView = MImageView
 
 import { TextAlignment as ITextAlignment, TextVerticalAlignment as ITextVerticalAlignment, LineBreakMode as ILineBreakMode, Label as ILabel } from '../interface/Label'
 import { Label as MLabel } from './Label'
 export const TextAlignment = ITextAlignment
 export const TextVerticalAlignment = ITextVerticalAlignment
 export const LineBreakMode = ILineBreakMode
-export class Label extends MLabel {}
+export const Label = MLabel
 
 import { LayoutAttribute as ILayoutAttribute, LayoutRelation as ILayoutRelation, LayoutConstraint as ILayoutConstraint } from '../interface/LayoutConstraint'
 import { LayoutConstraint as MLayoutConstraint } from './LayoutConstraint'
 export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
-export class LayoutConstraint extends MLayoutConstraint {}
+export const LayoutConstraint = MLayoutConstraint
 
 import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView } from '../interface/ListView'
 import { ListCell as MListCell, ListView as MListView } from './ListView'
 export const ListSelectionStyle = IListSelectionStyle
-export class ListCell extends MListCell {}
-export class ListView extends MListView {}
+export const ListCell = MListCell
+export const ListView = MListView
 
 import { PointMake as IPointMake, PointEqual as IPointEqual, PointZero as IPointZero, SizeMake as ISizeMake, SizeEqual as ISizeEqual, SizeZero as ISizeZero, RectMake as IRectMake, RectZero as IRectZero, RectEqual as IRectEqual, RectInside as IRectInside, InsetsMake as IInsetsMake } from '../interface/Rect'
 export const PointMake = IPointMake
@@ -55,86 +59,86 @@ export const RectInside = IRectInside
 
 import { Screen as IScreen } from '../interface/Screen'
 import { Screen as MScreen } from './Screen'
-export class Screen extends MScreen {}
+export const Screen = MScreen
 
 import { ScrollView as IScrollView } from '../interface/ScrollView'
 import { ScrollView as MScrollView } from './ScrollView'
-export class ScrollView extends MScrollView {}
+export const ScrollView = MScrollView
 
 import { TransformMatrix as ITransformMatrix } from '../interface/TransformMatrix';
-export class TransformMatrix extends ITransformMatrix {}
+export const TransformMatrix = ITransformMatrix
 
 import { View as IView, InteractionState as IInteractionState, SwipeDirection as ISwipeDirection } from '../interface/View'
 import { View as MView } from './View'
-export class View extends MView {}
+export const View = MView
 export const InteractionState = IInteractionState
 export const SwipeDirection = ISwipeDirection
 
 import { Window as IWindow } from '../interface/Window'
 import { Window as MWindow } from './Window'
-export class Window extends MWindow {}
+export const Window = MWindow
 
 import { ViewController as IViewController, KeyboardAvoidingMode as IKeyboardAvoidingMode } from '../interface/ViewController'
 import { ViewController as MViewController } from './ViewController'
-export class ViewController extends MViewController {}
+export const ViewController = MViewController
 export const KeyboardAvoidingMode = IKeyboardAvoidingMode 
 
 import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from '../interface/NavigationBar'
 import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './NavigationBar'
-export class NavigationBar extends MNavigationBar { }
-export class NavigationBarButtonItem extends MNavigationBarButtonItem { }
+export const NavigationBar = MNavigationBar
+export const NavigationBarButtonItem = MNavigationBarButtonItem
 
 import { NavigationController as INavigationController } from '../interface/NavigationController'
 import { NavigationController as MNavigationController } from './NavigationController'
-export class NavigationController extends MNavigationController {}
+export const NavigationController = MNavigationController
 
 import { TextField as ITextField, TextFieldViewMode as ITextFieldViewMode, ReturnKeyType as IReturnKeyType, KeyboardType as IKeyboardType } from '../interface/TextField'
 import { TextField as MTextField } from './TextField'
-export class TextField extends MTextField {}
+export const TextField = MTextField
 export const TextFieldViewMode = ITextFieldViewMode
 export const ReturnKeyType = IReturnKeyType
 export const KeyboardType = IKeyboardType
 
 import { TextView as ITextView } from '../interface/TextView'
 import { TextView as MTextView } from './TextView'
-export class TextView extends MTextView { }
+export const TextView = MTextView
 
 import { CanvasView as ICanvasView } from '../interface/CanvasView'
 import { CanvasView as MCanvasView } from './CanvasView'
-export class CanvasView extends MCanvasView { }
+export const CanvasView = MCanvasView
 
 import { Device as IDevice, DeviceOrientation as IDeviceOrientation } from '../interface/Device'
 import { Device as MDevice } from './Device'
 export const DeviceOrientation = IDeviceOrientation
-export class Device extends MDevice { }
+export const Device = MDevice
 
 import { TextMeasurer as ITextMeasurer } from '../interface/TextMeasurer';
 import { TextMeasurer as MTextMeasurer } from './TextMeasurer'
-export class TextMeasurer extends MTextMeasurer { }
+export const TextMeasurer = MTextMeasurer
 
 import { HRView as IHRView } from '../interface/HRView'
 import { HRView as MHRView } from './HRView'
-export class HRView extends MHRView { }
+export const HRView = MHRView
 
 import { Alert as IAlert, Confirm as IConfirm, Prompt as IPrompt } from '../interface/Modal'
 import { Alert as MAlert, Confirm as MConfirm, Prompt as MPrompt } from './Modal'
-export class Alert extends MAlert { }
-export class Confirm extends MConfirm { }
-export class Prompt extends MPrompt { }
+export const Alert = MAlert
+export const Confirm = MConfirm
+export const Prompt = MPrompt
 
 import { WebView as IWebView } from '../interface/WebView'
 import { WebView as MWebView } from './WebView'
-export class WebView extends MWebView { }
+export const WebView = MWebView
 
 import { Switch as ISwitch } from '../interface/Switch'
 import { Switch as MSwitch } from './Switch'
-export class Switch extends MSwitch { }
+export const Switch = MSwitch
 
 import { Slider as ISlider } from '../interface/Slider'
 import { Slider as MSlider } from './Slider'
-export class Slider extends MSlider { }
+export const Slider = MSlider
 
 import { ActivityIndicatorViewStyle as IActivityIndicatorViewStyle, ActivityIndicatorView as IActivityIndicatorView } from '../interface/ActivityIndicatorView'
 import { ActivityIndicatorView as MActivityIndicatorView } from './ActivityIndicatorView'
 export const ActivityIndicatorViewStyle = IActivityIndicatorViewStyle
-export class ActivityIndicatorView extends MActivityIndicatorView { }
+export const ActivityIndicatorView = MActivityIndicatorView

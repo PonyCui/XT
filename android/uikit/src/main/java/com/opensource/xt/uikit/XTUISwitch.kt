@@ -23,7 +23,7 @@ class XTUISwitch @JvmOverloads constructor(
             resetColor()
             scriptObject()?.let {
                 XTContext.invokeMethod(it, "handleValueChanged")
-                it.release()
+                XTContext.release(it)
             }
         }
         addView(innerView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))

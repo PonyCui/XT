@@ -130,7 +130,7 @@ open class XTUIFragment: Fragment() {
                     currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTContext.invokeMethod(it, "handlePointerDown", listOf(pid, timestamp, point))
                     }
-                    point.release()
+                    XTContext.release(point)
                 }
                 MotionEvent.ACTION_MOVE -> {
                     velocityTracker.computeCurrentVelocity(1000)
@@ -141,7 +141,7 @@ open class XTUIFragment: Fragment() {
 
                         (XTUIUtils.fromPoint(point, xtrContext.runtime) as? V8Object)?.let {
                             points.add(pointerID.toString(), it)
-                            it.release()
+                            XTContext.release(it)
                         }
                     }
                     val velocities = V8Object(xtrContext.runtime)
@@ -149,14 +149,14 @@ open class XTUIFragment: Fragment() {
                         val velocity = XTUIPoint(velocityTracker.getXVelocity(pointerID).toDouble(), velocityTracker.getYVelocity(pointerID).toDouble())
                         (XTUIUtils.fromPoint(velocity, xtrContext.runtime) as? V8Object)?.let {
                             velocities.add(pointerID.toString(), it)
-                            it.release()
+                            XTContext.release(it)
                         }
                     }
                     currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points, velocities))
                     }
-                    velocities.release()
-                    points.release()
+                    XTContext.release(velocities)
+                    XTContext.release(points)
                 }
                 MotionEvent.ACTION_UP -> {
                     velocityTracker.computeCurrentVelocity(1000)
@@ -166,10 +166,10 @@ open class XTUIFragment: Fragment() {
                     val velocity = XTUIUtils.fromPoint(XTUIPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
                     currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                         XTContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
-                        it.release()
+                        XTContext.release(it)
                     }
-                    point.release()
-                    velocity.release()
+                    XTContext.release(point)
+                    XTContext.release(velocity)
                     velocityTracker.clear()
                 }
                 MotionEvent.ACTION_CANCEL -> {

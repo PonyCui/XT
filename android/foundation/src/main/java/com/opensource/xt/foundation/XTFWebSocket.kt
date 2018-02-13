@@ -32,7 +32,7 @@ class XTFWebSocket(val context: XTContext, URLString: String): WebSocketClient(U
         context.sharedHandler.post {
             scriptObject()?.let {
                 XTContext.invokeMethod(it, "handleOpen")
-                it.release()
+                XTContext.release(it)
             }
         }
     }
@@ -41,7 +41,7 @@ class XTFWebSocket(val context: XTContext, URLString: String): WebSocketClient(U
         context.sharedHandler.post {
             scriptObject()?.let {
                 XTContext.invokeMethod(it, "handleClose", listOf(code, reason ?: ""))
-                it.release()
+                XTContext.release(it)
             }
         }
     }
@@ -50,7 +50,7 @@ class XTFWebSocket(val context: XTContext, URLString: String): WebSocketClient(U
         context.sharedHandler.post {
             scriptObject()?.let {
                 XTContext.invokeMethod(it, "handleStringMessage", listOf(message ?: ""))
-                it.release()
+                XTContext.release(it)
             }
         }
     }
@@ -66,7 +66,7 @@ class XTFWebSocket(val context: XTContext, URLString: String): WebSocketClient(U
                 data.objectUUID = managedObject.objectUUID
                 XTMemoryManager.add(managedObject)
                 XTContext.invokeMethod(it, "handleStringMessage", listOf(managedObject.objectUUID))
-                it.release()
+                XTContext.release(it)
             }
         }
     }
@@ -75,7 +75,7 @@ class XTFWebSocket(val context: XTContext, URLString: String): WebSocketClient(U
         context.sharedHandler.post {
             scriptObject()?.let {
                 XTContext.invokeMethod(it, "handleFail", listOf(ex?.message ?: ""))
-                it.release()
+                XTContext.release(it)
             }
         }
     }

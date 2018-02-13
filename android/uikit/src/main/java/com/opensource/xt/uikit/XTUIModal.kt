@@ -8,6 +8,7 @@ import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Function
 import com.eclipsesource.v8.V8Object
 import com.opensource.xt.core.XTComponentExport
+import com.opensource.xt.core.XTContext
 
 /**
  * Created by cuiminghui on 2018/1/22.
@@ -32,7 +33,7 @@ class XTUIModal {
             dialogBuilder.setTitle(params.getString("message") ?: "")
             dialogBuilder.setNegativeButton(params.getString("buttonTitle") ?: "好的", { _, _ ->
                 (callbackTwin as? V8Function)?.call(null, null)
-                callbackTwin.release()
+                XTContext.release(callbackTwin)
             })
             dialogBuilder.create().show()
         }
@@ -44,18 +45,18 @@ class XTUIModal {
             dialogBuilder.setTitle(params.getString("message") ?: "")
             dialogBuilder.setPositiveButton(params.getString("confirmTitle") ?: "确认", { _, _ ->
                 (resolverTwin as? V8Function)?.call(null, null)
-                resolverTwin.release()
-                rejectedTwin.release()
+                XTContext.release(resolverTwin)
+                XTContext.release(rejectedTwin)
             })
             dialogBuilder.setNegativeButton(params.getString("cancelTitle") ?: "取消", { _, _ ->
                 (rejectedTwin as? V8Function)?.call(null, null)
-                resolverTwin.release()
-                rejectedTwin.release()
+                XTContext.release(resolverTwin)
+                XTContext.release(rejectedTwin)
             })
             dialogBuilder.setOnCancelListener {
                 (rejectedTwin as? V8Function)?.call(null, null)
-                resolverTwin.release()
-                rejectedTwin.release()
+                XTContext.release(resolverTwin)
+                XTContext.release(rejectedTwin)
             }
             dialogBuilder.create().show()
         }
@@ -78,15 +79,15 @@ class XTUIModal {
                     val returnParams = V8Array(it.runtime)
                     returnParams.push(editText.editableText.toString())
                     it.call(null, returnParams)
-                    returnParams.release()
+                    XTContext.release(returnParams)
                 }
-                resolverTwin.release()
-                rejectedTwin.release()
+                XTContext.release(resolverTwin)
+                XTContext.release(rejectedTwin)
             })
             dialogBuilder.setNegativeButton(params.getString("cancelTitle") ?: "取消", { _, _ ->
                 (rejectedTwin as? V8Function)?.call(null, null)
-                resolverTwin.release()
-                rejectedTwin.release()
+                XTContext.release(resolverTwin)
+                XTContext.release(rejectedTwin)
             })
             dialogBuilder.setCancelable(false)
             val dialog = dialogBuilder.create()
@@ -96,10 +97,10 @@ class XTUIModal {
                     val returnParams = V8Array(it.runtime)
                     returnParams.push(editText.editableText.toString())
                     it.call(null, returnParams)
-                    returnParams.release()
+                    XTContext.release(returnParams)
                 }
-                resolverTwin.release()
-                rejectedTwin.release()
+                XTContext.release(resolverTwin)
+                XTContext.release(rejectedTwin)
                 return@setOnEditorActionListener true
             }
             dialog.setView(editText, (20.0 * editText.resources.displayMetrics.density).toInt(), (20.0 * editText.resources.displayMetrics.density).toInt(), (20.0 * editText.resources.displayMetrics.density).toInt(), (20.0 * editText.resources.displayMetrics.density).toInt())

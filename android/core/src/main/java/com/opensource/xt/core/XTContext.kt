@@ -51,7 +51,7 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
     fun addComponent(exportInstance: XTComponentExport, globalName: String?) {
         val obj = exportInstance.exports()
         this.runtime.add(globalName ?: exportInstance.name, obj)
-        obj.release()
+        XTContext.release(obj)
         _registeredComponents.put(globalName ?: exportInstance.name, exportInstance)
     }
 
@@ -64,7 +64,7 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
         components.forEach {
             val obj = it.exports()
             this.runtime.add(it.name, obj)
-            obj.release()
+            XTContext.release(obj)
             _registeredComponents.put(it.name, it)
         }
     }

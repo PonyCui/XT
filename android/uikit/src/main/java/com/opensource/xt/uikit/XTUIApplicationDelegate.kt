@@ -23,8 +23,8 @@ class XTUIApplicationDelegate(val context: XTUIContext): XTComponentInstance {
         scriptObject()?.let {
             val v8Options = V8ObjectUtils.toV8Object(context.runtime, options)
             XTContext.invokeMethod(it, "handleApplicationDidFinishLaunchingWithOptions", listOf(application.objectUUID ?: "", v8Options))
-            v8Options.release()
-            it.release()
+            XTContext.release(v8Options)
+            XTContext.release(it)
         }
     }
 

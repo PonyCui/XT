@@ -25,7 +25,7 @@ class XTUISlider @JvmOverloads constructor(
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 scriptObject()?.let {
                     XTContext.invokeMethod(it, "handleValueChanged")
-                    it.release()
+                    XTContext.release(it)
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

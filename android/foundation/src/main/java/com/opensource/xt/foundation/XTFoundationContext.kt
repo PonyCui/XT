@@ -37,7 +37,7 @@ class XTFoundationContext(appContext: Context, attachingContext: XTContext?) : X
         components.forEach {
             val obj = it.exports()
             runtime.add(it.name, obj)
-            obj.release()
+            XTContext.release(obj)
             _registeredComponents.put(it.name, it)
         }
     }

@@ -156,18 +156,22 @@ export class ViewController implements Releasable, NavigationBarDelegate {
         return new (UI as any).NavigationController(undefined, ref);
     }
 
+    private _navigationBar?: NavigationBar = undefined
+
     public set navigationBar(value: NavigationBar) {
-        _XTUIViewController.xtr_setNavigationBar(value.objectRef, this.objectRef)
+        this._navigationBar = value
     }
 
     public get navigationBar(): NavigationBar {
-        let ref = _XTUIViewController.xtr_navigationBar(this.objectRef)
-        if (typeof ref !== "string") {
-            this.navigationBar = new NavigationBar();
-            this.navigationBar.delegate = this
-            return this.navigationBar
+        if (this._navigationBar) {
+            return this._navigationBar
         }
-        return new NavigationBar(ref)
+        else {
+            this._navigationBar = new NavigationBar()
+            _XTUIViewController.xtr_setNavigationBar(this._navigationBar.objectRef, this.objectRef)
+            this._navigationBar.delegate = this
+            return this._navigationBar
+        }
     }
 
     showNavigationBar(animated: boolean = false): void {

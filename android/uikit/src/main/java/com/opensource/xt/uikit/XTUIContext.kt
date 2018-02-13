@@ -5,14 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
-import com.opensource.xt.core.XTComponentExport
-import com.opensource.xt.core.XTContext
-import com.opensource.xt.core.XTDebug
-import com.opensource.xt.core.XTDebugDelegate
+import com.eclipsesource.v8.V8Function
+import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
+import com.opensource.xt.core.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.net.URI
+import kotlin.system.measureTimeMillis
 
 /**
  * Created by cuiminghui on 2017/8/31.
@@ -21,7 +22,7 @@ class XTUIContext(appContext: android.content.Context,
                   val sourceURL: String?,
                   val options: Map<String, Any>?,
                   val completionBlock: ((bridge: XTUIContext) -> Unit)? = null,
-                  val failureBlock: ((e: Exception) -> Unit)? = null): XTContext(appContext) {
+                  val failureBlock: ((e: Exception) -> Unit)? = null): XTContext(appContext), XTComponentInstance {
 
     companion object: XTDebugDelegate {
 
@@ -94,7 +95,66 @@ class XTUIContext(appContext: android.content.Context,
 
     }
 
+    class JSExports(val context: XTUIContext): XTComponentExport() {
+
+        override val name: String = "_XTUIContext"
+
+        override fun exports(): V8Object {
+            val exports = V8Object(context.runtime)
+            exports.registerJavaMethod(this, "xtr_startWithNamed", "xtr_startWithNamed", arrayOf(String::class.java, V8Object::class.java, V8Function::class.java))
+            exports.registerJavaMethod(this, "xtr_startWithURL", "xtr_startWithURL", arrayOf(String::class.java, V8Object::class.java, V8Function::class.java, V8Function::class.java))
+            return exports
+        }
+
+        fun xtr_startWithNamed(name: String, options: V8Object, completion: V8Function): String {
+            val completion = completion.twin()
+            val createOptions = mutableMapOf<String, Any>()
+            try {
+                V8ObjectUtils.toMap(options).forEach {
+                    it.value?.let { value ->
+                        createOptions.put(it.key, value)
+                    }
+                }
+            } catch (e: Exception) {}
+            val context = XTUIContext.createWithAssets(context.appContext, name, createOptions.toMap(), {
+                XTContext.callWithArgument(completion, it.application?.delegate?.window?.rootViewController?.objectUUID)
+                XTContext.release(completion)
+            })
+            val managedObject = XTManagedObject(context)
+            context.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
+        }
+
+        fun xtr_startWithURL(URLString: String, options: V8Object, completion: V8Function, failure: V8Function): String {
+            val completion = completion.twin()
+            val failure = failure.twin()
+            val createOptions = mutableMapOf<String, Any>()
+            try {
+                V8ObjectUtils.toMap(options).forEach {
+                    it.value?.let { value ->
+                        createOptions.put(it.key, value)
+                    }
+                }
+            } catch (e: Exception) {}
+            val context = XTUIContext.createWithSourceURL(context.appContext, URLString, createOptions, {
+                XTContext.callWithArgument(completion, it.application?.delegate?.window?.rootViewController?.objectUUID)
+                XTContext.release(completion, failure)
+            }, {
+                XTContext.callWithArgument(failure, it.message ?: "")
+                XTContext.release(completion, failure)
+            })
+            val managedObject = XTManagedObject(context)
+            context.objectUUID = managedObject.objectUUID
+            XTMemoryManager.add(managedObject)
+            return managedObject.objectUUID
+        }
+
+    }
+
     var application: XTUIApplication? = null
+
+    override var objectUUID: String? = null
 
     private var isUIContextDidSetup = false
 
@@ -130,6 +190,7 @@ class XTUIContext(appContext: android.content.Context,
 
     private fun loadComponents() {
         val components: List<XTComponentExport> = listOf(
+                XTUIContext.JSExports(this),
                 XTUIImage.JSExports(this),
                 XTUIApplication.JSExports(this),
                 XTUIApplicationDelegate.JSExports(this),
@@ -159,7 +220,7 @@ class XTUIContext(appContext: android.content.Context,
         components.forEach {
             val obj = it.exports()
             this.runtime.add(it.name, obj)
-            obj.release()
+            XTContext.release(obj)
             _registeredComponents.put(it.name, it)
         }
     }

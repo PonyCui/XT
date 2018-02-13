@@ -25,7 +25,7 @@ class XTFNotification {
                         (it.evaluateScript("window.XTFNotificationCenter.default") as? V8Object)?.let {
                             val userInfoV8Object = V8ObjectUtils.toV8Object(it.runtime, userInfo)
                             XTContext.invokeMethod(it, "onNotification", listOf(name, obj, userInfoV8Object))
-                            userInfoV8Object.release()
+                            XTContext.release(userInfoV8Object)
                         }
                     }
                 }

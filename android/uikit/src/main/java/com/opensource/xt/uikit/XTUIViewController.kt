@@ -2,6 +2,9 @@ package com.opensource.xt.uikit
 
 import android.app.Activity
 import android.app.Fragment
+import android.graphics.Color
+import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
@@ -64,49 +67,49 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
     open fun viewDidLoad() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewDidLoad")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     open fun viewWillAppear() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewWillAppear")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     open fun viewDidAppear() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewDidAppear")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     open fun viewWillDisappear() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewWillDisappear")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     open fun viewDidDisappear() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewDidDisappear")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     open fun viewWillLayoutSubviews() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewWillLayoutSubviews")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     open fun viewDidLayoutSubviews() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewDidLayoutSubviews")
-            it.release()
+            XTContext.release(it)
         }
     }
 
@@ -170,7 +173,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             else {
                 XTContext.invokeMethod(it, "keyboardWillHide", listOf(0.25))
             }
-            it.release()
+            XTContext.release(it)
         }
     }
 

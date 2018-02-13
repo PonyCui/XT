@@ -23,21 +23,21 @@ class XTUIWebView @JvmOverloads constructor(
                 super.onPageStarted(view, url, favicon)
                 scriptObject()?.let {
                     XTContext.invokeMethod(it, "handleStart")
-                    it.release()
+                    XTContext.release(it)
                 }
             }
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 scriptObject()?.let {
                     XTContext.invokeMethod(it, "handleFinish")
-                    it.release()
+                    XTContext.release(it)
                 }
             }
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
                 scriptObject()?.let {
                     XTContext.invokeMethod(it, "handleFail", listOf(error?.toString() ?: ""))
-                    it.release()
+                    XTContext.release(it)
                 }
             }
         })

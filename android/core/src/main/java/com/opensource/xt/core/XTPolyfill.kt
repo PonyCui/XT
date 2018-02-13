@@ -28,7 +28,7 @@ class XTPolyfill {
             val console = V8Object(runtime)
             runtime.add("console", console)
             attachConsole(runtime, console)
-            console.release()
+            XTContext.release(console)
         }
 
         private fun attachTimeout(runtime: V8) {
@@ -59,7 +59,7 @@ class XTPolyfill {
                         (it as? Releasable)?.release()
                     }
                 }
-                p1.release()
+                XTContext.release(p1)
             }, "log")
             scope.registerJavaMethod({ p1, p2 ->
                 (0 until p2.length())?.forEach {
@@ -68,7 +68,7 @@ class XTPolyfill {
                         (it as? Releasable)?.release()
                     }
                 }
-                p1.release()
+                XTContext.release(p1)
             }, "error")
             scope.registerJavaMethod({ p1, p2 ->
                 (0 until p2.length())?.forEach {
@@ -77,7 +77,7 @@ class XTPolyfill {
                         (it as? Releasable)?.release()
                     }
                 }
-                p1.release()
+                XTContext.release(p1)
             }, "info")
         }
 
@@ -101,7 +101,7 @@ class XTPolyfill {
                                 exceptionHandler?.invoke(e)
                             }
                         }
-                        callback.release()
+                        XTContext.release(callback)
                     }
                 }
             }, ms.toLong())
@@ -130,7 +130,7 @@ class XTPolyfill {
                             }
                         }
                         else {
-                            callback.release()
+                            XTContext.release(callback)
                         }
                     }
                 }
@@ -157,7 +157,7 @@ class XTPolyfill {
                         if (timerStack[animationFrameHandler] == true) {
                             callback?.call(null, null)
                         }
-                        callback.release()
+                        XTContext.release(callback)
                     }
                 }
             }
@@ -167,7 +167,7 @@ class XTPolyfill {
                         if (timerStack[animationFrameHandler] == true) {
                             callback?.call(null, null)
                         }
-                        callback.release()
+                        XTContext.release(callback)
                     }
                 }, 16)
             }

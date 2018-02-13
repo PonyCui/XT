@@ -40,7 +40,7 @@ class XTUIScrollView @JvmOverloads constructor(
             this.innerView.requestLayout()
             scriptObject()?.let {
                 XTContext.invokeMethod(it, "scrollerDidScroll")
-                it.release()
+                XTContext.release(it)
             }
         }
 

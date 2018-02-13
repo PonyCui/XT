@@ -80,7 +80,7 @@ open class XTUIView @JvmOverloads constructor(
             if (!this.frameChangeViaJavascript) {
                 scriptObject()?.let {
                     XTContext.invokeMethod(it, "handleFrameChange")
-                    it.release()
+                    XTContext.release(it)
                 }
             }
             field = value
@@ -132,7 +132,7 @@ open class XTUIView @JvmOverloads constructor(
             if (!this.transformMatrixChangeViaJavascript) {
                 scriptObject()?.let {
                     XTContext.invokeMethod(it, "handleTransformChange")
-                    it.release()
+                    XTContext.release(it)
                 }
             }
             field = value
@@ -217,7 +217,7 @@ open class XTUIView @JvmOverloads constructor(
     open fun tintColorDidChange() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "tintColorDidChange")
-            it.release()
+            XTContext.release(it)
             (0 until childCount).forEach {
                 (getChildAt(it) as? XTUIView)?.let {
                     it.tintColorDidChange()
@@ -342,7 +342,7 @@ open class XTUIView @JvmOverloads constructor(
     fun didAddSubview(subview: View) {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "_didAddSubview", listOf((subview as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
-            it.release()
+            XTContext.release(it)
             (subview as? XTUIView)?.tintColorDidChange()
         }
     }
@@ -350,35 +350,35 @@ open class XTUIView @JvmOverloads constructor(
     fun willRemoveSubView(subview: View) {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "_willRemoveSubview", listOf((subview as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
-            it.release()
+            XTContext.release(it)
         }
     }
 
     fun willMoveToSuperview(newSuperview: View?) {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "_willMoveToSuperview", listOf((newSuperview as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
-            it.release()
+            XTContext.release(it)
         }
     }
 
     fun didMoveToSuperview() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "_didMoveToSuperview")
-            it.release()
+            XTContext.release(it)
         }
     }
 
     fun willMoveToWindow(newWindow: XTUIWindow?) {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "_willMoveToWindow", listOf((newWindow as? XTComponentInstance)?.objectUUID ?: V8.getUndefined()))
-            it.release()
+            XTContext.release(it)
         }
     }
 
     fun didMoveToWindow() {
         scriptObject()?.let {
             XTContext.invokeMethod(it, "_didMoveToWindow")
-            it.release()
+            XTContext.release(it)
         }
     }
 
@@ -394,7 +394,7 @@ open class XTUIView @JvmOverloads constructor(
         viewDelegate?.get()?.viewWillLayoutSubviews()
         scriptObject()?.let {
             XTContext.invokeMethod(it, "layoutSubviews")
-            it.release()
+            XTContext.release(it)
         }
         viewDelegate?.get()?.viewDidLayoutSubviews()
     }

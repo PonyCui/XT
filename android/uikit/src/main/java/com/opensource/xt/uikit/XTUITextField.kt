@@ -37,7 +37,7 @@ class XTUITextField @JvmOverloads constructor(
             (XTContext.invokeMethod(scriptObject, "handleShouldBeginEditing") as? Boolean)?.let {
                 if (!it) {
                     XTUITextField.xtr_blur(this.objectUUID ?: "")
-                    scriptObject.release()
+                    XTContext.release(scriptObject)
                     return@OnFocusChangeListener
                 }
             }
@@ -45,12 +45,12 @@ class XTUITextField @JvmOverloads constructor(
                 editText.editableText?.clear()
             }
             XTContext.invokeMethod(scriptObject, "handleDidBeginEditing")
-            scriptObject.release()
+            XTContext.release(scriptObject)
         }
         else {
             val scriptObject = scriptObject() ?: return@OnFocusChangeListener
             XTContext.invokeMethod(scriptObject, "handleDidEndEditing")
-            scriptObject.release()
+            XTContext.release(scriptObject)
         }
         resetLayout()
     }
@@ -94,8 +94,8 @@ class XTUITextField @JvmOverloads constructor(
                             lastCursorEnd = editText.selectionEnd
                         }
                     }
-                    v8Object.release()
-                    scriptObject.release()
+                    XTContext.release(v8Object)
+                    XTContext.release(scriptObject)
                 }
 
             }
@@ -113,7 +113,7 @@ class XTUITextField @JvmOverloads constructor(
         editText.setOnEditorActionListener { _, _, _ ->
             scriptObject()?.let { scriptObject ->
                 (XTContext.invokeMethod(scriptObject, "handleShouldReturn", null) as? Boolean)?.let {
-                    scriptObject.release()
+                    XTContext.release(scriptObject)
                     return@setOnEditorActionListener it
                 }
             }
@@ -206,7 +206,7 @@ class XTUITextField @JvmOverloads constructor(
                     shouldClear = false
                 }
             }
-            scriptObject.release()
+            XTContext.release(scriptObject)
         }
         if (shouldClear) {
             editText.editableText?.clear()
@@ -249,11 +249,11 @@ class XTUITextField @JvmOverloads constructor(
                 val scriptObject = this.scriptObject() ?: return
                 (XTContext.invokeMethod(scriptObject, "handleShouldEndEditing", null) as? Boolean)?.let {
                     if (!it) {
-                        scriptObject.release()
+                        XTContext.release(scriptObject)
                         return
                     }
                 }
-                scriptObject.release()
+                XTContext.release(scriptObject)
             }
             this.editText.clearFocus()
             val inputMethodManager = xtrContext.appContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
