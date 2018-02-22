@@ -15,51 +15,44 @@ export class ApplicationDelegate {
 export class Application {
 
     delegate: ApplicationDelegate
+    rootElement: SVGElement
+    defsElement: SVGDefsElement
     private _keyWindow: Window | undefined
-    private _rootElement: SVGElement | null;
 
     public get keyWindow(): Window | undefined {
         return this._keyWindow
     }
 
     public set keyWindow(value: Window | undefined) {
+        if (this._keyWindow !== undefined) { return; }
         this._keyWindow = value;
-        if (this._rootElement && value) {
-            value.frame = RectMake(0.0, 0.0, this._rootElement.clientWidth, this._rootElement.clientHeight)
-            this._rootElement.appendChild(value.nativeObject.nativeObject)
+        if (this.rootElement && value) {
+            this.rootElement.appendChild(value.nativeObject.nativeObject)
         }
     }
 
     constructor(t: any, delegate: ApplicationDelegate) {
+        (window as any).__XT_CONTEXT__.application = this;
         if (sharedApplication === undefined) {
             sharedApplication = this;
-            if (typeof t === "string") {
-                const element = document.querySelector(t)
-                if (element instanceof SVGElement) {
-                    this._rootElement = element
-                    this._rootElement.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "defs"))
-                }
-            }
-            else if (t instanceof SVGElement) {
-                this._rootElement = t
-                this._rootElement.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "defs"))
-            }
-            if (this._rootElement === undefined || this._rootElement === null) {
-                this._rootElement = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-                this._rootElement.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "defs"))
-                this._rootElement.setAttribute('width', '100%')
-                this._rootElement.setAttribute('height', '100%')
-                document.body.appendChild(this._rootElement)
-            }
         }
+        if (sharedApplication.defsElement === undefined) {
+            const defsRootElement = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            defsRootElement.style.width = "0"
+            defsRootElement.style.height = "0"
+            defsRootElement.style.opacity = "0"
+            this.defsElement = document.createElementNS("http://www.w3.org/2000/svg", "defs")
+            defsRootElement.appendChild(this.defsElement)
+            document.body.appendChild(defsRootElement)
+        }
+        else {
+            this.defsElement = sharedApplication.defsElement
+        }
+        this.rootElement = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        this.rootElement.setAttribute('width', '100%')
+        this.rootElement.setAttribute('height', '100%')
         this.delegate = delegate;
-        let options: any = {}
-        if (window.location.search.length > 0) {
-            window.location.search.substring(1).split('&').filter(it => it.indexOf("=") > 0).forEach(it => {
-                options[decodeURIComponent(it.split("=")[0])] = decodeURIComponent(it.split("=")[1])
-            })
-        }
-        this.delegate.applicationDidFinishLaunchingWithOptions(this, options)
+        this.delegate.applicationDidFinishLaunchingWithOptions(this, (window as any).__XT_CONTEXT_OPTIONS__ || {})
     }
 
     static sharedApplication(): Application | undefined {

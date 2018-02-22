@@ -14,6 +14,10 @@ export class NavigationBarButtonItem {
 export class NavigationBar extends Window {
 
     static resetNavigationBar?: (navigationBar: NavigationBar, viewController: any) => void = undefined
+
+    static onResetNavigationBar(value: (navigationBar: NavigationBar) => void) {
+        this.resetNavigationBar = value
+    }
     
     constructor(readonly _viewController: any) { super() }
 

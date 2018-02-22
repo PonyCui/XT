@@ -4,6 +4,7 @@ import { Color } from "../../interface/Color";
 import { Rect } from "../../interface/Rect";
 import { TextAlignment } from "../../interface/Label";
 import { KeyboardType } from "../../interface/TextField";
+import { Application } from "../Application";
 
 let measureSpan: HTMLSpanElement = document.createElement("span")
 
@@ -21,9 +22,8 @@ export class TextViewElement extends ViewElement {
         this.inputGroupMask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
         this.inputGroupMask.setAttribute('id', this.objectUUID + ".inputGroup.mask");
         this.inputGroupMask.innerHTML = '';
-        const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
-        if (!defs.contains(this.inputGroupMask)) {
-            defs.appendChild(this.inputGroupMask)
+        if (!Application.sharedApplication()!.defsElement.contains(this.inputGroupMask)) {
+            Application.sharedApplication()!.defsElement.appendChild(this.inputGroupMask)
         }
         this.inputGroup.style.mask = 'url(#' + (this.objectUUID + ".inputGroup.mask") + ')'
         this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");

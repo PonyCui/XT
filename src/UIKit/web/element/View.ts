@@ -2,6 +2,7 @@ import { BaseElement } from './Element'
 import { Rect, RectEqual, Point, RectMake, Size } from '../../interface/Rect';
 import { TransformMatrix, TransformMatrixAlgorithm } from '../../interface/TransformMatrix';
 import { Color } from '../../interface/Color';
+import { Application } from '../Application';
 
 export class ViewElement extends BaseElement {
 
@@ -133,9 +134,8 @@ export class ViewElement extends BaseElement {
             clipPathObject.innerHTML = '';
             clipPathObject.appendChild(this.createMaskPath())
             this.clipPathObject = clipPathObject;
-            const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
-            if (!defs.contains(clipPathObject)) {
-                defs.appendChild(clipPathObject)
+            if (!Application.sharedApplication()!.defsElement.contains(clipPathObject)) {
+                Application.sharedApplication()!.defsElement.appendChild(clipPathObject)
             }
             this.nativeObject.style.clipPath = 'url(#' + (this.objectUUID + ".clipPath") + ')'
         }
@@ -329,9 +329,8 @@ export class ViewElement extends BaseElement {
                 filterObject.appendChild(shadowObject);
             }
             this.filterObject = filterObject;
-            const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
-            if (!defs.contains(filterObject)) {
-                defs.appendChild(filterObject)
+            if (!Application.sharedApplication()!.defsElement.contains(filterObject)) {
+                Application.sharedApplication()!.defsElement.appendChild(filterObject)
             }
             this.nativeObject.style.filter = 'url(#' + (this.objectUUID + ".filter") + ')'
         }
@@ -370,7 +369,7 @@ export class ViewElement extends BaseElement {
     }
 
     public xtr_insertSubviewAtIndexAtIndex(subview: ViewElement, atIndex: number) {
-        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
+        if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         if (atIndex < this.subviews.length) {
             subview.superview = this
             this.containerObject.insertBefore(subview.nativeObject, this.subviews[atIndex].nativeObject)
@@ -401,21 +400,21 @@ export class ViewElement extends BaseElement {
     }
 
     public xtr_addSubview(subview: ViewElement) {
-        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
+        if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         subview.superview = this
         this.containerObject.appendChild(subview.nativeObject)
         this.subviews.push(subview)
     }
 
     public xtr_insertSubviewBelowSiblingSubview(subview: ViewElement, siblingSubview: ViewElement) {
-        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
+        if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         subview.superview = this
         this.subviews.splice(this.subviews.indexOf(siblingSubview), 0, subview);
         this.containerObject.insertBefore(subview.nativeObject, siblingSubview.nativeObject)
     }
 
     public xtr_insertSubviewAboveSiblingSubview(subview: ViewElement, siblingSubview: ViewElement) {
-        if (subview.superview !== undefined) { throw Error("subview has been added to another view.") }
+        if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         if (this.subviews.indexOf(siblingSubview) == this.subviews.length - 1) {
             this.xtr_addSubview(subview);
         }

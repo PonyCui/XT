@@ -4,6 +4,7 @@ import { Font } from "../../interface/Font";
 import { Color } from "../../interface/Color";
 import { TextAlignment } from "../../interface/Label";
 import { TextFieldViewMode, KeyboardType } from "../../interface/TextField";
+import { Application } from "../Application";
 
 let measureSpan: HTMLSpanElement = document.createElement("span")
 
@@ -25,9 +26,8 @@ export class TextFieldElement extends ViewElement {
         this.inputGroupMask.setAttribute('id', this.objectUUID + ".inputGroup.mask");
         this.inputGroupMask.innerHTML = '';
         setTimeout(() => {
-            const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
-            if (!defs.contains(this.inputGroupMask)) {
-                defs.appendChild(this.inputGroupMask)
+            if (!Application.sharedApplication()!.defsElement.contains(this.inputGroupMask)) {
+                Application.sharedApplication()!.defsElement.appendChild(this.inputGroupMask)
             }
         })
         this.inputGroup.style.mask = 'url(#' + (this.objectUUID + ".inputGroup.mask") + ')'

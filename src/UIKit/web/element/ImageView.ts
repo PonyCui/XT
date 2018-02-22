@@ -3,6 +3,7 @@ import { Image } from "../ImageView";
 import { Rect, RectMake } from "../../interface/Rect";
 import { ContentMode, ImageRenderingMode } from "../../interface/ImageView";
 import { Color } from "../../interface/Color";
+import { Application } from "../Application";
 
 export class ImageViewElement extends ViewElement {
 
@@ -93,9 +94,8 @@ export class ImageViewElement extends ViewElement {
             tintColorFilterWrapper.appendChild(tintColorFilter);
             this.tintColorFilterWrapper = tintColorFilterWrapper;
             this.tintColorFilter = tintColorFilter;
-            const defs = document.getElementsByTagNameNS("http://www.w3.org/2000/svg", "defs")[0]
-            if (!defs.contains(tintColorFilterWrapper)) {
-                defs.appendChild(tintColorFilterWrapper)
+            if (!Application.sharedApplication()!.defsElement.contains(tintColorFilterWrapper)) {
+                Application.sharedApplication()!.defsElement.appendChild(tintColorFilterWrapper)
             }
             this.contentObject.style.filter = 'url(#' + (this.objectUUID + ".tintColorFilter") + ')'
         }

@@ -51,7 +51,7 @@ export class NavigationController extends ViewController {
     pushViewController(viewController: ViewController, animated: boolean = true): void {
         if (this.isAnimating) { return; }
         const fromViewController: ViewController | undefined = this.childViewControllers.length > 0 ? this.childViewControllers[this.childViewControllers.length - 1] : undefined
-        const toViewController: ViewController = viewController
+        const toViewController: ViewController = viewController instanceof NavigationController ? viewController.childViewControllers[0] : viewController
         this.addChildViewController(toViewController);
         this.view.addSubview(toViewController.view);
         fromViewController && fromViewController.viewWillDisappear()

@@ -109,7 +109,7 @@ export class ViewController implements Releasable {
     }
 
     addChildViewController(childController: ViewController): void {
-        if (childController.parentViewController !== undefined) { throw Error("ViewController has been added to another ViewController as a child.") }
+        if (childController.parentViewController !== undefined) { childController.removeFromParentViewController() }
         childController.willMoveToParentViewController(this)
         childController._parentViewController = this;
         this._childViewControllers.push(childController);
