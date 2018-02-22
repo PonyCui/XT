@@ -135,6 +135,14 @@ export class ViewController implements Releasable {
         return this.parentViewController ? this.parentViewController.navigationController as any : undefined
     }
 
+    presentViewController(viewController: ViewController, animated: boolean = true): void {
+        throw Error("Not Support.")
+    }
+
+    dismissViewController(animated: boolean = true): void {
+        throw Error("Not Support.")
+    }
+
     keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }
 
     keyboardWillShow(frame: Rect, duration: number): void {

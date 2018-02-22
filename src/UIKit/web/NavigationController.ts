@@ -7,6 +7,20 @@ export class NavigationController extends ViewController {
 
     className = "_XTUINavigationController"
 
+    private _isBody: boolean = false
+
+    public get isBody(): boolean {
+        return this._isBody;
+    }
+
+    public set isBody(value: boolean) {
+        this._isBody = value;
+        if (this.isBody) {
+            document.title = this.childViewControllers[0].title || ""
+            window.location.href = window.location.href.split('#')[0] + "#" + this.childViewControllers[0].vcID;
+        }
+    }
+
     private runAfterAnimated?: () => void = undefined
 
     constructor(rootViewController?: ViewController) {
@@ -26,9 +40,13 @@ export class NavigationController extends ViewController {
 
     setupHashChangeListener() {
         window.addEventListener('hashchange', () => {
+            if (!this.isBody) { return }
+            if (this.childViewControllers[this.childViewControllers.length - 1].vcID === window.location.hash.replace('#', '')) { return }
+            let found = false
             for (let index = 0; index < this.childViewControllers.length - 1; index++) {
                 let element = this.childViewControllers[index];
                 if (element.vcID === window.location.hash.replace('#', '')) {
+                    found = true
                     if (this.isAnimating) {
                         this.runAfterAnimated = () => { this.popToViewController(element, false); this.runAfterAnimated = undefined; }
                     }
@@ -37,6 +55,9 @@ export class NavigationController extends ViewController {
                     }
                     break;
                 }
+            }
+            if (!found) {
+                window.history.back()
             }
         })
     }
@@ -79,8 +100,10 @@ export class NavigationController extends ViewController {
             fromViewController && fromViewController.viewDidDisappear()
             toViewController.viewDidAppear()
         }
-        document.title = viewController.title || ""
-        window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
+        if (this.isBody) {
+            document.title = viewController.title || ""
+            window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
+        }
     }
 
     popViewController(animated: boolean = true): ViewController | undefined {
@@ -113,8 +136,10 @@ export class NavigationController extends ViewController {
             fromViewController.viewDidDisappear()
             toViewController.viewDidAppear()
         }
-        document.title = toViewController.title || ""
-        window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
+        if (this.isBody) {
+            document.title = toViewController.title || ""
+            window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
+        }
     }
 
     popToViewController(viewController: ViewController, animated: boolean = true): ViewController[] {
@@ -154,8 +179,10 @@ export class NavigationController extends ViewController {
                 toViewController.viewDidAppear()
             })
         }
-        document.title = toViewController.title || ""
-        window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
+        if (this.isBody) {
+            document.title = toViewController.title || ""
+            window.location.href = window.location.href.split('#')[0] + "#" + toViewController.vcID;
+        }
         return targetViewControllers
     }
 

@@ -88,6 +88,7 @@ export class WindowElement extends ViewElement {
         this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousedown" : "pointerdown", (e) => {
             if (e.which >= 2) { e.preventDefault(); return; }
             this.mouseClicked = true
+            this.svgObject = svgObject()!
             const windowBounds = this.svgObject.getBoundingClientRect()
             this.scriptObject.handlePointerDown("0", e.timeStamp, { x: e.clientX - windowBounds.left, y: e.clientY - windowBounds.top })
             if (!WindowElement._allowDefault) { e.preventDefault(); }

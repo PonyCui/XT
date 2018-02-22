@@ -23,6 +23,7 @@ export class Context implements Releasable {
         const ctx = new Context()
         const req = new XMLHttpRequest()
         req.addEventListener("loadend", () => {
+            (window as any).__XT_CONTEXT_OPTIONS__ = options || {};
             ctx.eval(req.responseText)
             if (ctx.application &&
                 ctx.application.delegate &&
@@ -58,6 +59,9 @@ export class Context implements Releasable {
     public attachTo(node: HTMLElement | undefined) {
         if (this.application === undefined) { return }
         (node || document.body).appendChild(this.application.rootElement)
+        if ((node === undefined || node === document.body) && this.application.keyWindow) {
+            this.application.keyWindow.isBody = true
+        }
         window.addEventListener("resize", () => {
             this.resize()
         })

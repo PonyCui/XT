@@ -10,6 +10,19 @@ export class Window extends View {
 
     className = "_XTUIWindow"
 
+    private _isBody: boolean = false
+
+    public get isBody(): boolean {
+        return this._isBody;
+    }
+
+    public set isBody(value: boolean) {
+        this._isBody = value;
+        if (this.rootViewController instanceof UI.NavigationController) {
+            (this.rootViewController as any).isBody = value;
+        }
+    }
+
     nativeObject: any;
 
     constructor() {

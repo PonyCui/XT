@@ -179,7 +179,7 @@ export class Button extends View {
             if (textSize) {
                 this.titleLabel.frame = {
                     x: (this.bounds.width - textSize.width) / 2,
-                    y: (this.bounds.height - textSize.height) / 2 + 2,
+                    y: (this.bounds.height - textSize.height) / 2,
                     width: textSize.width,
                     height: textSize.height
                 }; 
