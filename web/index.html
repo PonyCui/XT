@@ -19,15 +19,6 @@
 <script src="/dist/Foundation/xt.foundation.web.min.js?nocache"></script>
 <script src="/dist/UIKit/xt.uikit.web.min.js?nocache"></script>
 
-<!-- XT Debugger Support Library -->
-
-<script>
-    if (typeof Worker !== "undefined") {
-        XT.Debug.worker = new Worker('/dist/Core/xt.debugWorker.web.min.js')
-        XT.Debug.connect()
-    }
-</script>
-
 <!-- Sample -->
 <script>
     UI.Context.bundleURL = "/dist/Sample/"

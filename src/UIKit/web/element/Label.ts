@@ -47,9 +47,7 @@ export class LabelElement extends ViewElement {
 
     public xtr_setText(value: string) {
         this.text = value;
-        setImmediate(() => {
-            this.spanObject.innerText = this.text;
-        })
+        this.spanObject.innerText = this.text;
     }
 
     private font: Font = Font.systemFontOfSize(14.0)
