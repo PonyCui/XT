@@ -17,6 +17,7 @@ import { SpringAnimationSample } from "./springanimation";
 import { WebViewSample } from "./webview";
 import { FoundationList } from "../foundation/list";
 import { CoreList } from "../core/list";
+import { CanvasSample } from "./canvas";
 
 class Header extends UI.ListCell {
 
@@ -318,6 +319,16 @@ export class List extends UI.ViewController {
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new ImageViewSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "CanvasView",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new CanvasSample())
                     }
                 },
             },

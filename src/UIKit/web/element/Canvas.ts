@@ -1,114 +1,119 @@
 import { ViewElement } from "./View";
 import { Rect } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
+import { TransformMatrix } from "../../interface/TransformMatrix";
+
+class State {
+
+    globalAlpha = 1.0
+    fillStyle: Color = new Color(0, 0, 0, 0)
+    strokeStyle: Color = new Color(0, 0, 0, 0)
+    lineCap: string = "butt"
+    lineJoin: string = "miter"
+    lineWidth: number = 1.0
+    miterLimit: number = 0.0
+    currentTransform: TransformMatrix = new TransformMatrix()
+
+    copy() {
+        const state: any = new State()
+        for (const key in this) {
+            if (this.hasOwnProperty(key)) {
+                state[key] = this[key]
+            }
+        }
+        return state
+    }
+
+}
 
 export class CanvasElement extends ViewElement {
 
-    private foreignObject: SVGForeignObjectElement
+    private stateStack: State[] = [new State()]
+
+    private get currentState(): State {
+        return this.stateStack[this.stateStack.length - 1]
+    }
+
+    private canvasElement: SVGGElement
     private canvasObject: HTMLCanvasElement
     private ctx: CanvasRenderingContext2D
     private actions: (() => void)[] = []
 
     loadContent() {
         super.loadContent();
-        this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+        this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        this.canvasElement = this.contentObject as SVGGElement
         this.canvasObject = document.createElement("canvas");
         this.ctx = this.canvasObject.getContext('2d') as CanvasRenderingContext2D
-        this.ctx.save();
-        this.foreignObject.appendChild(this.canvasObject);
-        this.contentObject = this.foreignObject;
-    }
-
-    public xtr_setFrame(value: Rect) {
-        super.xtr_setFrame(value);
-        this.foreignObject.setAttribute("width", value.width.toString())
-        this.foreignObject.setAttribute("height", value.height.toString())
-        this.canvasObject.setAttribute("width", value.width.toString())
-        this.canvasObject.setAttribute("height", value.height.toString())
-        this.actions && this.actions.forEach(action => action())
     }
 
     public xtr_globalAlpha(): number {
-        return this.ctx.globalAlpha || 1.0
+        return this.currentState.globalAlpha
     }
 
     public xtr_setGlobalAlpha(value: number) {
-        this.doAction(() => {
-            this.ctx.globalAlpha = value
-        })
+        this.currentState.globalAlpha = value
     }
 
-    private fillStyle: Color = Color.clearColor;
-
     public xtr_fillStyle(): Color {
-        return this.fillStyle
+        return this.currentState.fillStyle
     }
 
     public xtr_setFillStyle(value: Color) {
-        this.fillStyle = value
-        this.doAction(() => {
-            this.ctx.fillStyle = 'rgba(' + (value.r * 255).toFixed(0) + ', ' + (value.g * 255).toFixed(0) + ', ' + (value.b * 255).toFixed(0) + ', ' + value.a.toString() + ')'
-        })
+        this.currentState.fillStyle = value
     }
 
-    private strokeStyle: Color = Color.clearColor;
-
     public xtr_strokeStyle(): Color {
-        return this.strokeStyle
+        return this.currentState.strokeStyle
     }
 
     public xtr_setStrokeStyle(value: Color) {
-        this.strokeStyle = value;
-        this.doAction(() => {
-            this.ctx.strokeStyle = 'rgba(' + (value.r * 255).toFixed(0) + ', ' + (value.g * 255).toFixed(0) + ', ' + (value.b * 255).toFixed(0) + ', ' + value.a.toString() + ')'
-        })
+        this.currentState.strokeStyle = value;
     }
 
     public xtr_lineCap(): string {
-        return this.ctx.lineCap || "butt"
+        return this.currentState.lineCap
     }
 
     public xtr_setLineCap(value: string) {
-        this.doAction(() => {
-            this.ctx.lineCap = value
-        })
+        this.currentState.lineCap = value
     }
 
     public xtr_lineJoin(): string {
-        return this.ctx.lineJoin || "miter"
+        return this.currentState.lineJoin
     }
 
     public xtr_setLineJoin(value: string) {
-        this.doAction(() => {
-            this.ctx.lineJoin = value
-        })
+        this.currentState.lineJoin = value
     }
 
     public xtr_lineWidth(): number {
-        return this.ctx.lineWidth || 1
+        return this.currentState.lineWidth
     }
 
     public xtr_setLineWidth(value: number) {
-        this.doAction(() => {
-            this.ctx.lineWidth = value
-        })
+        this.currentState.lineWidth = value
     }
 
     public xtr_miterLimit(): number {
-        return this.ctx.miterLimit || 10
+        return this.currentState.miterLimit
     }
 
     public xtr_setMiterLimit(value: number) {
-        this.doAction(() => {
-            this.ctx.miterLimit = value
-        })
+        this.currentState.miterLimit = value
     }
 
+    private currentElement?: Element = undefined
+
     public xtr_rect(rect: { x: number, y: number, width: number, height: number }): void {
-        this.doAction(() => {
-            this.ctx.beginPath();
-            this.ctx.rect(rect.x, rect.y, rect.width, rect.height)
-        })
+        this.currentElement = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        this.currentElement.setAttribute("fill", 'transparent')
+        this.currentElement.setAttribute("x", rect.x.toString())
+        this.currentElement.setAttribute("y", rect.y.toString())
+        this.currentElement.setAttribute("width", rect.width.toString())
+        this.currentElement.setAttribute("height", rect.height.toString())
+        this.currentElement.setAttribute("opacity", this.currentState.globalAlpha.toString())
+        this.canvasElement.appendChild(this.currentElement)
     }
 
     public xtr_fillRect(rect: { x: number, y: number, width: number, height: number }): void {
@@ -122,116 +127,82 @@ export class CanvasElement extends ViewElement {
     }
 
     public xtr_fill() {
-        this.doAction(() => {
-            this.ctx.fill();
-        })
+        if (this.currentElement) {
+            this.currentElement.setAttribute("fill", 'rgba(' + (this.currentState.fillStyle.r * 255).toFixed(0) + ', ' + (this.currentState.fillStyle.g * 255).toFixed(0) + ', ' + (this.currentState.fillStyle.b * 255).toFixed(0) + ', ' + this.currentState.fillStyle.a.toString() + ')')
+        }
     }
 
     public xtr_stroke() {
-        this.doAction(() => {
-            this.ctx.stroke();
-        })
+        if (this.currentElement) {
+            this.currentElement.setAttribute("stroke", 'rgba(' + (this.currentState.strokeStyle.r * 255).toFixed(0) + ', ' + (this.currentState.strokeStyle.g * 255).toFixed(0) + ', ' + (this.currentState.strokeStyle.b * 255).toFixed(0) + ', ' + this.currentState.strokeStyle.a.toString() + ')')
+            this.currentElement.setAttribute("stroke-width", this.currentState.lineWidth.toString())
+            this.currentElement.setAttribute("stroke-linecap", this.currentState.lineCap)
+            this.currentElement.setAttribute("stroke-linejoin", this.currentState.lineJoin)
+        }
     }
 
     public xtr_beginPath(): void {
-        this.doAction(() => {
-            this.ctx.beginPath()
-        })
+        this.ctx.beginPath()
     }
 
     public xtr_moveTo(point: { x: number, y: number }): void {
-        this.doAction(() => {
-            this.ctx.moveTo(point.x, point.y);
-        })
+        this.ctx.moveTo(point.x, point.y);
     }
 
     public xtr_closePath(): void {
-        this.doAction(() => {
-            this.ctx.closePath()
-        })
+        this.ctx.closePath()
     }
 
     public xtr_lineTo(point: { x: number, y: number }): void {
-        this.doAction(() => {
-            this.ctx.lineTo(point.x, point.y)
-        })
+        this.ctx.lineTo(point.x, point.y)
     }
 
     public xtr_quadraticCurveTo(cpPoint: { x: number, y: number }, point: { x: number, y: number }): void {
-        this.doAction(() => {
-            this.ctx.quadraticCurveTo(cpPoint.x, cpPoint.y, point.x, point.y)
-        })
+        this.ctx.quadraticCurveTo(cpPoint.x, cpPoint.y, point.x, point.y)
     }
 
-    public xtr_bezierCurveTo(cp1Point: { x: number, y: number }, cp2Point: {x: number, y: number}, point: {x: number, y: number}): void {
-        this.doAction(() => {
-            this.ctx.bezierCurveTo(cp1Point.x, cp1Point.y, cp2Point.x, cp2Point.y, point.x, point.y)
-        })
+    public xtr_bezierCurveTo(cp1Point: { x: number, y: number }, cp2Point: { x: number, y: number }, point: { x: number, y: number }): void {
+        this.ctx.bezierCurveTo(cp1Point.x, cp1Point.y, cp2Point.x, cp2Point.y, point.x, point.y)
     }
 
-    public xtr_arc(point: {x: number, y: number}, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
-        this.doAction(() => {
-            this.ctx.arc(point.x, point.y, r, sAngle, eAngle, counterclockwise)
-        })
+    public xtr_arc(point: { x: number, y: number }, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
+        this.ctx.arc(point.x, point.y, r, sAngle, eAngle, counterclockwise)
     }
 
-    public xtr_postScale(point: {x: number, y: number}): void {
-        this.doAction(() => {
-            this.ctx.scale(point.x, point.y)
-        })
+    public xtr_postScale(point: { x: number, y: number }): void {
+        
     }
 
     public xtr_postRotate(angle: number) {
-        this.doAction(() => {
-            this.ctx.rotate(angle)
-        })
+       
     }
 
-    public xtr_postTranslate(point: {x: number, y: number}): void {
-        this.doAction(() => {
-            this.ctx.translate(point.x, point.y)
-        })
+    public xtr_postTranslate(point: { x: number, y: number }): void {
+        
     }
 
-    public xtr_postTransform(t: {a: number, b: number, c: number, d: number, tx: number, ty: number}): void {
-        this.doAction(() => {
-            this.ctx.transform(t.a, t.b, t.c, t.d, t.tx, t.ty)
-        })
+    public xtr_postTransform(t: { a: number, b: number, c: number, d: number, tx: number, ty: number }): void {
+       
     }
 
-    public xtr_setCanvasTransform(t: {a: number, b: number, c: number, d: number, tx: number, ty: number}): void {
-        this.doAction(() => {
-            this.ctx.setTransform(t.a, t.b, t.c, t.d, t.tx, t.ty)
-        })
+    public xtr_setCanvasTransform(t: { a: number, b: number, c: number, d: number, tx: number, ty: number }): void {
+        
     }
 
     public xtr_save(): void {
-        this.doAction(() => {
-            this.ctx.save()
-        })
+        this.stateStack.push(this.currentState.copy())
     }
 
     public xtr_restore(): void {
-        this.doAction(() => {
-            this.ctx.restore()
-        })
+        this.stateStack.pop()
     }
 
-    public xtr_isPointInPath(point: {x: number, y: number}): boolean {
+    public xtr_isPointInPath(point: { x: number, y: number }): boolean {
         return this.ctx.isPointInPath(point.x, point.y)
     }
 
     public xtr_clear(): void {
-        this.ctx.restore()
-        this.ctx.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
-        this.actions = [];
-        this.ctx.clearRect(0, 0, this.xtr_frame().width, this.xtr_frame().height)
-        this.ctx.save();
-    }
-
-    private doAction(action: () => void) {
-        this.actions.push(action);
-        action();
+        
     }
 
 }
