@@ -76,15 +76,58 @@ export class Button extends View {
         _XTUIButton.xtr_setInsetObjectRef(value, this.objectRef);
     }
 
-    onHighlighted?: (highligted: boolean) => void
-    onTouchUpInside?: () => void
+    handleTouchDown() {
+        this.onTouchDown && this.onTouchDown();
+    }
+
+    public onTouchDown?: () => void
+
+    handleTouchDragInside() {
+        this.onTouchDragInside && this.onTouchDragInside();
+    }
+
+    public onTouchDragInside?: () => void
+
+    handleTouchDragOutside() {
+        this.onTouchDragOutside && this.onTouchDragOutside();
+    }
+
+    public onTouchDragOutside?: () => void
+
+    handleTouchDragEnter() {
+        this.onTouchDragEnter && this.onTouchDragEnter();
+    }
+
+    public onTouchDragEnter?: () => void
+
+    handleTouchDragExit() {
+        this.onTouchDragExit && this.onTouchDragExit();
+    }
+
+    public onTouchDragExit?: () => void
 
     handleTouchUpInside() {
         this.onTouchUpInside && this.onTouchUpInside();
     }
 
+    public onTouchUpInside?: () => void;
+
+    handleTouchUpOutside() {
+        this.onTouchUpOutside && this.onTouchUpOutside();
+    }
+
+    public onTouchUpOutside?: () => void
+
+    handleTouchCancel() {
+        this.onTouchCancel && this.onTouchCancel();
+    }
+
+    public onTouchCancel?: () => void
+
     handleHighlighted(highligted: boolean) {
         this.onHighlighted && this.onHighlighted(highligted);
     }
+
+    public onHighlighted?: (highligted: boolean) => void
 
 }

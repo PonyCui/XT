@@ -20,7 +20,7 @@ export class Button extends View {
 
     toObject(): any {
         return {
-            ...super.toObject(), 
+            ...super.toObject(),
             class: "UI.Button",
             title: this.title,
             font: this.font,
@@ -40,17 +40,26 @@ export class Button extends View {
         this.onLongPress = (state, viewLocation) => {
             if (state == InteractionState.Began) {
                 this.handleHighlighted(true)
+                this.handleTouchDown()
             }
             else if (state == InteractionState.Changed) {
                 const loc = viewLocation()
                 const highlighted = !(loc.x < -44 || loc.x > this.bounds.width + 44 || loc.y < -44 || loc.y > this.bounds.height + 44)
                 if (this.highlighted !== highlighted) {
                     this.handleHighlighted(highlighted);
+                    highlighted ? this.handleTouchDragEnter() : this.handleTouchDragExit()
                 }
+                highlighted ? this.handleTouchDragInside() : this.handleTouchDragOutside()
             }
             else if (state == InteractionState.Ended || state == InteractionState.Cancelled) {
                 if (state == InteractionState.Ended && this.highlighted) {
                     this.handleTouchUpInside();
+                }
+                else if (state == InteractionState.Ended) {
+                    this.handleTouchUpOutside()
+                }
+                else {
+                    this.handleTouchCancel()
                 }
                 this.handleHighlighted(false)
             }
@@ -111,15 +120,57 @@ export class Button extends View {
     }
 
     highlighted: boolean = false
-    onHighlighted?: (highligted: boolean) => void
-    onTouchUpInside?: () => void
+
+    handleTouchDown() {
+        this.onTouchDown && this.onTouchDown();
+    }
+
+    public onTouchDown?: () => void
+
+    handleTouchDragInside() {
+        this.onTouchDragInside && this.onTouchDragInside();
+    }
+
+    public onTouchDragInside?: () => void
+
+    handleTouchDragOutside() {
+        this.onTouchDragOutside && this.onTouchDragOutside();
+    }
+
+    public onTouchDragOutside?: () => void
+
+    handleTouchDragEnter() {
+        this.onTouchDragEnter && this.onTouchDragEnter();
+    }
+
+    public onTouchDragEnter?: () => void
+
+    handleTouchDragExit() {
+        this.onTouchDragExit && this.onTouchDragExit();
+    }
+
+    public onTouchDragExit?: () => void
 
     handleTouchUpInside() {
         this.onTouchUpInside && this.onTouchUpInside();
     }
 
+    public onTouchUpInside?: () => void;
+
+    handleTouchUpOutside() {
+        this.onTouchUpOutside && this.onTouchUpOutside();
+    }
+
+    public onTouchUpOutside?: () => void
+
+    handleTouchCancel() {
+        this.onTouchCancel && this.onTouchCancel();
+    }
+
+    public onTouchCancel?: () => void
+
     handleHighlighted(highligted: boolean) {
-        this.highlighted = highligted        
+        this.highlighted = highligted
         if (this.onHighlighted) {
             this.onHighlighted && this.onHighlighted(highligted);
         }
@@ -130,5 +181,7 @@ export class Button extends View {
             })
         }
     }
+
+    public onHighlighted?: (highligted: boolean) => void
 
 }
