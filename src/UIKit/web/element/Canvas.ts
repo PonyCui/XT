@@ -2,6 +2,7 @@ import { ViewElement } from "./View";
 import { Rect } from "../../interface/Rect";
 import { Color } from "../../interface/Color";
 import { TransformMatrix } from "../../interface/TransformMatrix";
+const d3 = require('d3-path')
 
 class State {
 
@@ -106,13 +107,13 @@ export class CanvasElement extends ViewElement {
     private currentElement?: Element = undefined
 
     public xtr_rect(rect: { x: number, y: number, width: number, height: number }): void {
+        this.ctx.rect(rect.x, rect.y, rect.width, rect.height)
         this.currentElement = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this.currentElement.setAttribute("fill", 'transparent')
         this.currentElement.setAttribute("x", rect.x.toString())
         this.currentElement.setAttribute("y", rect.y.toString())
         this.currentElement.setAttribute("width", rect.width.toString())
         this.currentElement.setAttribute("height", rect.height.toString())
-        this.currentElement.setAttribute("opacity", this.currentState.globalAlpha.toString())
         this.canvasElement.appendChild(this.currentElement)
     }
 
@@ -128,65 +129,95 @@ export class CanvasElement extends ViewElement {
 
     public xtr_fill() {
         if (this.currentElement) {
+            this.currentElement.setAttribute("opacity", this.currentState.globalAlpha.toString())
             this.currentElement.setAttribute("fill", 'rgba(' + (this.currentState.fillStyle.r * 255).toFixed(0) + ', ' + (this.currentState.fillStyle.g * 255).toFixed(0) + ', ' + (this.currentState.fillStyle.b * 255).toFixed(0) + ', ' + this.currentState.fillStyle.a.toString() + ')')
+            this.currentElement.setAttribute("transform", 'matrix(' + this.currentState.currentTransform.a + ',' + this.currentState.currentTransform.b + ',' + this.currentState.currentTransform.c + ',' + this.currentState.currentTransform.d + ',' + this.currentState.currentTransform.tx + ',' + this.currentState.currentTransform.ty + ')');
         }
     }
 
     public xtr_stroke() {
         if (this.currentElement) {
+            this.currentElement.setAttribute("opacity", this.currentState.globalAlpha.toString())
             this.currentElement.setAttribute("stroke", 'rgba(' + (this.currentState.strokeStyle.r * 255).toFixed(0) + ', ' + (this.currentState.strokeStyle.g * 255).toFixed(0) + ', ' + (this.currentState.strokeStyle.b * 255).toFixed(0) + ', ' + this.currentState.strokeStyle.a.toString() + ')')
             this.currentElement.setAttribute("stroke-width", this.currentState.lineWidth.toString())
             this.currentElement.setAttribute("stroke-linecap", this.currentState.lineCap)
             this.currentElement.setAttribute("stroke-linejoin", this.currentState.lineJoin)
+            this.currentElement.setAttribute("stroke-miterlimit", this.currentState.miterLimit.toString())
+            this.currentElement.setAttribute("transform", 'matrix(' + this.currentState.currentTransform.a + ',' + this.currentState.currentTransform.b + ',' + this.currentState.currentTransform.c + ',' + this.currentState.currentTransform.d + ',' + this.currentState.currentTransform.tx + ',' + this.currentState.currentTransform.ty + ')');
+        }
+    }
+
+    private d3Path = d3.path()
+
+    private updatePath() {
+        if (this.currentElement) {
+            this.currentElement.setAttribute('d', this.d3Path.toString())
         }
     }
 
     public xtr_beginPath(): void {
+        this.currentElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this.currentElement.setAttribute("fill", 'transparent')
+        this.canvasElement.appendChild(this.currentElement)
         this.ctx.beginPath()
+        this.d3Path = d3.path()
     }
 
     public xtr_moveTo(point: { x: number, y: number }): void {
         this.ctx.moveTo(point.x, point.y);
+        this.d3Path.moveTo(point.x, point.y);
+        this.updatePath()
     }
 
     public xtr_closePath(): void {
         this.ctx.closePath()
+        this.d3Path.closePath();
+        this.updatePath()
     }
 
     public xtr_lineTo(point: { x: number, y: number }): void {
         this.ctx.lineTo(point.x, point.y)
+        this.d3Path.lineTo(point.x, point.y);
+        this.updatePath()
     }
 
     public xtr_quadraticCurveTo(cpPoint: { x: number, y: number }, point: { x: number, y: number }): void {
         this.ctx.quadraticCurveTo(cpPoint.x, cpPoint.y, point.x, point.y)
+        this.d3Path.quadraticCurveTo(cpPoint.x, cpPoint.y, point.x, point.y);
+        this.updatePath()
     }
 
     public xtr_bezierCurveTo(cp1Point: { x: number, y: number }, cp2Point: { x: number, y: number }, point: { x: number, y: number }): void {
         this.ctx.bezierCurveTo(cp1Point.x, cp1Point.y, cp2Point.x, cp2Point.y, point.x, point.y)
+        this.d3Path.bezierCurveTo(cp1Point.x, cp1Point.y, cp2Point.x, cp2Point.y, point.x, point.y);
+        this.updatePath()
     }
 
     public xtr_arc(point: { x: number, y: number }, r: number, sAngle: number, eAngle: number, counterclockwise: boolean = false): void {
         this.ctx.arc(point.x, point.y, r, sAngle, eAngle, counterclockwise)
+        this.d3Path.moveTo(point.x + r, point.y)
+        this.d3Path.arc(point.x, point.y, r, sAngle, eAngle, counterclockwise);
+        this.updatePath()
     }
 
     public xtr_postScale(point: { x: number, y: number }): void {
-        
+        this.currentState.currentTransform = this.currentState.currentTransform.postScale(point.x, point.y)
     }
 
     public xtr_postRotate(angle: number) {
-       
+        this.currentState.currentTransform = this.currentState.currentTransform.postRotate(angle)
     }
 
     public xtr_postTranslate(point: { x: number, y: number }): void {
-        
+        this.currentState.currentTransform = this.currentState.currentTransform.postTranslate(point.x, point.y)
     }
 
     public xtr_postTransform(t: { a: number, b: number, c: number, d: number, tx: number, ty: number }): void {
-       
+        this.currentState.currentTransform = this.currentState.currentTransform.concat(new TransformMatrix(t.a, t.b, t.c, t.d, t.tx, t.ty))
     }
 
     public xtr_setCanvasTransform(t: { a: number, b: number, c: number, d: number, tx: number, ty: number }): void {
-        
+        this.currentState.currentTransform = new TransformMatrix(t.a, t.b, t.c, t.d, t.tx, t.ty)
     }
 
     public xtr_save(): void {
@@ -202,7 +233,7 @@ export class CanvasElement extends ViewElement {
     }
 
     public xtr_clear(): void {
-        
+        this.canvasElement.innerHTML = ""
     }
 
 }
