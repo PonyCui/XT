@@ -285,7 +285,9 @@
 + (void)xtr_arc:(JSValue *)point r:(CGFloat)r sAngle:(CGFloat)sAngle eAngle:(CGFloat)eAngle counterclockwise:(BOOL)counterclockwise objectRef:(NSString *)objectRef {
     XTUICanvasView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUICanvasView class]]) {
-        [view.currentPath addArcWithCenter:[point toPoint]
+        CGPoint center = [point toPoint];
+        [view.currentPath moveToPoint:CGPointMake(center.x + r, center.y)];
+        [view.currentPath addArcWithCenter:center
                                     radius:r
                                 startAngle:sAngle
                                   endAngle:eAngle
@@ -338,11 +340,8 @@
 + (void)xtr_setCanvasTransform:(JSValue *)transform objectRef:(NSString *)objectRef {
     XTUICanvasView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUICanvasView class]]) {
+        view.currentState.currentTransform = [transform toTransform];
     }
-}
-
-- (void)xtr_setCanvasTransform:(JSValue *)transform {
-    self.currentState.currentTransform = [transform toTransform];
 }
 
 + (void)xtr_save:(NSString *)objectRef {

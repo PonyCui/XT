@@ -40,7 +40,7 @@ export class CanvasSample extends UI.ViewController {
         this.addTransformTest()
         this.addSetTransformTest()
         this.addSaveTest()
-        this.contentView.contentSize = UI.SizeMake(0, 6000)
+        this.contentView.contentSize = UI.SizeMake(0, 280 * 18)
     }
 
     addFillStyleTest() {
