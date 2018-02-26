@@ -131,12 +131,39 @@
             }
         }
     }
-    return 0.0;
+    return 0.1;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section < self.items.count) {
         NSString *objectRef = self.items[section][@"__headerViewObjectRef"];
+        if ([objectRef isKindOfClass:[NSString class]]) {
+            UIView *view = [XTMemoryManager find:objectRef];
+            if ([view isKindOfClass:[UIView class]]) {
+                return view;
+            }
+        }
+    }
+    return nil;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section < self.items.count) {
+        NSString *objectRef = self.items[section][@"__footerViewObjectRef"];
+        if ([objectRef isKindOfClass:[NSString class]]) {
+            UIView *view = [XTMemoryManager find:objectRef];
+            if ([view isKindOfClass:[UIView class]]) {
+                return view.frame.size.height;
+            }
+        }
+    }
+    return 0.1;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (section < self.items.count) {
+        NSString *objectRef = self.items[section][@"__footerViewObjectRef"];
         if ([objectRef isKindOfClass:[NSString class]]) {
             UIView *view = [XTMemoryManager find:objectRef];
             if ([view isKindOfClass:[UIView class]]) {
