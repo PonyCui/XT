@@ -39,12 +39,13 @@ export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
 export const LayoutConstraint = MLayoutConstraint
 
-import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView, ListEntity as IListEntity } from '../interface/ListView'
-import { ListCell as MListCell, ListView as MListView } from './ListView'
+import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView, ListEntity as IListEntity, ListSection as IListSection } from '../interface/ListView'
+import { ListCell as MListCell, ListView as MListView, ListSection as MListSection } from './ListView'
 export const ListSelectionStyle = IListSelectionStyle
 export const ListEntity = IListEntity
 export const ListCell = MListCell
 export const ListView = MListView
+export const ListSection = MListSection
 
 import { PointMake as IPointMake, PointEqual as IPointEqual, PointZero as IPointZero, SizeMake as ISizeMake, SizeEqual as ISizeEqual, SizeZero as ISizeZero, RectMake as IRectMake, RectZero as IRectZero, RectEqual as IRectEqual, RectInside as IRectInside, InsetsMake as IInsetsMake } from '../interface/Rect'
 export const PointMake = IPointMake
@@ -57,6 +58,7 @@ export const RectMake = IRectMake
 export const RectZero = IRectZero
 export const RectEqual = IRectEqual
 export const RectInside = IRectInside
+export const InsetsMake = IInsetsMake
 
 import { Screen as IScreen } from '../interface/Screen'
 import { Screen as MScreen } from './Screen'

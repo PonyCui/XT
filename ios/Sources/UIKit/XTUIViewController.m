@@ -59,6 +59,7 @@
     if (self) {
         _originalStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
         _navigationBarHidden = YES;
+        self.automaticallyAdjustsScrollViewInsets = NO;
         [self setupKeyboardNotifications];
     }
     return self;

@@ -74,6 +74,9 @@
     self = [super initWithFrame:frame style:UITableViewStyleGrouped];
     if (self) {
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        UIView *headerView = [UIView new];
+        headerView.frame = CGRectMake(0, 0, 0, 0.01);
+        self.tableHeaderView = headerView;
         self.tableFooterView = [UIView new];
         self.retainViews = [NSMutableSet set];
     }
