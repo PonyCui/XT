@@ -19,7 +19,7 @@ import { FoundationList } from "../foundation/list";
 import { CoreList } from "../core/list";
 import { CanvasSample } from "./canvas";
 
-class Header extends UI.ListCell {
+class ListHeader extends UI.View {
 
     logoImageView = new UI.ImageView()
     textLabel = new UI.Label()
@@ -28,6 +28,7 @@ class Header extends UI.ListCell {
         super()
         this.setupLogoImageView()
         this.setupLabel();
+        this.frame = UI.RectMake(0, 0, 0, 160)
     }
 
     setupLogoImageView() {
@@ -51,24 +52,20 @@ class Header extends UI.ListCell {
 
 }
 
-class SectionHeader extends UI.ListCell {
+class SectionHeader extends UI.View {
 
     content = new UI.View()
     titleLabel = new UI.Label()
 
-    constructor() {
+    constructor(title: string) {
         super()
         this.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.content.backgroundColor = UI.Color.whiteColor
         this.addSubview(this.content)
         this.titleLabel.font = UI.Font.boldSystemFontOfSize(14)
+        this.titleLabel.text = title
         this.content.addSubview(this.titleLabel)
-    }
-
-    didRender() {
-        if (this.currentItem) {
-            this.titleLabel.text = this.currentItem.name
-        }
+        this.frame = UI.RectMake(0, 0, 0, 52)
     }
 
     layoutSubviews() {
@@ -80,35 +77,33 @@ class SectionHeader extends UI.ListCell {
 
 class Cell extends UI.ListCell {
 
-    content = new UI.View()
+    innerContentView = new UI.View()
     titleLabel = new UI.Label()
-    bottomLine = new UI.HRView()
 
     constructor() {
         super()
         this.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.content.backgroundColor = UI.Color.whiteColor
-        this.addSubview(this.content)
+        this.selectionStyle = UI.ListSelectionStyle.None
+        this.bottomLineInsets = UI.InsetsMake(0, 25, 0, 25)
+        this.innerContentView.backgroundColor = UI.Color.whiteColor
+        this.contentView.addSubview(this.innerContentView)
         this.titleLabel.textColor = UI.Color.grayColor
         this.titleLabel.font = UI.Font.systemFontOfSize(13)
-        this.content.addSubview(this.titleLabel)
-        this.bottomLine.color = new UI.Color(0xda / 0xff, 0xda / 0xff, 0xda / 0xff)
-        this.content.addSubview(this.bottomLine)
+        this.innerContentView.addSubview(this.titleLabel)
     }
 
     didHighlighted(value: boolean) {
         if (value) {
-            this.content.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+            this.innerContentView.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         }
         else {
-            this.content.backgroundColor = UI.Color.whiteColor
+            this.innerContentView.backgroundColor = UI.Color.whiteColor
         }
     }
 
     didRender() {
         if (this.currentItem) {
             this.titleLabel.text = this.currentItem.name
-            this.bottomLine.hidden = this.currentItem.isSectionLast === true
         }
     }
 
@@ -119,14 +114,14 @@ class Cell extends UI.ListCell {
     }
 
     layoutSubviews() {
-        this.content.frame = UI.RectMake(15, 0, this.bounds.width - 30, 44)
-        this.titleLabel.frame = { ...this.content.bounds, x: 15 }
-        this.bottomLine.frame = UI.RectMake(15, this.bounds.height - 1, this.content.bounds.width - 30, 1)
+        super.layoutSubviews()
+        this.innerContentView.frame = UI.RectMake(15, 0, this.bounds.width - 30, 44)
+        this.titleLabel.frame = { ...this.innerContentView.bounds, x: 15 }
     }
 
 }
 
-class Footer extends UI.ListCell {
+class ListFooter extends UI.View {
 
     titleLabel = new UI.Label()
 
@@ -138,6 +133,7 @@ class Footer extends UI.ListCell {
         this.titleLabel.numberOfLines = 1
         this.titleLabel.text = "UED Opensource"
         this.addSubview(this.titleLabel)
+        this.frame = UI.RectMake(0, 0, 0, 66)
     }
 
     layoutSubviews() {
@@ -196,10 +192,9 @@ export class List extends UI.ViewController {
 
     setupListView() {
         this.listView.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.listView.register(Header, "Header", this)
-        this.listView.register(SectionHeader, "SectionHeader", this)
+        this.listView.listHeaderView = new ListHeader()
+        this.listView.listFooterView = new ListFooter()
         this.listView.register(Cell, "Cell", this)
-        this.listView.register(Footer, "Footer", this)
         this.view.addSubview(this.listView)
     }
 
@@ -216,271 +211,280 @@ export class List extends UI.ViewController {
 
     loadData() {
         this.listView.items = [
-            {
-                reuseIdentifier: "Header",
-                rowHeight: () => 160,
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "Frameworks",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Core",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new CoreList())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Foundation",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new FoundationList())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "上下文",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Create UI Context",
-                action: () => {
-                    UI.Context.startWithNamed('sample.min.js', undefined, (rootViewController) => {
-                        // this.presentViewController(rootViewController)
-                        // setTimeout(() => {
-                        //     rootViewController.dismissViewController()
-                        // }, 3000)
-                        if (this.navigationController) {
-                            this.navigationController.pushViewController(rootViewController)
-                        }
-                    }).retain(this)
-                    // UI.Context.startWithURL('http://xt-studio.com/samples/RedView.js', undefined, (rootViewController) => {
-                    //     if (this.navigationController) {
-                    //         this.navigationController.pushViewController(rootViewController)
-                    //     }
-                    // }, () => {}).retain(this)
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "视图容器",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "View",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new ViewSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "ScrollView",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new ScrollViewSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "ListView",
-                isSectionLast: true,
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new ListViewSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "内容组件",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "ImageView",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new ImageViewSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "CanvasView",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new CanvasSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Label",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new LabelSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "TextView",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new TextViewSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "WebView",
-                isSectionLast: true,
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new WebViewSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "交互组件",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Button & Switch & Slider & ActivityIndicator",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new ButtonSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "TextField",
-                isSectionLast: true,
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new TextFieldSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "手势",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Tap & Double Tap",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new TapSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "LongPress",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new LongPressSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Pan",
-                isSectionLast: true,
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new PanSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "布局",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "FrameLayout",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new FrameLayoutSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "AutoLayout",
-                isSectionLast: true,
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new AutoLayoutSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "SectionHeader",
-                rowHeight: () => 52,
-                name: "动画",
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Linear Animation",
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new LinearAnimationSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "Spring Animation",
-                isSectionLast: true,
-                action: () => {
-                    if (this.navigationController) {
-                        this.navigationController.pushViewController(new SpringAnimationSample())
-                    }
-                },
-            },
-            {
-                reuseIdentifier: "Footer",
-                rowHeight: () => 66,
-            },
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("Frameworks")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Core",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new CoreList())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Foundation",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new FoundationList())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("上下文")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Create UI Context",
+                        action: () => {
+                            UI.Context.startWithNamed('sample.min.js', undefined, (rootViewController) => {
+                                // this.presentViewController(rootViewController)
+                                // setTimeout(() => {
+                                //     rootViewController.dismissViewController()
+                                // }, 3000)
+                                if (this.navigationController) {
+                                    this.navigationController.pushViewController(rootViewController)
+                                }
+                            }).retain(this)
+                            // UI.Context.startWithURL('http://xt-studio.com/samples/RedView.js', undefined, (rootViewController) => {
+                            //     if (this.navigationController) {
+                            //         this.navigationController.pushViewController(rootViewController)
+                            //     }
+                            // }, () => {}).retain(this)
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("视图容器")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "View",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new ViewSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "ScrollView",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new ScrollViewSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "ListView",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new ListViewSample())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("内容组件")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "ImageView",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new ImageViewSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "CanvasView",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new CanvasSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Label",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new LabelSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "TextView",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new TextViewSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "WebView",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new WebViewSample())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("交互组件")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Button & Switch & Slider & ActivityIndicator",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new ButtonSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "TextField",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new TextFieldSample())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("手势")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Tap & Double Tap",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new TapSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "LongPress",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new LongPressSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Pan",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new PanSample())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("布局")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "FrameLayout",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new FrameLayoutSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "AutoLayout",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new AutoLayoutSample())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
+            (() => {
+                const section = new UI.ListSection()
+                section.headerView = new SectionHeader("动画")
+                section.items = [
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Linear Animation",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new LinearAnimationSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Spring Animation",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new SpringAnimationSample())
+                            }
+                        },
+                    },
+                ]
+                return section
+            })(),
         ]
         this.listView.reloadData()
     }

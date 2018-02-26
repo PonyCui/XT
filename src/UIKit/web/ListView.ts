@@ -2,9 +2,10 @@ import { ScrollView } from "./ScrollView";
 import { View } from "./View";
 import { ListItem, ListSelectionStyle } from "../interface/ListView";
 import { Color } from "../interface/Color";
-import { Rect, Point } from "../interface/Rect";
+import { Rect, Point, Insets, InsetsMake } from "../interface/Rect";
 import { InteractionState } from "../interface/View";
 import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
+import { HRView } from "./HRView";
 
 export class ListCell extends View {
 
@@ -14,6 +15,7 @@ export class ListCell extends View {
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     selectionView: View = new View();
     contentView: View = new View();
+    bottomLine: HRView = new HRView();
     _isBusy = false
     context?: any
 
@@ -23,8 +25,10 @@ export class ListCell extends View {
         this.selectionView.alpha = 0.0;
         this.selectionView.hidden = true;
         this.addSubview(this.selectionView);
-        this.addSubview(this.contentView);
         this.contentView.userInteractionEnabled = true
+        this.addSubview(this.contentView);
+        this.bottomLine.color = new Color(0xda / 0xff, 0xda / 0xff, 0xda / 0xff)
+        this.addSubview(this.bottomLine)
         this.userInteractionEnabled = true
         this.longPressDuration = 0.05
         this.onTap = () => {
@@ -75,6 +79,7 @@ export class ListCell extends View {
         super.layoutSubviews();
         this.selectionView.frame = this.bounds;
         this.contentView.frame = this.bounds;
+        this.resetBottomLine()
     }
 
     public set highligted(value: boolean) {
@@ -86,6 +91,54 @@ export class ListCell extends View {
     didHighlighted(highlighted: boolean) { }
     didSelected() { }
     didRender() { }
+
+    // MARK: BottomLine
+
+    private _bottomVisible: boolean = true
+
+    public get bottomVisible(): boolean {
+        return this._bottomVisible;
+    }
+
+    public set bottomVisible(value: boolean) {
+        this._bottomVisible = value;
+        this.resetBottomLine()
+    }
+
+    private _isLastCell: boolean = false
+
+    public get isLastCell(): boolean {
+        return this._isLastCell;
+    }
+
+    public set isLastCell(value: boolean) {
+        if (this._isLastCell === value) { return }
+        this._isLastCell = value;
+        this.resetBottomLine()
+    }
+
+    private _bottomLineInsets: Insets = InsetsMake(0, 0, 0, 0)
+
+    public get bottomLineInsets(): Insets {
+        return this._bottomLineInsets;
+    }
+
+    public set bottomLineInsets(value: Insets) {
+        this._bottomLineInsets = value;
+    }
+
+    private resetBottomLine() {
+        this.bottomLine.hidden = !this.bottomVisible || this.isLastCell
+        this.bottomLine.frame = UI.RectMake(this.bottomLineInsets.left, this.bounds.height - 1, this.bounds.width - this.bottomLineInsets.left - this.bottomLineInsets.right, 1)
+    }
+
+}
+
+export class ListSection {
+
+    public headerView?: View
+    public footerView?: View
+    public items: ListItem[] = [];
 
 }
 
@@ -115,13 +168,43 @@ export class ListView extends ScrollView {
         this.reuseContexts[reuseIdentifier] = context;
     }
 
-    private _items: ListItem[] = [];
+    private _listHeaderView: View | undefined = undefined
+
+    public get listHeaderView(): View | undefined {
+        return this._listHeaderView;
+    }
+
+    public set listHeaderView(value: View | undefined) {
+        if (this._listHeaderView) { this._listHeaderView.removeFromSuperview() }
+        this._listHeaderView = value;
+        if (this._listHeaderView) {
+            this.addSubview(this._listHeaderView)
+        }
+        this.reloadData()
+    }
+
+    private _listFooterView: View | undefined = undefined
+
+    public get listFooterView(): View | undefined {
+        return this._listFooterView;
+    }
+
+    public set listFooterView(value: View | undefined) {
+        if (this._listFooterView) { this._listFooterView.removeFromSuperview() }
+        this._listFooterView = value;
+        if (this._listFooterView) {
+            this.addSubview(this._listFooterView)
+        }
+        this.reloadData()
+    }
+
+    private _items: (ListItem | ListSection)[] = [];
 
     public get items() {
         return this._items;
     }
 
-    public set items(value: ListItem[]) {
+    public set items(value: (ListItem | ListSection)[]) {
         this._items = value;
     }
 
@@ -130,21 +213,57 @@ export class ListView extends ScrollView {
         maxY: number;
         item: ListItem;
     }[] = [];
+    private _lastRows: { [key: number]: boolean } = {}
 
     private _reusingCells: ListCell[] = []
 
     public reloadData() {
+        this.subviews.forEach(it => {
+            if ((it as any).__is__header__ === true) { it.removeFromSuperview() }
+            if ((it as any).__is__footer__ === true) { it.removeFromSuperview() }
+        })
         let currentY = 0;
-        this._cacheRows = this.items.map((item) => {
-            let minY = currentY;
-            let maxY = minY + item.rowHeight(this.bounds.width);
-            currentY = maxY;
-            return { minY, maxY, item }
-        });
+        this._cacheRows = [];
+        this._lastRows = {};
+        if (this.listHeaderView) {
+            this.listHeaderView.frame = UI.RectMake(0, 0, this.bounds.width, this.listHeaderView.frame.height)
+            currentY += this.listHeaderView.frame.height
+        }
+        this.items.forEach(item => {
+            if (item instanceof ListSection) {
+                if (item.headerView) {
+                    (item.headerView as any).__is__header__ = true
+                    this.addSubview(item.headerView)
+                    item.headerView.frame = UI.RectMake(0, currentY, this.bounds.width, item.headerView.frame.height)
+                    currentY += item.headerView.frame.height
+                }
+                item.items.forEach(item => {
+                    let minY = currentY;
+                    let maxY = minY + item.rowHeight(this.bounds.width);
+                    currentY = maxY;
+                    this._cacheRows.push({ minY, maxY, item })
+                })
+                this._lastRows[currentY] = true
+                if (item.footerView) {
+                    (item.footerView as any).__is__footer__ = true
+                    this.addSubview(item.footerView)
+                    item.footerView.frame = UI.RectMake(0, currentY, this.bounds.width, item.footerView.frame.height)
+                    currentY += item.footerView.frame.height
+                }
+            }
+            else {
+                let minY = currentY;
+                let maxY = minY + item.rowHeight(this.bounds.width);
+                currentY = maxY;
+                this._cacheRows.push({ minY, maxY, item })
+            }
+        })
+        this._lastRows[currentY] = true
+        if (this.listFooterView) {
+            this.listFooterView.frame = UI.RectMake(0, currentY, this.bounds.width, this.listFooterView.frame.height)
+            currentY += this.listFooterView.frame.height
+        }
         this.contentSize = { width: 0, height: currentY }
-        this._nextSetted = false;
-        this._nextReloadMinY = undefined;
-        this._nextReloadMaxY = undefined;
         this.reloadVisibleRows();
     }
 
@@ -160,25 +279,12 @@ export class ListView extends ScrollView {
         }
     }
 
-    private _nextSetted = false;
-    private _nextReloadMinY?: number = undefined;
-    private _nextReloadMaxY?: number = undefined;
-
     private reloadVisibleRows() {
         let contentOffset = { ...this.contentOffset };
         let contentSize = this.contentSize;
         let bounds = this.bounds;
         contentOffset.y = Math.max(0.0, Math.min(contentSize.height - bounds.height, contentOffset.y))
-        // if (this._nextSetted === true &&
-        //     this._nextReloadMinY != this._nextReloadMaxY &&
-        //     (this._nextReloadMinY !== undefined && contentOffset.y > (this._nextReloadMinY || -Infinity)) &&
-        //     (this._nextReloadMaxY !== undefined && contentOffset.y < (this._nextReloadMaxY || Infinity))) {
-        //     return;
-        // }
         this.markInvisibleCellNoBusy(contentOffset, bounds);
-        this._nextSetted = true;
-        this._nextReloadMinY = undefined;
-        this._nextReloadMaxY = undefined;
         let visibleRows: {
             minY: number;
             maxY: number;
@@ -201,17 +307,8 @@ export class ListView extends ScrollView {
                 right = mid
             }
         }
-        if (startIndex > 0) {
-            this._nextReloadMinY = this._cacheRows[startIndex - 1].maxY;
-        }
-        else {
-            this._nextReloadMinY = 0
-        }
         for (let index = startIndex; index < this._cacheRows.length; index++) {
             const item = this._cacheRows[index];
-            if (this._nextReloadMaxY === undefined && item.minY >= contentOffset.y + bounds.height) {
-                this._nextReloadMaxY = item.minY - bounds.height;
-            }
             if (item.maxY > contentOffset.y && item.minY < contentOffset.y + bounds.height) {
                 visibleRows.push(item)
             }
@@ -254,6 +351,7 @@ export class ListView extends ScrollView {
             cell.frame = { x: 0, y: row.minY, width: bounds.width, height: row.maxY - row.minY }
             cell._isBusy = true;
             cell.currentItem = row.item;
+            cell.isLastCell = this._lastRows[row.maxY] === true
             this.renderItem && this.renderItem(cell, row.item);
             cell.didRender();
             if (this._reusingCells.indexOf(cell) < 0) {

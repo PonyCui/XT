@@ -39,9 +39,10 @@ export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
 export const LayoutConstraint = MLayoutConstraint
 
-import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView } from '../interface/ListView'
+import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView, ListEntity as IListEntity } from '../interface/ListView'
 import { ListCell as MListCell, ListView as MListView } from './ListView'
 export const ListSelectionStyle = IListSelectionStyle
+export const ListEntity = IListEntity
 export const ListCell = MListCell
 export const ListView = MListView
 

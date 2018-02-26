@@ -3,7 +3,7 @@ import { ClassLoaderSample } from "./classloader";
 
 
 
-class Header extends UI.ListCell {
+class Header extends UI.View {
 
     logoImageView = new UI.ImageView()
     textLabel = new UI.Label()
@@ -12,6 +12,7 @@ class Header extends UI.ListCell {
         super()
         this.setupLogoImageView()
         this.setupLabel();
+        this.frame = UI.RectMake(0, 0, 0, 160)
     }
 
     setupLogoImageView() {
@@ -35,38 +36,10 @@ class Header extends UI.ListCell {
 
 }
 
-class SectionHeader extends UI.ListCell {
-
-    content = new UI.View()
-    titleLabel = new UI.Label()
-
-    constructor() {
-        super()
-        this.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.content.backgroundColor = UI.Color.whiteColor
-        this.addSubview(this.content)
-        this.titleLabel.font = UI.Font.boldSystemFontOfSize(14)
-        this.content.addSubview(this.titleLabel)
-    }
-
-    didRender() {
-        if (this.currentItem) {
-            this.titleLabel.text = this.currentItem.name
-        }
-    }
-
-    layoutSubviews() {
-        this.content.frame = UI.RectMake(15, 8, this.bounds.width - 30, 44)
-        this.titleLabel.frame = { ...this.content.bounds, x: 15 }
-    }
-
-}
-
 class Cell extends UI.ListCell {
 
     content = new UI.View()
     titleLabel = new UI.Label()
-    bottomLine = new UI.HRView()
 
     constructor() {
         super()
@@ -76,8 +49,6 @@ class Cell extends UI.ListCell {
         this.titleLabel.textColor = UI.Color.grayColor
         this.titleLabel.font = UI.Font.systemFontOfSize(13)
         this.content.addSubview(this.titleLabel)
-        this.bottomLine.color = new UI.Color(0xda / 0xff, 0xda / 0xff, 0xda / 0xff)
-        this.content.addSubview(this.bottomLine)
     }
 
     didHighlighted(value: boolean) {
@@ -92,7 +63,6 @@ class Cell extends UI.ListCell {
     didRender() {
         if (this.currentItem) {
             this.titleLabel.text = this.currentItem.name
-            this.bottomLine.hidden = this.currentItem.isSectionLast === true
         }
     }
 
@@ -105,12 +75,11 @@ class Cell extends UI.ListCell {
     layoutSubviews() {
         this.content.frame = UI.RectMake(15, 0, this.bounds.width - 30, 44)
         this.titleLabel.frame = { ...this.content.bounds, x: 15 }
-        this.bottomLine.frame = UI.RectMake(15, this.bounds.height - 1, this.content.bounds.width - 30, 1)
     }
 
 }
 
-class Footer extends UI.ListCell {
+class Footer extends UI.View {
 
     titleLabel = new UI.Label()
 
@@ -122,6 +91,7 @@ class Footer extends UI.ListCell {
         this.titleLabel.numberOfLines = 1
         this.titleLabel.text = "UED Opensource"
         this.addSubview(this.titleLabel)
+        this.frame = UI.RectMake(0, 0, 0, 66)
     }
 
     layoutSubviews() {
@@ -150,19 +120,14 @@ export class CoreList extends UI.ViewController {
 
     setupListView() {
         this.listView.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.listView.register(Header, "Header", this)
-        this.listView.register(SectionHeader, "SectionHeader", this)
+        this.listView.listHeaderView = new Header()
+        this.listView.listFooterView = new Footer()
         this.listView.register(Cell, "Cell", this)
-        this.listView.register(Footer, "Footer", this)
         this.view.addSubview(this.listView)
     }
 
     loadData() {
         this.listView.items = [
-            {
-                reuseIdentifier: "Header",
-                rowHeight: () => 160,
-            },
             {
                 reuseIdentifier: "Cell",
                 rowHeight: () => 44,
@@ -172,10 +137,6 @@ export class CoreList extends UI.ViewController {
                         this.navigationController.pushViewController(new ClassLoaderSample())
                     }
                 },
-            },
-            {
-                reuseIdentifier: "Footer",
-                rowHeight: () => 66,
             },
         ]
         this.listView.reloadData()

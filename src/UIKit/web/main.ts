@@ -68,11 +68,13 @@ import { ScrollView as IScrollView } from '../interface/ScrollView'
 import { ScrollView as MScrollView } from './ScrollView'
 export const ScrollView = MScrollView
 
-import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView } from '../interface/ListView'
-import { ListCell as MListCell, ListView as MListView } from './ListView'
+import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView, ListEntity as IListEntity, ListSection as IListSection } from '../interface/ListView'
+import { ListCell as MListCell, ListView as MListView, ListSection as MListSection } from './ListView'
 export const ListSelectionStyle = IListSelectionStyle
+export const ListEntity = IListEntity
 export const ListCell = MListCell
 export const ListView = MListView
+export const ListSection = MListSection
 
 import { Window as IWindow } from '../interface/Window'
 import { Window as MWindow } from './Window'
