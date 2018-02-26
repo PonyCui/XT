@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import com.opensource.xt.core.XTMemoryManager
 
 
 /**
@@ -19,7 +20,7 @@ open class XTUIActivity : Activity() {
 
     }
 
-    var uiContext: XTUIContext? = null
+    private var rootViewController: XTUIViewController? = null
 
     override fun onResume() {
         super.onResume()
@@ -29,11 +30,6 @@ open class XTUIActivity : Activity() {
     override fun onPause() {
         super.onPause()
         current = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        uiContext?.release()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,20 +43,11 @@ open class XTUIActivity : Activity() {
         else {
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
-        handleStart()
-        super.onCreate(savedInstanceState)
-    }
-
-    private fun handleStart() {
-        uiContext?.let {
-            it.application?.delegate?.window?.rootViewController?.setContentView(this)
-        } ?: kotlin.run {
-            XTUIContext.currentUIContextInstance?.let {
-                uiContext = it
-                it.application?.delegate?.window?.rootViewController?.setContentView(this)
-                XTUIContext.currentUIContextInstance = null
-            }
+        intent?.getStringExtra("ViewControllerObjectUUID")?.let {
+            this.rootViewController = XTMemoryManager.find(it) as? XTUIViewController
+            this.rootViewController?.setContentView(this)
         }
+        super.onCreate(savedInstanceState)
     }
 
 }

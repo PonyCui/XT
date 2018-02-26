@@ -156,6 +156,18 @@
     return [self.childViewControllers lastObject];
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return self.childViewControllers.lastObject.preferredInterfaceOrientationForPresentation;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return self.childViewControllers.lastObject.supportedInterfaceOrientations;
+}
+
 #pragma mark - ViewController callbacks
 
 - (void)viewDidLoad {

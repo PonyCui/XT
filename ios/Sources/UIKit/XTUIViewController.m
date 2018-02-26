@@ -15,6 +15,22 @@
 #import <objc/runtime.h>
 #import "XTMemoryManager.h"
 
+@implementation UINavigationController(XTUIPatch)
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return self.childViewControllers.lastObject.preferredInterfaceOrientationForPresentation;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return self.childViewControllers.lastObject.supportedInterfaceOrientations;
+}
+
+@end
+
 @interface XTUIViewController ()
 
 @property (nonatomic, assign) BOOL originalSettted;
@@ -67,6 +83,31 @@
 
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if ([self scriptObject] != nil) {
+        NSArray *supportOrientations = [self scriptObject][@"supportOrientations"].toArray;
+        NSInteger value = 0;
+        if ([supportOrientations containsObject:@(1)]) {
+            value = value | UIInterfaceOrientationMaskPortrait;
+        }
+        if ([supportOrientations containsObject:@(2)]) {
+            value = value | UIInterfaceOrientationMaskPortraitUpsideDown;
+        }
+        if ([supportOrientations containsObject:@(3)]) {
+            value = value | UIInterfaceOrientationMaskLandscapeLeft;
+        }
+        if ([supportOrientations containsObject:@(4)]) {
+            value = value | UIInterfaceOrientationMaskLandscapeRight;
+        }
+        return value;
+    }
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 #pragma mark - Keyboard Notifications

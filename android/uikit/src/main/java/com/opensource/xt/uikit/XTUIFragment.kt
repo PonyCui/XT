@@ -51,6 +51,19 @@ open class XTUIFragment: Fragment() {
         resetContents()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        val rootView = this.rootView ?: return
+        this.view?.let { innerView ->
+            rootView.removeView(innerView)
+            rootView.view = null
+        }
+        this.navigationBar?.let { navigationBar ->
+            rootView.removeView(navigationBar)
+            rootView.navigationBar = null
+        }
+    }
+
     fun resetContents() {
         val rootView = this.rootView ?: return
         val navigationHidden = this.navigationBarHidden || this.navigationBar == null

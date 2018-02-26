@@ -25,6 +25,13 @@ class FooFragment: Fragment() {
 
 class AppActivity : XTUIActivity() {
 
+    var currentUIContext: XTUIContext? = null
+
+    override fun onDestroy() {
+        super.onDestroy()
+        currentUIContext?.release()
+    }
+
     init {
         XTUIContext.addDefaultAttachContext(XTFoundationContext::class.java as Class<XTContext>)
     }
@@ -36,7 +43,7 @@ class AppActivity : XTUIActivity() {
 
     fun startLocalApplication(sender: View) {
         val mode = 0
-        XTUIContext.createWithAssets(this, "sample.min.js", mapOf(Pair("foo", "value")), {
+        currentUIContext = XTUIContext.createWithAssets(this, "sample.min.js", mapOf(Pair("foo", "value")), {
             when (mode) {
                 0 -> it.start()
                 1 -> it.attach(this)

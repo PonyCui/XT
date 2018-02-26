@@ -26,8 +26,6 @@ class XTUIContext(appContext: android.content.Context,
 
     companion object: XTDebugDelegate {
 
-        internal var currentUIContextInstance: XTUIContext? = null
-
         private var defaultAttachContext: MutableList<Class<XTContext>> = mutableListOf()
 
         fun addDefaultAttachContext(attachContextClass: Class<XTContext>) {
@@ -165,9 +163,11 @@ class XTUIContext(appContext: android.content.Context,
     }
 
     fun start() {
-        XTUIContext.currentUIContextInstance = this
         val intent = Intent(appContext, XTUIActivity::class.java)
         intent.putExtra("XTUIShowBackButton", true)
+        this.application?.delegate?.window?.rootViewController?.objectUUID?.let {
+            intent.putExtra("ViewControllerObjectUUID", it)
+        }
         appContext.startActivity(intent)
     }
 
