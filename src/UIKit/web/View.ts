@@ -510,11 +510,11 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
             });
             for (const layoutID in view.subViews) {
                 const value = view.subViews[layoutID];
-                if (viewMapping[layoutID] !== undefined) {
+                if (viewMapping[layoutID] !== undefined && (value.width <= 0 || value.height <= 0)) {
                     const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
                     if (intrinsticSize !== undefined && intrinsticSize !== null) {
-                        value.intrinsicWidth = intrinsticSize.width;
-                        value.intrinsicHeight = intrinsticSize.height;
+                        value.intrinsicWidth = value.width > 0 ? undefined : intrinsticSize.width;
+                        value.intrinsicHeight = value.height > 0 ? undefined : intrinsticSize.height;
                     }
                 }
             }
