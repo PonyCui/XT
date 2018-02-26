@@ -125,6 +125,7 @@ export class ListCell extends View {
 
     public set bottomLineInsets(value: Insets) {
         this._bottomLineInsets = value;
+        this.resetBottomLine()
     }
 
     private resetBottomLine() {
@@ -231,6 +232,7 @@ export class ListView extends ScrollView {
         }
         this.items.forEach(item => {
             if (item instanceof ListSection) {
+                this._lastRows[currentY] = true
                 if (item.headerView) {
                     (item.headerView as any).__is__header__ = true
                     this.addSubview(item.headerView)

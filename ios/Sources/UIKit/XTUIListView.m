@@ -18,6 +18,7 @@
 @interface XTUIListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
+@property (nonatomic, strong) NSMutableSet *retainViews;
 
 @end
 
@@ -38,12 +39,43 @@
     return @"_XTUIListView";
 }
 
++ (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef {
+    XTUIListView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIListView class]]) {
+        view.items = [items toArray];
+    }
+}
+
++ (void)xtr_setHeaderView:(NSString *)viewRef objectRef:(NSString *)objectRef {
+    UIView *view = [XTMemoryManager find:viewRef];
+    XTUIListView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUIListView class]]) {
+        listView.tableHeaderView = [view isKindOfClass:[UIView class]] ? view : nil;
+    }
+}
+
++ (void)xtr_setFooterView:(NSString *)viewRef objectRef:(NSString *)objectRef {
+    UIView *view = [XTMemoryManager find:viewRef];
+    XTUIListView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUIListView class]]) {
+        listView.tableFooterView = [view isKindOfClass:[UIView class]] ? view : nil;
+    }
+}
+
++ (void)xtr_reloadData:(NSString *)objectRef {
+    XTUIListView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIListView class]]) {
+        [view reloadData];
+    }
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithFrame:frame style:UITableViewStyleGrouped];
     if (self) {
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableFooterView = [UIView new];
+        self.retainViews = [NSMutableSet set];
     }
     return self;
 }
@@ -60,24 +92,70 @@
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
-+ (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef {
-    XTUIListView *view = [XTMemoryManager find:objectRef];
-    if (view) {
-        view.items = [items toArray];
-    }
+- (void)setItems:(NSArray<NSDictionary *> *)items {
+    _items = items;
+    [_items enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        {
+            NSString *objectRef = obj[@"__headerViewObjectRef"];
+            if ([objectRef isKindOfClass:[NSString class]]) {
+                UIView *view = [XTMemoryManager find:objectRef];
+                if ([view isKindOfClass:[UIView class]]) {
+                    [self.retainViews addObject:view];
+                }
+            }
+        }
+        {
+            NSString *objectRef = obj[@"__footerViewObjectRef"];
+            if ([objectRef isKindOfClass:[NSString class]]) {
+                UIView *view = [XTMemoryManager find:objectRef];
+                if ([view isKindOfClass:[UIView class]]) {
+                    [self.retainViews addObject:view];
+                }
+            }
+        }
+    }];
 }
 
-+ (void)xtr_reloadData:(NSString *)objectRef {
-    XTUIListView *view = [XTMemoryManager find:objectRef];
-    if (view) {
-        [view reloadData];
+#pragma mark - UITableViewDelegate & UITableViewDatasource
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section < self.items.count) {
+        NSString *objectRef = self.items[section][@"__headerViewObjectRef"];
+        if ([objectRef isKindOfClass:[NSString class]]) {
+            UIView *view = [XTMemoryManager find:objectRef];
+            if ([view isKindOfClass:[UIView class]]) {
+                return view.frame.size.height;
+            }
+        }
     }
+    return 0.0;
 }
 
-#pragma mark - UITableViewDelegate & UITableViewDatasource 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section < self.items.count) {
+        NSString *objectRef = self.items[section][@"__headerViewObjectRef"];
+        if ([objectRef isKindOfClass:[NSString class]]) {
+            UIView *view = [XTMemoryManager find:objectRef];
+            if ([view isKindOfClass:[UIView class]]) {
+                return view;
+            }
+        }
+    }
+    return nil;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return [self.items count];
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.items count];
+    if (section < self.items.count) {
+        NSArray *items = self.items[section][@"items"];
+        if ([items isKindOfClass:[NSArray class]]) {
+            return items.count;
+        }
+    }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -92,7 +170,7 @@
     }
     if ([[cell contentView] viewWithTag:1000] == nil) {
         if (self.scriptObject != nil) {
-            NSString *innerViewRef = [self.scriptObject invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row)]].toString;
+            NSString *innerViewRef = [self.scriptObject invokeMethod:@"requestRowCell" withArguments:@[@(indexPath.row), @(indexPath.section)]].toString;
             UIView *innerView = [XTMemoryManager find:innerViewRef];
             if ([innerView isKindOfClass:[UIView class]]) {
                 innerView.tag = 1000;
@@ -109,6 +187,7 @@
             [self.scriptObject invokeMethod:@"handleRenderItem"
                                         withArguments:@[
                                                         @(indexPath.row),
+                                                        @(indexPath.section),
                                                         (fakeCell.objectUUID ?: [NSNull null]),
                                                         ]];
         }
@@ -119,7 +198,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.scriptObject != nil) {
         return [[self.scriptObject invokeMethod:@"requestRowHeight"
-                                            withArguments:@[@(tableView.bounds.size.width), @(indexPath.row)]] toDouble];
+                                            withArguments:@[@(tableView.bounds.size.width), @(indexPath.row), @(indexPath.section)]] toDouble];
     }
     return 88.0;
 }
@@ -130,7 +209,7 @@
         if ([[[cell contentView] viewWithTag:1000] isKindOfClass:[XTUIListCell class]]) {
             XTUIListCell *fakeCell = [[cell contentView] viewWithTag:1000];
             if (fakeCell.scriptObject != nil) {
-                [fakeCell.scriptObject invokeMethod:@"didSelected" withArguments:@[]];
+                [fakeCell.scriptObject invokeMethod:@"handleSelected" withArguments:@[]];
             }
         }
     }

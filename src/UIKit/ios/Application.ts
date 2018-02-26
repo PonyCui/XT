@@ -17,7 +17,7 @@ export class ApplicationDelegate {
         if (typeof windowRef !== "string") {
             return undefined
         }
-        return new Window(windowRef)
+        return Window.findByRef<Window>(windowRef)
     }
 
     public set window(value: Window | undefined) {
@@ -43,7 +43,7 @@ export class Application {
     public get keyWindow(): Window | undefined {
         const ref = _XTUIApplication.xtr_keyWindow(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new Window(ref);
+        return Window.findByRef<Window>(ref)
     }
 
     constructor(t: any, delegate: ApplicationDelegate) {

@@ -21,7 +21,7 @@ export class Window extends View {
     public get rootViewController(): ViewController | undefined {
         const ref = _XTUIWindow.xtr_rootViewController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new ViewController(ref);
+        return ViewController.findByRef(ref);
     }
 
     public set rootViewController(value: ViewController | undefined) {
@@ -39,7 +39,7 @@ export class Window extends View {
     public get firstResponder(): View | undefined {
         const ref = _XTUIWindow.xtr_firstResponder(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref)
+        return View.findByRef(ref)
     }
 
 }

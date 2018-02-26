@@ -21,6 +21,10 @@ export class View implements Releasable {
 
     public objectRef: any;
 
+    static findByRef<T extends View>(ref: string): T {
+        return objectRefs[ref] || new this(ref)
+    }
+
     constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
@@ -164,7 +168,7 @@ export class View implements Releasable {
     public get maskView(): View | undefined {
         const ref = _XTUIView.xtr_maskView(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref);
+        return View.findByRef(ref);
     }
 
     public set maskView(value: View | undefined) {
@@ -260,19 +264,19 @@ export class View implements Releasable {
     public get superview(): View | undefined {
         const ref = _XTUIView.xtr_superview(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref);
+        return View.findByRef(ref);
     }
 
     public get subviews(): View[] {
         return _XTUIView.xtr_subviews(this.objectRef).map((ref: string) => {
-            return new View(ref);
+            return View.findByRef(ref);
         });
     }
 
     public get window(): any | undefined {
         const ref = _XTUIView.xtr_window(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new (UI as any).Window(ref);
+        return (UI as any).Window.findByRef(ref);
     }
 
     removeFromSuperview() {
@@ -307,11 +311,11 @@ export class View implements Releasable {
         _XTUIView.xtr_sendSubviewToBackObjectRef(subview.objectRef, this.objectRef);
     }
 
-    private _didAddSubview(subviewRef: View) { this.didAddSubview(new View(subviewRef)) }
-    private _willRemoveSubview(subviewRef: View) { this.willRemoveSubview(new View(subviewRef)) }
-    private _willMoveToSuperview(newSuperviewRef?: View) { this.willMoveToSuperview(newSuperviewRef ? new View(newSuperviewRef) : undefined) }
+    private _didAddSubview(subviewRef: string) { this.didAddSubview(View.findByRef<View>(subviewRef)) }
+    private _willRemoveSubview(subviewRef: string) { this.willRemoveSubview(View.findByRef(subviewRef)) }
+    private _willMoveToSuperview(newSuperviewRef?: string) { this.willMoveToSuperview(newSuperviewRef ? View.findByRef(newSuperviewRef) : undefined) }
     private _didMoveToSuperview() { this.didMoveToSuperview() }
-    private _willMoveToWindow(newWindowRef?: Window) { this.willMoveToWindow(newWindowRef ? new View(newWindowRef) as any : undefined) }
+    private _willMoveToWindow(newWindowRef?: string) { this.willMoveToWindow(newWindowRef ? (UI as any).Window.findByRef(newWindowRef) as any : undefined) }
     private _didMoveToWindow() { this.didMoveToWindow() }
 
     didAddSubview(subview: View) { }
@@ -328,7 +332,7 @@ export class View implements Releasable {
     viewWithTag(tag: number): View | undefined {
         const ref = _XTUIView.xtr_viewWithTagObjectRef(tag, this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref);
+        return View.findByRef(ref);
     }
 
     setNeedsLayout() { _XTUIView.xtr_setNeedsLayout(this.objectRef) }

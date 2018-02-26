@@ -14,6 +14,8 @@
 
 + (NSString *)create;
 + (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef;
++ (void)xtr_setHeaderView:(NSString *)viewRef objectRef:(NSString *)objectRef;
++ (void)xtr_setFooterView:(NSString *)viewRef objectRef:(NSString *)objectRef;
 + (void)xtr_reloadData:(NSString *)objectRef;
 
 @end

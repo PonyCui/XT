@@ -111,7 +111,7 @@ export class TextField extends View {
     public get leftView(): View | undefined {
         const ref = _XTUITextField.xtr_leftView(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref);
+        return View.findByRef(ref);
     }
 
     public set leftView(view: View | undefined) {
@@ -129,7 +129,7 @@ export class TextField extends View {
     public get rightView(): View | undefined {
         const ref = _XTUITextField.xtr_rightView(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new View(ref);
+        return View.findByRef(ref);
     }
 
     public set rightView(view: View | undefined) {

@@ -34,6 +34,10 @@ export class ViewController implements Releasable {
 
     public objectRef: any;
 
+    static findByRef<T extends ViewController>(ref: string): T {
+        return objectRefs[ref] || new this(ref)
+    }
+
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
@@ -83,7 +87,7 @@ export class ViewController implements Releasable {
     }
 
     public get view() {
-        return new View(_XTUIViewController.xtr_view(this.objectRef));
+        return View.findByRef(_XTUIViewController.xtr_view(this.objectRef));
     }
 
     public set view(value: View) {
@@ -111,12 +115,12 @@ export class ViewController implements Releasable {
     public get parentViewController(): ViewController | undefined {
         const ref = _XTUIViewController.xtr_parentViewController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new ViewController(ref);
+        return ViewController.findByRef(ref);
     }
 
     public get childViewControllers(): ViewController[] {
         return _XTUIViewController.xtr_childViewControllers(this.objectRef).map((ref: string) => {
-            return new ViewController(ref)
+            return ViewController.findByRef(ref)
         });
     }
 
@@ -155,7 +159,7 @@ export class ViewController implements Releasable {
     public get navigationController(): NavigationControllerInterface | undefined {
         const ref = _XTUIViewController.xtr_navigationController(this.objectRef)
         if (typeof ref !== "string") { return undefined }
-        return new (UI as any).NavigationController(undefined, ref)
+        return (UI as any).NavigationController.findByRef(ref)
     }
 
     keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }
@@ -215,7 +219,7 @@ export class ViewController implements Releasable {
             this.navigationBar = new NavigationBar();
             ref = _XTUIViewController.xtr_navigationBar(this.objectRef)
         }
-        return new NavigationBar(ref)
+        return NavigationBar.findByRef<NavigationBar>(ref)
     }
 
     showNavigationBar(animated: boolean = false): void {
