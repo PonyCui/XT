@@ -170,6 +170,9 @@ export class ViewElement extends BaseElement {
     private resetBackgroundVisibility() {
         if (this.backgroundColor.a > 0 || (this.borderWidth > 0 && this.borderColor.a > 0)) {
             this.backgroundObject.setAttribute('visibility', 'inherit');
+            if (this.backgroundColor.a == 0) {
+                this.backgroundObject.setAttribute('fill', 'none')
+            }
             if (this.backgroundObject.parentNode === null) {
                 this.nativeObject.insertBefore(this.backgroundObject, this.nativeObject.childNodes[0])
             }
