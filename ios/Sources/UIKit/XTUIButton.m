@@ -141,7 +141,14 @@
         _innerView = [UIButton buttonWithType:UIButtonTypeSystem];
         _innerView.adjustsImageWhenHighlighted = NO;
         [_innerView setTitleColor:self.tintColor forState:UIControlStateNormal];
+        [_innerView addTarget:self action:@selector(onTouchDown) forControlEvents:UIControlEventTouchDown];
+        [_innerView addTarget:self action:@selector(onTouchDragInside) forControlEvents:UIControlEventTouchDragInside];
+        [_innerView addTarget:self action:@selector(onTouchDragOutside) forControlEvents:UIControlEventTouchDragOutside];
+        [_innerView addTarget:self action:@selector(onTouchDragEnter) forControlEvents:UIControlEventTouchDragEnter];
+        [_innerView addTarget:self action:@selector(onTouchDragExit) forControlEvents:UIControlEventTouchDragExit];
         [_innerView addTarget:self action:@selector(onTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+        [_innerView addTarget:self action:@selector(onTouchUpOutside) forControlEvents:UIControlEventTouchUpOutside];
+        [_innerView addTarget:self action:@selector(onTouchCancel) forControlEvents:UIControlEventTouchCancel];
         [_innerView addTarget:self action:@selector(onTouchStart) forControlEvents:UIControlEventTouchDown];
         [_innerView addTarget:self action:@selector(onTouchEvent) forControlEvents:UIControlEventAllTouchEvents];
         [self addSubview:_innerView];
@@ -170,10 +177,59 @@
     }
 }
 
+- (void)onTouchDown {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchDown" withArguments:@[]];
+    }
+}
+
+- (void)onTouchDragInside {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchDragInside" withArguments:@[]];
+    }
+}
+
+- (void)onTouchDragOutside {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchDragOutside" withArguments:@[]];
+    }
+}
+
+- (void)onTouchDragEnter {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchDragEnter" withArguments:@[]];
+    }
+}
+
+- (void)onTouchDragExit {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchDragExit" withArguments:@[]];
+    }
+}
+
 - (void)onTouchUpInside {
     JSValue *value = self.scriptObject;
     if (value != nil) {
         [value invokeMethod:@"handleTouchUpInside" withArguments:@[]];
+    }
+}
+
+- (void)onTouchUpOutside {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchUpOutside" withArguments:@[]];
+    }
+}
+
+- (void)onTouchCancel {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleTouchCancel" withArguments:@[]];
     }
 }
 
@@ -188,7 +244,6 @@
         if (value != nil) {
             [value invokeMethod:@"handleHighlighted" withArguments:@[@(self.highlighted)]];
         }
-        
     }
 }
 

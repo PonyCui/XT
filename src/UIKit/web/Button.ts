@@ -53,6 +53,7 @@ export class Button extends View {
                 this.imageView.alpha = 0.25;
                 this.highlighted = true;
                 this.onHighlighted && this.onHighlighted(true)
+                this.onTouchDown && this.onTouchDown()
             }
             else if (state == InteractionState.Changed) {
                 const loc = viewLocation()
@@ -64,7 +65,9 @@ export class Button extends View {
                             this.imageView.alpha = 1.0;
                         });
                         this.onHighlighted && this.onHighlighted(false)
+                        this.onTouchDragExit && this.onTouchDragExit()
                     }
+                    this.onTouchDragOutside && this.onTouchDragOutside()
                 }
                 else {
                     if (!this.highlighted) {
@@ -72,7 +75,9 @@ export class Button extends View {
                         this.titleLabel.alpha = 0.25;
                         this.imageView.alpha = 0.25;
                         this.onHighlighted && this.onHighlighted(true)
+                        this.onTouchDragEnter && this.onTouchDragEnter()
                     }
+                    this.onTouchDragInside && this.onTouchDragInside()
                 }
             }
             else if (state == InteractionState.Ended) {
@@ -86,6 +91,9 @@ export class Button extends View {
                 if (loc.x > -44.0 && loc.y > -44.0 && loc.x < this.bounds.width + 44.0 && loc.y < this.bounds.height + 44.0) {
                     this.onTouchUpInside && this.onTouchUpInside()
                 }
+                else {
+                    this.onTouchUpOutside && this.onTouchUpOutside()
+                }
             }
             else if (state == InteractionState.Cancelled) {
                 this.highlighted = false
@@ -94,6 +102,7 @@ export class Button extends View {
                     this.imageView.alpha = 1.0;
                 });
                 this.onHighlighted && this.onHighlighted(false)
+                this.onTouchCancel && this.onTouchCancel()
             }
         }
         this.nativeObject.xtr_setHoverMode(true)
@@ -106,11 +115,25 @@ export class Button extends View {
 
     private highlighted: boolean = false
 
-    public onHighlighted?: (highligted: boolean) => void = undefined
+    public onTouchDown?: () => void  
 
-    public onTouchUpInside?: () => void = undefined;
+    public onTouchDragInside?: () => void   
 
-    public onHover?: (hovered: boolean) => void = undefined
+    public onTouchDragOutside?: () => void   
+
+    public onTouchDragEnter?: () => void   
+
+    public onTouchDragExit?: () => void 
+
+    public onTouchUpInside?: () => void; 
+
+    public onTouchUpOutside?: () => void   
+
+    public onTouchCancel?: () => void        
+
+    public onHighlighted?: (highligted: boolean) => void
+
+    public onHover?: (hovered: boolean) => void
 
     private _color: Color = this.tintColor
 
