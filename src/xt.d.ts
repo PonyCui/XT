@@ -352,7 +352,7 @@ export enum LayoutRelation {
 }
 
 export class LayoutConstraint {
-    
+
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;
     readonly relation: LayoutRelation;
@@ -387,14 +387,14 @@ export class Button extends View {
     font: Font;
     image?: Image;
     color: Color
-    onTouchDown?: () => void           
-    onTouchDragInside?: () => void     
-    onTouchDragOutside?: () => void    
-    onTouchDragEnter?: () => void      
-    onTouchDragExit?: () => void  
-    onTouchUpInside?: () => void   
-    onTouchUpOutside?: () => void     
-    onTouchCancel?: () => void        
+    onTouchDown?: () => void
+    onTouchDragInside?: () => void
+    onTouchDragOutside?: () => void
+    onTouchDragEnter?: () => void
+    onTouchDragExit?: () => void
+    onTouchUpInside?: () => void
+    onTouchUpOutside?: () => void
+    onTouchCancel?: () => void
     onHighlighted?: (highligted: boolean) => void
     onHover?: (hovered: boolean) => void
 }
@@ -418,7 +418,7 @@ export enum ImageRenderingMode {
 export class Image implements Releasable {
     retain(owner?: any): this;
     release(): this;
-    
+
     readonly size: Size;
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode;
@@ -437,6 +437,7 @@ export enum ContentMode {
 export class ImageView extends View {
     image?: Image;
     contentMode: ContentMode;
+    loadImage(url: string, fadeIn?: boolean): void
 }
 
 export enum TextAlignment {
@@ -580,7 +581,7 @@ export enum KeyboardAvoidingMode {
 export class ViewController implements Releasable {
     retain(owner?: any): this;
     release(): this;
-    
+
     title: string
     readonly view: View
     readonly safeAreaInsets: Insets

@@ -30,12 +30,12 @@ export class LabelElement extends ViewElement {
 
     public xtr_setFrame(value: Rect) {
         super.xtr_setFrame(value);
-        this.foreignObject.setAttribute("width", value.width.toString())
-        this.foreignObject.setAttribute("height", value.height.toString())
+        this.foreignObject.setAttribute("width", Math.max(0, value.width).toString())
+        this.foreignObject.setAttribute("height", Math.max(0, value.height).toString())
         this.wrapperObject.style.width = "100%"
         this.wrapperObject.style.height = "100%"
-        this.spanObject.style.width = value.width.toString() + "px";
-        this.spanObject.style.maxHeight = value.height.toString() + "px";
+        this.spanObject.style.width = Math.max(0, value.width).toString() + "px";
+        this.spanObject.style.maxHeight = Math.max(0, value.height).toString() + "px";
         this.adjustTextAlignment();
     }
 

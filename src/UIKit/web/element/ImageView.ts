@@ -31,6 +31,36 @@ export class ImageViewElement extends ViewElement {
         }
     }
 
+    private _fadeInHandler = 0
+
+    xtr_loadImage(url: string, fadeIn: boolean = true) {
+        if (this.contentObject) {
+            this.contentObject.removeAttributeNS("http://www.w3.org/1999/xlink", "href")
+            this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
+            cancelAnimationFrame(this._fadeInHandler)
+            this.contentObject.style.opacity = "0"
+            this.contentObject.onload = () => {
+                if (fadeIn) {
+                    this.xtr_fadeIn(0.0)
+                }
+                else {
+                    this.contentObject && (this.contentObject.style.opacity = "1")
+                }
+            }
+        }
+    }
+
+    xtr_fadeIn(currentValue: number) {
+        requestAnimationFrame(() => {
+            currentValue += 0.05
+            if (currentValue > 1.0) { return }
+            if (this.contentObject) {
+                this.contentObject.style.opacity = currentValue.toString()
+            }
+            this.xtr_fadeIn(currentValue)
+        })
+    }
+
     xtr_setFrame(value: Rect) {
         super.xtr_setFrame(value)
         if (this.contentObject) {

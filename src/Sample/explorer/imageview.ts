@@ -26,7 +26,8 @@ export class ImageViewSample extends UI.ViewController {
         this.addScaleToFillImageView()
         this.addAspectFitImageView()
         this.addAspectFillImageView()
-        this.contentView.contentSize = UI.SizeMake(0, 1200)
+        this.addLoadImage()
+        this.contentView.contentSize = UI.SizeMake(0, 1400)
     }
 
     addLocalImage() {
@@ -48,9 +49,28 @@ export class ImageViewSample extends UI.ViewController {
         this.contentView.addSubview(wrapper)
     }
 
-    addRemoteImage() {
+    addLoadImage() {
         const wrapper = new UI.View()
         wrapper.frame = UI.RectMake(15, 160, 999, 220)
+        const summary = new UI.Label()
+        summary.frame = UI.RectMake(0, 8, 999, 44)
+        summary.font = UI.Font.systemFontOfSize(11)
+        summary.textColor = UI.Color.grayColor
+        summary.numberOfLines = 0
+        summary.text = "Load Image to ImageView \nframe = {0, 66, 100, 100}"
+        wrapper.addSubview(summary)
+        // Sample Code {
+        const view = new UI.ImageView()
+        view.frame = UI.RectMake(0, 66, 100, 100)
+        view.loadImage("http://www.httpbin.org/image/png")
+        // } Sample Code 
+        wrapper.addSubview(view)
+        this.contentView.addSubview(wrapper)
+    }
+
+    addRemoteImage() {
+        const wrapper = new UI.View()
+        wrapper.frame = UI.RectMake(15, 380, 999, 220)
         const summary = new UI.Label()
         summary.frame = UI.RectMake(0, 8, 999, 44)
         summary.font = UI.Font.systemFontOfSize(11)
@@ -71,7 +91,7 @@ export class ImageViewSample extends UI.ViewController {
 
     addScaleToFillImageView() {
         const wrapper = new UI.View()
-        wrapper.frame = UI.RectMake(15, 380, 999, 220)
+        wrapper.frame = UI.RectMake(15, 600, 999, 220)
         const summary = new UI.Label()
         summary.frame = UI.RectMake(0, 8, 999, 44)
         summary.font = UI.Font.systemFontOfSize(11)
@@ -93,7 +113,7 @@ export class ImageViewSample extends UI.ViewController {
 
     addAspectFitImageView() {
         const wrapper = new UI.View()
-        wrapper.frame = UI.RectMake(15, 600, 999, 220)
+        wrapper.frame = UI.RectMake(15, 820, 999, 220)
         const summary = new UI.Label()
         summary.frame = UI.RectMake(0, 8, 999, 44)
         summary.font = UI.Font.systemFontOfSize(11)
@@ -115,7 +135,7 @@ export class ImageViewSample extends UI.ViewController {
 
     addAspectFillImageView() {
         const wrapper = new UI.View()
-        wrapper.frame = UI.RectMake(15, 820, 999, 220)
+        wrapper.frame = UI.RectMake(15, 1060, 999, 220)
         const summary = new UI.Label()
         summary.frame = UI.RectMake(0, 8, 999, 44)
         summary.font = UI.Font.systemFontOfSize(11)

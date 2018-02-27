@@ -32,7 +32,7 @@ export class ViewElement extends BaseElement {
 
     public xtr_setFrame(value: Rect) {
         if (!RectEqual(this.frame, value)) {
-            this.frame = value;
+            this.frame = {...value, width: Math.max(0, value.width), height: Math.max(0, value.height)};
             this.resetTransform();
             this.resetMaskElement();
             this.resetHover();

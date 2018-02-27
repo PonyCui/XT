@@ -41,5 +41,6 @@ export class ImageView extends View {
 
     image?: Image;
     contentMode: ContentMode = ContentMode.ScaleToFill;
+    loadImage(url: string, fadeIn: boolean = true): void { }
 
 }
