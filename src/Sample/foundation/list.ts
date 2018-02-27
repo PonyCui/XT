@@ -49,6 +49,7 @@ class Cell extends UI.ListCell {
         super()
         this.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.selectionStyle = UI.ListSelectionStyle.None
+        this.bottomLineInsets = UI.InsetsMake(0, 25, 0, 25)
         this.content.backgroundColor = UI.Color.whiteColor
         this.contentView.addSubview(this.content)
         this.titleLabel.textColor = UI.Color.grayColor

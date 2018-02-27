@@ -139,8 +139,8 @@ export class ImageView extends View {
         return super.intrinsicContentSize(width)
     }
 
-    public loadImage(url: string): void {
-        this.nativeObject.xtr_loadImage(url)
+    public loadImage(url: string, fadeIn: boolean = true): void {
+        this.nativeObject.xtr_loadImage(url, fadeIn)
     }
 
 }

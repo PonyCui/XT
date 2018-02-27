@@ -11,6 +11,7 @@
 #import "XTUIImage.h"
 #import "XTContext.h"
 #import "XTMemoryManager.h"
+#import <YYWebImage/UIImageView+YYWebImage.h>
 
 @interface XTUIImageView ()
 
@@ -45,6 +46,15 @@
             view.privateImage = nil;
             view.innerView.image = nil;
         }
+    }
+}
+
++ (void)xtr_loadImage:(NSString *)url fadeIn:(BOOL)fadeIn objectRef:(NSString *)objectRef {
+    XTUIImageView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIImageView class]]) {
+        view.privateImage = nil;
+        [view.innerView yy_setImageWithURL:[NSURL URLWithString:url]
+                                   options:fadeIn ? YYWebImageOptionSetImageWithFadeAnimation : kNilOptions];
     }
 }
 

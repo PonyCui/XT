@@ -1,12 +1,11 @@
 package com.opensource.xt.uikit
 
+import android.animation.ValueAnimator
 import android.graphics.*
 import android.util.AttributeSet
 import com.eclipsesource.v8.V8Object
-import com.opensource.xt.core.XTManagedObject
-import com.opensource.xt.core.XTMemoryManager
-import com.opensource.xt.core.XTComponentExport
 import com.opensource.xt.core.XTComponentInstance
+import com.opensource.xt.core.XTMemoryManager
 
 /**
  * Created by cuiminghui on 2017/9/6.
@@ -18,6 +17,8 @@ class XTUIImageView @JvmOverloads constructor(
     var image: XTUIImage? = null
         internal set
 
+    private var currentURL: String? = null
+
     var contentMode: Int = 0
         internal set
 
@@ -25,6 +26,26 @@ class XTUIImageView @JvmOverloads constructor(
 
     init {
         userInteractionEnabled = false
+    }
+
+    private var fadeInAnimator: ValueAnimator? = null
+
+    fun cancelFadeInAnimation() {
+        fadeInAnimator?.cancel()
+        fadeInAnimator = null
+        this.invalidate()
+    }
+
+    fun fadeIn() {
+        fadeInAnimator = ValueAnimator.ofFloat(0.0f, 1.0f)
+        fadeInAnimator?.duration = 300
+        fadeInAnimator?.addUpdateListener {
+            this.invalidate()
+            if (it.animatedValue as Float >= 1.0f) {
+                fadeInAnimator = null
+            }
+        }
+        fadeInAnimator?.start()
     }
 
     override fun tintColorDidChange() {
@@ -40,6 +61,9 @@ class XTUIImageView @JvmOverloads constructor(
                 sharedImagePaint.isAntiAlias = true
                 sharedImagePaint.isFilterBitmap = true
                 sharedImagePaint.alpha = (alpha * 255).toInt()
+                fadeInAnimator?.let {
+                    sharedImagePaint.alpha = ((it.animatedValue as Float) * alpha * 255).toInt()
+                }
                 if (image.renderingMode == 2) {
                     sharedImagePaint.colorFilter = PorterDuffColorFilter(tintColor?.intColor() ?: 0, PorterDuff.Mode.SRC_IN)
                 }
@@ -87,6 +111,9 @@ class XTUIImageView @JvmOverloads constructor(
 
     class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
+        val XTUIImage: XTUIImage.JSExports
+            get() = context?.registeredComponents?.get("_XTUIImage") as XTUIImage.JSExports
+
         override val name: String = "_XTUIImageView"
 
         override val viewClass: Class<XTUIView> = XTUIImageView::class.java as Class<XTUIView>
@@ -95,6 +122,7 @@ class XTUIImageView @JvmOverloads constructor(
             val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_image", "xtr_image", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setImage", "xtr_setImage", arrayOf(String::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_loadImage", "xtr_loadImage", arrayOf(String::class.java, Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_contentMode", "xtr_contentMode", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setContentMode", "xtr_setContentMode", arrayOf(Int::class.java, String::class.java))
             return exports
@@ -109,6 +137,24 @@ class XTUIImageView @JvmOverloads constructor(
                 it.image = XTMemoryManager.find(imageRef) as? XTUIImage
                 it.setWillNotDraw(it.image == null)
                 it.invalidate()
+            }
+        }
+
+        fun xtr_loadImage(url: String, fadeIn: Boolean, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTUIImageView)?.let { imageView ->
+                imageView.cancelFadeInAnimation()
+                imageView.image = null
+                imageView.currentURL = url
+                XTUIImage.xtr_fromURL(url, { image, url ->
+                    if (imageView.currentURL == url) {
+                        imageView.image = image
+                        imageView.setWillNotDraw(false)
+                        imageView.invalidate()
+                        if (fadeIn) {
+                            imageView.fadeIn()
+                        }
+                    }
+                })
             }
         }
 

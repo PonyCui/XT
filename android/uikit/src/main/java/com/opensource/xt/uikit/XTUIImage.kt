@@ -84,6 +84,33 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
             }).start()
         }
 
+        fun xtr_fromURL(url: String, success: (image: XTUIImage, url: String) -> Unit) {
+            val handler = android.os.Handler()
+            Thread({
+                var inputStream: InputStream? = null
+                try {
+                    URL(url)?.let {
+                        val conn = it.openConnection()
+                        conn.connectTimeout = 5000
+                        conn.readTimeout = 15000
+                        conn.useCaches = true
+                        conn.connect()
+                        inputStream = conn.getInputStream()
+                        val bitmap = BitmapFactory.decodeStream(inputStream) ?: throw Exception()
+                        handler.post {
+                            val instance = XTUIImage(bitmap, 1, 0)
+                            val managedObject = XTManagedObject(instance)
+                            instance.objectUUID = managedObject.objectUUID
+                            XTMemoryManager.add(managedObject)
+                            success(instance, url)
+                        }
+                    }
+                } catch (e: Exception) { } finally {
+                    inputStream?.close()
+                }
+            }).start()
+        }
+
         private val scaleOptions = listOf(3, 2)
 
         fun xtr_fromBase64(value: String, scale: Int): String? {

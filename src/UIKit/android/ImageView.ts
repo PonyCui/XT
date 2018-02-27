@@ -106,4 +106,8 @@ export class ImageView extends View {
         return super.intrinsicContentSize(width)
     }
 
+    public loadImage(url: string, fadeIn: boolean = true): void {
+        _XTUIImageView.xtr_loadImage(url, fadeIn, this.objectRef)
+    }
+
 }

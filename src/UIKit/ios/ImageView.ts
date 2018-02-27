@@ -98,4 +98,8 @@ export class ImageView extends View {
         _XTUIImageView.xtr_setImageObjectRef(value ? value.objectRef : undefined, this.objectRef);
     }
 
+    public loadImage(url: string, fadeIn: boolean = true): void {
+        _XTUIImageView.xtr_loadImageFadeInObjectRef(url, fadeIn, this.objectRef)
+    }
+
 }

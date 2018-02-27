@@ -15,6 +15,7 @@
 
 + (NSString *)xtr_image:(NSString *)objectRef;
 + (void)xtr_setImage:(NSString *)imageRef objectRef:(NSString *)objectRef;
++ (void)xtr_loadImage:(NSString *)url fadeIn:(BOOL)fadeIn objectRef:(NSString *)objectRef;
 
 @end
 
