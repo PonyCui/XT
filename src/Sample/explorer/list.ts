@@ -145,6 +145,8 @@ class ListFooter extends UI.View {
 
 export class List extends UI.ViewController {
 
+    supportOrientations = [UI.DeviceOrientation.Portrait, UI.DeviceOrientation.LandscapeLeft, UI.DeviceOrientation.LandscapeRight]
+
     listView = new UI.ListView()
 
     viewDidLoad() {

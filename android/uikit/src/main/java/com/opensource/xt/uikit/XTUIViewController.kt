@@ -3,6 +3,7 @@ package com.opensource.xt.uikit
 import android.app.Activity
 import android.app.Fragment
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.opensource.xt.core.*
 import com.opensource.xt.uikit.libraries.keyboard.KeyboardHeightObserver
 import com.opensource.xt.uikit.libraries.keyboard.KeyboardHeightProvider
@@ -39,6 +41,12 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
 
     var childViewControllers: List<XTUIViewController> = listOf()
         internal set
+
+    internal var supportOrientations: List<Int> = listOf(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        set(value) {
+            field = value
+            (activity as? XTUIActivity)?.resetOrientation()
+        }
 
     open fun setContentView(activity: Activity) {
         XTUIScreen.resetScreenInfo(activity)
@@ -204,6 +212,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             exports.registerJavaMethod(this, "xtr_showBackButton", "xtr_showBackButton", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_presentViewController", "xtr_presentViewController", arrayOf(String::class.java, Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_dismissViewController", "xtr_dismissViewController", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_setSupportOrientations", "xtr_setSupportOrientations", arrayOf(V8Array::class.java, String::class.java))
             return exports
         }
 
@@ -322,6 +331,25 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             viewController.requestFragment()?.let {
                 (it.activity as? NextActivity)?.finishWithAnimation = !animated
                 it.activity.finish()
+            }
+        }
+
+        fun xtr_setSupportOrientations(value: V8Array, objectRef: String) {
+            V8ObjectUtils.toList(value)?.let {
+                var newValue = mutableListOf<Int>()
+                if (it.contains(1)) {
+                    newValue.add(1)
+                }
+                if (it.contains(2)) {
+                    newValue.add(2)
+                }
+                if (it.contains(3)) {
+                    newValue.add(3)
+                }
+                if (it.contains(4)) {
+                    newValue.add(4)
+                }
+                (XTMemoryManager.find(objectRef) as? XTUIViewController)?.supportOrientations = newValue.toList()
             }
         }
 

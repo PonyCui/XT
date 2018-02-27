@@ -259,43 +259,15 @@ export class ViewController implements Releasable, NavigationBarDelegate {
         this.makeKeyboardAvoiding(0, duration)
     }
 
-    // supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
+    private _supportOrientations: DeviceOrientation[] = [DeviceOrientation.Portrait]
 
-    // orientationDidChange(sender: any) {
-    //     this.childViewControllers.slice().forEach(t => t.orientationDidChange(sender))
-    //     if (this.supportOrientations.indexOf(Device.current.orientation) >= 0) {
-    //         if (this.parentViewController && (this.parentViewController as any).className === "NavigationController") {
-    //             if (Device.current.orientation === DeviceOrientation.Portrait) {
-    //                 if (!this.parentViewController) { return; }
-    //                 const superViewFrame = this.parentViewController.view.frame;
-    //                 this.view.frame = RectMake(0, 0, superViewFrame.width, superViewFrame.height)
-    //                 this.view.transform = new TransformMatrix()
-    //                 sender.handleStatusBarHidden && sender.handleStatusBarHidden(false);
-    //             }
-    //             else if (Device.current.orientation === DeviceOrientation.LandscapeLeft) {
-    //                 sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
-    //                 setTimeout(() => {
-    //                     if (!this.parentViewController) { return; }
-    //                     const superViewFrame = this.parentViewController.view.frame;
-    //                     View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-    //                         this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-    //                         this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), -90 * Math.PI / 180)
-    //                     });
-    //                 }, 500)
-    //             }
-    //             else if (Device.current.orientation === DeviceOrientation.LandscapeRight) {
-    //                 sender.handleStatusBarHidden && sender.handleStatusBarHidden(true);
-    //                 setTimeout(() => {
-    //                     if (!this.parentViewController) { return; }
-    //                     const superViewFrame = this.parentViewController.view.frame;
-    //                     View.animationWithBouncinessAndSpeed(1.0, 8.0, () => {
-    //                         this.view.frame = RectMake((superViewFrame.width - superViewFrame.height) / 2.0, (superViewFrame.height - superViewFrame.width) / 2.0, superViewFrame.height, superViewFrame.width)
-    //                         this.view.transform = TransformMatrix.postRotate(new TransformMatrix(), 90 * Math.PI / 180)
-    //                     });
-    //                 }, 500)
-    //             }
-    //         }
-    //     }
-    // }
+	public get supportOrientations(): DeviceOrientation[]  {
+		return this._supportOrientations;
+	}
+
+	public set supportOrientations(value: DeviceOrientation[] ) {
+        this._supportOrientations = value;
+        _XTUIViewController.xtr_setSupportOrientations(value, this.objectRef)
+	}
 
 }
