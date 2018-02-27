@@ -15,3 +15,8 @@ const version = JSON.parse(fs.readFileSync("package.json", { encoding: "utf-8" }
     const newContent = content.replace(/xtRuntimeVersion: string = ".*?"/, 'xtRuntimeVersion: string = "' + version + '"')
     fs.writeFileSync("src/UIKit/web/Device.ts", newContent)
 }
+{
+    const content = fs.readFileSync("XT.podspec", { encoding: "utf-8" })
+    const newContent = content.replace(/s.version      = ".*?"/, 's.version      = "' + version + '"')
+    fs.writeFileSync("XT.podspec", newContent)
+}
