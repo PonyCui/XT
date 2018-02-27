@@ -37,6 +37,8 @@ open class XTUIActivity : Activity(), OrientationManager.OrientationChangeListen
     override fun onResume() {
         super.onResume()
         current = this
+        this.orientationManager?.setOrientationChangedListener(this)
+        this.orientationManager?.enable()
     }
 
     override fun onPause() {
@@ -61,8 +63,6 @@ open class XTUIActivity : Activity(), OrientationManager.OrientationChangeListen
         }
         super.onCreate(savedInstanceState)
         this.orientationManager = OrientationManager.getInstance(this)
-        this.orientationManager?.setOrientationChangedListener(this)
-        this.orientationManager?.enable()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         resetOrientation()
     }

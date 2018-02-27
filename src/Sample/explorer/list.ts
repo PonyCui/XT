@@ -151,6 +151,7 @@ export class List extends UI.ViewController {
 
     viewDidLoad() {
         this.title = "UI Explorer"
+        this.supportOrientations = [UI.DeviceOrientation.Portrait, UI.DeviceOrientation.LandscapeLeft, UI.DeviceOrientation.LandscapeRight]
         this.view.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
         this.setupNavigationBar()
         this.setupListView()
