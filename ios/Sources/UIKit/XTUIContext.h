@@ -21,6 +21,7 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 + (NSString  * _Nonnull)xtr_startWithNamed:(NSString * _Nonnull)name
                                    options:(JSValue * _Nonnull)options
                                 completion:(JSValue * _Nonnull)completion;
+
 + (NSString * _Nonnull)xtr_startWithURL:(NSString  * _Nonnull)URLString
                                 options:(JSValue * _Nonnull)options
                              completion:(JSValue * _Nonnull)completion
@@ -35,8 +36,6 @@ typedef void(^XTUIContextFailureBlock)(NSError * _Nonnull error);
 @property (nonatomic, strong) XTUIApplication * _Nullable application;
 
 #pragma mark - Public methods
-
-+ (void)addDefaultAttachContext:(nonnull Class)attachContextClass;
 
 - (instancetype _Nonnull )initWithSourceURL:(nullable NSURL *)sourceURL
                                     options:(nullable NSDictionary *)options

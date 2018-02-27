@@ -53,7 +53,6 @@
                                                                                              180);
                                               }
                                           } failureBlock:nil];
-    [XTFoundationContext attachToContext:self.context];
 }
 
 - (IBAction)onDebug:(id)sender {

@@ -10,7 +10,6 @@
 
 @interface XTContext : JSContext
 
-+ (void)attachToContext:(XTContext *)context;
 - (void)setup;
 
 @end

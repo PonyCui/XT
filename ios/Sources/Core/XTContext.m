@@ -31,10 +31,6 @@
     }];
 }
 
-+ (void)attachToContext:(XTContext *)context {
-    [[[self alloc] initWithParentContext:context] description];
-}
-
 - (instancetype)init
 {
     self = [super init];

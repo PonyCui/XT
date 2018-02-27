@@ -41,6 +41,7 @@
 #import "XTUIActivityIndicatorView.h"
 #import "XTDebug.h"
 #import "XTMemoryManager.h"
+#import "XTFrameworkLoader.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTUIContext ()<UINavigationControllerDelegate, XTDebugDelegate>
@@ -115,6 +116,7 @@
     if (self.sourceURL.isFileURL) {
         NSString *script = [[NSString alloc] initWithContentsOfURL:self.sourceURL encoding:NSUTF8StringEncoding error:NULL];
         if (script) {
+            [XTFrameworkLoader loadFrameworks:script context:self];
             [self evaluateScript:script];
             [self.application.delegate didFinishLaunchingWithOptions:self.initialOptions application:self.application];
             if (completionBlock) {
@@ -132,6 +134,7 @@
                                                  NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                  if (script) {
                                                      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                         [XTFrameworkLoader loadFrameworks:script context:self];
                                                          [self evaluateScript:script];
                                                          [self.application.delegate didFinishLaunchingWithOptions:self.initialOptions application:self.application];
                                                          if (completionBlock) {
@@ -200,19 +203,6 @@
 }
 
 #pragma mark - Start Application Static Methods
-
-static NSArray *defaultAttachContextClasses;
-
-+ (void)addDefaultAttachContext:(Class)attachContextClass {
-    if ([defaultAttachContextClasses containsObject:attachContextClass]) {
-        return;
-    }
-    if ([attachContextClass isSubclassOfClass:[XTContext class]]) {
-        NSMutableArray *classes = (defaultAttachContextClasses ?: @[]).mutableCopy;
-        [classes addObject:NSStringFromClass(attachContextClass)];
-        defaultAttachContextClasses = [classes copy];
-    }
-}
 
 static UINavigationController *currentDebugNavigationViewController;
 static XTUIContext *currentDebugContext;
