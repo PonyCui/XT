@@ -37,21 +37,11 @@ export class ImageViewElement extends ViewElement {
         if (this.contentObject) {
             this.contentObject.removeAttributeNS("http://www.w3.org/1999/xlink", "href")
             this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
-            cancelAnimationFrame(this._fadeInHandler)
-            this.contentObject.style.opacity = "0"
-            this.contentObject.onload = () => {
-                if (fadeIn) {
-                    this.xtr_fadeIn(0.0)
-                }
-                else {
-                    this.contentObject && (this.contentObject.style.opacity = "1")
-                }
-            }
         }
     }
 
     xtr_fadeIn(currentValue: number) {
-        requestAnimationFrame(() => {
+        this._fadeInHandler = requestAnimationFrame(() => {
             currentValue += 0.05
             if (currentValue > 1.0) { return }
             if (this.contentObject) {
