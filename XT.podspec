@@ -34,6 +34,7 @@ Pod::Spec.new do |s|
     uikit.source_files = "ios/Sources/UIKit/*.{h,m}"
     uikit.resources = "ios/Sources/UIKit/*.{js}"
     uikit.dependency "XT/Core"
+    uikit.dependency "YYWebImage"
   end
 
 end
