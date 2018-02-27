@@ -32,10 +32,6 @@ class AppActivity : XTUIActivity() {
         currentUIContext?.release()
     }
 
-    init {
-        XTUIContext.addDefaultAttachContext(XTFoundationContext::class.java as Class<XTContext>)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.app)

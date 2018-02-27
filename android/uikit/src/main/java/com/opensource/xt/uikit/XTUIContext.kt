@@ -26,14 +26,6 @@ class XTUIContext(appContext: android.content.Context,
 
     companion object: XTDebugDelegate {
 
-        private var defaultAttachContext: MutableList<Class<XTContext>> = mutableListOf()
-
-        fun addDefaultAttachContext(attachContextClass: Class<XTContext>) {
-            if (XTContext::class.java.isAssignableFrom(attachContextClass) && !defaultAttachContext.contains(attachContextClass)) {
-                defaultAttachContext.add(attachContextClass)
-            }
-        }
-
         fun createWithAssets(appContext: android.content.Context,
                              assetsName: String,
                              options: Map<String, Any>?,
@@ -46,14 +38,7 @@ class XTUIContext(appContext: android.content.Context,
                                 options: Map<String, Any>?,
                                 completionBlock: ((uiContext: XTUIContext) -> Unit)? = null,
                                 failureBlock: ((e: Exception) -> Unit)? = null): XTUIContext {
-            val context = XTUIContext(appContext, sourceURL, options, completionBlock, failureBlock)
-            defaultAttachContext.forEach {
-                try {
-                    it.getDeclaredConstructor(android.content.Context::class.java, XTContext::class.java)
-                            .newInstance(appContext, context)
-                } catch (e: Exception) { e.printStackTrace() }
-            }
-            return context
+            return XTUIContext(appContext, sourceURL, options, completionBlock, failureBlock)
         }
 
         var currentDebugApplicationContext: Context? = null
@@ -245,6 +230,7 @@ class XTUIContext(appContext: android.content.Context,
                     inputStream.close()
                     val script = String(byteArray)
                     handler.post {
+                        XTFrameworkLoader.loadFrameworks(script, this)
                         this.evaluateScript(script)
                         application?.delegate?.didFinishLaunchWithOptions(options ?: mapOf(), application!!)
                         completionBlock?.invoke(this)
@@ -258,6 +244,7 @@ class XTUIContext(appContext: android.content.Context,
                         val res = OkHttpClient().newCall(req).execute()
                         val script = res.body()?.string() ?: return@Thread
                         handler.post {
+                            XTFrameworkLoader.loadFrameworks(script, this)
                             this.evaluateScript(script)
                             application?.delegate?.didFinishLaunchWithOptions(options ?: mapOf(), application!!)
                             completionBlock?.invoke(this)
