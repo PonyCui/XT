@@ -1,0 +1,8 @@
+-keep class com.opensource.xt.** { *; }
+-keep class com.eclipsesource.v8.** { *; }
+-keep class * extends com.opensource.xt.** {
+    *;
+}
+
+-dontwarn okio.**
+-dontwarn okhttp3.**
