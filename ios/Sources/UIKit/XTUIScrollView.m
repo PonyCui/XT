@@ -54,6 +54,21 @@
     }
 }
 
++ (NSDictionary *)xtr_contentInset:(NSString *)objectRef {
+    UIScrollView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        return [JSValue fromInsets:view.contentInset];
+    }
+    return @{};
+}
+
++ (void)xtr_setContentInset:(JSValue *)contentInset objectRef:(NSString *)objectRef {
+    UIScrollView *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        [view setContentInset:[contentInset toInsets]];
+    }
+}
+
 + (void)xtr_scrollRectToVisible:(JSValue *)rect animated:(BOOL)animated objectRef:(NSString *)objectRef {
     UIScrollView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[UIScrollView class]]) {
@@ -201,6 +216,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.delegate = self;
+        if (@available(iOS 11.0, *)) {
+            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return self;
 }

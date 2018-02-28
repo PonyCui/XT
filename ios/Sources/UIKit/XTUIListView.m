@@ -78,6 +78,9 @@
         headerView.frame = CGRectMake(0, 0, 0, 0.01);
         self.tableHeaderView = headerView;
         self.tableFooterView = [UIView new];
+        if (@available(iOS 11.0, *)) {
+            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
         self.retainViews = [NSMutableSet set];
     }
     return self;
@@ -120,6 +123,13 @@
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDatasource
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleScroll" withArguments:@[]];
+    }
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section < self.items.count) {

@@ -5,6 +5,7 @@ export class ScrollView extends View {
 
     contentOffset: Point
     contentSize: Size
+    contentInset: Insets
     isPagingEnabled: boolean = false
     isDirectionalLockEnabled: boolean = true
     bounces: boolean = true

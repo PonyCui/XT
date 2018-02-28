@@ -26,5 +26,6 @@
 + (nonnull NSDictionary *)fromColor:(nonnull UIColor *)color;
 - (nullable UIColor *)toColor;
 + (nullable JSValue *)fromObject:(nullable id)object context:(nonnull JSContext *)context;
+- (UIEdgeInsets)toInsets;
 
 @end

@@ -1,6 +1,6 @@
 /// <reference path="xtr.d.ts" />
 import { View } from "./View";
-import { Point, Size, Insets, Rect, RectZero } from "../interface/Rect";
+import { Point, Size, Insets, Rect, RectZero, InsetsMake } from "../interface/Rect";
 
 export class ScrollView extends View {
 
@@ -31,6 +31,15 @@ export class ScrollView extends View {
 
     public set contentOffset(value: Point) {
         _XTUIScrollView.xtr_setContentOffsetAnimatedObjectRef(value, false, this.objectRef)
+    }
+
+
+    public get contentInset(): Insets {
+        return _XTUIScrollView.xtr_contentInset(this.objectRef);
+    }
+
+    public set contentInset(value: Insets) {
+        _XTUIScrollView.xtr_setContentInsetObjectRef(value, this.objectRef);
     }
 
     public setContentOffset(value: Point, animated: boolean): void {

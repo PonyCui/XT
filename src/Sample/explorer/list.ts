@@ -493,6 +493,7 @@ export class List extends UI.ViewController {
 
     viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        this.listView.contentInset = UI.InsetsMake(0, 0, this.safeAreaInsets.bottom, 0)
         this.listView.frame = UI.RectMake(0, this.safeAreaInsets.top, this.view.bounds.width, this.view.bounds.height - this.safeAreaInsets.top)
     }
 

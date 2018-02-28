@@ -82,4 +82,12 @@
     return [JSValue valueWithUndefinedInContext:context];
 }
 
+- (UIEdgeInsets)toInsets {
+    if ([self isObject]) {
+        NSDictionary *obj = [self toDictionary];
+        return UIEdgeInsetsMake(FloatValue(obj[@"top"]), FloatValue(obj[@"left"]), FloatValue(obj[@"bottom"]), FloatValue(obj[@"right"]));
+    }
+    return UIEdgeInsetsZero;
+}
+
 @end

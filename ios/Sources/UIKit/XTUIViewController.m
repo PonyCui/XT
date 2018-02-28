@@ -180,8 +180,10 @@
     XTUIViewController *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIViewController class]]) {
         CGFloat topLength = obj.topLayoutGuide.length;
+        CGFloat bottomLength = obj.bottomLayoutGuide.length;
         if (@available(iOS 11.0, *)) {
             topLength = obj.view.safeAreaInsets.top;
+            bottomLength = obj.view.safeAreaInsets.bottom;
         }
         if (obj.navigationBar != nil && !obj.navigationBarHidden) {
             topLength += 44.0;
@@ -189,7 +191,7 @@
         if (!obj.navigationBar.translucent) {
             topLength = 0;
         }
-        return [JSValue fromInsets:UIEdgeInsetsMake(topLength, 0, 0, 0)];
+        return [JSValue fromInsets:UIEdgeInsetsMake(topLength, 0, bottomLength, 0)];
     }
     return [JSValue fromInsets:UIEdgeInsetsZero];
 }

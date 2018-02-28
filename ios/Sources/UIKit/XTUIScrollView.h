@@ -16,6 +16,8 @@
 + (NSString *)create;
 + (NSDictionary *)xtr_contentOffset:(NSString *)objectRef;
 + (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(BOOL)animated objectRef:(NSString *)objectRef;
++ (NSDictionary *)xtr_contentInset:(NSString *)objectRef;
++ (void)xtr_setContentInset:(JSValue *)contentInset objectRef:(NSString *)objectRef;
 + (void)xtr_scrollRectToVisible:(JSValue *)rect animated:(BOOL)animated  objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_contentSize:(NSString *)objectRef;
 + (void)xtr_setContentSize:(JSValue *)contentSize objectRef:(NSString *)objectRef;
