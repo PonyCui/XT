@@ -81,10 +81,11 @@ import { Window as IWindow } from '../interface/Window'
 import { Window as MWindow } from './Window'
 export const Window = MWindow
 
-import { ViewController as IViewController, KeyboardAvoidingMode as IKeyboardAvoidingMode } from '../interface/ViewController'
-import { ViewController as MViewController } from './ViewController'
+import { ViewController as IViewController, KeyboardAvoidingMode as IKeyboardAvoidingMode, ViewControllerLayoutOptions as IViewControllerLayoutOptions } from '../interface/ViewController'
+import { ViewController as MViewController, ViewControllerLayoutOptions as MViewControllerLayoutOptions } from './ViewController'
 export const ViewController = MViewController
 export const KeyboardAvoidingMode = IKeyboardAvoidingMode 
+export const ViewControllerLayoutOptions = MViewControllerLayoutOptions
 
 import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from '../interface/NavigationBar'
 import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './NavigationBar'

@@ -580,12 +580,19 @@ export enum KeyboardAvoidingMode {
     Pan,
 }
 
+export enum ViewControllerLayoutOptions {
+    None,
+    AndroidLight,
+    AndroidDark,
+}
+
 export class ViewController implements Releasable {
     retain(owner?: any): this;
     release(): this;
 
     title: string
     readonly view: View
+    layoutOptions: ViewControllerLayoutOptions[]
     readonly safeAreaInsets: Insets
     loadView(): void
     viewDidLoad(): void
@@ -1048,6 +1055,7 @@ declare global {
         TransformMatrix: typeof TransformMatrix,
         Window: typeof Window,
         KeyboardAvoidingMode: typeof KeyboardAvoidingMode,
+        ViewControllerLayoutOptions: typeof ViewControllerLayoutOptions,
         ViewController: typeof ViewController,
         NavigationBarButtonItem: typeof NavigationBarButtonItem,
         NavigationBar: typeof NavigationBar,

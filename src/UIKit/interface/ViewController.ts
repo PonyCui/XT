@@ -16,6 +16,12 @@ export enum KeyboardAvoidingMode {
     Pan,
 }
 
+export enum ViewControllerLayoutOptions {
+    None,
+    AndroidLight,
+    AndroidDark,
+}
+
 export class ViewController implements Releasable {
 
     retain(): this {
@@ -30,6 +36,7 @@ export class ViewController implements Releasable {
 
     title?: string
     readonly view: View
+    layoutOptions: ViewControllerLayoutOptions[]
     readonly safeAreaInsets: Insets
 
     loadView(): void { }

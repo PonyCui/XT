@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -14,6 +15,7 @@ import com.opensource.xt.core.XTDebug
 import com.opensource.xt.foundation.XTFoundationContext
 import com.opensource.xt.uikit.XTUIActivity
 import com.opensource.xt.uikit.XTUIContext
+import com.opensource.xt.uikit.XTUIWindow
 
 class FooFragment: Fragment() {
 
@@ -43,7 +45,11 @@ class AppActivity : XTUIActivity() {
             when (mode) {
                 0 -> it.start()
                 1 -> it.attach(this)
-                2 -> it.attach(this, R.id.foo_fragment)
+                2 -> {
+                    findViewById(R.id.button).visibility = View.GONE
+                    findViewById(R.id.button2).visibility = View.GONE
+                    it.attach(this, R.id.foo_fragment)
+                }
             }
         })
     }

@@ -50,6 +50,14 @@ class XTUISize(val width: Double, val height: Double) {
 
 }
 
+class XTUIInsets(val top: Double, val left: Double, val bottom: Double, val right: Double) {
+
+    override fun toString(): String {
+        return "XTUIPoint, top: $top, left: $left, bottom: $bottom, right: $right"
+    }
+
+}
+
 //class XTUIFont(val pointSize: Double, val familyName: String?, val fontWeight: String = "400", val fontStyle: String = "normal")
 
 class XTUIMatrixOriginal(val scale: XTUIPoint, val degree: Double, val translate: XTUIPoint)

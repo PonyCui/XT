@@ -22,6 +22,12 @@ export enum KeyboardAvoidingMode {
     Pan,
 }
 
+export enum ViewControllerLayoutOptions {
+    None,
+    AndroidLight = 1,
+    AndroidDark = 2,
+}
+
 export class ViewController implements Releasable, NavigationBarDelegate {
 
     retain(owner: any = undefined): this {
@@ -84,6 +90,17 @@ export class ViewController implements Releasable, NavigationBarDelegate {
         this._title = value
         this.navigationBar.title = value
     }
+
+    private _layoutOptions: ViewControllerLayoutOptions[]
+
+	public get layoutOptions(): ViewControllerLayoutOptions[]  {
+		return this._layoutOptions;
+	}
+
+	public set layoutOptions(value: ViewControllerLayoutOptions[] ) {
+        this._layoutOptions = value;
+        _XTUIViewController.xtr_setLayoutOptions(value, this.objectRef)
+	}
 
     public get view() {
         return new View(_XTUIViewController.xtr_view(this.objectRef));

@@ -17,12 +17,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ModuleSampleActivity">
-
-        </activity>
-
-        <meta-data android:name="XTPlugin.FOOPlugin" android:value="com.opensource.fooplugin.FOOPlugin" />
-
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

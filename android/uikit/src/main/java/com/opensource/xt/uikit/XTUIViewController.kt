@@ -65,6 +65,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             transaction.replace(fragmentID, it)
             transaction.commit()
             it.noStatusBar = true
+            it.noSoftButtonBar = true
             it.resetContents()
             it.setupKeyboardHeightProvider(activity)
         }
@@ -213,6 +214,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             exports.registerJavaMethod(this, "xtr_presentViewController", "xtr_presentViewController", arrayOf(String::class.java, Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_dismissViewController", "xtr_dismissViewController", arrayOf(Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_setSupportOrientations", "xtr_setSupportOrientations", arrayOf(V8Array::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_setLayoutOptions", "xtr_setLayoutOptions", arrayOf(V8Array::class.java, String::class.java))
             return exports
         }
 
@@ -351,6 +353,10 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
                 }
                 (XTMemoryManager.find(objectRef) as? XTUIViewController)?.supportOrientations = newValue.toList()
             }
+        }
+
+        fun xtr_setLayoutOptions(value: V8Array, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTUIViewController)?.layoutOptions = V8ObjectUtils.toList(value).mapNotNull { it as? Int }
         }
 
     }

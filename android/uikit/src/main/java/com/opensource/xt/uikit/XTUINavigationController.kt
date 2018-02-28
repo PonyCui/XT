@@ -42,6 +42,7 @@ class XTUINavigationController: XTUIViewController() {
                 transaction.add(attachingFragmentID, viewController.requestFragment())
                 transaction.commit()
                 viewController.noStatusBar = true
+                viewController.noSoftButtonBar = true
                 viewController.resetContents()
             }
         } ?: kotlin.run {

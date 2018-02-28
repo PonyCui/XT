@@ -2,6 +2,9 @@ package com.opensource.xt.uikit
 
 import android.app.Fragment
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
@@ -10,6 +13,9 @@ import android.widget.FrameLayout
 import com.eclipsesource.v8.V8Object
 import com.opensource.xt.core.XTContext
 import java.lang.ref.WeakReference
+import android.util.DisplayMetrics
+
+
 
 /**
  * Created by cuiminghui on 2018/1/9.
@@ -40,6 +46,13 @@ open class XTUIFragment: Fragment() {
         }
 
     internal var noStatusBar = false
+    internal var noSoftButtonBar = false
+    internal var layoutOptions: List<Int>? = null
+        set(value) {
+            field = value
+            rootView?.layoutOptions = value
+            rootView?.invalidate()
+        }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         this.rootView = RootView(inflater?.context as Context)
@@ -66,6 +79,7 @@ open class XTUIFragment: Fragment() {
 
     fun resetContents() {
         val rootView = this.rootView ?: return
+        rootView.layoutOptions = this.layoutOptions
         val navigationHidden = this.navigationBarHidden || this.navigationBar == null
         rootView.removeAllViews()
         this.view?.let { rootView.removeView(it) }
@@ -79,18 +93,62 @@ open class XTUIFragment: Fragment() {
             rootView.view = WeakReference(innerView)
             rootView.addView(innerView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             rootView.topLayoutLength = 0.0
+            rootView.bottomLayoutLength = getSoftButtonsBarHeight()
         } ?: kotlin.run { rootView.view = null }
         this.navigationBar?.takeIf { !navigationHidden }?.let { navigationBar ->
             rootView.navigationBar = WeakReference(navigationBar)
             rootView.addView(navigationBar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            rootView.topLayoutLength = if (noStatusBar || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) 48.0 else 68.0
+            rootView.topLayoutLength = 48.0 + getStatusBarHeight()
+            rootView.bottomLayoutLength = getSoftButtonsBarHeight()
         } ?: kotlin.run { rootView.navigationBar = null }
         rootView.resetLayout()
+    }
+
+    fun getStatusBarHeight(): Double {
+        if ((activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) == 0) {
+            return 0.0
+        }
+        if (noStatusBar) {
+            return 0.0
+        }
+        var result = 0
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId)
+        }
+        return (result / resources.displayMetrics.density).toDouble()
+    }
+
+    fun getSoftButtonsBarHeight(): Double {
+        if ((activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) == 0) {
+            return 0.0
+        }
+        if (noSoftButtonBar) {
+            return 0.0
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            val metrics = DisplayMetrics()
+            activity?.let {
+                it.windowManager.defaultDisplay.getMetrics(metrics)
+                val usableHeight = metrics.heightPixels
+                it.windowManager.defaultDisplay.getRealMetrics(metrics)
+                val realHeight = metrics.heightPixels
+                return if (realHeight > usableHeight)
+                    ((realHeight - usableHeight) / resources.displayMetrics.density).toDouble()
+                else
+                    0.0
+            }
+        }
+        return 0.0
     }
 
     class RootView @JvmOverloads constructor(
             context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     ) : FrameLayout(context, attrs, defStyleAttr) {
+
+        init {
+            setWillNotDraw(false)
+        }
 
         var topLayoutLength = 0.0
             set(value) {
@@ -104,6 +162,7 @@ open class XTUIFragment: Fragment() {
                 resetLayout()
             }
 
+        var layoutOptions: List<Int>? = null
         var view: WeakReference<XTUIView>? = null
         var navigationBar: WeakReference<XTUINavigationBar>? = null
 
@@ -192,6 +251,28 @@ open class XTUIFragment: Fragment() {
                 }
             }
             return true
+        }
+
+        val softKeyButtonsPaint = Paint()
+
+        override fun draw(canvas: Canvas?) {
+            super.draw(canvas)
+            if (this.bottomLayoutLength > 0) {
+                canvas?.let { canvas ->
+                    if (this.layoutOptions?.contains(1) === true) {
+                        softKeyButtonsPaint.reset()
+                        softKeyButtonsPaint.color = Color.GRAY
+                        softKeyButtonsPaint.style = Paint.Style.STROKE
+                        softKeyButtonsPaint.strokeWidth = 1.0f
+                        canvas.drawLine(0f, (canvas.height - this.bottomLayoutLength * resources.displayMetrics.density).toFloat(), canvas.width.toFloat(), (canvas.height - this.bottomLayoutLength * resources.displayMetrics.density).toFloat(), softKeyButtonsPaint)
+                    }
+                    else {
+                        softKeyButtonsPaint.reset()
+                        softKeyButtonsPaint.color = Color.BLACK
+                        canvas.drawRect(0f, (canvas.height - this.bottomLayoutLength * resources.displayMetrics.density).toFloat(), canvas.width.toFloat(), canvas.height.toFloat(), softKeyButtonsPaint)
+                    }
+                }
+            }
         }
 
     }

@@ -60,6 +60,15 @@ class XTUIUtils {
             return v8Object
         }
 
+        fun fromInsets(target: XTUIInsets, runtime: V8): V8Object {
+            val v8Object = V8Object(runtime)
+            v8Object.add("top", target.top)
+            v8Object.add("left", target.left)
+            v8Object.add("bottom", target.bottom)
+            v8Object.add("right", target.right)
+            return v8Object
+        }
+
         fun toPoint(target: Any?): XTUIPoint? {
             (target as? XTUIPoint)?.let { return it }
             (target as? V8Object)?.let {
