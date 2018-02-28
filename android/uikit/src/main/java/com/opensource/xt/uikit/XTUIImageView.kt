@@ -15,9 +15,18 @@ class XTUIImageView @JvmOverloads constructor(
 ) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     var image: XTUIImage? = null
-        internal set
+        internal set(value) {
+            field?.let {
+                if (imageViaCurrentURL) { it.bitmap.recycle() }
+                field = null
+            }
+            field = value
+        }
+
+    private var imageViaCurrentURL = false
 
     private var currentURL: String? = null
+    private var currentURLLoadingOperation: (() -> Unit)? = null
 
     var contentMode: Int = 0
         internal set
@@ -134,6 +143,7 @@ class XTUIImageView @JvmOverloads constructor(
 
         fun xtr_setImage(imageRef: String, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTUIImageView)?.let {
+                it.imageViaCurrentURL = false
                 it.image = XTMemoryManager.find(imageRef) as? XTUIImage
                 it.setWillNotDraw(it.image == null)
                 it.invalidate()
@@ -144,13 +154,16 @@ class XTUIImageView @JvmOverloads constructor(
             (XTMemoryManager.find(objectRef) as? XTUIImageView)?.let { imageView ->
                 imageView.cancelFadeInAnimation()
                 imageView.image = null
+                imageView.currentURLLoadingOperation?.invoke()
                 imageView.currentURL = url
-                XTUIImage.xtr_fromURL(url, { image, url ->
+                var startTime = System.currentTimeMillis()
+                imageView.currentURLLoadingOperation = XTUIImage.xtr_fromURL(url, { image, url ->
                     if (imageView.currentURL == url) {
                         imageView.image = image
+                        imageView.imageViaCurrentURL = true
                         imageView.setWillNotDraw(false)
                         imageView.invalidate()
-                        if (fadeIn) {
+                        if (fadeIn && (System.currentTimeMillis() - startTime) > 100) {
                             imageView.fadeIn()
                         }
                     }

@@ -337,6 +337,9 @@ export class View implements Releasable {
 
     setNeedsLayout() { _XTUIView.xtr_setNeedsLayout(this.objectRef) }
     layoutIfNeeded() { _XTUIView.xtr_layoutIfNeeded(this.objectRef) }
+
+    private autoLayoutViewCache?: any = undefined
+
     layoutSubviews() {
         if (this._constraints.length > 0) {
             let viewMapping: { [key: string]: View } = {}
@@ -344,20 +347,22 @@ export class View implements Releasable {
                 if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).objectRef] = item.firstItem as any }
                 if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).objectRef] = item.secondItem as any }
             })
-            let constraints = this._constraints.map(item => (item as any).toALObject())
-            AutoLayout.VisualFormat.parse("HV:|[_]|", { extended: true }).forEach((it: any) => constraints.push(it))
-            const view = new AutoLayout.View({
-                constraints,
-                width: this.bounds.width,
-                height: this.bounds.height,
-            });
+            const view = this.autoLayoutViewCache || (() => {
+                let constraints = this._constraints.map(item => (item as any).toALObject())
+                AutoLayout.VisualFormat.parse("HV:|[_]|", { extended: true }).forEach((it: any) => constraints.push(it))
+                this.autoLayoutViewCache = new AutoLayout.View({
+                    constraints,
+                })
+                return this.autoLayoutViewCache
+            })();
+            view.setSize(this.bounds.width, this.bounds.height)
             for (const layoutID in view.subViews) {
                 const value = view.subViews[layoutID];
-                if (viewMapping[layoutID] !== undefined && (value.width <= 0 || value.height <= 0)) {
+                if (viewMapping[layoutID] !== undefined && (value.width == 0 || value.height == 0)) {
                     const intrinsticSize = viewMapping[layoutID].intrinsicContentSize(value.width != 0 ? value.width : undefined);
                     if (intrinsticSize !== undefined && intrinsticSize !== null) {
-                        value.intrinsicWidth = value.width > 0 ? undefined : intrinsticSize.width;
-                        value.intrinsicHeight = value.height > 0 ? undefined : intrinsticSize.height;
+                        value.intrinsicWidth = value.width != 0 ? undefined : intrinsticSize.width;
+                        value.intrinsicHeight = value.height != 0 ? undefined : intrinsticSize.height;
                     }
                 }
             }
@@ -389,6 +394,7 @@ export class View implements Releasable {
     }
 
     public addConstraint(constraint: LayoutConstraint) {
+        this.autoLayoutViewCache = undefined
         this._constraints.push(constraint);
     }
 

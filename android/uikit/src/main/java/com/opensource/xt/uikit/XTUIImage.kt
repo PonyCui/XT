@@ -7,6 +7,8 @@ import android.net.http.HttpResponseCache
 import android.util.Base64
 import com.eclipsesource.v8.*
 import com.opensource.xt.core.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import java.net.URL
@@ -84,7 +86,8 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
             }).start()
         }
 
-        fun xtr_fromURL(url: String, success: (image: XTUIImage, url: String) -> Unit) {
+        fun xtr_fromURL(url: String, success: (image: XTUIImage, url: String) -> Unit): () -> Unit {
+            var cancelled = false
             val handler = android.os.Handler()
             Thread({
                 var inputStream: InputStream? = null
@@ -96,7 +99,19 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
                         conn.useCaches = true
                         conn.connect()
                         inputStream = conn.getInputStream()
-                        val bitmap = BitmapFactory.decodeStream(inputStream) ?: throw Exception()
+                        var count: Int
+                        var byteArrayOutputStream = ByteArrayOutputStream()
+                        var bytes = ByteArray(2048)
+                        while (!cancelled) {
+                            count = inputStream?.read(bytes, 0, 2048) ?: -1
+                            if (count <= 0) {
+                                break
+                            }
+                            else {
+                                byteArrayOutputStream.write(bytes, 0, count)
+                            }
+                        }
+                        val bitmap = BitmapFactory.decodeStream(ByteArrayInputStream(byteArrayOutputStream.toByteArray())) ?: throw Exception()
                         handler.post {
                             val instance = XTUIImage(bitmap, 1, 0)
                             val managedObject = XTManagedObject(instance)
@@ -109,6 +124,9 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
                     inputStream?.close()
                 }
             }).start()
+            return {
+                cancelled = true
+            }
         }
 
         private val scaleOptions = listOf(3, 2)
