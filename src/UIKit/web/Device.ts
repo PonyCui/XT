@@ -15,7 +15,7 @@ export class Device {
     deviceName: string = navigator.vendor
     systemName: string = navigator.platform
     systemVersion: string = ""
-    xtRuntimeVersion: string = "0.0.6"
+    xtRuntimeVersion: string = "0.0.7"
     model: string = ""
     orientation: DeviceOrientation = DeviceOrientation.Unknown
 

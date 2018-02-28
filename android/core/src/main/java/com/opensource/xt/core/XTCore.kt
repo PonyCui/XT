@@ -7,7 +7,7 @@ class XTCore {
 
     companion object {
 
-        val version = "0.0.6"
+        val version = "0.0.7"
 
     }
 
