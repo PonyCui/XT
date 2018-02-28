@@ -75,7 +75,7 @@ export class ViewController implements Releasable, NavigationBarDelegate {
             view: this.view,
             safeAreaInsets: this.safeAreaInsets,
             keyboardAvoidingMode: this.keyboardAvoidingMode,
-            // supportOrientations: this.supportOrientations,
+            supportOrientations: this.supportOrientations,
             // navigationBar: this.navigationBar,
         }
     }
@@ -108,6 +108,10 @@ export class ViewController implements Releasable, NavigationBarDelegate {
 
     public set view(value: View) {
         _XTUIViewController.xtr_setView(value.objectRef, this.objectRef);
+    }
+
+    public get safeAreaInsets(): Insets {
+        return _XTUIViewController.xtr_safeAreaInsets(this.objectRef);
     }
 
     loadView(): void {
@@ -218,10 +222,6 @@ export class ViewController implements Releasable, NavigationBarDelegate {
             return true
         }
         return this.navigationController && this.navigationController.childViewControllers.indexOf(this) > 0 ? true : false
-    }
-
-    public get safeAreaInsets(): Insets {
-        return InsetsMake(0, 0, 0, 0);
     }
 
     keyboardAvoidingMode(): KeyboardAvoidingMode { return KeyboardAvoidingMode.None }

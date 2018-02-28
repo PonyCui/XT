@@ -215,6 +215,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             exports.registerJavaMethod(this, "xtr_dismissViewController", "xtr_dismissViewController", arrayOf(Boolean::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_setSupportOrientations", "xtr_setSupportOrientations", arrayOf(V8Array::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_setLayoutOptions", "xtr_setLayoutOptions", arrayOf(V8Array::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_safeAreaInsets", "xtr_safeAreaInsets", arrayOf(String::class.java))
             return exports
         }
 
@@ -357,6 +358,20 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
 
         fun xtr_setLayoutOptions(value: V8Array, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTUIViewController)?.layoutOptions = V8ObjectUtils.toList(value).mapNotNull { it as? Int }
+        }
+
+        fun xtr_safeAreaInsets(objectRef: String): V8Object {
+            val v8Object = V8Object(context.runtime)
+            v8Object.add("top", 0)
+            v8Object.add("left", 0)
+            v8Object.add("bottom", 0)
+            v8Object.add("right", 0)
+            (XTMemoryManager.find(objectRef) as? XTUIViewController)?.let {
+                if (it.navigationBarHidden) {
+                    v8Object.add("top", it.getStatusBarHeight())
+                }
+            }
+            return v8Object
         }
 
     }

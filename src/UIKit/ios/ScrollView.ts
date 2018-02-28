@@ -33,7 +33,6 @@ export class ScrollView extends View {
         _XTUIScrollView.xtr_setContentOffsetAnimatedObjectRef(value, false, this.objectRef)
     }
 
-
     public get contentInset(): Insets {
         return _XTUIScrollView.xtr_contentInset(this.objectRef);
     }

@@ -74,8 +74,12 @@ export class ViewController implements Releasable {
         }
     }
 
-    static safeAreaInsets: Insets | undefined = undefined
-    safeAreaInsets: Insets = ViewController.safeAreaInsets || InsetsMake(0, 0, 0, 0)
+    public get safeAreaInsets(): Insets {
+        if (screen.availHeight == 812 && navigator.userAgent.match(/(iPhone)/)) {
+            return InsetsMake(0, 0, 34, 0)    
+        }
+        return InsetsMake(0, 0, 0, 0)
+    }
 
     loadView(): void {
         const view = new View();

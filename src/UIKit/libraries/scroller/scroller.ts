@@ -20,11 +20,9 @@ export interface ScrollerDelegate {
 export class Scroller {
 
     contentSize: { width: number, height: number } = { width: 0, height: 0 }
+    contentInset: { top: number, left: number, bottom: number, right: number } = { top: 0, left: 0, bottom: 0, right: 0 }
     bounds: { width: number, height: number } = { width: 0, height: 0 }
     directionalLockEnabled: boolean = false
-    bounces: boolean = true
-    alwaysBounceVertical: boolean = false
-    alwaysBounceHorizontal: boolean = false
     pagingEnabled: boolean = false
     scrollEnabled: boolean = true
     decelerationRate: number = 0.997
@@ -75,42 +73,9 @@ export class Scroller {
         if (this._dragging) {
             const originalOffset = this.delegate.contentOffset;
             let proposedOffset = { ...originalOffset };
-            if (this.bounces) {
-                if (this.contentSize.width < this.bounds.width && !this.alwaysBounceHorizontal) {
-                    proposedOffset.x = 0.0
-                }
-                else {
-                    if (proposedOffset.x + delta.x < 0.0) {
-                        proposedOffset.x = proposedOffset.x + delta.x / 2.5
-                    }
-                    else if (proposedOffset.x + delta.x > this.contentSize.width - this.bounds.width) {
-                        proposedOffset.x = proposedOffset.x + delta.x / 2.5
-                    }
-                    else {
-                        proposedOffset.x = proposedOffset.x + delta.x
-                    }
-                }
-                if (this.contentSize.height < this.bounds.height && !this.alwaysBounceVertical) {
-                    proposedOffset.y = 0.0
-                }
-                else {
-                    if (proposedOffset.y + delta.y < 0.0) {
-                        proposedOffset.y = proposedOffset.y + delta.y / 2.5
-                    }
-                    else if (proposedOffset.y + delta.y > this.contentSize.height - this.bounds.height) {
-                        proposedOffset.y = proposedOffset.y + delta.y / 2.5
-                    }
-                    else {
-                        proposedOffset.y = proposedOffset.y + delta.y
-                    }
-                }
-                this.delegate.contentOffset = proposedOffset
-            }
-            else {
-                this.delegate.contentOffset = {
-                    x: Math.min(Math.max(0.0, this.contentSize.width - this.bounds.width), Math.max(0.0, proposedOffset.x + delta.x)),
-                    y: Math.min(Math.max(0.0, this.contentSize.height - this.bounds.height), Math.max(0.0, proposedOffset.y + delta.y)),
-                }
+            this.delegate.contentOffset = {
+                x: Math.min(Math.max(-this.contentInset.left, this.contentSize.width + this.contentInset.right - this.bounds.width), Math.max(-this.contentInset.left, proposedOffset.x + delta.x)),
+                y: Math.min(Math.max(-this.contentInset.top, this.contentSize.height + this.contentInset.bottom - this.bounds.height), Math.max(-this.contentInset.top, proposedOffset.y + delta.y)),
             }
         }
     }

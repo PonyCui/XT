@@ -103,9 +103,8 @@ export class AnimationDeceleration extends Animation {
         this.x.velocity = ClampedVelocty(velocity.x);
         this.x.position = scroller.delegate.contentOffset.x;
         this.x.bounced = false;
-        this.x.bounce = scroller.bounces
-        this.x.bounceLeft = 0.0
-        this.x.bounceRight = Math.max(0.0, scroller.contentSize.width - scroller.bounds.width)
+        this.x.bounceLeft = -this.scroller.contentInset.left
+        this.x.bounceRight = Math.max(-this.scroller.contentInset.left, scroller.contentSize.width + this.scroller.contentInset.right - scroller.bounds.width)
         if (this.x.position < this.x.bounceLeft) {
             if (this.x.velocity < -0.1) {
                 this.x.bounced = true
@@ -130,9 +129,9 @@ export class AnimationDeceleration extends Animation {
         this.y.velocity = ClampedVelocty(velocity.y);
         this.y.position = scroller.delegate.contentOffset.y;
         this.y.bounced = false;
-        this.y.bounce = scroller.bounces
-        this.y.bounceLeft = 0.0
-        this.y.bounceRight = Math.max(0.0, scroller.contentSize.height - scroller.bounds.height)
+        this.y.bounce = false
+        this.y.bounceLeft = -this.scroller.contentInset.top
+        this.y.bounceRight = Math.max(-this.scroller.contentInset.top, scroller.contentSize.height + this.scroller.contentInset.bottom - scroller.bounds.height)
         if (this.y.position < this.y.bounceLeft) {
             if (this.y.velocity < -0.1) {
                 this.y.bounced = true

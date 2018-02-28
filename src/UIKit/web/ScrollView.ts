@@ -1,5 +1,5 @@
 import { View, InteractionState } from "./View";
-import { Size, Point, Rect, RectZero, SizeZero } from "../interface/Rect";
+import { Size, Point, Rect, RectZero, SizeZero, Insets, InsetsMake } from "../interface/Rect";
 import { ScrollViewElement } from "./element/ScrollView";
 import { Touchable, Touch, Event } from '../libraries/touch/TouchManager';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
@@ -107,6 +107,17 @@ export class ScrollView extends View implements ScrollerDelegate {
         const oldFrame = this.innerView.frame
         this.innerView.frame = { x: oldFrame.x, y: oldFrame.y, width: Math.max(this.frame.width, value.width), height: Math.max(this.frame.height, value.height) }
         this.resetScroller();
+    }
+
+    private _contentInset: Insets = InsetsMake(0, 0, 0, 0)
+
+    public get contentInset(): Insets {
+        return this._contentInset
+    }
+
+    public set contentInset(value: Insets) {
+        this._contentInset = value
+        this.resetScroller()
     }
 
     public get contentOffset() {
@@ -263,11 +274,9 @@ export class ScrollView extends View implements ScrollerDelegate {
             this.scroller = new Scroller(this)
         }
         this.scroller.contentSize = this.contentSize
+        this.scroller.contentInset = this.contentInset
         this.scroller.bounds = this.bounds
         this.scroller.directionalLockEnabled = this.isDirectionalLockEnabled
-        this.scroller.bounces = this.bounces
-        this.scroller.alwaysBounceVertical = this.alwaysBounceVertical
-        this.scroller.alwaysBounceHorizontal = this.alwaysBounceHorizontal
         this.scroller.pagingEnabled = this.isPagingEnabled
         this.scroller.scrollEnabled = this.isScrollEnabled
     }
