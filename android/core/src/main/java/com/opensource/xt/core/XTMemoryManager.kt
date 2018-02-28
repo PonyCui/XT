@@ -42,9 +42,9 @@ class XTMemoryManager {
         fun add(obj: XTManagedObject) {
             runGC()
             obj.xtRetainCount++
-            sharedHandler.postDelayed({
+            sharedHandler.post {
                 obj.xtRetainCount--
-            }, 1000)
+            }
             objectMapping.put(obj.objectUUID, obj)
         }
 
@@ -70,7 +70,7 @@ class XTMemoryManager {
                             return@mapNotNull it.objectUUID
                         }
                         else if (it.owners?.count() ?: 0 > 0 &&
-                                it.owners?.filter { it.get() == null }?.size == 0) {
+                                it.owners?.filter { it.get() != null }?.size == 0) {
                             return@mapNotNull it.objectUUID
                         }
                         else {
