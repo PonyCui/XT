@@ -47,7 +47,7 @@ class Cell extends UI.ListCell {
         this.selectionStyle = UI.ListSelectionStyle.None
         this.bottomLineInsets = UI.InsetsMake(0, 25, 0, 25)
         this.content.backgroundColor = UI.Color.whiteColor
-        this.addSubview(this.content)
+        this.contentView.addSubview(this.content)
         this.titleLabel.textColor = UI.Color.grayColor
         this.titleLabel.font = UI.Font.systemFontOfSize(13)
         this.content.addSubview(this.titleLabel)
@@ -75,6 +75,7 @@ class Cell extends UI.ListCell {
     }
 
     layoutSubviews() {
+        super.layoutSubviews()
         this.content.frame = UI.RectMake(15, 0, this.bounds.width - 30, 44)
         this.titleLabel.frame = { ...this.content.bounds, x: 15 }
     }
@@ -137,6 +138,19 @@ export class CoreList extends UI.ViewController {
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new ClassLoaderSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Shim",
+                action: () => {
+                    if ((XT as any).ShimTest === "999.999.999") {
+                        new UI.Alert("Shim Test Pass").show()
+                    }
+                    else {
+                        new UI.Alert("Shim Test Fail, Value = " + (XT as any).ShimTest).show()
                     }
                 },
             },

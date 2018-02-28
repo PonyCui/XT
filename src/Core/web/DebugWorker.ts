@@ -2,7 +2,7 @@ class XTDebugger {
 
     static sharedDebugger = new XTDebugger()
     socket: WebSocket | undefined = undefined
-    reconnectTimer: number = 0
+    reconnectTimer: any = 0
     openTS: number = 0
 
     connect(IP: string, port: number) {

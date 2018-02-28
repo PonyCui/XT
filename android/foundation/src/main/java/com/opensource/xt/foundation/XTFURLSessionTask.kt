@@ -30,9 +30,10 @@ class XTFURLSessionTask(val context: XTContext, val callable: Call, val callback
 
             override fun onResponse(call: Call?, response: Response?) {
                 context.takeIf { !it.runtime.isReleased }?.let {
+                    val resBytes = response?.body()?.bytes()
                     context.sharedHandler.post {
                         var dataRef: String? = null
-                        response?.body()?.bytes()?.let {
+                        resBytes?.let {
                             XTFData(it).let {
                                 val managedObject = XTManagedObject(it)
                                 XTMemoryManager.add(managedObject)

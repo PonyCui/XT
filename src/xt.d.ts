@@ -5,6 +5,8 @@ export interface Releasable {
 
 export as namespace XT;
 
+export var minSDK: string
+
 export enum ClassType {
     Unknown,
     ObjC,
@@ -989,10 +991,11 @@ export class WebSocket implements Releasable {
     close(): void
 }
 
+declare var require: (path: string) => any;
 
 declare global {
-    var require: (path: string) => any
     const XT: {
+        minSDK: string,
         ClassType: typeof ClassType,
         ClassLoader: typeof ClassLoader,
         Debug: typeof Debug,
