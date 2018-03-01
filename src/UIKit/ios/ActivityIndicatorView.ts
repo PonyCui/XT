@@ -37,11 +37,21 @@ export class ActivityIndicatorView extends View {
         _XTUIActivityIndicatorView.xtr_setHidesWhenStoppedObjectRef(value, this.objectRef)
     }
 
-    startAnimating(): void {
-        _XTUIActivityIndicatorView.xtr_startAnimating(this.objectRef)
+    private delayTimer: any
+
+    startAnimating(delay: number = 0): void {
+        if (delay > 0) {
+            this.delayTimer = setTimeout(() => {
+                _XTUIActivityIndicatorView.xtr_startAnimating(this.objectRef)
+            }, delay * 1000)
+        }
+        else {
+            _XTUIActivityIndicatorView.xtr_startAnimating(this.objectRef)
+        }
     }
 
     stopAnimating(): void {
+        clearTimeout(this.delayTimer)
         _XTUIActivityIndicatorView.xtr_stopAnimating(this.objectRef)
     }
 

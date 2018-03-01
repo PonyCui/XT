@@ -13,10 +13,13 @@
 #import "XTUIListCell.h"
 #import "XTContext.h"
 #import "XTUIWindow.h"
+#import "XTUIRefreshControl.h"
+#import "XTUILoadMoreControl.h"
 #import "XTMemoryManager.h"
 
 @interface XTUIListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, strong) XTUILoadMoreControl *loadMoreControl;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 @property (nonatomic, strong) NSMutableSet *retainViews;
 
@@ -37,6 +40,52 @@
 
 + (NSString *)name {
     return @"_XTUIListView";
+}
+
++ (NSString *)xtr_refreshControl:(NSString *)objectRef {
+    XTUIListView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUIListView class]]) {
+        if ([listView.refreshControl isKindOfClass:[XTUIRefreshControl class]]) {
+            return [(XTUIRefreshControl *)(listView.refreshControl) objectUUID];
+        }
+    }
+    return nil;
+}
+
++ (void)xtr_setRefreshControl:(NSString *)rcRef objectRef:(NSString *)objectRef {
+    XTUIListView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUIListView class]]) {
+        XTUIRefreshControl *refreshControl = [XTMemoryManager find:rcRef];
+        if ([refreshControl isKindOfClass:[XTUIRefreshControl class]]) {
+            listView.refreshControl = refreshControl;
+        }
+        else {
+            listView.refreshControl = nil;
+        }
+    }
+}
+
++ (NSString *)xtr_loadMoreControl:(NSString *)objectRef {
+    XTUIListView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUIListView class]]) {
+        if ([listView.loadMoreControl isKindOfClass:[XTUILoadMoreControl class]]) {
+            return [(XTUILoadMoreControl *)(listView.loadMoreControl) objectUUID];
+        }
+    }
+    return nil;
+}
+
++ (void)xtr_setLoadMoreControl:(NSString *)rcRef objectRef:(NSString *)objectRef {
+    XTUIListView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUIListView class]]) {
+        XTUILoadMoreControl *loadMoreControl = [XTMemoryManager find:rcRef];
+        if ([loadMoreControl isKindOfClass:[XTUILoadMoreControl class]]) {
+            listView.loadMoreControl = loadMoreControl;
+        }
+        else {
+            listView.loadMoreControl = nil;
+        }
+    }
 }
 
 + (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef {
@@ -77,13 +126,20 @@
         UIView *headerView = [UIView new];
         headerView.frame = CGRectMake(0, 0, 0, 0.01);
         self.tableHeaderView = headerView;
-        self.tableFooterView = [UIView new];
+        UIView *footerView = [UIView new];
+        footerView.frame = CGRectMake(0, 0, 0, 0.01);
+        self.tableFooterView = footerView;
+        self.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
         if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
         self.retainViews = [NSMutableSet set];
     }
     return self;
+}
+
+- (void)setContentInset:(UIEdgeInsets)contentInset {
+    [super setContentInset:UIEdgeInsetsMake(contentInset.top, contentInset.left, contentInset.bottom - 20, contentInset.right)];
 }
 
 - (void)dealloc {
@@ -129,6 +185,18 @@
     if (value != nil) {
         [value invokeMethod:@"handleScroll" withArguments:@[]];
     }
+    if (scrollView.contentOffset.y + scrollView.bounds.size.height > scrollView.contentSize.height - 200.0) {
+        [self tableViewWillTriggerLoadMoreControl];
+    }
+}
+
+- (void)tableViewWillTriggerLoadMoreControl {
+    if (self.loadMoreControl != nil) {
+        self.loadMoreControl.listView = self;
+        if (self.loadMoreControl.enabled && !self.loadMoreControl.isLoading) {
+            [self.loadMoreControl startLoading];
+        }
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -141,7 +209,7 @@
             }
         }
     }
-    return 0.1;
+    return CGFLOAT_MIN;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -168,7 +236,7 @@
             }
         }
     }
-    return 0.1;
+    return CGFLOAT_MIN;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {

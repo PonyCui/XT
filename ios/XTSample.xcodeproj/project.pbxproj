@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9001FA722047E001005D8736 /* XTUIRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 9001FA712047E001005D8736 /* XTUIRefreshControl.m */; };
+		9001FA752047E94E005D8736 /* XTUILoadMoreControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 9001FA742047E94E005D8736 /* XTUILoadMoreControl.m */; };
 		903211F02045506800272AEF /* XTFrameworkLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 903211EF2045506800272AEF /* XTFrameworkLoader.m */; };
 		905708061F4EB2AF00D5EC05 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708051F4EB2AF00D5EC05 /* main.m */; };
 		9057080F1F4EB2AF00D5EC05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9057080D1F4EB2AF00D5EC05 /* Main.storyboard */; };
@@ -72,6 +74,10 @@
 
 /* Begin PBXFileReference section */
 		25EE665DB52F06D34BBBD159 /* Pods-XTSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XTSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-XTSample/Pods-XTSample.release.xcconfig"; sourceTree = "<group>"; };
+		9001FA702047E001005D8736 /* XTUIRefreshControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTUIRefreshControl.h; sourceTree = "<group>"; };
+		9001FA712047E001005D8736 /* XTUIRefreshControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTUIRefreshControl.m; sourceTree = "<group>"; };
+		9001FA732047E94E005D8736 /* XTUILoadMoreControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTUILoadMoreControl.h; sourceTree = "<group>"; };
+		9001FA742047E94E005D8736 /* XTUILoadMoreControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTUILoadMoreControl.m; sourceTree = "<group>"; };
 		903211EE2045506800272AEF /* XTFrameworkLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTFrameworkLoader.h; sourceTree = "<group>"; };
 		903211EF2045506800272AEF /* XTFrameworkLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTFrameworkLoader.m; sourceTree = "<group>"; };
 		905708011F4EB2AF00D5EC05 /* XTSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XTSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -344,6 +350,10 @@
 				90EA87A72019C0B90012A985 /* XTUIListCell.m */,
 				90EA87C72019C0BD0012A985 /* XTUIListView.h */,
 				90EA87BB2019C0BB0012A985 /* XTUIListView.m */,
+				9001FA702047E001005D8736 /* XTUIRefreshControl.h */,
+				9001FA712047E001005D8736 /* XTUIRefreshControl.m */,
+				9001FA732047E94E005D8736 /* XTUILoadMoreControl.h */,
+				9001FA742047E94E005D8736 /* XTUILoadMoreControl.m */,
 				90EA87BC2019C0BB0012A985 /* XTUIModal.h */,
 				90EA87C32019C0BC0012A985 /* XTUIModal.m */,
 				90EA87C42019C0BC0012A985 /* XTUINavigationBar.h */,
@@ -562,6 +572,7 @@
 				903211F02045506800272AEF /* XTFrameworkLoader.m in Sources */,
 				90EA87EC2019C0BF0012A985 /* XTUILayoutConstraint.m in Sources */,
 				90EA880C201AE0F80012A985 /* XTFFileManager.m in Sources */,
+				9001FA722047E001005D8736 /* XTUIRefreshControl.m in Sources */,
 				90EA87DB2019C0BF0012A985 /* XTUIUtils.m in Sources */,
 				90EA8820201B2FBC0012A985 /* FooClass.m in Sources */,
 				90EA87E62019C0BF0012A985 /* XTUIListView.m in Sources */,
@@ -587,6 +598,7 @@
 				90EA87E52019C0BF0012A985 /* XTUITextField.m in Sources */,
 				90EA87E92019C0BF0012A985 /* XTUIModal.m in Sources */,
 				90EA880F201AE0F80012A985 /* XTFURLSessionTask.m in Sources */,
+				9001FA752047E94E005D8736 /* XTUILoadMoreControl.m in Sources */,
 				90EA87EE2019C0BF0012A985 /* XTUIWebView.m in Sources */,
 				90AFB4F720197F4E001E9DA7 /* XTPolyfill.m in Sources */,
 				90EA87EF2019C0BF0012A985 /* XTUISlider.m in Sources */,

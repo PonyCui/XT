@@ -7,15 +7,116 @@
 //
 
 #import "XTUILoadMoreControl.h"
+#import "XTMemoryManager.h"
+#import "XTUIUtils.h"
+#import "XTUIListView.h"
+
+@interface XTUILoadMoreControl()
+
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
+
+@end
 
 @implementation XTUILoadMoreControl
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
++ (NSString *)name {
+    return @"_XTUILoadMoreControl";
 }
-*/
+
++ (BOOL)xtr_enabled:(NSString *)objectRef {
+    XTUILoadMoreControl *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUILoadMoreControl class]]) {
+        return view.enabled;
+    }
+    return NO;
+}
+
++ (void)xtr_setEnabled:(BOOL)value objectRef:(NSString *)objectRef {
+    XTUILoadMoreControl *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUILoadMoreControl class]]) {
+        view.enabled = value;
+    }
+}
+
++ (NSDictionary *)xtr_color:(NSString *)objectRef {
+    XTUILoadMoreControl *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTUILoadMoreControl class]]) {
+        return [JSValue fromColor:obj.indicatorView.color];
+    }
+    return @{};
+}
+
++ (void)xtr_setColor:(JSValue *)color objectRef:(NSString *)objectRef {
+    XTUILoadMoreControl *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTUILoadMoreControl class]]) {
+        obj.indicatorView.color = [color toColor];
+    }
+}
+
++ (void)xtr_endLoading:(NSString *)objectRef {
+    XTUILoadMoreControl *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTUILoadMoreControl class]]) {
+        [obj endLoading];
+    }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        _indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:_indicatorView];
+        self.frame = CGRectMake(0, 0, 0, 44);
+    }
+    return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.indicatorView.frame = self.bounds;
+}
+
+- (void)startLoading {
+    NSLog(@"startLoading");
+    self.isLoading = YES;
+    [self.indicatorView startAnimating];
+    XTUIListView *listView = self.listView;
+    if (listView != nil) {
+        if (listView.tableFooterView != nil) {
+            [listView.tableFooterView addSubview:self];
+            self.frame = CGRectMake(0, listView.tableFooterView.frame.size.height, listView.tableFooterView.frame.size.width, self.frame.size.height);
+            listView.tableFooterView.frame = CGRectMake(0,
+                                                        0,
+                                                        listView.tableFooterView.frame.size.width,
+                                                        listView.tableFooterView.frame.size.height + self.frame.size.height);
+            listView.tableFooterView = listView.tableFooterView;
+        }
+        else {
+            listView.tableFooterView = self;
+        }
+    }
+    if ([self scriptObject] != nil) {
+        [[self scriptObject] invokeMethod:@"handleLoad" withArguments:@[]];
+    }
+}
+
+- (void)endLoading {
+    self.isLoading = NO;
+    [self.indicatorView stopAnimating];
+    XTUIListView *listView = self.listView;
+    if (listView != nil) {
+        if (![listView.tableFooterView isKindOfClass:[XTUILoadMoreControl class]]) {
+            listView.tableFooterView.frame = CGRectMake(0,
+                                                        0,
+                                                        listView.tableFooterView.frame.size.width,
+                                                        listView.tableFooterView.frame.size.height - self.frame.size.height);
+            [self removeFromSuperview];
+            listView.tableFooterView = listView.tableFooterView;
+        }
+        else {
+            listView.tableFooterView = nil;
+        }
+    }
+}
 
 @end

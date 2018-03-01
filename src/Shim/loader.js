@@ -22,7 +22,11 @@ function needShim(minSDKVersion, currentVersion) {
 }
 function default_1(source) {
     if (source.indexOf("XT.minSDK") >= 0) {
-        var minSDKVersion_1 = 'XT.minSDK = "0.0.5"'.replace(/XT\.minSDK.*?["|'](.*?)["|']/ig, "$1");
+        var match = source.match(/XT\.minSDK.*?["|'](.*?)["|']/);
+        if (!(match instanceof Array)) {
+            return;
+        }
+        var minSDKVersion_1 = match[1];
         if (isVersion(minSDKVersion_1)) {
             var baseDir = path.resolve(__dirname, './');
             fs.readdirSync(baseDir)

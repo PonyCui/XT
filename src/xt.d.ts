@@ -471,6 +471,26 @@ export class Label extends View {
     textRectForBounds(bounds: Rect): Rect
 }
 
+export class RefreshControl {
+
+    enabled: boolean
+    color: Color
+    readonly isRefreshing: boolean
+    endRefreshing(): void
+    onRefresh?: () => void
+
+}
+
+export class LoadMoreControl {
+
+    enabled: boolean
+    color: Color
+    readonly isLoading: boolean
+    endLoading(): void
+    onLoad?: () => void
+
+}
+
 export interface ListItem {
     [key: string]: any,
     reuseIdentifier: string
@@ -513,6 +533,8 @@ export class ListSection {
 
 export class ListView extends ScrollView {
 
+    refreshControl?: RefreshControl
+    loadMoreControl?: LoadMoreControl
     listHeaderView?: View
     listFooterView?: View
     items: (ListItem | ListSection)[]
@@ -883,7 +905,7 @@ export class ActivityIndicatorView extends View {
     style: ActivityIndicatorViewStyle
     readonly animating: boolean
     hidesWhenStopped: boolean
-    startAnimating(): void
+    startAnimating(delay?: number): void
     stopAnimating(): void
 }
 
@@ -1046,6 +1068,8 @@ declare global {
         TextVerticalAlignment: typeof TextVerticalAlignment,
         LineBreakMode: typeof LineBreakMode,
         Label: typeof Label,
+        RefreshControl: typeof RefreshControl,
+        LoadMoreControl: typeof LoadMoreControl,
         ListItem: ListItem,
         ListSection: typeof ListSection,
         ListEntity: typeof ListEntity,

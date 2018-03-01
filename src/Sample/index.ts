@@ -1,7 +1,7 @@
 /// <reference path="../xt.d.ts" />
 import { List } from "./explorer/list";
 
-XT.minSDK = "0.0.5"
+XT.minSDK = "0.0.5";
 
 class AppDelegate extends UI.ApplicationDelegate {
 

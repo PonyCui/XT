@@ -6,8 +6,27 @@
 //  Copyright © 2018年 UED Center, YY Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "XTUIView.h"
+#import "XTComponent.h"
 
-@interface XTUILoadMoreControl : UIView
+@class XTUIListView;
+
+@protocol XTUILoadMoreControlExport<XTUIViewExport, JSExport>
+
++ (BOOL)xtr_enabled:(NSString *)objectRef;
++ (void)xtr_setEnabled:(BOOL)value objectRef:(NSString *)objectRef;
++ (NSDictionary *)xtr_color:(NSString *)objectRef;
++ (void)xtr_setColor:(JSValue *)color objectRef:(NSString *)objectRef;
++ (void)xtr_endLoading:(NSString *)objectRef;
+
+@end
+
+@interface XTUILoadMoreControl: XTUIView<XTComponent, XTUILoadMoreControlExport>
+
+@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, weak) XTUIListView *listView;
+
+- (void)startLoading;
 
 @end

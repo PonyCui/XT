@@ -2,6 +2,8 @@ import { ScrollView } from "./ScrollView";
 import { View } from "./View";
 import { ViewController } from "./ViewController";
 import { Rect, Insets, InsetsMake } from "./Rect";
+import { RefreshControl } from "./RefreshControl";
+import { LoadMoreControl } from "./LoadMoreControl";
 
 export interface ListItem {
 
@@ -50,6 +52,8 @@ export class ListSection {
 
 export class ListView extends ScrollView {
 
+    refreshControl?: RefreshControl
+    loadMoreControl?: LoadMoreControl
     listHeaderView?: View
     listFooterView?: View
     items: (ListItem | ListSection)[]

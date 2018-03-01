@@ -5,6 +5,8 @@ import { Rect, RectZero, Insets, InsetsMake } from "../interface/Rect";
 import { ListItem } from "../interface/ListView";
 import { HRView } from "./HRView";
 import { Color } from "../interface/Color";
+import { RefreshControl } from "./RefreshControl";
+import { LoadMoreControl } from "./LoadMoreControl";
 
 export enum ListSelectionStyle {
     None,
@@ -239,6 +241,26 @@ export class ListView extends ScrollView {
             this.renderItem && this.renderItem(cell, this._sectionsItems[sectionIndex].items[rowIndex]);
             cell.didRender();
         }
+    }
+
+    public get refreshControl(): RefreshControl | undefined {
+        const ref = _XTUIListView.xtr_refreshControl(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return RefreshControl.findByRef(ref)
+    }
+
+    public set refreshControl(value: RefreshControl | undefined) {
+        _XTUIListView.xtr_setRefreshControlObjectRef(value ? value.objectRef : "", this.objectRef);
+    }
+
+    public get loadMoreControl(): LoadMoreControl | undefined {
+        const ref = _XTUIListView.xtr_loadMoreControl(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return LoadMoreControl.findByRef<LoadMoreControl>(ref)
+    }
+
+    public set loadMoreControl(value: LoadMoreControl | undefined) {
+        _XTUIListView.xtr_setLoadMoreControlObjectRef(value ? value.objectRef : "", this.objectRef);
     }
 
 }

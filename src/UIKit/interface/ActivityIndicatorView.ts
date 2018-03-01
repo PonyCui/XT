@@ -10,7 +10,7 @@ export class ActivityIndicatorView extends View {
     style: ActivityIndicatorViewStyle = ActivityIndicatorViewStyle.Regular
     readonly animating: boolean = false
     hidesWhenStopped: boolean = true
-    startAnimating(): void { }
+    startAnimating(delay: number = 0): void { }
     stopAnimating(): void { }
 
 }

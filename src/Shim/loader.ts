@@ -22,7 +22,9 @@ function needShim(minSDKVersion: string, currentVersion: string): boolean {
 
 export default function (source: string) {
     if (source.indexOf("XT.minSDK") >= 0) {
-        const minSDKVersion = 'XT.minSDK = "0.0.5"'.replace(/XT\.minSDK.*?["|'](.*?)["|']/ig, "$1")
+        const match = source.match(/XT\.minSDK.*?["|'](.*?)["|']/)
+        if (!(match instanceof Array)) {return}
+        const minSDKVersion = match[1]
         if (isVersion(minSDKVersion)) {
             const baseDir = path.resolve(__dirname, './')
             fs.readdirSync(baseDir)
