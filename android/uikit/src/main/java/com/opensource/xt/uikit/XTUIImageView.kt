@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.eclipsesource.v8.V8Object
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.drawee.view.SimpleDraweeView
 import com.opensource.xt.core.XTComponentInstance
 import com.opensource.xt.core.XTMemoryManager
@@ -154,6 +155,10 @@ class XTUIImageView @JvmOverloads constructor(
         fun xtr_loadImage(url: String, fadeIn: Boolean, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTUIImageView)?.let { imageView ->
                 imageView.useFresco()
+                imageView.simpleDraweeView?.hierarchy =
+                        GenericDraweeHierarchyBuilder.newInstance(imageView.resources)
+                                .setFadeDuration(if (fadeIn) 300 else 0)
+                                .build()
                 imageView.simpleDraweeView?.setImageURI(url)
             }
         }

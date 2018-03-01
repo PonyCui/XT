@@ -96,7 +96,6 @@
 }
 
 + (void)xtr_pushViewController:(NSString *)viewControllerRef animated:(BOOL)animated objectRef:(NSString *)objectRef {
-    NSLog(@"%@", objectRef);
     XTUINavigationController *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUINavigationController class]]) {
         UIViewController *target = [XTMemoryManager find:viewControllerRef];

@@ -17,12 +17,17 @@ export class ListCell extends View {
     currentItem?: ListItem
     onSelected?: () => void
     onRender?: () => void
+    selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
+    selectionView: View = new View();
     contentView: View = new View();
     bottomLine: HRView = new HRView();
     context?: any
 
     constructor(ref: any) {
         super(ref || _XTUIListCell)
+        this.selectionView.backgroundColor = new Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
+        this.selectionView.alpha = 0.0;
+        this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
         this.bottomLine.color = new Color(0xda / 0xff, 0xda / 0xff, 0xda / 0xff)
         this.addSubview(this.bottomLine)
@@ -39,28 +44,35 @@ export class ListCell extends View {
         }
     }
 
-    public get selectionStyle(): ListSelectionStyle {
-        return _XTUIListCell.xtr_selectionStyle(this.objectRef);
-    }
-
-    public set selectionStyle(value: ListSelectionStyle) {
-        _XTUIListCell.xtr_setSelectionStyleObjectRef(value, this.objectRef);
-    }
-
     handleSelected() {
         this.didSelected();
     }
 
-    didHighlighted(highlighted: boolean) { }
+    didHighlighted(highlighted: boolean) {
+        this.highligted = highlighted
+    }
 
-    didSelected() { }
+    didSelected() {
+        this.highligted = true
+        setTimeout(() => {
+            View.animationWithDuration(0.15, () => {
+                this.highligted = false
+            })
+        }, 250)
+    }
 
     didRender() { }
 
     layoutSubviews() {
         super.layoutSubviews();
+        this.selectionView.frame = this.bounds;
         this.contentView.frame = this.bounds;
         this.resetBottomLine()
+    }
+
+    public set highligted(value: boolean) {
+        if (this.selectionStyle == ListSelectionStyle.None) { return }
+        this.selectionView.alpha = value ? 1.0 : 0.0;
     }
 
     // MARK: BottomLine
