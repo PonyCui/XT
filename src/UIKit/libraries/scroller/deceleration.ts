@@ -131,6 +131,9 @@ export class AnimationDeceleration extends Animation {
         this.y.bounced = false;
         this.y.bounce = false
         this.y.bounceLeft = -this.scroller.contentInset.top
+        if (this.scroller.refreshing) {
+            this.y.bounceLeft = -this.scroller.contentInset.top - 44
+        }
         this.y.bounceRight = Math.max(-this.scroller.contentInset.top, scroller.contentSize.height + this.scroller.contentInset.bottom - scroller.bounds.height)
         if (this.y.position < this.y.bounceLeft) {
             if (this.y.velocity < -0.1) {

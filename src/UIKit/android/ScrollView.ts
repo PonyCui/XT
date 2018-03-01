@@ -14,7 +14,7 @@ export class ScrollView extends View implements ScrollerDelegate {
     private readonly innerView: View
     private readonly horizontalScrollIndicator: View
     private readonly verticalScrollIndicator: View
-    private scroller: Scroller;
+    protected scroller: Scroller;
 
     constructor(ref?: any) {
         super(ref || _XTUIScrollView);
@@ -243,6 +243,10 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.scroller.scrollEnabled = this.isScrollEnabled
     }
 
+    scrollerWillRefresh(progress: number): void { }
+
+    scrollerRefreshing(): void { }
+
     scrollerDidScroll(): void {
         this.resetIndicator()
     }
@@ -338,6 +342,10 @@ export class ScrollView extends View implements ScrollerDelegate {
 
     exchangeSubviewAtIndex(index1: number, index2: number) {
         this.innerView.exchangeSubviewAtIndex(index1, index2)
+    }
+
+    protected _addSubview(subview: View) {
+        super.addSubview(subview)
     }
 
     addSubview(subview: View) {

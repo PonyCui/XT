@@ -7,6 +7,8 @@ const cancelAnimationFrame = window.cancelAnimationFrame || clearAnimationFrame
 export interface ScrollerDelegate {
 
     contentOffset: { x: number, y: number }
+    scrollerWillRefresh(progress: number): void
+    scrollerRefreshing(): void
     scrollerDidScroll(): void
     scrollerDidZoom(): void
     scrollerWillBeginDragging(): void
@@ -25,8 +27,17 @@ export class Scroller {
     directionalLockEnabled: boolean = false
     pagingEnabled: boolean = false
     scrollEnabled: boolean = true
+    refreshEnabled: boolean = false
+    refreshing: boolean = false
     decelerationRate: number = 0.997
     accelerationRate: number = 0.985
+
+    public endRefreshing() {
+        this.refreshing = false
+        if (this.delegate.contentOffset.y < -this.contentInset.top) {
+            this._endDraggingWithDecelerationVelocity({ x: 0, y: 0 })
+        }
+    }
 
     private _tracking: boolean = false
     public get tracking(): boolean {
@@ -73,18 +84,41 @@ export class Scroller {
         if (this._dragging) {
             const originalOffset = this.delegate.contentOffset;
             let proposedOffset = { ...originalOffset };
-            this.delegate.contentOffset = {
-                x: Math.min(Math.max(-this.contentInset.left, this.contentSize.width + this.contentInset.right - this.bounds.width), Math.max(-this.contentInset.left, proposedOffset.x + delta.x)),
-                y: Math.min(Math.max(-this.contentInset.top, this.contentSize.height + this.contentInset.bottom - this.bounds.height), Math.max(-this.contentInset.top, proposedOffset.y + delta.y)),
+            if (this.refreshEnabled && proposedOffset.y + delta.y < -this.contentInset.top) {
+                this.delegate.contentOffset = {
+                    x: Math.min(Math.max(-this.contentInset.left, this.contentSize.width + this.contentInset.right - this.bounds.width), Math.max(-this.contentInset.left, proposedOffset.x + delta.x)),
+                    y: proposedOffset.y + delta.y / 3.0,
+                }
+                const bounceValue = -this.contentInset.top - (proposedOffset.y + delta.y / 3.0)
+                const refreshProgress = Math.min(1.0, bounceValue / (120 * 0.66))
+                this.delegate.scrollerWillRefresh(refreshProgress)
+                if (refreshProgress == 1.0) {
+                    this.refreshing = true
+                }
+            }
+            else {
+                this.delegate.contentOffset = {
+                    x: Math.min(Math.max(-this.contentInset.left, this.contentSize.width + this.contentInset.right - this.bounds.width), Math.max(-this.contentInset.left, proposedOffset.x + delta.x)),
+                    y: Math.min(Math.max(-this.contentInset.top, this.contentSize.height + this.contentInset.bottom - this.bounds.height), Math.max(-this.contentInset.top, proposedOffset.y + delta.y)),
+                }
             }
         }
     }
 
     _endDraggingWithDecelerationVelocity(velocity: { x: number, y: number }) {
+        if (this.delegate.contentOffset.x < -this.contentInset.left) {
+            velocity.x = 0
+        }
+        if (this.delegate.contentOffset.y < -this.contentInset.top) {
+            velocity.y = 0
+        }
         if (!this.scrollEnabled) {
             return;
         }
         if (this._dragging) {
+            if (this.refreshing) {
+                this.delegate.scrollerRefreshing()
+            }
             this._dragging = false;
             this.delegate.scrollerWillEndDragging()
             const decelerationAnimation = this._pagingAnimationWithVelocity(velocity) || this._decelerationAnimationWithVelocity(velocity)
@@ -93,6 +127,12 @@ export class Scroller {
                 this._setScrollAnimation(decelerationAnimation);
                 this._decelerating = true;
                 this.delegate.scrollerWillBeginDecelerating()
+            }
+        }
+        else {
+            const decelerationAnimation = this._decelerationAnimationWithVelocity(velocity)
+            if (decelerationAnimation instanceof Animation) {
+                this._setScrollAnimation(decelerationAnimation);
             }
         }
     }

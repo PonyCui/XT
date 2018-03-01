@@ -5,6 +5,7 @@ export class ActivityIndicatorView extends View {
 
     constructor(ref: any) {
         super(ref || _XTUIActivityIndicatorView)
+        this.userInteractionEnabled = false
     }
 
     toObject(): any {

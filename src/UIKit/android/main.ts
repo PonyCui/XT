@@ -39,6 +39,14 @@ export const LayoutAttribute = ILayoutAttribute
 export const LayoutRelation = ILayoutRelation
 export const LayoutConstraint = MLayoutConstraint
 
+import { RefreshControl as IRefreshControl } from "../interface/RefreshControl";
+import { RefreshControl as MRefreshControl } from "./RefreshControl";
+export const RefreshControl = MRefreshControl
+
+import { LoadMoreControl as ILoadMoreControl } from "../interface/LoadMoreControl";
+import { LoadMoreControl as MLoadMoreControl } from "./LoadMoreControl";
+export const LoadMoreControl = MLoadMoreControl
+
 import { ListSelectionStyle as IListSelectionStyle, ListCell as IListCell, ListView as IListView, ListEntity as IListEntity, ListSection as IListSection } from '../interface/ListView'
 import { ListCell as MListCell, ListView as MListView, ListSection as MListSection } from './ListView'
 export const ListSelectionStyle = IListSelectionStyle

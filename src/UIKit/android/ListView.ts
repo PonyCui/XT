@@ -2,10 +2,12 @@ import { ScrollView } from "./ScrollView";
 import { View } from "./View";
 import { ListItem, ListSelectionStyle } from "../interface/ListView";
 import { Color } from "../interface/Color";
-import { Rect, Point, Insets, InsetsMake } from "../interface/Rect";
+import { Rect, Point, Insets, InsetsMake, RectMake } from "../interface/Rect";
 import { InteractionState } from "../interface/View";
 import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
 import { HRView } from "./HRView";
+import { RefreshControl } from "./RefreshControl";
+import { LoadMoreControl } from "./LoadMoreControl";
 
 export class ListCell extends View {
 
@@ -143,6 +145,51 @@ export class ListSection {
 
 }
 
+
+class RefreshAnimationView extends View {
+
+    leftDot = new View
+    midDot = new View
+    rightDot = new View
+
+    constructor() {
+        super()
+        this.leftDot.backgroundColor = UI.Color.lightGrayColor
+        this.leftDot.cornerRadius = 4
+        this.midDot.backgroundColor = UI.Color.lightGrayColor
+        this.midDot.cornerRadius = 4
+        this.rightDot.backgroundColor = UI.Color.lightGrayColor
+        this.rightDot.cornerRadius = 4
+        this.addSubview(this.leftDot)
+        this.addSubview(this.midDot)
+        this.addSubview(this.rightDot)
+    }
+
+    layoutSubviews() {
+        super.layoutSubviews()
+        this.leftDot.frame = RectMake(this.bounds.width / 2.0 - 4.0 - 28, this.bounds.height / 2.0 - 4.0, 8.0, 8.0)
+        this.midDot.frame = RectMake(this.bounds.width / 2.0 - 4.0, this.bounds.height / 2.0 - 4.0, 8.0, 8.0)
+        this.rightDot.frame = RectMake(this.bounds.width / 2.0 + 4.0 + 20, this.bounds.height / 2.0 - 4.0, 8.0, 8.0)
+    }
+
+    currentIdx = 0
+    timerHandler: any
+
+    startAnimation() {
+        this.currentIdx++
+        if (this.currentIdx > 2) { this.currentIdx = 0 }
+        this.leftDot.backgroundColor = this.currentIdx == 0 ? UI.Color.grayColor : UI.Color.lightGrayColor
+        this.midDot.backgroundColor = this.currentIdx == 1 ? UI.Color.grayColor : UI.Color.lightGrayColor
+        this.rightDot.backgroundColor = this.currentIdx == 2 ? UI.Color.grayColor : UI.Color.lightGrayColor
+        this.timerHandler = setTimeout(this.startAnimation.bind(this), 240)
+    }
+
+    stopAnimation() {
+        clearTimeout(this.timerHandler)
+    }
+
+}
+
 export class ListView extends ScrollView {
 
     constructor() {
@@ -272,6 +319,9 @@ export class ListView extends ScrollView {
     layoutSubviews() {
         super.layoutSubviews();
         this.reloadData()
+        if (this.refreshAnimationView) {
+            this.refreshAnimationView.frame = RectMake(0, 0, this.bounds.width, 44)
+        }
     }
 
     scrollerDidScroll() {
@@ -386,5 +436,58 @@ export class ListView extends ScrollView {
             cell._isBusy = false;
         });
     }
+
+    private _refreshControl: RefreshControl | undefined = undefined
+    private refreshAnimationView?: RefreshAnimationView
+
+    public get refreshControl(): RefreshControl | undefined {
+        return this._refreshControl;
+    }
+
+    public set refreshControl(value: RefreshControl | undefined) {
+        this._refreshControl = value;
+        this.scroller.refreshEnabled = value instanceof RefreshControl && value.enabled
+        if (this.refreshAnimationView) { this.refreshAnimationView.removeFromSuperview() }
+        if (value) {
+            value.listView = this
+            this.refreshAnimationView = new RefreshAnimationView
+            this._addSubview(this.refreshAnimationView)
+            this.refreshAnimationView.frame = RectMake(0, 0, this.bounds.width, 44)
+            this.refreshAnimationView.alpha = 0.0
+        }
+    }
+
+    scrollerWillRefresh(progress: number): void {
+        super.scrollerWillRefresh(progress)
+        if (this.refreshControl && this.refreshAnimationView) {
+            this.refreshAnimationView.alpha = progress
+        }
+    }
+
+    private refreshing = false
+
+    scrollerRefreshing() {
+        super.scrollerRefreshing()
+        this.refreshing = true
+        
+    }
+
+    scrollerDidEndDecelerating() {
+        super.scrollerDidEndDecelerating()
+        if (this.refreshControl && this.refreshAnimationView) {
+            this.refreshControl.handleRefresh()
+            this.refreshAnimationView.startAnimation()
+        }
+    }
+
+    private endRefreshing() {
+        if (this.refreshAnimationView) {
+            this.refreshAnimationView.stopAnimation()
+            this.refreshAnimationView.alpha = 0.0
+            this.scroller.endRefreshing()
+        }
+    }
+
+    loadMoreControl?: LoadMoreControl
 
 }
