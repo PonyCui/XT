@@ -138,6 +138,11 @@
     return self;
 }
 
+- (UIEdgeInsets)contentInset {
+    UIEdgeInsets insets = [super contentInset];
+    return UIEdgeInsetsMake(insets.top, insets.left, insets.bottom + 20, insets.right);
+}
+
 - (void)setContentInset:(UIEdgeInsets)contentInset {
     [super setContentInset:UIEdgeInsetsMake(contentInset.top, contentInset.left, contentInset.bottom - 20, contentInset.right)];
 }
