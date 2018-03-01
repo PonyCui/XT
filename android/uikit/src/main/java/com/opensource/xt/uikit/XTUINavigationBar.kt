@@ -1,7 +1,6 @@
 package com.opensource.xt.uikit
 
 import android.os.Build
-import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.Window

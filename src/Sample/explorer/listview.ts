@@ -1,77 +1,86 @@
 /// <reference path="../../xt.d.ts" />
 
-class ListCellSample extends UI.ListCell {
+class UserCell extends UI.ListCell {
 
-    titleLabel = new UI.Label()
+	iconImageView = new UI.ImageView
+	nicknameLabel = new UI.Label
 
-    constructor() {
-        super()
-        this.titleLabel.textAlignment = UI.TextAlignment.Left
-        this.addSubview(this.titleLabel)
-    }
+	constructor() {
+		super()
+		this.iconImageView.cornerRadius = 4
+		this.iconImageView.clipsToBounds = true
+		this.iconImageView.backgroundColor = UI.Color.lightGrayColor
+		this.addSubview(this.iconImageView)
+		this.nicknameLabel.font = UI.Font.systemFontOfSize(15)
+		this.nicknameLabel.text = "#nickname"
+		this.addSubview(this.nicknameLabel)
+		this.setupLayout()
+	}
 
-    didRender() {
-        if (this.currentItem) {
-            this.titleLabel.text = this.currentItem.name
-        }
-    }
+	setupLayout() {
+		this.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
+			"H:|-15-[iconImageView(44)]-8-[nicknameLabel]-15-|", this
+		))
+		this.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
+			"V:[iconImageView(44)]", this
+		))
+		this.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
+			"C:iconImageView.centerY(_)", this
+		))
+		this.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
+			"V:[nicknameLabel(44)]", this
+		))
+		this.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
+			"C:nicknameLabel.centerY(_)", this
+		))
+		this.layoutIfNeeded()
+	}
 
-    didHighlighted(value: boolean) {
-        this.backgroundColor = value ? new UI.Color(0xe2/0xff, 0xe2/0xff, 0xe2/0xff) : UI.Color.clearColor
-    }
-
-    didSelected() {
-        if (this.context instanceof UI.ViewController) {
-            if (this.context.navigationController) {
-                const nextViewController = new UI.ViewController()
-                if (this.currentItem) {
-                    nextViewController.navigationBar.title = this.currentItem.name
-                    nextViewController.showNavigationBar()
-                }
-                this.context.navigationController.pushViewController(nextViewController)
-            }
-        }
-    }
-
-    layoutSubviews() {
-        super.layoutSubviews()
-        this.titleLabel.frame = this.bounds
-    }
+	didRender() {
+		super.didRender()
+		if (this.currentItem) {
+			this.iconImageView.loadImage(this.currentItem.avatar_url)
+			this.nicknameLabel.text = this.currentItem.login
+		}
+	}
 
 }
 
 export class ListViewSample extends UI.ViewController {
 
-    contentView = new UI.ListView()
+    listView = new UI.ListView
 
-    viewDidLoad() {
+	viewDidLoad() {
         super.viewDidLoad()
-        this.navigationBar.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
+        this.navigationBar.backgroundColor = UI.Color.blackColor
+        this.navigationBar.lightContent = true
         this.title = "ListView"
         this.showNavigationBar()
-        this.view.backgroundColor = new UI.Color(0xf6 / 0xff, 0xf6 / 0xff, 0xf6 / 0xff)
-        this.contentView.alwaysBounceVertical = true
-        this.view.addSubview(this.contentView)
-        this.addTestCases()
-    }
+		this.listView.register(UserCell, "Cell", this)
+		this.view.addSubview(this.listView)
+		this.view.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
+			"HV:|-0-[listView]-0-|", this
+		))
+		this.view.layoutIfNeeded()
+		this.loadData()
+	}
 
-    viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        this.contentView.frame = this.view.bounds
-    }
-
-    addTestCases() {
-        this.contentView.register(ListCellSample, "Cell", this)
-        let mockDatas: UI.ListItem[] = []
-        for (let index = 0; index < 10000; index++) {
-            mockDatas.push({
-                reuseIdentifier: "Cell",
-                rowHeight: () => 44,
-                name: "  Current Cell Index = " + index.toString()
-            })
-        }
-        this.contentView.items = mockDatas
-        this.contentView.reloadData()
-    }
+	loadData() {
+		NS.URLSession.sharedSession.dataTaskWithURL("https://api.github.com/users?since=0", (data) => {
+			if (data) {
+				try {
+					const json: any[] = JSON.parse(data.utf8String()!)
+					this.listView.items = json.map(it => {
+						return {
+							...it,
+							reuseIdentifier: "Cell",
+							rowHeight: () => 70,
+						}
+					})
+					this.listView.reloadData()
+				} catch (e) {}
+			}
+		}).resume()
+	}
 
 }

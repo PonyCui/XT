@@ -33,7 +33,7 @@
 - (IBAction)onStart:(id)sender {
     NSURL *sampleURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"sample.min" ofType:@"js"]
                                   isDirectory:NO];
-//    NSURL *sampleURL = [NSURL URLWithString:@"http://xt-playground.oss-cn-shenzhen.aliyuncs.com/tmp_78495726.30000004_0.346652752644278.min.js"];
+//    NSURL *sampleURL = [NSURL URLWithString:@"http://xt-playground.oss-cn-shenzhen.aliyuncs.com/tmp_94423207.10000005_0.17082901325064914.min.js"];
     NSInteger startMode = 0;
     self.context = [[XTUIContext alloc] initWithSourceURL:sampleURL
                                                   options:@{@"foo": @"value"}

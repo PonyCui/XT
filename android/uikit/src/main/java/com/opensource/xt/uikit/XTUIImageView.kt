@@ -3,7 +3,11 @@ package com.opensource.xt.uikit
 import android.animation.ValueAnimator
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.ViewGroup
+import android.widget.ImageView
 import com.eclipsesource.v8.V8Object
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
 import com.opensource.xt.core.XTComponentInstance
 import com.opensource.xt.core.XTMemoryManager
 
@@ -15,21 +19,17 @@ class XTUIImageView @JvmOverloads constructor(
 ) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
     var image: XTUIImage? = null
-        internal set(value) {
-            field?.let {
-                if (imageViaCurrentURL) { it.bitmap.recycle() }
-                field = null
-            }
-            field = value
-        }
-
-    private var imageViaCurrentURL = false
-
-    private var currentURL: String? = null
-    private var currentURLLoadingOperation: (() -> Unit)? = null
+        internal set
 
     var contentMode: Int = 0
-        internal set
+        internal set(value) {
+            field = value
+            simpleDraweeView?.scaleType = when (value) {
+                1 -> ImageView.ScaleType.CENTER_INSIDE
+                2 -> ImageView.ScaleType.CENTER_CROP
+                else -> ImageView.ScaleType.FIT_XY
+            }
+        }
 
     private val sharedImagePaint = Paint()
 
@@ -37,42 +37,39 @@ class XTUIImageView @JvmOverloads constructor(
         userInteractionEnabled = false
     }
 
-    private var fadeInAnimator: ValueAnimator? = null
-
-    fun cancelFadeInAnimation() {
-        fadeInAnimator?.cancel()
-        fadeInAnimator = null
-        this.invalidate()
-    }
-
-    fun fadeIn() {
-        fadeInAnimator = ValueAnimator.ofFloat(0.0f, 1.0f)
-        fadeInAnimator?.duration = 300
-        fadeInAnimator?.addUpdateListener {
-            this.invalidate()
-            if (it.animatedValue as Float >= 1.0f) {
-                fadeInAnimator = null
-            }
-        }
-        fadeInAnimator?.start()
-    }
-
     override fun tintColorDidChange() {
         super.tintColorDidChange()
         invalidate()
     }
 
+    var simpleDraweeView: SimpleDraweeView? = null
+    var simpleDraweeLayout: ViewGroup.LayoutParams? = null
+
+    private fun useFresco() {
+        if (simpleDraweeView != null) { return }
+        simpleDraweeView = SimpleDraweeView(this.context)
+        simpleDraweeView?.scaleType = when (this.contentMode) {
+            1 -> ImageView.ScaleType.CENTER_INSIDE
+            2 -> ImageView.ScaleType.CENTER_CROP
+            else -> ImageView.ScaleType.FIT_XY
+        }
+        simpleDraweeLayout = ViewGroup.LayoutParams((this.bounds.width * resources.displayMetrics.density).toInt(), (this.bounds.height * resources.displayMetrics.density).toInt())
+        addView(simpleDraweeView, simpleDraweeLayout)
+    }
+
+    private fun useRegular() {
+        simpleDraweeView?.let { removeView(it) }
+    }
+
     override fun drawContent(canvas: Canvas?) {
         super.drawContent(canvas)
+        simpleDraweeView?.let { return }
         image?.let { image ->
             canvas?.let { canvas ->
                 sharedImagePaint.reset()
                 sharedImagePaint.isAntiAlias = true
                 sharedImagePaint.isFilterBitmap = true
                 sharedImagePaint.alpha = (alpha * 255).toInt()
-                fadeInAnimator?.let {
-                    sharedImagePaint.alpha = ((it.animatedValue as Float) * alpha * 255).toInt()
-                }
                 if (image.renderingMode == 2) {
                     sharedImagePaint.colorFilter = PorterDuffColorFilter(tintColor?.intColor() ?: 0, PorterDuff.Mode.SRC_IN)
                 }
@@ -121,11 +118,15 @@ class XTUIImageView @JvmOverloads constructor(
     class JSExports(context: XTUIContext): XTUIView.JSExports(context) {
 
         val XTUIImage: XTUIImage.JSExports
-            get() = context?.registeredComponents?.get("_XTUIImage") as XTUIImage.JSExports
+            get() = context.registeredComponents["_XTUIImage"] as XTUIImage.JSExports
 
         override val name: String = "_XTUIImageView"
 
         override val viewClass: Class<XTUIView> = XTUIImageView::class.java as Class<XTUIView>
+
+        init {
+            Fresco.initialize(context.appContext)
+        }
 
         override fun exports(): V8Object {
             val exports = super.exports()
@@ -143,7 +144,7 @@ class XTUIImageView @JvmOverloads constructor(
 
         fun xtr_setImage(imageRef: String, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTUIImageView)?.let {
-                it.imageViaCurrentURL = false
+                it.useRegular()
                 it.image = XTMemoryManager.find(imageRef) as? XTUIImage
                 it.setWillNotDraw(it.image == null)
                 it.invalidate()
@@ -152,22 +153,8 @@ class XTUIImageView @JvmOverloads constructor(
 
         fun xtr_loadImage(url: String, fadeIn: Boolean, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTUIImageView)?.let { imageView ->
-                imageView.cancelFadeInAnimation()
-                imageView.image = null
-                imageView.currentURLLoadingOperation?.invoke()
-                imageView.currentURL = url
-                var startTime = System.currentTimeMillis()
-                imageView.currentURLLoadingOperation = XTUIImage.xtr_fromURL(url, { image, url ->
-                    if (imageView.currentURL == url) {
-                        imageView.image = image
-                        imageView.imageViaCurrentURL = true
-                        imageView.setWillNotDraw(false)
-                        imageView.invalidate()
-                        if (fadeIn && (System.currentTimeMillis() - startTime) > 100) {
-                            imageView.fadeIn()
-                        }
-                    }
-                })
+                imageView.useFresco()
+                imageView.simpleDraweeView?.setImageURI(url)
             }
         }
 

@@ -46,12 +46,15 @@ class AppActivity : XTUIActivity() {
                 0 -> it.start()
                 1 -> it.attach(this)
                 2 -> {
-                    findViewById(R.id.button).visibility = View.GONE
-                    findViewById(R.id.button2).visibility = View.GONE
+                    findViewById<View>(R.id.button).visibility = View.GONE
+                    findViewById<View>(R.id.button2).visibility = View.GONE
                     it.attach(this, R.id.foo_fragment)
                 }
             }
         })
+//        currentUIContext = XTUIContext.createWithSourceURL(this, "http://xt-playground.oss-cn-shenzhen.aliyuncs.com/tmp_94423207.10000005_0.17082901325064914.min.js", null, {
+//            it.start()
+//        })
     }
 
     fun startDebugApplication(sender: View) {
@@ -78,9 +81,9 @@ class AppActivity : XTUIActivity() {
     }
 
     fun startDebugWithAddress(address: String) {
-        findViewById(R.id.button).visibility = View.GONE
-        findViewById(R.id.button2).visibility = View.GONE
-        findViewById(R.id.progressBar).visibility = View.VISIBLE
+        findViewById<View>(R.id.button).visibility = View.GONE
+        findViewById<View>(R.id.button2).visibility = View.GONE
+        findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
         this.getSharedPreferences("Sample", android.content.Context.MODE_PRIVATE)
                 .edit()
                 .putString("DEBUG_ADDRESS", address)

@@ -148,7 +148,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
 
     private fun setupKeyboardHeightProvider(activity: Activity) {
         keyboardHeightProvider = KeyboardHeightProvider(activity)
-        activity.findViewById(android.R.id.content).rootView?.post {
+        activity.findViewById<View>(android.R.id.content).rootView?.post {
             keyboardHeightProvider?.start()
         }
     }
