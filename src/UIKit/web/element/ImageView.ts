@@ -32,11 +32,27 @@ export class ImageViewElement extends ViewElement {
     }
 
     private _fadeInHandler = 0
+    private _loadImageTimer: any
+    private _currentUrl: any
+    private _nullHref = false
+    private _onLoadListenner: any
 
     xtr_loadImage(url: string, fadeIn: boolean = true) {
+        if (this._currentUrl === url) { return; }
+        this._currentUrl = url
+        clearTimeout(this._loadImageTimer)
+        cancelAnimationFrame(this._fadeInHandler)
         if (this.contentObject) {
-            this.contentObject.removeAttributeNS("http://www.w3.org/1999/xlink", "href")
-            this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
+            if (!this._nullHref) {
+                this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", "")
+                this._nullHref = true
+            }
+            this._loadImageTimer = setTimeout(() => {
+                this._nullHref = false
+                if (this.contentObject) {
+                    this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
+                }
+            }, 300)
         }
     }
 

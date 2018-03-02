@@ -6,6 +6,7 @@ export class ActivityIndicatorView extends View {
 
     constructor() {
         super(ActivityIndicatorViewElement)
+        this.userInteractionEnabled = false
     }
 
     toObject(): any {

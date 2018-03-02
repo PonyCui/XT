@@ -32,7 +32,7 @@ export enum SwipeDirection {
 
 export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
 
-    retain(): this {
+    retain(owner: any = undefined): this {
         return this
     }
 

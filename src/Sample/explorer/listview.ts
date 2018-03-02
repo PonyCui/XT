@@ -10,9 +10,11 @@ class UserCell extends UI.ListCell {
 		this.iconImageView.cornerRadius = 4
 		this.iconImageView.clipsToBounds = true
 		this.iconImageView.backgroundColor = UI.Color.lightGrayColor
+		// this.iconImageView.frame = UI.RectMake(15, 8, 44, 44)
 		this.addSubview(this.iconImageView)
 		this.nicknameLabel.font = UI.Font.systemFontOfSize(15)
 		this.nicknameLabel.text = "#nickname"
+		// this.nicknameLabel.frame = UI.RectMake(66, 8, 200, 44)
 		this.addSubview(this.nicknameLabel)
 		this.setupLayout()
 	}

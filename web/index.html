@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no" />
 </head>
 
-<body style="margin: 0; overflow-y: hidden; ">
+<body style="margin: 0; overflow-y: hidden; -webkit-transform: translate3d(0,0,0);-moz-transform: translate3d(0,0,0);-ms-transform: translate3d(0,0,0);-o-transform: translate3d(0,0,0);transform: translate3d(0,0,0);">
     <div style="position: absolute; height: 300px; margin: auto; top:0; bottom:0; left:0; right: 0; pointer-events:auto" id="floating"></div>
 </body>
 
@@ -23,7 +23,7 @@
 <script>
     UI.Context.bundleURL = "/dist/Sample/"
     var mode = 0
-    var context = UI.Context.startWithNamed("sample.min.js", {foo: "value"}, function () {
+    var context = UI.Context.startWithNamed("sample.min.js", { foo: "value" }, function () {
         if (mode == 0) {
             document.querySelector('#floating').style.display = "none"
             context.attachTo()

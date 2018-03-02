@@ -189,8 +189,10 @@ export class Scroller {
         this.scrollAnimation = animation;
         this.scrollTimer = requestAnimationFrame(this._updateScrollAnimation.bind(this))
     }
+    
+    s = performance.now()
 
-    _updateScrollAnimation() {
+    _updateScrollAnimation() {        
         if (this.scrollAnimation) {
             const finished = this.scrollAnimation.animate()
             if (finished) {
