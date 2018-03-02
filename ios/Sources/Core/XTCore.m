@@ -11,7 +11,7 @@
 @implementation XTCore
 
 + (NSString *)version {
-    return @"0.0.7"; //version
+    return @"0.0.8"; //version
 }
 
 @end
