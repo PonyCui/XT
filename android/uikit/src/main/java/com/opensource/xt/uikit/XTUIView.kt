@@ -280,6 +280,33 @@ open class XTUIView @JvmOverloads constructor(
             invalidate()
         }
 
+    var shadowColor: XTUIColor = XTUIColor(0.0, 0.0, 0.0, 0.0)
+        set(value) {
+            field = value
+            shadowBitmap = null
+            invalidate()
+        }
+
+    var shadowOpacity: Double = 0.0
+        set(value) {
+            field = value
+            shadowBitmap = null
+            invalidate()
+        }
+
+    var shadowOffset: XTUISize = XTUISize(0.0, -3.0)
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    var shadowRadius: Double = 0.0
+        set(value) {
+            field = value
+            shadowBitmap = null
+            invalidate()
+        }
+
     private val outerPath = Path()
     private val sharedPaint = Paint()
 
@@ -302,6 +329,7 @@ open class XTUIView @JvmOverloads constructor(
             matrix.postTranslate((this.width / 2.0).toFloat(), (this.height / 2.0).toFloat())
             canvas?.concat(matrix)
         }
+        drawShadow(canvas)
         if (backgroundColor.a > 0.0) {
             sharedPaint.reset()
             sharedPaint.isAntiAlias = true
@@ -333,6 +361,36 @@ open class XTUIView @JvmOverloads constructor(
 
     protected open fun drawContent(canvas: Canvas?) {
 
+    }
+
+    private var shadowBitmap: Bitmap? = null
+        set(value) {
+            field?.let { it.recycle() }
+            field = value
+        }
+
+    private fun drawShadow(canvas: Canvas?) {
+        if (shadowColor.a > 0 && shadowOpacity > 0 && shadowRadius > 0 && this.shadowBitmap == null) {
+            val width = (this.bounds.width + shadowRadius * 2) * resources.displayMetrics.density
+            val height = (this.bounds.height + shadowRadius * 2) * resources.displayMetrics.density
+            val shadowBitmap = Bitmap.createBitmap(width.toInt(), height.toInt(), Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(shadowBitmap)
+            val paint = Paint()
+            paint.color = shadowColor.intColor()
+            paint.alpha = (shadowOpacity * 255).toInt()
+            paint.maskFilter = BlurMaskFilter((shadowRadius * resources.displayMetrics.density).toFloat(), BlurMaskFilter.Blur.NORMAL)
+            canvas.translate((shadowRadius * resources.displayMetrics.density).toFloat(), (shadowRadius * resources.displayMetrics.density).toFloat())
+            canvas.drawPath(this.outerPath, paint)
+            this.shadowBitmap = shadowBitmap
+        }
+        this.shadowBitmap?.let {
+            sharedPaint.reset()
+            canvas?.drawBitmap(
+                    it,
+                    ((-shadowRadius + shadowOffset.width) * resources.displayMetrics.density).toFloat(),
+                    ((-shadowRadius + shadowOffset.height) * resources.displayMetrics.density).toFloat(),
+                    sharedPaint)
+        }
     }
 
     var userInteractionEnabled = true
@@ -441,6 +499,14 @@ open class XTUIView @JvmOverloads constructor(
             exports.registerJavaMethod(this, "xtr_setBorderWidth", "xtr_setBorderWidth", arrayOf(Double::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_borderColor", "xtr_borderColor", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_setBorderColor", "xtr_setBorderColor", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_shadowColor", "xtr_shadowColor", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setShadowColor", "xtr_setShadowColor", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_shadowOpacity", "xtr_shadowOpacity", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setShadowOpacity", "xtr_setShadowOpacity", arrayOf(Double::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_shadowOffset", "xtr_shadowOffset", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setShadowOffset", "xtr_setShadowOffset", arrayOf(V8Object::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_shadowRadius", "xtr_shadowRadius", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setShadowRadius", "xtr_setShadowRadius", arrayOf(Double::class.java, String::class.java))
             exports.registerJavaMethod(this, "xtr_superview", "xtr_superview", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_subviews", "xtr_subviews", arrayOf(String::class.java))
             exports.registerJavaMethod(this, "xtr_window", "xtr_window", arrayOf(String::class.java))
@@ -614,6 +680,52 @@ open class XTUIView @JvmOverloads constructor(
                 (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
                     it.borderColor = color
                 }
+            }
+        }
+
+        fun xtr_shadowColor(objectRef: String): V8Value {
+            return (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
+                return@let XTUIUtils.fromColor(it.shadowColor, context.runtime)
+            } ?: XTUIUtils.fromColor(XTUIColor(0.0, 0.0, 0.0, 0.0), context.runtime)
+        }
+
+        fun xtr_setShadowColor(value: V8Object, objectRef: String) {
+            XTUIUtils.toColor(value)?.let { color ->
+                (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
+                    it.shadowColor = color
+                }
+            }
+        }
+
+        fun xtr_shadowOpacity(objectRef: String): Double {
+            return (XTMemoryManager.find(objectRef) as? XTUIView)?.let { it.shadowOpacity } ?: 0.0
+        }
+
+        fun xtr_setShadowOpacity(value: Double, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
+                it.shadowOpacity = value
+            }
+        }
+
+        fun xtr_shadowOffset(objectRef: String): V8Object {
+            return (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
+                return@let XTUIUtils.fromSize(it.shadowOffset, context.runtime)
+            } ?: XTUIUtils.fromSize(XTUISize(0.0, 0.0), context.runtime)
+        }
+
+        fun xtr_setShadowOffset(value: V8Object, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
+                it.shadowOffset = XTUIUtils.toSize(value) ?: XTUISize(0.0, 0.0)
+            }
+        }
+
+        fun xtr_shadowRadius(objectRef: String): Double {
+            return (XTMemoryManager.find(objectRef) as? XTUIView)?.let { it.shadowRadius } ?: 0.0
+        }
+
+        fun xtr_setShadowRadius(value: Double, objectRef: String) {
+            (XTMemoryManager.find(objectRef) as? XTUIView)?.let {
+                it.shadowRadius = value
             }
         }
 

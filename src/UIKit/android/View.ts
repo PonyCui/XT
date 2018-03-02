@@ -235,10 +235,37 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
         _XTUIView.xtr_setBorderColor(value, this.objectRef);
     }
 
-    shadowColor?: Color; // todo
-    shadowOpacity: number; // todo
-    shadowOffset?: Size; // todo
-    shadowRadius: number; // todo
+    public get shadowColor(): Color {
+        return _XTUIView.xtr_shadowColor(this.objectRef)
+    }
+
+    public set shadowColor(value: Color) {
+        _XTUIView.xtr_setShadowColor(value, this.objectRef);
+    }
+
+    public get shadowOpacity(): number {
+        return _XTUIView.xtr_shadowOpacity(this.objectRef);
+    }
+
+    public set shadowOpacity(value: number) {
+        _XTUIView.xtr_setShadowOpacity(value, this.objectRef);
+    }
+
+    public get shadowOffset(): Size | undefined {
+        return _XTUIView.xtr_shadowOffset(this.objectRef);
+    }
+
+    public set shadowOffset(value: Size | undefined) {
+        _XTUIView.xtr_setShadowOffset(value, this.objectRef);
+    }
+
+    public get shadowRadius(): number {
+        return _XTUIView.xtr_shadowRadius(this.objectRef);
+    }
+
+    public set shadowRadius(value: number) {
+        _XTUIView.xtr_setShadowRadius(value, this.objectRef);
+    }
 
     // Mark: View Hierarchy
 

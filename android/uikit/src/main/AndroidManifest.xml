@@ -7,9 +7,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <activity android:name=".XTUIActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".XTUINavigationController$NextActivity" />
-        <activity android:name=".XTUIViewController$NextActivity" />
+        <activity android:name=".XTUIActivity" android:configChanges="orientation|screenSize" android:hardwareAccelerated="true" />
+        <activity android:name=".XTUINavigationController$NextActivity" android:hardwareAccelerated="true" />
+        <activity android:name=".XTUIViewController$NextActivity" android:hardwareAccelerated="true" />
 
     </application>
 
