@@ -261,7 +261,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
     }
 
     public get subviews(): View[] {
-        return _XTUIView.xtr_subviews(this.objectRef).map((viewRef: any) => {
+        return (_XTUIView.xtr_subviews(this.objectRef) || []).map((viewRef: any) => {
             if (typeof viewRef !== "string") { return undefined }
             return new View(viewRef)
         })

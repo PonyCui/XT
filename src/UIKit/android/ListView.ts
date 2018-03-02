@@ -154,11 +154,11 @@ class RefreshAnimationView extends View {
 
     constructor() {
         super()
-        this.leftDot.backgroundColor = UI.Color.lightGrayColor
+        this.leftDot.alpha = 0.5
         this.leftDot.cornerRadius = 4
-        this.midDot.backgroundColor = UI.Color.lightGrayColor
+        this.midDot.alpha = 0.5
         this.midDot.cornerRadius = 4
-        this.rightDot.backgroundColor = UI.Color.lightGrayColor
+        this.rightDot.alpha = 0.5
         this.rightDot.cornerRadius = 4
         this.addSubview(this.leftDot)
         this.addSubview(this.midDot)
@@ -176,16 +176,38 @@ class RefreshAnimationView extends View {
     timerHandler: any
 
     startAnimation() {
+        this.stopAnimation()
+        this.currentIdx = 0
+        this.doAnimation()
+    }
+
+    doAnimation() {
+        this.leftDot.alpha = this.currentIdx == 0 ? 1 : 0.5
+        this.midDot.alpha = this.currentIdx == 1 ? 1 : 0.5
+        this.rightDot.alpha = this.currentIdx == 2 ? 1 : 0.5
         this.currentIdx++
         if (this.currentIdx > 2) { this.currentIdx = 0 }
-        this.leftDot.backgroundColor = this.currentIdx == 0 ? UI.Color.grayColor : UI.Color.lightGrayColor
-        this.midDot.backgroundColor = this.currentIdx == 1 ? UI.Color.grayColor : UI.Color.lightGrayColor
-        this.rightDot.backgroundColor = this.currentIdx == 2 ? UI.Color.grayColor : UI.Color.lightGrayColor
-        this.timerHandler = setTimeout(this.startAnimation.bind(this), 240)
+        this.timerHandler = setTimeout(this.doAnimation.bind(this), 320)
     }
 
     stopAnimation() {
+        this.leftDot.alpha = 0.5
+        this.midDot.alpha = 0.5
+        this.rightDot.alpha = 0.5
         clearTimeout(this.timerHandler)
+    }
+
+    private _color: Color = Color.grayColor
+
+    public get color(): Color {
+        return this._color;
+    }
+
+    public set color(value: Color) {
+        this._color = value;
+        this.leftDot.backgroundColor = value
+        this.midDot.backgroundColor = value
+        this.rightDot.backgroundColor = value
     }
 
 }
@@ -329,6 +351,9 @@ export class ListView extends ScrollView {
         if (this._reusingCells !== undefined) {
             this.reloadVisibleRows();
         }
+        if (this.contentOffset.y + this.bounds.height > this.contentSize.height - 200) {
+            this.listViewWillTriggerLoadMoreControl()
+        }
     }
 
     private reloadVisibleRows() {
@@ -437,6 +462,8 @@ export class ListView extends ScrollView {
         });
     }
 
+    // Refresh Control
+
     private _refreshControl: RefreshControl | undefined = undefined
     private refreshAnimationView?: RefreshAnimationView
 
@@ -451,6 +478,7 @@ export class ListView extends ScrollView {
         if (value) {
             value.listView = this
             this.refreshAnimationView = new RefreshAnimationView
+            this.refreshAnimationView.color = value.color
             this._addSubview(this.refreshAnimationView)
             this.refreshAnimationView.frame = RectMake(0, 0, this.bounds.width, 44)
             this.refreshAnimationView.alpha = 0.0
@@ -469,18 +497,32 @@ export class ListView extends ScrollView {
     scrollerRefreshing() {
         super.scrollerRefreshing()
         this.refreshing = true
-        
+    }
+
+    scrollerWillBeginDecelerating() {
+        super.scrollerWillBeginDecelerating()
+        if (this.refreshControl && this.refreshAnimationView) {
+            if (!this.refreshing) {
+                this.refreshAnimationView.alpha = 0.0
+            }
+        }
     }
 
     scrollerDidEndDecelerating() {
         super.scrollerDidEndDecelerating()
         if (this.refreshControl && this.refreshAnimationView) {
-            this.refreshControl.handleRefresh()
-            this.refreshAnimationView.startAnimation()
+            if (this.refreshing) {
+                this.refreshControl.handleRefresh()
+                this.refreshAnimationView.startAnimation()
+            }
+            else {
+                this.refreshAnimationView.alpha = 0.0
+            }
         }
     }
 
     private endRefreshing() {
+        this.refreshing = false
         if (this.refreshAnimationView) {
             this.refreshAnimationView.stopAnimation()
             this.refreshAnimationView.alpha = 0.0
@@ -488,6 +530,46 @@ export class ListView extends ScrollView {
         }
     }
 
-    loadMoreControl?: LoadMoreControl
+    // LoadMoreControl
+
+    private _loadMoreControl: LoadMoreControl | undefined = undefined
+    private loadMoreAnimationView?: RefreshAnimationView
+
+    public get loadMoreControl(): LoadMoreControl | undefined {
+        return this._loadMoreControl;
+    }
+
+    public set loadMoreControl(value: LoadMoreControl | undefined) {
+        this._loadMoreControl = value;
+        if (this.loadMoreAnimationView) { this.loadMoreAnimationView.removeFromSuperview() }
+        if (value) {
+            value.listView = this
+            this.loadMoreAnimationView = new RefreshAnimationView
+            this.loadMoreAnimationView.color = value.color
+            this.loadMoreAnimationView.alpha = 0.0
+            this.loadMoreAnimationView.retain(this)
+        }
+    }
+
+    private listViewWillTriggerLoadMoreControl() {
+        if (this.loadMoreControl && this.loadMoreControl.enabled && !this.loadMoreControl.isLoading && this.loadMoreAnimationView) {
+            this.loadMoreControl.handleLoading()
+            this.loadMoreAnimationView.removeFromSuperview()
+            this.addSubview(this.loadMoreAnimationView)
+            this.loadMoreAnimationView.frame = RectMake(0, this.contentSize.height, this.bounds.width, 44.0)
+            this.contentInset = { ...this.contentInset, bottom: this.contentInset.bottom + 44 }
+            this.loadMoreAnimationView.startAnimation()
+            this.loadMoreAnimationView.alpha = 1.0
+        }
+    }
+
+    private endMoreLoading() {
+        if (this.loadMoreAnimationView) {
+            this.loadMoreAnimationView.stopAnimation()
+            this.loadMoreAnimationView.alpha = 0.0
+            this.loadMoreAnimationView.removeFromSuperview()
+            this.contentInset = { ...this.contentInset, bottom: this.contentInset.bottom - 44 }
+        }
+    }
 
 }

@@ -8,16 +8,29 @@ export class RefreshControl {
 
     private _enabled: boolean = true
 
-	public get enabled(): boolean  {
-		return this._enabled;
-	}
+    public get enabled(): boolean {
+        return this._enabled;
+    }
 
-	public set enabled(value: boolean ) {
+    public set enabled(value: boolean) {
         this._enabled = value;
-        this.listView.scroller.refreshEnabled = value
-	}
-    
-    color: Color
+        if (this.listView) {
+            this.listView.scroller.refreshEnabled = value
+        }
+    }
+
+    private _color: Color = Color.grayColor
+
+    public get color(): Color {
+        return this._color;
+    }
+
+    public set color(value: Color) {
+        this._color = value;
+        if (this.listView && this.listView.refreshAnimationView) {
+            this.listView.refreshAnimationView.color = value
+        }
+    }
 
     private _isRefreshing = false
     private endTimeLimit = 0
@@ -41,7 +54,7 @@ export class RefreshControl {
             return
         }
         this._isRefreshing = false
-        this.listView.endRefreshing()
+        this.listView && this.listView.endRefreshing()
     }
 
     onRefresh?: () => void
