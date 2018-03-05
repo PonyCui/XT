@@ -1,12 +1,12 @@
 {
   "name": "xt-studio",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "types": "./src/xt.d.ts",
   "scripts": {
-    "publish": "node publish.js && npm run build",
-    "build": "webpack --env.src_Sample && webpack --env.src_Core_ios && webpack --env.src_Core_android && webpack --env.src_Core_web && webpack --env.src_Foundation_ios && webpack --env.src_Foundation_android && webpack --env.src_Foundation_web && webpack --env.src_UIKit_android && webpack --env.src_UIKit_ios && webpack --env.src_UIKit_web && tsc ./src/AssetsLoader/loader.ts && tsc ./src/DebugLoader/loader.ts",
+    "package": "node package.js && npm run build",
+    "build": "uglifyjs index.js -o index.min.js && webpack --env.src_Sample && webpack --env.src_Core_ios && webpack --env.src_Core_android && webpack --env.src_Core_web && webpack --env.src_Foundation_ios && webpack --env.src_Foundation_android && webpack --env.src_Foundation_web && webpack --env.src_UIKit_android && webpack --env.src_UIKit_ios && webpack --env.src_UIKit_web && tsc ./src/AssetsLoader/loader.ts && tsc ./src/DebugLoader/loader.ts",
     "sample": "webpack --env.src_Sample -w & http-server -c-1",
     "sample_debug": "webpack --env.src_Sample --env.debug -w & http-server -c-1",
     "core_ios": "webpack --env.src_Core_ios -w",

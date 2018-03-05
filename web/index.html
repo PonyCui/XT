@@ -5,33 +5,36 @@
     <meta name="viewport" content="width=device-width, user-scalable=no" />
 </head>
 
-<body style="margin: 0; overflow-y: hidden; -webkit-transform: translate3d(0,0,0);-moz-transform: translate3d(0,0,0);-ms-transform: translate3d(0,0,0);-o-transform: translate3d(0,0,0);transform: translate3d(0,0,0);">
-    <div style="position: absolute; height: 300px; margin: auto; top:0; bottom:0; left:0; right: 0; pointer-events:auto" id="floating"></div>
+<style>
+    body {
+        margin: 0;
+        overflow-y: hidden;
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+        -o-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+</style>
+
+<body class="UIContext" src="/dist/Sample/sample.min.js" options='{"foo": "value"}'>
 </body>
 
-<!-- Dependencies -->
-<script src='https://cdn.jsdelivr.net/npm/spark-md5@3.0.0/spark-md5.min.js'></script>
-<script src='https://cdn.jsdelivr.net/npm/js-sha1@0.6.0/build/sha1.min.js'></script>
-<script src='https://cdn.jsdelivr.net/npm/pako@1.0.6/dist/pako.min.js'></script>
-
-<!-- XT Libraries -->
-<script src="/dist/Core/xt.core.web.min.js?nocache"></script>
-<script src="/dist/Foundation/xt.foundation.web.min.js?nocache"></script>
-<script src="/dist/UIKit/xt.uikit.web.min.js?nocache123"></script>
-
-<!-- Sample -->
+<script src="/index.min.js"></script>
 <script>
-    UI.Context.bundleURL = "/dist/Sample/"
-    var mode = 0
-    var context = UI.Context.startWithNamed("sample.min.js", { foo: "value" }, function () {
-        if (mode == 0) {
-            document.querySelector('#floating').style.display = "none"
-            context.attachTo()
-        }
-        else if (mode == 1) {
-            context.attachTo(document.querySelector("#floating"))
-        }
-    })
+    XTFrameworkLoader.distUrl = "/dist"
+    // XTFrameworkLoader.loadUrl('/dist/Sample/sample.min.js', function (sourceURL) {
+    //     UI.Context.startWithURL(sourceURL, { foo: "value" }, function (_, context) {
+    //         var mode = 0
+    //         if (mode == 0) {
+    //             document.querySelector('#floating').style.display = "none"
+    //             context.attachTo()
+    //         }
+    //         else if (mode == 1) {
+    //             context.attachTo(document.querySelector("#floating"))
+    //         }
+    //     })
+    // })
 </script>
 
 </html>

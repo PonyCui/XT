@@ -15,11 +15,11 @@ export class Context implements Releasable {
 
     static bundleURL = "./"
 
-    static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context {
+    static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController, context: Context) => void): Context {
         return this.startWithURL(this.bundleURL + name, options, completion, () => { })
     }
 
-    static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context {
+    static startWithURL(url: string, options: any, completion: (rootViewController: ViewController, context: Context) => void, failure: (error: Error) => void): Context {
         const ctx = new Context()
         const req = new XMLHttpRequest()
         req.addEventListener("loadend", () => {
@@ -29,7 +29,7 @@ export class Context implements Releasable {
                 ctx.application.delegate &&
                 ctx.application.delegate.window &&
                 ctx.application.delegate.window.rootViewController) {
-                completion(ctx.application.delegate.window.rootViewController)
+                completion(ctx.application.delegate.window.rootViewController, ctx)
             }
             else {
                 failure(new Error("No RootViewController"));
