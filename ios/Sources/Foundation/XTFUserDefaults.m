@@ -24,10 +24,13 @@
     else if ([anObject isObject]) {
         [userDefaults setObject:anObject.toDictionary forKey:forKey];
     }
-    else if ([anObject isArray]) {
-        [userDefaults setObject:anObject.toArray forKey:forKey];
-    }
     else {
+        if (@available(iOS 9.0, *)) {
+            if ([anObject isArray]) {
+                [userDefaults setObject:anObject.toArray forKey:forKey];
+                return;
+            }
+        }
         [userDefaults removeObjectForKey:forKey];
     }
 }

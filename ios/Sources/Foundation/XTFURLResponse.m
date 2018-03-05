@@ -30,7 +30,7 @@
 + (NSInteger)xtr_expectedContentLength:(NSString *)objectRef {
     NSURLResponse *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[NSURLResponse class]]) {
-        return obj.expectedContentLength;
+        return (NSInteger)obj.expectedContentLength;
     }
     return 0;
 }

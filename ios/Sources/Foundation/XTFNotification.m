@@ -87,11 +87,15 @@ static NSArray<XTFNotificationObserver *> *observers;
     if (object.isBoolean) {
         anObject = @(object.toBool);
     }
-    if (object.isDate) {
-        anObject = object.toDate;
+    if (@available(iOS 9.0, *)) {
+        if (object.isDate) {
+            anObject = object.toDate;
+        }
     }
-    if (object.isArray) {
-        anObject = object.toArray;
+    if (@available(iOS 9.0, *)) {
+        if (object.isArray) {
+            anObject = object.toArray;
+        }
     }
     if (object.isObject) {
         anObject = object.toDictionary;

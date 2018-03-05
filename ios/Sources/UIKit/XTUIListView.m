@@ -19,6 +19,7 @@
 
 @interface XTUIListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, strong) XTUIRefreshControl *myRefreshControl;
 @property (nonatomic, strong) XTUILoadMoreControl *loadMoreControl;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 @property (nonatomic, strong) NSMutableSet *retainViews;
@@ -45,8 +46,8 @@
 + (NSString *)xtr_refreshControl:(NSString *)objectRef {
     XTUIListView *listView = [XTMemoryManager find:objectRef];
     if ([listView isKindOfClass:[XTUIListView class]]) {
-        if ([listView.refreshControl isKindOfClass:[XTUIRefreshControl class]]) {
-            return [(XTUIRefreshControl *)(listView.refreshControl) objectUUID];
+        if ([listView.myRefreshControl isKindOfClass:[XTUIRefreshControl class]]) {
+            return [(XTUIRefreshControl *)(listView.myRefreshControl) objectUUID];
         }
     }
     return nil;
@@ -57,10 +58,10 @@
     if ([listView isKindOfClass:[XTUIListView class]]) {
         XTUIRefreshControl *refreshControl = [XTMemoryManager find:rcRef];
         if ([refreshControl isKindOfClass:[XTUIRefreshControl class]]) {
-            listView.refreshControl = refreshControl;
+            listView.myRefreshControl = refreshControl;
         }
         else {
-            listView.refreshControl = nil;
+            listView.myRefreshControl = nil;
         }
     }
 }
@@ -181,6 +182,19 @@
             }
         }
     }];
+}
+
+- (void)setMyRefreshControl:(XTUIRefreshControl *)myRefreshControl {
+    if (@available(iOS 10.0, *)) {
+        [self setRefreshControl:myRefreshControl];
+    }
+    else {
+        if (_myRefreshControl != nil) {
+            [_myRefreshControl removeFromSuperview];
+        }
+        [self addSubview:myRefreshControl];
+    }
+    _myRefreshControl = myRefreshControl;
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDatasource

@@ -24,7 +24,7 @@
         obj.innerObject = [UIFont italicSystemFontOfSize:[pointSize toDouble]];
     }
     else {
-        if ([UIDevice currentDevice].systemVersion.floatValue >= 8.2) {
+        if (@available(iOS 8.2, *)) {
             switch ([fontWeight toInt32]) {
                 case 100:
                     obj.innerObject = [UIFont systemFontOfSize:[pointSize toDouble] weight:UIFontWeightUltraLight];

@@ -83,30 +83,20 @@ static UIImage *backButtonImage;
     XTUINavigationBar *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUINavigationBar class]]) {
         NSMutableArray *barButtonItems = [NSMutableArray array];
-        if (value.isArray) {
-            [value.toArray enumerateObjectsUsingBlock:^(id  _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([item isKindOfClass:[NSDictionary class]]) {
-                    if ([item[@"customView"] isKindOfClass:[NSString class]]) {
-                        UIView *customView = [XTMemoryManager find:item[@"customView"]];
-                        if ([customView isKindOfClass:[UIView class]]) {
-                            UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithCustomView:customView];
-                            btnItem.tag = idx;
-                            [barButtonItems addObject:btnItem];
-                        }
+        [value.toArray enumerateObjectsUsingBlock:^(id  _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([item isKindOfClass:[NSDictionary class]]) {
+                if ([item[@"customView"] isKindOfClass:[NSString class]]) {
+                    UIView *customView = [XTMemoryManager find:item[@"customView"]];
+                    if ([customView isKindOfClass:[UIView class]]) {
+                        UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithCustomView:customView];
+                        btnItem.tag = idx;
+                        [barButtonItems addObject:btnItem];
                     }
-                    else if ([item[@"image"] isKindOfClass:[NSString class]]) {
-                        XTUIImage *img = [XTMemoryManager find:item[@"image"]];
-                        if ([img isKindOfClass:[XTUIImage class]]) {
-                            UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithImage:img.image
-                                                                                        style:UIBarButtonItemStylePlain
-                                                                                       target:obj
-                                                                                       action:@selector(handleLeftButtonTouchUpInside:)];
-                            btnItem.tag = idx;
-                            [barButtonItems addObject:btnItem];
-                        }
-                    }
-                    else if ([item[@"title"] isKindOfClass:[NSString class]]) {
-                        UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithTitle:item[@"title"]
+                }
+                else if ([item[@"image"] isKindOfClass:[NSString class]]) {
+                    XTUIImage *img = [XTMemoryManager find:item[@"image"]];
+                    if ([img isKindOfClass:[XTUIImage class]]) {
+                        UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithImage:img.image
                                                                                     style:UIBarButtonItemStylePlain
                                                                                    target:obj
                                                                                    action:@selector(handleLeftButtonTouchUpInside:)];
@@ -114,8 +104,16 @@ static UIImage *backButtonImage;
                         [barButtonItems addObject:btnItem];
                     }
                 }
-            }];
-        }
+                else if ([item[@"title"] isKindOfClass:[NSString class]]) {
+                    UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithTitle:item[@"title"]
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:obj
+                                                                               action:@selector(handleLeftButtonTouchUpInside:)];
+                    btnItem.tag = idx;
+                    [barButtonItems addObject:btnItem];
+                }
+            }
+        }];
         [obj.innerItem setLeftBarButtonItems:barButtonItems];
         [obj resetItems];
     }
@@ -125,30 +123,20 @@ static UIImage *backButtonImage;
     XTUINavigationBar *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUINavigationBar class]]) {
         NSMutableArray *barButtonItems = [NSMutableArray array];
-        if (value.isArray) {
-            [value.toArray enumerateObjectsUsingBlock:^(id  _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([item isKindOfClass:[NSDictionary class]]) {
-                    if ([item[@"customView"] isKindOfClass:[NSString class]]) {
-                        UIView *customView = [XTMemoryManager find:item[@"customView"]];
-                        if ([customView isKindOfClass:[UIView class]]) {
-                            UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithCustomView:customView];
-                            btnItem.tag = idx;
-                            [barButtonItems addObject:btnItem];
-                        }
+        [value.toArray enumerateObjectsUsingBlock:^(id  _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([item isKindOfClass:[NSDictionary class]]) {
+                if ([item[@"customView"] isKindOfClass:[NSString class]]) {
+                    UIView *customView = [XTMemoryManager find:item[@"customView"]];
+                    if ([customView isKindOfClass:[UIView class]]) {
+                        UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithCustomView:customView];
+                        btnItem.tag = idx;
+                        [barButtonItems addObject:btnItem];
                     }
-                    else if ([item[@"image"] isKindOfClass:[NSString class]]) {
-                        XTUIImage *img = [XTMemoryManager find:item[@"image"]];
-                        if ([img isKindOfClass:[XTUIImage class]]) {
-                            UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithImage:img.image
-                                                                                        style:UIBarButtonItemStylePlain
-                                                                                       target:obj
-                                                                                       action:@selector(handleRightButtonTouchUpInside:)];
-                            btnItem.tag = idx;
-                            [barButtonItems addObject:btnItem];
-                        }
-                    }
-                    else if ([item[@"title"] isKindOfClass:[NSString class]]) {
-                        UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithTitle:item[@"title"]
+                }
+                else if ([item[@"image"] isKindOfClass:[NSString class]]) {
+                    XTUIImage *img = [XTMemoryManager find:item[@"image"]];
+                    if ([img isKindOfClass:[XTUIImage class]]) {
+                        UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithImage:img.image
                                                                                     style:UIBarButtonItemStylePlain
                                                                                    target:obj
                                                                                    action:@selector(handleRightButtonTouchUpInside:)];
@@ -156,8 +144,16 @@ static UIImage *backButtonImage;
                         [barButtonItems addObject:btnItem];
                     }
                 }
-            }];
-        }
+                else if ([item[@"title"] isKindOfClass:[NSString class]]) {
+                    UIBarButtonItem *btnItem = [[UIBarButtonItem alloc] initWithTitle:item[@"title"]
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:obj
+                                                                               action:@selector(handleRightButtonTouchUpInside:)];
+                    btnItem.tag = idx;
+                    [barButtonItems addObject:btnItem];
+                }
+            }
+        }];
         [obj.innerItem setRightBarButtonItems:barButtonItems];
         [obj resetItems];
     }
