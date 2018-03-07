@@ -3,7 +3,7 @@ import { Rect } from "../interface/Rect";
 
 export class Screen {
 
-    static mainScreen: () => Screen = () => {
+    public static get mainScreen(): Screen {
         const bounds: Rect = _XTUIScreen.xtr_mainScreenBounds()
         return new Screen(bounds.width, bounds.height, _XTUIScreen.xtr_mainScreenScale());
     }
@@ -23,11 +23,11 @@ export class Screen {
     }
 
     static withScale(value: number): number {
-        return value * Screen.mainScreen().scale;
+        return value * Screen.mainScreen.scale;
     }
 
     static outScale(value: number): number {
-        return value / Screen.mainScreen().scale;
+        return value / Screen.mainScreen.scale;
     }
 
 }

@@ -25,7 +25,7 @@ export class URLRequest implements Releasable {
         this.cachePolicy = cachePolicy
     }
 
-    setHTTPMethod(value: string): void { }
+    setHTTPMethod(value: "GET" | "POST" | "PUT" | "DELETE"): void { }
     setHTTPHeader(value: string, key: string): void { }
     setHTTPBody(value: string | Data): void { }
 

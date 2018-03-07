@@ -50,19 +50,19 @@ export class CanvasView extends View {
         this.nativeObject.xtr_setStrokeStyle(value)
     }
 
-    public get lineCap(): string {
+    public get lineCap(): "butt" | "round" | "square" {
         return this.nativeObject.xtr_lineCap()
     }
 
-    public set lineCap(value: string) {
+    public set lineCap(value: "butt" | "round" | "square") {
         this.nativeObject.xtr_setLineCap(value)
     }
 
-    public get lineJoin(): string {
+    public get lineJoin(): "bevel" | "round" | "miter" {
         return this.nativeObject.xtr_lineJoin()
     }
 
-    public set lineJoin(value: string) {
+    public set lineJoin(value: "bevel" | "round" | "miter") {
         this.nativeObject.xtr_setLineJoin(value)
     }
 

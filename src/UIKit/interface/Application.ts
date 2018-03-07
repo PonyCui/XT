@@ -7,8 +7,7 @@ export class ApplicationDelegate {
 
 export class Application {
     constructor(t: any, delegate: ApplicationDelegate) { }
-    delegate: ApplicationDelegate
-    keyWindow?: Window
+    readonly delegate: ApplicationDelegate
+    readonly keyWindow?: Window
     static sharedApplication(): Application { throw "NOT IMPLEMENT!" }
-    exit(): void { }
 }

@@ -53,7 +53,7 @@ export class Slider extends View {
             }
             else {
                 this.value = Math.max(0.0, Math.min(1.0, this.startValue + translation.x / this.bounds.width))
-                this.onValueChanged && this.onValueChanged()
+                this.onValueChanged && this.onValueChanged(this)
             }
         }
     }
@@ -72,7 +72,7 @@ export class Slider extends View {
         this.thumbView.frame = RectMake((this.bounds.width - 28) * this._value, (this.bounds.height - 28) / 2.0, 28, 28)
     }
 
-    onValueChanged?: () => void
+    onValueChanged?: (sender: this) => void
 
     private _value: number = 0.5
 

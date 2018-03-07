@@ -265,7 +265,7 @@ export class ScrollView extends View implements ScrollerDelegate {
         this.resetScroller();
     }
 
-    onScroll?: (scrollView: ScrollView) => void
+    onScroll?: (sender: this) => void
 
     // Touches
 

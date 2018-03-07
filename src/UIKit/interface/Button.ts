@@ -17,15 +17,15 @@ export class Button extends View {
     image?: Image;
     color: Color;
 
-    onTouchDown?: () => void           
-    onTouchDragInside?: () => void     
-    onTouchDragOutside?: () => void    
-    onTouchDragEnter?: () => void      
-    onTouchDragExit?: () => void  
-    onTouchUpInside?: () => void   
-    onTouchUpOutside?: () => void     
-    onTouchCancel?: () => void        
-    onHighlighted?: (highligted: boolean) => void
-    onHover?: (hovered: boolean) => void
+    onTouchDown?: (sender: this) => void
+    onTouchDragInside?: (sender: this) => void
+    onTouchDragOutside?: (sender: this) => void
+    onTouchDragEnter?: (sender: this) => void
+    onTouchDragExit?: (sender: this) => void
+    onTouchUpInside?: (sender: this) => void
+    onTouchUpOutside?: (sender: this) => void
+    onTouchCancel?: (sender: this) => void
+    onHighlighted?: (sender: this, highligted: boolean) => void
+    onHover?: (sender: this, hovered: boolean) => void
 
 }

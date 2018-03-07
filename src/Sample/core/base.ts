@@ -79,7 +79,7 @@ export class TestBase extends UI.ViewController {
 
     running(description: string, level: number) {
         const resultLabel = new UI.Label()
-        resultLabel.frame = UI.RectMake(15.0, this.currentY, UI.Screen.mainScreen().bounds().width, 28)
+        resultLabel.frame = UI.RectMake(15.0, this.currentY, UI.Screen.mainScreen.bounds().width, 28)
         resultLabel.font = UI.Font.systemFontOfSize(17)
         resultLabel.textColor = UI.Color.grayColor
         resultLabel.text = "Running - " + description
@@ -89,7 +89,7 @@ export class TestBase extends UI.ViewController {
 
     log(result: boolean, description: string, level: number) {
         const resultLabel = new UI.Label()
-        resultLabel.frame = UI.RectMake(15.0, this.currentY, UI.Screen.mainScreen().bounds().width, 28)
+        resultLabel.frame = UI.RectMake(15.0, this.currentY, UI.Screen.mainScreen.bounds().width, 28)
         resultLabel.font = UI.Font.systemFontOfSize(17)
         if (result) {
             resultLabel.textColor = new UI.Color(0x3f / 0xff, 0x69 / 0xff, 0x1e / 0xff)
@@ -117,7 +117,7 @@ export class TestBase extends UI.ViewController {
     private runningLabel = new UI.Label()
 
     startRunning() {
-        this.runningLabel.frame = UI.RectMake(15.0, this.currentY, UI.Screen.mainScreen().bounds().width, 28)
+        this.runningLabel.frame = UI.RectMake(15.0, this.currentY, UI.Screen.mainScreen.bounds().width, 28)
         this.runningLabel.font = UI.Font.systemFontOfSize(17)
         this.runningLabel.textColor = UI.Color.grayColor
         this.runningLabel.text = "Runing..."

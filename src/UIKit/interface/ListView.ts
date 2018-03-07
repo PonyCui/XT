@@ -34,7 +34,6 @@ export class ListCell extends View {
     readonly contentView: View
     selectionStyle: ListSelectionStyle = ListSelectionStyle.Gray;
     bottomVisible: boolean = true
-    isLastCell: boolean = false
     bottomLineInsets: Insets = InsetsMake(0, 0, 0, 0)
     didHighlighted(highlighted: boolean) { }
     didSelected() { }

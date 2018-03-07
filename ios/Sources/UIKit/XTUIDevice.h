@@ -16,9 +16,7 @@
 + (NSString *)xtr_name;
 + (NSString *)xtr_systemName;
 + (NSString *)xtr_systemVersion;
-+ (NSString *)xtr_xtRuntimeVersion;
 + (NSString *)xtr_model;
-+ (NSInteger)xtr_orientation;
 
 @end
 

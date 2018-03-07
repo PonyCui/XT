@@ -46,19 +46,19 @@ export class CanvasView extends View {
         _XTUICanvasView.xtr_setStrokeStyle(value, this.objectRef)
     }
 
-    public get lineCap(): string {
+    public get lineCap(): "butt" | "round" | "square" {
         return _XTUICanvasView.xtr_lineCap(this.objectRef)
     }
 
-    public set lineCap(value: string) {
+    public set lineCap(value: "butt" | "round" | "square") {
         _XTUICanvasView.xtr_setLineCap(value, this.objectRef)
     }
 
-    public get lineJoin(): string {
+    public get lineJoin(): "bevel" | "round" | "miter" {
         return _XTUICanvasView.xtr_lineJoin(this.objectRef)
     }
 
-    public set lineJoin(value: string) {
+    public set lineJoin(value: "bevel" | "round" | "miter") {
         _XTUICanvasView.xtr_setLineJoin(value, this.objectRef)
     }
 

@@ -1,6 +1,6 @@
 if (typeof window === "object") {
     window.XTFrameworkLoader = {
-        distUrl: "https://cdn.jsdelivr.net/npm/xt-studio@0.1.0/dist",
+        distUrl: "https://cdn.jsdelivr.net/npm/xt-studio@0.1.1/dist",
         componentsUrl: {
             "XT": function () { return window.XTFrameworkLoader.distUrl + "/Core/xt.core.web.min.js" },
             "NS": function () { return window.XTFrameworkLoader.distUrl + "/Foundation/xt.foundation.web.min.js" },

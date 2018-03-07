@@ -46,7 +46,7 @@ export class Switch extends View {
     private addTouches() {
         this.onTap = () => {
             this.setOn(!this.on, true)
-            this.onValueChanged && this.onValueChanged()
+            this.onValueChanged && this.onValueChanged(this)
         }
     }
 
@@ -79,7 +79,7 @@ export class Switch extends View {
         this.resetStyle()
     }
 
-    onValueChanged?: () => void
+    onValueChanged?: (sender: this) => void
 
     setOn(value: boolean, animated: boolean) {
         if (animated) {
@@ -93,7 +93,7 @@ export class Switch extends View {
     }
 
     handleValueChanged() {
-        this.onValueChanged && this.onValueChanged()
+        this.onValueChanged && this.onValueChanged(this)
     }
 
 }

@@ -4,6 +4,8 @@ import { Debug } from "./Debug";
 declare var module: any
 
 module.exports = {
+    currentSDK: "0.1.1",
+    platform: "Web",
     ClassType,
     ClassLoader,
     Debug,

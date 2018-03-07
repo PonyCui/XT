@@ -53,12 +53,12 @@ export class RefreshControl {
         _XTUIRefreshControl.xtr_endRefreshing(this.objectRef)
     }
 
-    onRefresh?: () => void
+    onRefresh?: (sender: this) => void
 
     handleRefresh() {
         this._isRefreshing = true
         this.endTimeLimit = (new Date().getTime()) + 500
-        this.onRefresh && this.onRefresh()
+        this.onRefresh && this.onRefresh(this)
     }
 
 }

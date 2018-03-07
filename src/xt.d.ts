@@ -6,6 +6,8 @@ export interface Releasable {
 export as namespace XT;
 
 export var minSDK: string
+export const currentSDK: string
+export const platform: "iOS" | "Android" | "Web"
 
 export enum ClassType {
     Unknown,
@@ -40,10 +42,8 @@ export enum SwipeDirection {
 }
 
 export class Context implements Releasable {
-
     retain(owner?: any): this
     release(): this
-
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context
     static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context
 
@@ -54,197 +54,51 @@ export class View implements Releasable {
     retain(owner?: any): this;
     release(): this;
     constructor()
-
-    // Mark: View Geometry
-    /**
-     * use frame to describe view origin and size.
-     */
     frame: Rect;
-    /**
-     * use bounds to describe content's size.
-     */
     bounds: Rect;
-    /**
-     * convenience method, reset view center, will convert to frame.
-     */
     center: Point;
-    /**
-     * use transform to describe content's transforming
-     */
     transform: TransformMatrix;
     // Mark: View Rendering
-    /**
-     * defaults to false, if true, contents will not render out of bounds.
-     */
     clipsToBounds: boolean;
-    /**
-     * defaults to undefined,.
-     */
     backgroundColor: Color;
-    /**
-     * defaults to 1.0.
-     */
     alpha: number;
-    /**
-     * defaults to false, if true, the views below this view, will not render.
-     */
     opaque: boolean;
-    /**
-     * defaults to false, if true, view will not render.
-     */
     hidden: boolean;
-    /**
-     * defaults to ContentMode.ScaleToFill
-     */
     contentMode: ContentMode;
-    /**
-     * defaults to undefined, valid to maskView !== undefined and set clipsToBounds = true.
-     */
     maskView?: View
-    /**
-     * defaults to gray blue color.
-     */
     tintColor: Color
-    /**
-     * method will call after tintColor changed, superview tintColor change cause call either.
-     */
     tintColorDidChange(): void
     // Mark: View Layer-Back Rendering
-    /**
-     * defaults to 0.
-     */
     cornerRadius: number;
-    /**
-     * defaults to 0.
-     */
     borderWidth: number;
-    /**
-     * defaults to undefined.
-     */
     borderColor: Color;
-    /**
-     * defaults to undefined.
-     */
     shadowColor: Color;
-    /**
-     * defaults to 0;
-     */
     shadowOpacity: number;
-    /**
-     * defaults to {width:0, height: -3};
-     */
     shadowOffset: Size;
-    /**
-     * defaults to 3;
-     */
     shadowRadius: number;
     // Mark: View Hierarchy
-    /**
-     * add tag to view, view could be found with View.viewWithTag(number).
-     */
     tag: number;
-    /**
-     * returns superview.
-     */
     superview?: View
-    /**
-     * returns this subviews.
-     */
     subviews: View[]
-    /**
-     * returns this view attached window.
-     */
     window?: Window
-    /**
-     * remove self from superview.
-     */
     removeFromSuperview(): void
-    /**
-     * insert a view at specific index
-     * @param subview subview
-     * @param atIndex index (crash if out of bounds)
-     */
     insertSubviewAtIndex(subview: View, atIndex: number): void
-    /**
-     * exchange two view z-index.
-     */
     exchangeSubviewAtIndex(index1: number, index2: number): void
-    /**
-     * add subview to front.
-     * @param subview 
-     */
     addSubview(subview: View): void
-    /**
-     * insert subview below a view.
-     * @param subview subview
-     * @param siblingSubview below this view.
-     */
     insertSubviewBelow(subview: View, siblingSubview: View): void
-    /**
-     * insert subview above a view.
-     * @param subview subview
-     * @param siblingSubview above this view.
-     */
     insertSubviewAbove(subview: View, siblingSubview: View): void
-    /**
-     * bring subview to front.
-     * @param subview subview.
-     */
     bringSubviewToFront(subview: View): void
-    /**
-     * send subview to back.
-     * @param subview subview.
-     */
     sendSubviewToBack(subview: View): void
-    /**
-     * call after a subview has been add to self.
-     * @param subview subview
-     */
     didAddSubview(subview: View): void
-    /**
-     * call before a subview will be removed from self.
-     * @param subview subview
-     */
     willRemoveSubview(subview: View): void
-    /**
-     * call before move to new superview for self.
-     * @param newSuperview new superview
-     */
     willMoveToSuperview(newSuperview?: View): void
-    /**
-     * call after move to new superview for self.
-     */
     didMoveToSuperview(): void
-    /**
-     * call before move to window for self.
-     * @param newWindow window
-     */
     willMoveToWindow(newWindow?: Window): void
-    /**
-     * call after move to window for self.
-     */
     didMoveToWindow(): void
-    /**
-     * check a view is a child or grand-x-child as the view.
-     * @param subview the view
-     */
     isDescendantOfView(view: View): boolean
-    /**
-     * recursive search. includes self
-     * @param tag tag
-     */
     viewWithTag(tag: number): View | undefined
-    /**
-     * Allows you to perform layout before the drawing cycle happens. -layoutIfNeeded forces layout early
-     */
     setNeedsLayout(): void
-    /**
-     * call layoutSubviews immediately
-     */
     layoutIfNeeded(): void
-    /**
-     * override point. called by layoutIfNeeded automatically.
-     */
     layoutSubviews(): void
     setNeedsDisplay(): void
     // Mark: View LayoutConstraint
@@ -286,6 +140,7 @@ export class Color {
     static orangeColor: Color
     static purpleColor: Color
     static colorWithWhite(white: number, alpha: number): Color
+    static colorWithHex(hex: string): Color
     readonly r: number;
     readonly g: number;
     readonly b: number;
@@ -354,7 +209,6 @@ export enum LayoutRelation {
 }
 
 export class LayoutConstraint {
-
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;
     readonly relation: LayoutRelation;
@@ -374,10 +228,9 @@ export class ApplicationDelegate {
 
 export class Application {
     constructor(t: any, delegate: ApplicationDelegate)
-    delegate: ApplicationDelegate
-    keyWindow?: Window
+    readonly delegate: ApplicationDelegate
+    readonly keyWindow?: Window
     static sharedApplication(): Application
-    exit(): void
 }
 
 export class Button extends View {
@@ -389,16 +242,16 @@ export class Button extends View {
     font: Font;
     image?: Image;
     color: Color
-    onTouchDown?: () => void
-    onTouchDragInside?: () => void
-    onTouchDragOutside?: () => void
-    onTouchDragEnter?: () => void
-    onTouchDragExit?: () => void
-    onTouchUpInside?: () => void
-    onTouchUpOutside?: () => void
-    onTouchCancel?: () => void
-    onHighlighted?: (highligted: boolean) => void
-    onHover?: (hovered: boolean) => void
+    onTouchDown?: (sender: this) => void
+    onTouchDragInside?: (sender: this) => void
+    onTouchDragOutside?: (sender: this) => void
+    onTouchDragEnter?: (sender: this) => void
+    onTouchDragExit?: (sender: this) => void
+    onTouchUpInside?: (sender: this) => void
+    onTouchUpOutside?: (sender: this) => void
+    onTouchCancel?: (sender: this) => void
+    onHighlighted?: (sender: this, highligted: boolean) => void
+    onHover?: (sender: this, hovered: boolean) => void
 }
 
 export class Font {
@@ -420,11 +273,9 @@ export enum ImageRenderingMode {
 export class Image implements Releasable {
     retain(owner?: any): this;
     release(): this;
-
     readonly size: Size;
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode;
-    static assetsPath: string
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void): void
     static fromBase64(value: string, scale: number, bitmapWidth?: number, bitmapHeight?: number): Image | undefined
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image
@@ -472,23 +323,19 @@ export class Label extends View {
 }
 
 export class RefreshControl {
-
     enabled: boolean
     color: Color
     readonly isRefreshing: boolean
     endRefreshing(): void
-    onRefresh?: () => void
-
+    onRefresh?: (sender: this) => void
 }
 
 export class LoadMoreControl {
-
     enabled: boolean
     color: Color
     readonly isLoading: boolean
     endLoading(): void
-    onLoad?: () => void
-
+    onLoad?: (sender: this) => void
 }
 
 export interface ListItem {
@@ -516,7 +363,6 @@ export class ListCell extends View {
     readonly context?: any
     selectionStyle: ListSelectionStyle
     bottomVisible: boolean
-    isLastCell: boolean
     bottomLineInsets: Insets
     didHighlighted(highlighted: boolean): void
     didSelected(): void
@@ -524,15 +370,12 @@ export class ListCell extends View {
 }
 
 export class ListSection {
-
-    public headerView?: View
-    public footerView?: View
-    public items: ListItem[];
-
+    headerView?: View
+    footerView?: View
+    items: ListItem[];
 }
 
 export class ListView extends ScrollView {
-
     refreshControl?: RefreshControl
     loadMoreControl?: LoadMoreControl
     listHeaderView?: View
@@ -541,11 +384,10 @@ export class ListView extends ScrollView {
     renderItem?: (cell: ListCell, item: ListItem) => void
     register(clazz: typeof ListCell, reuseIdentifier: string, context?: any): void
     reloadData(): void
-
 }
 
 export class Screen {
-    static mainScreen: () => Screen
+    static mainScreen: Screen
     readonly width: number;
     readonly height: number;
     readonly scale: number;
@@ -560,13 +402,13 @@ export class ScrollView extends View {
     contentInset: Insets
     isPagingEnabled: boolean
     isDirectionalLockEnabled: boolean
-    bounces: boolean
     isScrollEnabled: boolean
-    showsHorizontalScrollIndicator: boolean
-    showsVerticalScrollIndicator: boolean
+    bounces: boolean
     alwaysBounceVertical: boolean
     alwaysBounceHorizontal: boolean
-    onScroll?: (scrollView: ScrollView) => void
+    showsHorizontalScrollIndicator: boolean
+    showsVerticalScrollIndicator: boolean
+    onScroll?: (sender: this) => void
     setContentOffset(value: Point, animated: boolean): void
     scrollRectToVisible(rect: Rect, animated: boolean): void
 }
@@ -613,7 +455,6 @@ export enum ViewControllerLayoutOptions {
 export class ViewController implements Releasable {
     retain(owner?: any): this;
     release(): this;
-
     title: string
     readonly view: View
     layoutOptions: ViewControllerLayoutOptions[]
@@ -645,16 +486,13 @@ export class ViewController implements Releasable {
 }
 
 export class NavigationBarButtonItem {
-
     image?: Image
     title?: string
     customView?: View
     onTouchUpInside?: () => void
-
 }
 
 export class NavigationBar extends View {
-
     title: string
     translucent: boolean
     lightContent: boolean
@@ -662,7 +500,6 @@ export class NavigationBar extends View {
     setLeftBarButtonItems(navigationItems: NavigationBarButtonItem[]): void
     setRightBarButtonItem(navigationItem?: NavigationBarButtonItem): void
     setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void
-
 }
 
 export class NavigationController extends ViewController {
@@ -674,12 +511,11 @@ export class NavigationController extends ViewController {
 }
 
 export class CanvasView extends View {
-
     globalAlpha: number
     fillStyle: Color
     strokeStyle: Color
-    lineCap: string
-    lineJoin: string
+    lineCap: "butt" | "round" | "square"
+    lineJoin: "bevel" | "round" | "miter"
     lineWidth: number
     miterLimit: number
     rect(x: number, y: number, width: number, height: number): void
@@ -703,7 +539,6 @@ export class CanvasView extends View {
     save(): void
     restore(): void
     clear(): void
-
 }
 
 export enum DeviceOrientation {
@@ -717,20 +552,11 @@ export enum DeviceOrientation {
 }
 
 export class Device {
-
     static current: Device
-
     name: string
     systemName: string
     systemVersion: string
-    xtRuntimeVersion: string
     model: string
-    orientation: DeviceOrientation
-
-    isiOS(): Boolean
-    isAndroid(): Boolean
-    isWeb(): Boolean
-
 }
 
 export enum TextFieldViewMode {
@@ -756,7 +582,6 @@ export enum ReturnKeyType {
 }
 
 export class TextField extends View {
-
     text: string;
     font: Font;
     textColor: Color
@@ -770,7 +595,6 @@ export class TextField extends View {
     leftViewMode: TextFieldViewMode
     rightView?: View
     rightViewMode: TextFieldViewMode
-
     // TextInput
     allowAutocapitalization: Boolean
     allowAutocorrection: Boolean
@@ -779,7 +603,6 @@ export class TextField extends View {
     returnKeyType: ReturnKeyType
     enablesReturnKeyAutomatically: Boolean
     secureTextEntry: Boolean
-
     // TextField Delegate
     shouldBeginEditing?: () => Boolean
     didBeginEditing?: () => void
@@ -788,21 +611,17 @@ export class TextField extends View {
     shouldChange?: (inRange: { location: number, length: number }, replacementString: string) => Boolean
     shouldClear?: () => Boolean
     shouldReturn?: () => Boolean
-
     // methods
     focus(): void
     blur(): void
-
 }
 
 export class TextView extends View {
-
     text: string;
     font: Font;
     textColor: Color
     textAlignment: TextAlignment
     readonly editing: Boolean
-
     // TextInput
     allowAutocapitalization: Boolean
     allowAutocorrection: Boolean
@@ -811,34 +630,27 @@ export class TextView extends View {
     returnKeyType: ReturnKeyType
     enablesReturnKeyAutomatically: Boolean
     secureTextEntry: Boolean
-
     // TextField Delegate
     shouldBeginEditing?: () => Boolean
     didBeginEditing?: () => void
     shouldEndEditing?: () => Boolean
     didEndEditing?: () => void
     shouldChange?: (inRange: { location: number, length: number }, replacementString: string) => Boolean
-
     // methods
     focus(): void
     blur(): void
-
 }
 
 export interface TextMeasureParams {
-
     font: Font;
     inRect: Rect;
     numberOfLines?: number
     letterSpace?: number
     lineSpace?: number
-
 }
 
 export class TextMeasurer {
-
     static measureText(text: string, params: TextMeasureParams): Rect
-
 }
 
 export enum HRViewPosition {
@@ -856,23 +668,23 @@ export class HRView extends View {
 }
 
 export class Alert {
-    public buttonTitle: string
+    buttonTitle: string
     constructor(message: string)
     show(callback?: () => void): void
 }
 
 export class Confirm {
-    public confirmTitle: string
-    public cancelTitle: string
+    confirmTitle: string
+    cancelTitle: string
     constructor(message: string)
     show(resolve: () => void, reject: () => void): void
 }
 
 export class Prompt {
-    public placeholder: string
-    public defaultValue: string
-    public confirmTitle: string
-    public cancelTitle: string
+    placeholder: string
+    defaultValue: string
+    confirmTitle: string
+    cancelTitle: string
     constructor(message: string)
     show(resolve: (value: string) => void, reject: () => void): void
 }
@@ -886,13 +698,13 @@ export class WebView extends View {
 
 export class Switch extends View {
     on: boolean
-    onValueChanged?: () => void
+    onValueChanged?: (sender: this) => void
     setOn(value: boolean, animated: boolean): void
 }
 
 export class Slider extends View {
     value: number
-    onValueChanged?: () => void
+    onValueChanged?: (sender: this) => void
     setValue(value: number, animated: boolean): void
 }
 
@@ -969,12 +781,9 @@ export class URLRequest implements Releasable {
     readonly timeout: number
     readonly cachePolicy: URLCachePolily
     constructor(url: string, timeout?: number, cachePolicy?: URLCachePolily)
-    setHTTPMethod(value: string): void
+    setHTTPMethod(value: "GET" | "POST" | "PUT" | "DELETE"): void
     setHTTPHeader(value: string, key: string): void
     setHTTPBody(value: string | Data): void
-    setHTTPShouldHandleCookies(value: boolean): void
-    setHTTPShouldUsePipelining(value: boolean): void
-    setAllowsCellularAccess(value: boolean): void
     retain(): this
     release(): this
 }
@@ -1026,7 +835,9 @@ declare var require: (path: string) => any;
 
 declare global {
     const XT: {
-        minSDK: string,
+        minSDK: typeof minSDK,
+        currentSDK: typeof currentSDK,
+        platform: typeof platform,
         ClassType: typeof ClassType,
         ClassLoader: typeof ClassLoader,
         Debug: typeof Debug,

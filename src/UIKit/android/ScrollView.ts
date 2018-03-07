@@ -9,7 +9,7 @@ import { Animation } from '../libraries/scroller/animation';
 
 export class ScrollView extends View implements ScrollerDelegate {
 
-    onScroll?: (scrollView: ScrollView) => void
+    onScroll?: (sender: this) => void
 
     private readonly innerView: View
     private readonly horizontalScrollIndicator: View

@@ -7,6 +7,6 @@ export class LoadMoreControl extends View {
     color: Color
     readonly isLoading: boolean
     endLoading(): void { }
-    onLoad?: () => void
+    onLoad?: (sender: this) => void
 
 }

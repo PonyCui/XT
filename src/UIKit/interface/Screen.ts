@@ -2,7 +2,9 @@ import { Rect } from './Rect'
 
 export class Screen {
 
-    static mainScreen: () => Screen = () => new Screen(0, 0, 1)
+    public static get mainScreen(): Screen {
+        return new Screen(0, 0, 1)
+    }
 
     readonly width: number;
     readonly height: number;
@@ -19,11 +21,11 @@ export class Screen {
     }
 
     static withScale(value: number): number {
-        return value * Screen.mainScreen().scale;
+        return value * Screen.mainScreen.scale;
     }
 
     static outScale(value: number): number {
-        return value / Screen.mainScreen().scale;
+        return value / Screen.mainScreen.scale;
     }
 
 }

@@ -36,7 +36,7 @@ export class LoadMoreControl extends View {
 
     handleLoading() {
         this._isLoading = true
-        this.onLoad && this.onLoad()
+        this.onLoad && this.onLoad(this)
     }
 
     endLoading(): void {
@@ -44,6 +44,6 @@ export class LoadMoreControl extends View {
         this.listView && this.listView.endMoreLoading()
     }
 
-    onLoad?: () => void
+    onLoad?: (sender: this) => void
 
 }

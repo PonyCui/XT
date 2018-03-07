@@ -42,12 +42,12 @@ export class LoadMoreControl extends View {
         _XTUILoadMoreControl.xtr_endLoading(this.objectRef)
     }
 
-    onLoad?: () => void
+    onLoad?: (sender: this) => void
 
     handleLoad() {
         this._isLoad = true
         this.endTimeLimit = (new Date().getTime()) + 500
-        this.onLoad && this.onLoad()
+        this.onLoad && this.onLoad(this)
     }
 
 }

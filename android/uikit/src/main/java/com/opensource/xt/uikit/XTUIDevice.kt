@@ -12,16 +12,6 @@ import com.opensource.xt.core.XTComponentExport
 
 class XTUIDevice {
 
-    enum class DeviceOrientation {
-        Unknown,
-        Portrait,
-        PortraitUpsideDown,
-        LandscapeLeft,
-        LandscapeRight,
-        FaceUp,
-        FaceDown,
-    }
-
     class JSExports(val context: XTUIContext): XTComponentExport() {
 
         override val name: String = "_XTUIDevice"
@@ -31,9 +21,7 @@ class XTUIDevice {
             exports.registerJavaMethod(this, "xtr_deviceName", "xtr_deviceName", arrayOf())
             exports.registerJavaMethod(this, "xtr_systemName", "xtr_systemName", arrayOf())
             exports.registerJavaMethod(this, "xtr_systemVersion", "xtr_systemVersion", arrayOf())
-            exports.registerJavaMethod(this, "xtr_xtRuntimeVersion", "xtr_xtRuntimeVersion", arrayOf())
             exports.registerJavaMethod(this, "xtr_model", "xtr_model", arrayOf())
-            exports.registerJavaMethod(this, "xtr_orientation", "xtr_orientation", arrayOf())
             return exports
         }
 
@@ -49,22 +37,10 @@ class XTUIDevice {
             return Build.VERSION.SDK_INT.toString()
         }
 
-        fun xtr_xtRuntimeVersion(): String {
-            return XTCore.version
-        }
-
         fun xtr_model(): String {
             return Build.MODEL
         }
 
-        fun xtr_orientation(): Int {
-            return orientation.ordinal
-        }
-
-    }
-
-    companion object {
-        internal var orientation = DeviceOrientation.Unknown
     }
 
 }

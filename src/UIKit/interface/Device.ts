@@ -13,12 +13,6 @@ export class Device {
     static deviceName: string
     static systemName: string
     static systemVersion: string
-    static xtRuntimeVersion: string
     static model: string
-    static orientation: DeviceOrientation
-
-    static isiOS(): Boolean { return false }
-    static isAndroid(): Boolean { return false }
-    static isWeb(): Boolean { return false }
 
 }

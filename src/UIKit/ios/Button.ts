@@ -77,57 +77,57 @@ export class Button extends View {
     }
 
     handleTouchDown() {
-        this.onTouchDown && this.onTouchDown();
+        this.onTouchDown && this.onTouchDown(this);
     }
 
-    public onTouchDown?: () => void
+    public onTouchDown?: (sender: this) => void
 
     handleTouchDragInside() {
-        this.onTouchDragInside && this.onTouchDragInside();
+        this.onTouchDragInside && this.onTouchDragInside(this);
     }
 
-    public onTouchDragInside?: () => void
+    public onTouchDragInside?: (sender: this) => void
 
     handleTouchDragOutside() {
-        this.onTouchDragOutside && this.onTouchDragOutside();
+        this.onTouchDragOutside && this.onTouchDragOutside(this);
     }
 
-    public onTouchDragOutside?: () => void
+    public onTouchDragOutside?: (sender: this) => void
 
     handleTouchDragEnter() {
-        this.onTouchDragEnter && this.onTouchDragEnter();
+        this.onTouchDragEnter && this.onTouchDragEnter(this);
     }
 
-    public onTouchDragEnter?: () => void
+    public onTouchDragEnter?: (sender: this) => void
 
     handleTouchDragExit() {
-        this.onTouchDragExit && this.onTouchDragExit();
+        this.onTouchDragExit && this.onTouchDragExit(this);
     }
 
-    public onTouchDragExit?: () => void
+    public onTouchDragExit?: (sender: this) => void
 
     handleTouchUpInside() {
-        this.onTouchUpInside && this.onTouchUpInside();
+        this.onTouchUpInside && this.onTouchUpInside(this);
     }
 
-    public onTouchUpInside?: () => void;
+    public onTouchUpInside?: (sender: this) => void;
 
     handleTouchUpOutside() {
-        this.onTouchUpOutside && this.onTouchUpOutside();
+        this.onTouchUpOutside && this.onTouchUpOutside(this);
     }
 
-    public onTouchUpOutside?: () => void
+    public onTouchUpOutside?: (sender: this) => void
 
     handleTouchCancel() {
-        this.onTouchCancel && this.onTouchCancel();
+        this.onTouchCancel && this.onTouchCancel(this);
     }
 
-    public onTouchCancel?: () => void
+    public onTouchCancel?: (sender: this) => void
 
     handleHighlighted(highligted: boolean) {
-        this.onHighlighted && this.onHighlighted(highligted);
+        this.onHighlighted && this.onHighlighted(this, highligted);
     }
 
-    public onHighlighted?: (highligted: boolean) => void
+    public onHighlighted?: (sender: this, highligted: boolean) => void
 
 }

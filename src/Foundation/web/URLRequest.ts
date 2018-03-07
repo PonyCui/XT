@@ -32,7 +32,7 @@ export class URLRequest extends IURLRequest {
         return { request: xmlRequest, body: this.HTTPBody }
     }
 
-    setHTTPMethod(value: string): void {
+    setHTTPMethod(value: "GET" | "POST" | "PUT" | "DELETE"): void {
         this.HTTPMethod = value
     }
 

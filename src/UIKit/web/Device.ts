@@ -15,12 +15,7 @@ export class Device {
     deviceName: string = navigator.vendor
     systemName: string = navigator.platform
     systemVersion: string = ""
-    xtRuntimeVersion: string = "0.1.0"
     model: string = ""
     orientation: DeviceOrientation = DeviceOrientation.Unknown
-
-    isiOS(): Boolean { return false }
-    isAndroid(): Boolean { return false }
-    isWeb(): Boolean { return true }
 
 }

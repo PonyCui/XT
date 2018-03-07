@@ -121,7 +121,7 @@ export class ScrollView extends View {
         _XTUIScrollView.xtr_setAlwaysBounceHorizontalObjectRef(value, this.objectRef);
     }
 
-    onScroll?: (scrollView: ScrollView) => void
+    onScroll?: (sender: this) => void
 
     handleScroll() {
         this.onScroll && this.onScroll(this);

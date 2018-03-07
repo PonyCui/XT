@@ -54,4 +54,25 @@ export class Color {
         return new Color(white, white, white, alpha)
     }
 
+    static colorWithHex(hex: string): Color {
+        const trimHex = hex.replace('#', '').trim();
+        if (trimHex.length == 6) {
+            return new Color(
+                parseInt("0x" + trimHex.substring(0, 2)) / 255.0,
+                parseInt("0x" + trimHex.substring(2, 4)) / 255.0,
+                parseInt("0x" + trimHex.substring(4, 6)) / 255.0,
+                1.0
+            )
+        }
+        if (trimHex.length == 8) {
+            return new Color(
+                parseInt("0x" + trimHex.substring(2, 4)) / 255.0,
+                parseInt("0x" + trimHex.substring(4, 6)) / 255.0,
+                parseInt("0x" + trimHex.substring(6, 8)) / 255.0,
+                parseInt("0x" + trimHex.substring(0, 2)) / 255.0,
+            )
+        }
+        return Color.clearColor
+    }
+
 }

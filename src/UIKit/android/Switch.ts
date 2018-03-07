@@ -22,14 +22,14 @@ export class Switch extends View {
         this.setOn(value, false)
     }
 
-    onValueChanged?: () => void
+    onValueChanged?: (sender: this) => void
 
     setOn(value: boolean, animated: boolean) {
         _XTUISwitch.xtr_setOn(value, animated, this.objectRef)
     }
 
     handleValueChanged() {
-        this.onValueChanged && this.onValueChanged()
+        this.onValueChanged && this.onValueChanged(this)
     }
 
 }

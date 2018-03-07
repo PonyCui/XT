@@ -6,6 +6,6 @@ export class RefreshControl {
     color: Color
     readonly isRefreshing: boolean
     endRefreshing(): void { }
-    onRefresh?: () => void
+    onRefresh?: (sender: this) => void
 
 }

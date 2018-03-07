@@ -21,7 +21,7 @@ export class URLRequest extends IURLRequest {
         this.objectRef = _XTFURLRequest.createTimeoutCachePolicy(url, timeout, cachePolicy);
     }
 
-    setHTTPMethod(value: string): void {
+    setHTTPMethod(value: "GET" | "POST" | "PUT" | "DELETE"): void {
         _XTFURLRequest.xtr_setHTTPMethodObjectRef(value, this.objectRef)
     }
 

@@ -22,14 +22,14 @@ export class Slider extends View {
         this.setValue(value, false)
     }
 
-    onValueChanged?: () => void
+    onValueChanged?: (sender: this) => void
 
     setValue(value: number, animated: boolean) {
         _XTUISlider.xtr_setValue(value, animated, this.objectRef)
     }
 
     handleValueChanged() {
-        this.onValueChanged && this.onValueChanged()
+        this.onValueChanged && this.onValueChanged(this)
     }
 
 }

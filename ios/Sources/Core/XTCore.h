@@ -10,6 +10,4 @@
 
 @interface XTCore : NSObject
 
-+ (NSString *)version;
-
 @end

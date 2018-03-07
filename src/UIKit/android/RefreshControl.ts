@@ -42,7 +42,7 @@ export class RefreshControl {
     handleRefresh() {
         this._isRefreshing = true
         this.endTimeLimit = (new Date().getTime()) + 1000
-        this.onRefresh && this.onRefresh()
+        this.onRefresh && this.onRefresh(this)
     }
 
     endRefreshing(): void {
@@ -57,6 +57,6 @@ export class RefreshControl {
         this.listView && this.listView.endRefreshing()
     }
 
-    onRefresh?: () => void
+    onRefresh?: (sender: this) => void
 
 }

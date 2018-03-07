@@ -3,7 +3,7 @@ import { Rect } from "../interface/Rect";
 
 export class Screen {
 
-    static mainScreen: () => Screen = () => {
+    public static get mainScreen(): Screen {
         return new Screen(document.body.clientWidth, document.body.clientHeight, window.devicePixelRatio);
     }
 
@@ -22,11 +22,11 @@ export class Screen {
     }
 
     static withScale(value: number): number {
-        return value * Screen.mainScreen().scale;
+        return value * Screen.mainScreen.scale;
     }
 
     static outScale(value: number): number {
-        return value / Screen.mainScreen().scale;
+        return value / Screen.mainScreen.scale;
     }
 
 }

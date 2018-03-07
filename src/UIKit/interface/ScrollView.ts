@@ -14,7 +14,7 @@ export class ScrollView extends View {
     showsVerticalScrollIndicator: boolean = true
     alwaysBounceVertical: boolean = false
     alwaysBounceHorizontal: boolean = false
-    onScroll?: (scrollView: ScrollView) => void
+    onScroll?: (sender: this) => void
 
     setContentOffset(value: Point, animated: boolean): void { }
     scrollRectToVisible(rect: Rect, animated: boolean): void { }

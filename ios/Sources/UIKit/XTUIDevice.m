@@ -28,16 +28,8 @@
     return [UIDevice currentDevice].systemVersion;
 }
 
-+ (NSString *)xtr_xtRuntimeVersion {
-    return [XTCore version];
-}
-
 + (NSString *)xtr_model {
     return [UIDevice currentDevice].model;
-}
-
-+ (NSInteger)xtr_orientation {
-    return [UIDevice currentDevice].orientation;
 }
 
 @end

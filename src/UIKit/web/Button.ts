@@ -46,14 +46,14 @@ export class Button extends View {
 
     private addTouches() {
         this.userInteractionEnabled = true;
-        this.onTap = () => { this.onTouchUpInside && this.onTouchUpInside() }
+        this.onTap = () => { this.onTouchUpInside && this.onTouchUpInside(this) }
         this.onLongPress = (state, viewLocation) => {
             if (state == InteractionState.Began) {
                 this.titleLabel.alpha = 0.25
                 this.imageView.alpha = 0.25;
                 this.highlighted = true;
-                this.onHighlighted && this.onHighlighted(true)
-                this.onTouchDown && this.onTouchDown()
+                this.onHighlighted && this.onHighlighted(this, true)
+                this.onTouchDown && this.onTouchDown(this)
             }
             else if (state == InteractionState.Changed) {
                 const loc = viewLocation()
@@ -64,20 +64,20 @@ export class Button extends View {
                             this.titleLabel.alpha = 1.0
                             this.imageView.alpha = 1.0;
                         });
-                        this.onHighlighted && this.onHighlighted(false)
-                        this.onTouchDragExit && this.onTouchDragExit()
+                        this.onHighlighted && this.onHighlighted(this, false)
+                        this.onTouchDragExit && this.onTouchDragExit(this)
                     }
-                    this.onTouchDragOutside && this.onTouchDragOutside()
+                    this.onTouchDragOutside && this.onTouchDragOutside(this)
                 }
                 else {
                     if (!this.highlighted) {
                         this.highlighted = true;
                         this.titleLabel.alpha = 0.25;
                         this.imageView.alpha = 0.25;
-                        this.onHighlighted && this.onHighlighted(true)
-                        this.onTouchDragEnter && this.onTouchDragEnter()
+                        this.onHighlighted && this.onHighlighted(this, true)
+                        this.onTouchDragEnter && this.onTouchDragEnter(this)
                     }
-                    this.onTouchDragInside && this.onTouchDragInside()
+                    this.onTouchDragInside && this.onTouchDragInside(this)
                 }
             }
             else if (state == InteractionState.Ended) {
@@ -86,13 +86,13 @@ export class Button extends View {
                     this.titleLabel.alpha = 1.0
                     this.imageView.alpha = 1.0;
                 });
-                this.onHighlighted && this.onHighlighted(false)
+                this.onHighlighted && this.onHighlighted(this, false)
                 const loc = viewLocation()
                 if (loc.x > -44.0 && loc.y > -44.0 && loc.x < this.bounds.width + 44.0 && loc.y < this.bounds.height + 44.0) {
-                    this.onTouchUpInside && this.onTouchUpInside()
+                    this.onTouchUpInside && this.onTouchUpInside(this)
                 }
                 else {
-                    this.onTouchUpOutside && this.onTouchUpOutside()
+                    this.onTouchUpOutside && this.onTouchUpOutside(this)
                 }
             }
             else if (state == InteractionState.Cancelled) {
@@ -101,8 +101,8 @@ export class Button extends View {
                     this.titleLabel.alpha = 1.0
                     this.imageView.alpha = 1.0;
                 });
-                this.onHighlighted && this.onHighlighted(false)
-                this.onTouchCancel && this.onTouchCancel()
+                this.onHighlighted && this.onHighlighted(this, false)
+                this.onTouchCancel && this.onTouchCancel(this)
             }
         }
         this.nativeObject.xtr_setHoverMode(true)
@@ -115,23 +115,23 @@ export class Button extends View {
 
     private highlighted: boolean = false
 
-    public onTouchDown?: () => void  
+    public onTouchDown?: (sender: this) => void  
 
-    public onTouchDragInside?: () => void   
+    public onTouchDragInside?: (sender: this) => void   
 
-    public onTouchDragOutside?: () => void   
+    public onTouchDragOutside?: (sender: this) => void   
 
-    public onTouchDragEnter?: () => void   
+    public onTouchDragEnter?: (sender: this) => void   
 
-    public onTouchDragExit?: () => void 
+    public onTouchDragExit?: (sender: this) => void 
 
-    public onTouchUpInside?: () => void; 
+    public onTouchUpInside?: (sender: this) => void; 
 
-    public onTouchUpOutside?: () => void   
+    public onTouchUpOutside?: (sender: this) => void   
 
-    public onTouchCancel?: () => void        
+    public onTouchCancel?: (sender: this) => void        
 
-    public onHighlighted?: (highligted: boolean) => void
+    public onHighlighted?: (sender: this, highligted: boolean) => void
 
     public onHover?: (hovered: boolean) => void
 
