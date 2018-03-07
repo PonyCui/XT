@@ -1,6 +1,7 @@
 package com.opensource.xt.core
 
 import android.os.Handler
+import android.os.Looper
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import java.lang.ref.WeakReference
@@ -60,27 +61,25 @@ class XTMemoryManager {
             }?.weakRef?.get()
         }
 
-        private var syncToken: Int = 0
 
         private fun runGC(force: Boolean = false) {
+            if (Thread.currentThread() != Looper.getMainLooper().thread) { return }
             if (System.nanoTime() % 100 < 2 || force) {
-                synchronized(syncToken, {
-                    val removingKeys = objectMapping.values.mapNotNull {
-                        if (it.weakRef.get() == null) {
-                            return@mapNotNull it.objectUUID
-                        }
-                        else if (it.owners?.count() ?: 0 > 0 &&
-                                it.owners?.filter { it.get() != null }?.size == 0) {
-                            return@mapNotNull it.objectUUID
-                        }
-                        else {
-                            return@mapNotNull null
-                        }
+                val removingKeys = objectMapping.values.mapNotNull {
+                    if (it.weakRef.get() == null) {
+                        return@mapNotNull it.objectUUID
                     }
-                    removingKeys.forEach {
-                        objectMapping.remove(it)
+                    else if (it.owners?.count() ?: 0 > 0 &&
+                            it.owners?.filter { it.get() != null }?.size == 0) {
+                        return@mapNotNull it.objectUUID
                     }
-                })
+                    else {
+                        return@mapNotNull null
+                    }
+                }
+                removingKeys.forEach {
+                    objectMapping.remove(it)
+                }
             }
         }
 

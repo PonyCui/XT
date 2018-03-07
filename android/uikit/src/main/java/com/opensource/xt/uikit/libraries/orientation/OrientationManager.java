@@ -9,8 +9,8 @@ import android.view.OrientationEventListener;
  */
 
 public class OrientationManager extends OrientationEventListener {
-    private static final String TAG = OrientationManager.class.getName();
 
+    private static final String TAG = OrientationManager.class.getName();
     private int previousAngle;
     private int previousOrientation;
     private Context context;
@@ -36,7 +36,6 @@ public class OrientationManager extends OrientationEventListener {
         this.previousOrientation = orientation;
     }
 
-
     @Override
     public void onOrientationChanged(int orientation) {
         if (orientation == -1)
@@ -55,7 +54,6 @@ public class OrientationManager extends OrientationEventListener {
             }
             previousOrientation = Configuration.ORIENTATION_PORTRAIT;
         }
-
         if (previousOrientation == Configuration.ORIENTATION_PORTRAIT &&
                 ((previousAngle <90 && orientation >= 90 && orientation <270) ||
                         (previousAngle > 280 && orientation <= 280 && orientation > 180))   ){

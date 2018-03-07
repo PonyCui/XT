@@ -65,19 +65,27 @@ open class XTUIActivity : Activity(), OrientationManager.OrientationChangeListen
         if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (this.rootViewController?.requestFragment()?.supportOrientations?.contains(3) == true ||
                 this.rootViewController?.requestFragment()?.supportOrientations?.contains(4) == true) {
+                this.rootViewController?.requestFragment()?.currentOrientation = XTUIFragment.Orientation.LandScape
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             }
             else if (this.rootViewController?.requestFragment()?.supportOrientations?.contains(1) == true) {
+                this.rootViewController?.requestFragment()?.currentOrientation = XTUIFragment.Orientation.Portrait
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             }
         }
         else if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             if (this.rootViewController?.requestFragment()?.supportOrientations?.contains(1) == true) {
+                this.rootViewController?.requestFragment()?.currentOrientation = XTUIFragment.Orientation.Portrait
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             }
             else if (this.rootViewController?.requestFragment()?.supportOrientations?.contains(3) == true ||
                     this.rootViewController?.requestFragment()?.supportOrientations?.contains(4) == true) {
+                this.rootViewController?.requestFragment()?.currentOrientation = XTUIFragment.Orientation.LandScape
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             }
         }
     }
