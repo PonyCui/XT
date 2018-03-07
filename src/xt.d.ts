@@ -5,43 +5,43 @@ export interface Releasable {
 
 export as namespace XT;
 
-export var minSDK: string
-export const currentSDK: string
-export const platform: "iOS" | "Android" | "Web"
+export var minSDK: string /* @available(0.1.1) */
+export const currentSDK: string /* @available(0.1.1) */
+export const platform: "iOS" | "Android" | "Web" /* @available(0.1.1) */
 
-export enum ClassType {
+export enum ClassType /* @available(0.1.1) */ {
     Unknown,
     ObjC,
     Java,
     JavaScript,
 }
 
-export class ClassLoader {
+export class ClassLoader /* @available(0.1.1) */ {
     static loadClass(classType: ClassType, className: string | Object, globalName: string): void
 }
 
-export class Debug {
+export class Debug /* @available(0.1.1) */ {
     static run(id: string, t: any, s: any): void
     static stringify(object: any): string
 }
 
 export as namespace UI;
 
-export enum InteractionState {
+export enum InteractionState /* @available(0.1.1) */ {
     Began,
     Changed,
     Ended,
     Cancelled,
 }
 
-export enum SwipeDirection {
+export enum SwipeDirection /* @available(0.1.1) */ {
     ToLeft,
     ToRight,
     ToTop,
     ToBottom,
 }
 
-export class Context implements Releasable {
+export class Context implements Releasable /* @available(0.1.1) */ {
     retain(owner?: any): this
     release(): this
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context
@@ -49,7 +49,7 @@ export class Context implements Releasable {
 
 }
 
-export class View implements Releasable {
+export class View implements Releasable /* @available(0.1.1) */ {
 
     retain(owner?: any): this;
     release(): this;
@@ -123,7 +123,7 @@ export class View implements Releasable {
     static animationWithBouncinessAndSpeed(damping: number, velocity: number, animations: () => void, completion?: () => void): void
 }
 
-export class Color {
+export class Color /* @available(0.1.1) */ {
     static whiteColor: Color
     static blackColor: Color
     static clearColor: Color
@@ -151,46 +151,46 @@ export class Color {
     equals(toColor: Color | undefined): boolean
 }
 
-export interface Point {
+export interface Point /* @available(0.1.1) */ {
     readonly x: number;
     readonly y: number;
 }
 
-export function PointMake(x: number, y: number): Point
-export function PointEqual(point1: Point, point2: Point): boolean
-export const PointZero: Point
+export function PointMake(x: number, y: number): Point /* @available(0.1.1) */
+export function PointEqual(point1: Point, point2: Point): boolean /* @available(0.1.1) */
+export const PointZero: Point /* @available(0.1.1) */
 
-export interface Size {
+export interface Size /* @available(0.1.1) */ {
     readonly width: number;
     readonly height: number;
 }
 
-export function SizeMake(width: number, height: number): Size
-export function SizeEqual(size1: Size, size2: Size): boolean
-export const SizeZero: Size
+export function SizeMake(width: number, height: number): Size /* @available(0.1.1) */
+export function SizeEqual(size1: Size, size2: Size): boolean /* @available(0.1.1) */
+export const SizeZero: Size /* @available(0.1.1) */
 
-export interface Rect {
+export interface Rect /* @available(0.1.1) */ {
     readonly x: number;
     readonly y: number;
     readonly width: number;
     readonly height: number;
 }
 
-export function RectMake(x: number, y: number, width: number, height: number): Rect
-export const RectZero: Rect
-export function RectEqual(rect1: Rect, rect2: Rect): boolean
-export function RectInside(rect1: Rect, rect2: Rect): boolean
+export function RectMake(x: number, y: number, width: number, height: number): Rect /* @available(0.1.1) */
+export const RectZero: Rect /* @available(0.1.1) */
+export function RectEqual(rect1: Rect, rect2: Rect): boolean /* @available(0.1.1) */
+export function RectInside(rect1: Rect, rect2: Rect): boolean /* @available(0.1.1) */
 
-export interface Insets {
+export interface Insets /* @available(0.1.1) */ {
     readonly top: number;
     readonly left: number;
     readonly bottom: number;
     readonly right: number;
 }
 
-export function InsetsMake(top: number, left: number, bottom: number, right: number): Insets
+export function InsetsMake(top: number, left: number, bottom: number, right: number): Insets /* @available(0.1.1) */
 
-export enum LayoutAttribute {
+export enum LayoutAttribute /* @available(0.1.1) */ {
     Const = 0,
     Left = 1,
     Right = 2,
@@ -202,13 +202,13 @@ export enum LayoutAttribute {
     CenterY = 10,
 }
 
-export enum LayoutRelation {
+export enum LayoutRelation /* @available(0.1.1) */ {
     Less = -1,
     Equal = 0,
     Greater = 1,
 }
 
-export class LayoutConstraint {
+export class LayoutConstraint /* @available(0.1.1) */ {
     readonly firstItem?: View;
     readonly firstAttr?: LayoutAttribute;
     readonly relation: LayoutRelation;
@@ -221,19 +221,19 @@ export class LayoutConstraint {
     static constraintsWithVisualFormat(format: string, views?: { [key: string]: View } | Object): LayoutConstraint[]
 }
 
-export class ApplicationDelegate {
+export class ApplicationDelegate /* @available(0.1.1) */ {
     window?: Window;
     applicationDidFinishLaunchingWithOptions(application: Application, launchOptions: Object): void
 }
 
-export class Application {
+export class Application /* @available(0.1.1) */ {
     constructor(t: any, delegate: ApplicationDelegate)
     readonly delegate: ApplicationDelegate
     readonly keyWindow?: Window
     static sharedApplication(): Application
 }
 
-export class Button extends View {
+export class Button extends View /* @available(0.1.1) */ {
     readonly imageView: ImageView;
     readonly titleLabel: Label
     vertical: boolean;
@@ -254,7 +254,7 @@ export class Button extends View {
     onHover?: (sender: this, hovered: boolean) => void
 }
 
-export class Font {
+export class Font /* @available(0.1.1) */ {
     readonly familyName?: string;
     readonly pointSize: number;
     readonly fontWeight: string;
@@ -265,12 +265,12 @@ export class Font {
     static italicSystemFontOfSize(pointSize: number): Font
 }
 
-export enum ImageRenderingMode {
+export enum ImageRenderingMode /* @available(0.1.1) */ {
     Original,
     Template,
 }
 
-export class Image implements Releasable {
+export class Image implements Releasable /* @available(0.1.1) */ {
     retain(owner?: any): this;
     release(): this;
     readonly size: Size;
@@ -281,36 +281,36 @@ export class Image implements Releasable {
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image
 }
 
-export enum ContentMode {
+export enum ContentMode /* @available(0.1.1) */ {
     ScaleToFill,
     ScaleAspectFit,
     ScaleAspectFill,
 }
 
-export class ImageView extends View {
+export class ImageView extends View /* @available(0.1.1) */ {
     image?: Image;
     contentMode: ContentMode;
     loadImage(url: string, fadeIn?: boolean): void
 }
 
-export enum TextAlignment {
+export enum TextAlignment /* @available(0.1.1) */ {
     Left,
     Center,
     Right,
 }
 
-export enum TextVerticalAlignment {
+export enum TextVerticalAlignment /* @available(0.1.1) */ {
     Top,
     Center,
     Bottom,
 }
 
-export enum LineBreakMode {
+export enum LineBreakMode /* @available(0.1.1) */ {
     WordWrapping = 0,
     TruncatingTail = 4,
 }
 
-export class Label extends View {
+export class Label extends View /* @available(0.1.1) */ {
     text: string;
     font: Font;
     textColor: Color
@@ -322,7 +322,7 @@ export class Label extends View {
     textRectForBounds(bounds: Rect): Rect
 }
 
-export class RefreshControl {
+export class RefreshControl /* @available(0.1.1) */ {
     enabled: boolean
     color: Color
     readonly isRefreshing: boolean
@@ -330,7 +330,7 @@ export class RefreshControl {
     onRefresh?: (sender: this) => void
 }
 
-export class LoadMoreControl {
+export class LoadMoreControl /* @available(0.1.1) */ {
     enabled: boolean
     color: Color
     readonly isLoading: boolean
@@ -338,24 +338,24 @@ export class LoadMoreControl {
     onLoad?: (sender: this) => void
 }
 
-export interface ListItem {
+export interface ListItem /* @available(0.1.1) */ {
     [key: string]: any,
     reuseIdentifier: string
     rowHeight: (width: number) => number
 }
 
-export class ListEntity implements ListItem {
+export class ListEntity implements ListItem /* @available(0.1.1) */ {
     [key: string]: any;
     reuseIdentifier: string;
     rowHeight: (width: number) => number;
 }
 
-export enum ListSelectionStyle {
+export enum ListSelectionStyle /* @available(0.1.1) */ {
     None,
     Gray,
 }
 
-export class ListCell extends View {
+export class ListCell extends View /* @available(0.1.1) */ {
     readonly reuseIdentifier: string
     readonly currentItem?: ListItem
     readonly selectionView: View
@@ -369,13 +369,13 @@ export class ListCell extends View {
     didRender(): void
 }
 
-export class ListSection {
+export class ListSection /* @available(0.1.1) */ {
     headerView?: View
     footerView?: View
     items: ListItem[];
 }
 
-export class ListView extends ScrollView {
+export class ListView extends ScrollView /* @available(0.1.1) */ {
     refreshControl?: RefreshControl
     loadMoreControl?: LoadMoreControl
     listHeaderView?: View
@@ -386,7 +386,7 @@ export class ListView extends ScrollView {
     reloadData(): void
 }
 
-export class Screen {
+export class Screen /* @available(0.1.1) */ {
     static mainScreen: Screen
     readonly width: number;
     readonly height: number;
@@ -396,7 +396,7 @@ export class Screen {
     static outScale(value: number): number
 }
 
-export class ScrollView extends View {
+export class ScrollView extends View /* @available(0.1.1) */ {
     contentOffset: Point
     contentSize: Size
     contentInset: Insets
@@ -413,7 +413,7 @@ export class ScrollView extends View {
     scrollRectToVisible(rect: Rect, animated: boolean): void
 }
 
-export class TransformMatrix {
+export class TransformMatrix /* @available(0.1.1) */ {
     readonly a: number;
     readonly b: number;
     readonly c: number;
@@ -434,25 +434,25 @@ export class TransformMatrix {
     concat(postMatrix: TransformMatrix): TransformMatrix
 }
 
-export class Window extends View {
+export class Window extends View /* @available(0.1.1) */ {
     rootViewController?: ViewController
     firstResponder?: View
     makeKeyAndVisible(): void
     endEditing(): void
 }
 
-export enum KeyboardAvoidingMode {
+export enum KeyboardAvoidingMode /* @available(0.1.1) */ {
     None,
     Pan,
 }
 
-export enum ViewControllerLayoutOptions {
+export enum ViewControllerLayoutOptions /* @available(0.1.1) */ {
     None,
     AndroidLight,
     AndroidDark,
 }
 
-export class ViewController implements Releasable {
+export class ViewController implements Releasable /* @available(0.1.1) */ {
     retain(owner?: any): this;
     release(): this;
     title: string
@@ -485,14 +485,14 @@ export class ViewController implements Releasable {
     hideNavigationBar(animated?: boolean): void
 }
 
-export class NavigationBarButtonItem {
+export class NavigationBarButtonItem /* @available(0.1.1) */ {
     image?: Image
     title?: string
     customView?: View
     onTouchUpInside?: () => void
 }
 
-export class NavigationBar extends View {
+export class NavigationBar extends View /* @available(0.1.1) */ {
     title: string
     translucent: boolean
     lightContent: boolean
@@ -502,7 +502,7 @@ export class NavigationBar extends View {
     setRightBarButtonItems(navigationItems: NavigationBarButtonItem[]): void
 }
 
-export class NavigationController extends ViewController {
+export class NavigationController extends ViewController /* @available(0.1.1) */ {
     constructor(rootViewController?: ViewController)
     pushViewController(viewController: ViewController, animated?: boolean): void
     popViewController(animated?: boolean): ViewController | undefined
@@ -510,7 +510,7 @@ export class NavigationController extends ViewController {
     popToRootViewController(animated?: boolean): ViewController[]
 }
 
-export class CanvasView extends View {
+export class CanvasView extends View /* @available(0.1.1) */ {
     globalAlpha: number
     fillStyle: Color
     strokeStyle: Color
@@ -541,7 +541,7 @@ export class CanvasView extends View {
     clear(): void
 }
 
-export enum DeviceOrientation {
+export enum DeviceOrientation /* @available(0.1.1) */ {
     Unknown = 0,
     Portrait = 1,
     PortraitUpsideDown = 2,
@@ -551,7 +551,7 @@ export enum DeviceOrientation {
     FaceDown = 6,
 }
 
-export class Device {
+export class Device /* @available(0.1.1) */ {
     static current: Device
     name: string
     systemName: string
@@ -559,20 +559,20 @@ export class Device {
     model: string
 }
 
-export enum TextFieldViewMode {
+export enum TextFieldViewMode /* @available(0.1.1) */ {
     Never,
     WhileEditing,
     UnlessEditing,
     Always,
 }
 
-export enum KeyboardType {
+export enum KeyboardType /* @available(0.1.1) */ {
     Default = 0,
     ASCIICapable = 1,
     NumbersAndPunctuation = 2,
 }
 
-export enum ReturnKeyType {
+export enum ReturnKeyType /* @available(0.1.1) */ {
     Default = 0,
     Go = 1,
     Next = 4,
@@ -581,7 +581,7 @@ export enum ReturnKeyType {
     Done = 9,
 }
 
-export class TextField extends View {
+export class TextField extends View /* @available(0.1.1) */ {
     text: string;
     font: Font;
     textColor: Color
@@ -616,7 +616,7 @@ export class TextField extends View {
     blur(): void
 }
 
-export class TextView extends View {
+export class TextView extends View /* @available(0.1.1) */ {
     text: string;
     font: Font;
     textColor: Color
@@ -641,7 +641,7 @@ export class TextView extends View {
     blur(): void
 }
 
-export interface TextMeasureParams {
+export interface TextMeasureParams /* @available(0.1.1) */ {
     font: Font;
     inRect: Rect;
     numberOfLines?: number
@@ -649,11 +649,11 @@ export interface TextMeasureParams {
     lineSpace?: number
 }
 
-export class TextMeasurer {
+export class TextMeasurer /* @available(0.1.1) */ {
     static measureText(text: string, params: TextMeasureParams): Rect
 }
 
-export enum HRViewPosition {
+export enum HRViewPosition /* @available(0.1.1) */ {
     Top,
     Middle,
     Bottom,
@@ -662,25 +662,25 @@ export enum HRViewPosition {
     Right,
 }
 
-export class HRView extends View {
+export class HRView extends View /* @available(0.1.1) */ {
     position: HRViewPosition
     color: Color
 }
 
-export class Alert {
+export class Alert /* @available(0.1.1) */ {
     buttonTitle: string
     constructor(message: string)
     show(callback?: () => void): void
 }
 
-export class Confirm {
+export class Confirm /* @available(0.1.1) */ {
     confirmTitle: string
     cancelTitle: string
     constructor(message: string)
     show(resolve: () => void, reject: () => void): void
 }
 
-export class Prompt {
+export class Prompt /* @available(0.1.1) */ {
     placeholder: string
     defaultValue: string
     confirmTitle: string
@@ -689,31 +689,31 @@ export class Prompt {
     show(resolve: (value: string) => void, reject: () => void): void
 }
 
-export class WebView extends View {
+export class WebView extends View /* @available(0.1.1) */ {
     load(URLString: string): void
     onStart?: () => void
     onFinish?: () => void
     onFail?: (error: Error) => void
 }
 
-export class Switch extends View {
+export class Switch extends View /* @available(0.1.1) */ {
     on: boolean
     onValueChanged?: (sender: this) => void
     setOn(value: boolean, animated: boolean): void
 }
 
-export class Slider extends View {
+export class Slider extends View /* @available(0.1.1) */ {
     value: number
     onValueChanged?: (sender: this) => void
     setValue(value: number, animated: boolean): void
 }
 
-export enum ActivityIndicatorViewStyle {
+export enum ActivityIndicatorViewStyle /* @available(0.1.1) */ {
     Regular,
     Large,
 }
 
-export class ActivityIndicatorView extends View {
+export class ActivityIndicatorView extends View /* @available(0.1.1) */ {
     style: ActivityIndicatorViewStyle
     readonly animating: boolean
     hidesWhenStopped: boolean
@@ -723,7 +723,7 @@ export class ActivityIndicatorView extends View {
 
 export as namespace NS;
 
-export class Data implements Releasable {
+export class Data implements Releasable /* @available(0.1.1) */ {
     retain(): this
     release(): this
     static initWithString(value: string): Data
@@ -742,7 +742,7 @@ export class Data implements Releasable {
     sha1(): string
 }
 
-export class FileManager {
+export class FileManager /* @available(0.1.1) */ {
     static document: FileManager
     static cache: FileManager
     static tmp: FileManager
@@ -755,13 +755,13 @@ export class FileManager {
     list(path: string): string[]
 }
 
-export class Notification {
+export class Notification /* @available(0.1.1) */ {
     readonly name: string
     readonly object: any
     readonly userInfo: { [key: string]: any }
 }
 
-export class NotificationCenter {
+export class NotificationCenter /* @available(0.1.1) */ {
     static default: NotificationCenter
     protected constructor()
     addObserver(name: string, triggerBlock: (notification: Notification) => void): string
@@ -769,14 +769,14 @@ export class NotificationCenter {
     postNotification(name: string, object: any, userInfo: { [key: string]: any }): void
 }
 
-export enum URLCachePolily {
+export enum URLCachePolily /* @available(0.1.1) */ {
     UseProtocolCachePolicy = 0,
     ReloadIgnoringLocalCacheData = 1,
     ReturnCacheDataElseLoad = 2,
     ReturnCacheDataDontLoad = 3,
 }
 
-export class URLRequest implements Releasable {
+export class URLRequest implements Releasable /* @available(0.1.1) */ {
     readonly url: string
     readonly timeout: number
     readonly cachePolicy: URLCachePolily
@@ -788,7 +788,7 @@ export class URLRequest implements Releasable {
     release(): this
 }
 
-export class URLResponse {
+export class URLResponse /* @available(0.1.1) */ {
     expectedContentLength: number
     suggestedFilename?: string
     mimeType?: string
@@ -798,27 +798,27 @@ export class URLResponse {
     statusCode: number
 }
 
-export class URLSession {
+export class URLSession /* @available(0.1.1) */ {
     static sharedSession: URLSession
     dataTaskWithURL(url: string, completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void): URLSessionTask
     dataTaskWithRequest(req: URLRequest, completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void): URLSessionTask
 }
 
-export class URLSessionTask implements Releasable {
+export class URLSessionTask implements Releasable /* @available(0.1.1) */ {
     retain(): this
     release(): this
     cancel(): void
     resume(): void
 }
 
-export class UserDefaults {
+export class UserDefaults /* @available(0.1.1) */ {
     static standard: UserDefaults
     constructor(suite: string | undefined)
     set(object: any, forKey: string): void
     get(forKey: string): any
 }
 
-export class WebSocket implements Releasable {
+export class WebSocket implements Releasable /* @available(0.1.1) */ {
     retain(): this
     release(): this
     constructor(url: string)
