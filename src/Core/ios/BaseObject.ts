@@ -1,10 +1,23 @@
 declare var Proxy: any
 
+const supportProxy = typeof Proxy === "object"
+
 export class BaseObject {
 
     [key: string]: any;
 
-    objectRef: string
+    private _objectRef: string
+
+	public get objectRef(): string  {
+		return this._objectRef;
+	}
+
+	public set objectRef(value: string) {
+        this._objectRef = value;
+        if (!supportProxy) {
+            this.retain()
+        }
+	}
 
     retain(owner: any = undefined): this {
         _XTRetain(this.objectRef, owner)
@@ -31,31 +44,30 @@ export class BaseObject {
         }
     }
 
-    private proxy: any
-
     constructor(objects: { [key: string]: any } | undefined = undefined) {
         if (this.constructor === BaseObject) {
             this.objectRef = _XTBaseObject.create()
             objectRefs[this.objectRef] = this
         }
-        const proxy = new Proxy(this, {
-            set: function (obj: any, prop: any, value: any) {
-                if (obj[prop] instanceof BaseObject) {
-                    obj[prop].release()
+        if (supportProxy) {
+            const proxy = new Proxy(this, {
+                set: function (obj: any, prop: any, value: any) {
+                    if (obj[prop] instanceof BaseObject) {
+                        obj[prop].release()
+                    }
+                    obj[prop] = value
+                    if (value instanceof BaseObject) {
+                        value.retain()
+                    }
                 }
-                obj[prop] = value
-                if (value instanceof BaseObject) {
-                    value.retain()
+            })
+            if (objects) {
+                for (const key in objects) {
+                    proxy[key] = objects[key]
                 }
             }
-        })
-        if (objects) {
-            for (const key in objects) {
-                proxy[key] = objects[key]
-            }
+            return proxy
         }
-        this.proxy = proxy
-        return proxy
     }
 
 }
