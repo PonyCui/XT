@@ -68,6 +68,16 @@
     }
 }
 
+- (void)dealloc {
+    JSValue *scriptObject = [self scriptObject];
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"dealloc" withArguments:nil];
+    }
+#ifdef LOGDEALLOC
+    NSLog(@"XTUIRefreshControl dealloc.");
+#endif
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];

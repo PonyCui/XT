@@ -86,11 +86,11 @@
     return managedObject.objectUUID;
 }
 
-#ifdef LOGDEALLOC
 - (void)dealloc {
+#ifdef LOGDEALLOC
     NSLog(@"XTUIContext dealloc.");
-}
 #endif
+}
 
 - (instancetype)initWithSourceURL:(NSURL *)sourceURL
                           options:(nullable NSDictionary *)options

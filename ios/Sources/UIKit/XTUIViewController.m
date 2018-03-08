@@ -62,10 +62,14 @@
 
 
 - (void)dealloc {
+    JSValue *scriptObject = [self scriptObject];
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"dealloc" withArguments:nil];
+    }
+    [self unsetKeyboardNotifications];
 #ifdef LOGDEALLOC
     NSLog(@"XTUIViewController dealloc.");
 #endif
-    [self unsetKeyboardNotifications];
 }
 
 

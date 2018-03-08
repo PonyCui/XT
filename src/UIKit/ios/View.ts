@@ -4,28 +4,16 @@ import { Rect, Point, Size, RectZero } from "../interface/Rect";
 import { Color } from "../interface/Color";
 import { TransformMatrix } from "../interface/TransformMatrix";
 import { LayoutConstraint } from "./LayoutConstraint";
-import { Releasable } from '../interface/Releasable';
 const AutoLayout = require("autolayout");
 
-export class View implements Releasable {
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
-
-    public objectRef: any;
+export class View extends XT.BaseObject {
 
     static findByRef<T extends View>(ref: string): T {
         return objectRefs[ref] || new this(ref)
     }
 
     constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
+        super()
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
                 return objectRefs[ref]

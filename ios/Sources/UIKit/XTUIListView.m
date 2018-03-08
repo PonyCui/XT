@@ -151,6 +151,10 @@
 - (void)dealloc {
     self.delegate = nil;
     self.dataSource = nil;
+    JSValue *scriptObject = [self scriptObject];
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"dealloc" withArguments:nil];
+    }
 #ifdef LOGDEALLOC
     NSLog(@"XTUIListView dealloc.");
 #endif

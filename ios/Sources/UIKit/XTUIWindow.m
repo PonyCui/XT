@@ -82,8 +82,11 @@ static id<XTComponent> currentFirstResponder;
 
 #pragma mark - View Callbacks
 
-
 - (void)dealloc {
+    JSValue *scriptObject = [self scriptObject];
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"dealloc" withArguments:nil];
+    }
 #ifdef LOGDEALLOC
     NSLog(@"XTUIWindow dealloc.");
 #endif

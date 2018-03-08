@@ -11,6 +11,7 @@
 #import "XTMemoryManager.h"
 #import "XTClassLoader.h"
 #import "XTDebug.h"
+#import "XTBaseObject.h"
 
 @interface XTContext ()
 
@@ -67,6 +68,7 @@
 - (void)loadCoreComponents {
     self[@"_XTClassLoader"] = [XTClassLoader class];
     self[@"_XTDebug"] = [XTDebug class];
+    self[@"_XTBaseObject"] = [XTBaseObject class];
     [XTPolyfill addPolyfills:self];
     [XTMemoryManager attachContext:self];
 }

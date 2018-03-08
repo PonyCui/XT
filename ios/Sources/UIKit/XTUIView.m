@@ -39,11 +39,15 @@
     return managedObject.objectUUID;
 }
 
-#ifdef LOGDEALLOC
 - (void)dealloc {
+    JSValue *scriptObject = [self scriptObject];
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"dealloc" withArguments:nil];
+    }
+#ifdef LOGDEALLOC
     NSLog(@"%@ dealloc.", NSStringFromClass(self.class));
-}
 #endif
+}
 
 - (JSValue *)scriptObject {
     return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];

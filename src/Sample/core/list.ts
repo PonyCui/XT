@@ -1,5 +1,6 @@
 /// <reference path="../../xt.d.ts" />
 import { ClassLoaderSample } from "./classloader";
+import { ARCSample } from "./arc";
 
 
 
@@ -151,6 +152,16 @@ export class CoreList extends UI.ViewController {
                     }
                     else {
                         new UI.Alert("Shim Test Fail, Value = " + (XT as any).ShimTest).show()
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Auto Release Count",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new ARCSample())
                     }
                 },
             },

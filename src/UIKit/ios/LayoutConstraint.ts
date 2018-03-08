@@ -1,7 +1,5 @@
 import { LayoutConstraint as ILayoutConstraint, LayoutAttribute, LayoutRelation } from "../interface/LayoutConstraint";
 import { View } from "./View";
-import { Releasable } from "../interface/Releasable";
-declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
 export class LayoutConstraint extends ILayoutConstraint {

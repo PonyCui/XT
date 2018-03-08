@@ -4,7 +4,6 @@ import { NavigationBar } from './NavigationBar';
 import { Color } from "../interface/Color";
 import { Rect, InsetsMake, Insets } from "../interface/Rect";
 import { DeviceOrientation } from "../interface/Device";
-import { Releasable } from "../interface/Releasable";
 import { ScrollView } from "./ScrollView";
 import { TransformMatrix } from "../interface/TransformMatrix";
 
@@ -20,25 +19,14 @@ export enum KeyboardAvoidingMode {
     Pan,
 }
 
-export class ViewController implements Releasable {
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
-
-    public objectRef: any;
+export class ViewController extends XT.BaseObject {
 
     static findByRef<T extends ViewController>(ref: string): T {
         return objectRefs[ref] || new this(ref)
     }
 
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
+        super()
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
                 return objectRefs[ref]

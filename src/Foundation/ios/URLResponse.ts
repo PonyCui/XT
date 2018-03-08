@@ -5,10 +5,11 @@
  */
 import { URLResponse as IURLResponse } from '../interface/URLResponse'
 
-export class URLResponse extends IURLResponse {
+export class URLResponse extends XT.BaseObject {
 
-    constructor(public objectRef: any) {
+    constructor(objectRef: any) {
         super()
+        this.objectRef = objectRef
     }
 
     public get expectedContentLength(): number {

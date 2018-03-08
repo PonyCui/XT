@@ -17,10 +17,6 @@ export class DataSample extends TestBase {
         this.test2Data = NS.Data.initWithBytes(new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])) as NS.Data;
         this.test3Data = NS.Data.initWithString("Hello, World!")
         this.test4Data = NS.Data.initWithString("你好，世界！")
-        this.testData.retain();
-        this.test2Data.retain();
-        this.test3Data.retain();
-        this.test4Data.retain();
         this.assert(this.testData !== undefined && this.test2Data !== undefined && this.test3Data !== undefined && this.test4Data !== undefined)
     }
 

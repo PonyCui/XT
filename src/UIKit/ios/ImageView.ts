@@ -3,19 +3,8 @@
 import { View } from "./View";
 import { Size, Rect, RectZero } from "../interface/Rect";
 import { ImageRenderingMode } from "../interface/ImageView";
-import { Releasable } from "../interface/Releasable";
 
-export class Image implements Releasable {
-
-    retain(): this {
-        _XTRetain(this.objectRef)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
+export class Image extends XT.BaseObject {
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         _XTUIImage.xtr_fromURLSuccessFailure(url, (ref: string) => {
@@ -35,6 +24,7 @@ export class Image implements Releasable {
     objectRef: any;
 
     constructor(objectRef: any) {
+        super()
         if (objectRefs[this.objectRef]) {
             return objectRefs[this.objectRef]
         }

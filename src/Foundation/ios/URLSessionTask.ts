@@ -6,23 +6,11 @@
 
 import { URLSessionTask as IURLSessionTask } from '../interface/URLSessionTask'
 
-export class URLSessionTask extends IURLSessionTask {
-
-    readonly objectRef: any
+export class URLSessionTask extends XT.BaseObject {
 
     constructor(objectRef: string) {
         super()
         this.objectRef = objectRef
-    }
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner)
-        return this
-    }
-    
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
     }
 
     cancel(): void {

@@ -1,14 +1,13 @@
 import { Color } from "../interface/Color";
 
-export class RefreshControl {
+export class RefreshControl extends XT.BaseObject {
 
     static findByRef(ref: string): RefreshControl {
         return objectRefs[ref] || new RefreshControl(ref)
     }
 
-    public objectRef: any;
-
     constructor(ref: string | undefined = undefined) {
+        super()
         if (typeof ref === "string") {
             this.objectRef = ref
         }

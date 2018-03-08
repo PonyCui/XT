@@ -9,6 +9,13 @@ export var minSDK: string /* @available(0.1.1) */
 export const currentSDK: string /* @available(0.1.1) */
 export const platform: "iOS" | "Android" | "Web" /* @available(0.1.1) */
 
+export class BaseObject {
+    [key: string]: any;
+    retain(owner?: any): this
+    release(): this
+    constructor(objects?: { [key: string]: any } | undefined)
+}
+
 export enum ClassType /* @available(0.1.1) */ {
     Unknown,
     ObjC,
@@ -452,9 +459,7 @@ export enum ViewControllerLayoutOptions /* @available(0.1.1) */ {
     AndroidDark,
 }
 
-export class ViewController implements Releasable /* @available(0.1.1) */ {
-    retain(owner?: any): this;
-    release(): this;
+export class ViewController extends XT.BaseObject /* @available(0.1.1) */ {
     title: string
     readonly view: View
     layoutOptions: ViewControllerLayoutOptions[]
@@ -723,9 +728,7 @@ export class ActivityIndicatorView extends View /* @available(0.1.1) */ {
 
 export as namespace NS;
 
-export class Data implements Releasable /* @available(0.1.1) */ {
-    retain(): this
-    release(): this
+export class Data extends XT.BaseObject /* @available(0.1.1) */ {
     static initWithString(value: string): Data
     static initWithBytes(bytes: Uint8Array): Data
     static initWithData(data: Data): Data
@@ -838,6 +841,7 @@ declare global {
         minSDK: typeof minSDK,
         currentSDK: typeof currentSDK,
         platform: typeof platform,
+        BaseObject: typeof BaseObject,
         ClassType: typeof ClassType,
         ClassLoader: typeof ClassLoader,
         Debug: typeof Debug,
