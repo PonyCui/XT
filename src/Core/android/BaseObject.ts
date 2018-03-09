@@ -7,12 +7,16 @@ export class BaseObject {
     public objectRef: string
 
     retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner)
+        if (typeof this.objectRef === "string") {
+            _XTRetain(this.objectRef, owner instanceof BaseObject ? owner : undefined)
+        }
         return this
     }
 
     release(): this {
-        _XTRelease(this.objectRef)
+        if (typeof this.objectRef === "string") {
+            _XTRelease(this.objectRef)
+        }
         return this
     }
 
