@@ -10,7 +10,7 @@ export enum ImageRenderingMode {
 export class Image extends XT.BaseObject {
 
     constructor(objectRef: any) { 
-        super()
+        super(undefined, false)
         this.objectRef = objectRef
     }
 

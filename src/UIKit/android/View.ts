@@ -29,7 +29,7 @@ export enum SwipeDirection {
 export class View extends XT.BaseObject implements Touchable, CoordinateOwner, GestureOwner {
 
     constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
-        super()
+        super(undefined, false)
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
                 return objectRefs[ref]

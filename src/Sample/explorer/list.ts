@@ -249,20 +249,12 @@ export class List extends UI.ViewController {
                         rowHeight: () => 44,
                         name: "Create UI Context",
                         action: () => {
+                            UI.Context.bundleURL = '/dist/Sample/'
                             UI.Context.startWithNamed('sample.min.js', undefined, (rootViewController) => {
-                                // this.presentViewController(rootViewController)
-                                // setTimeout(() => {
-                                //     rootViewController.dismissViewController()
-                                // }, 3000)
                                 if (this.navigationController) {
                                     this.navigationController.pushViewController(rootViewController)
                                 }
                             }).retain(this)
-                            // UI.Context.startWithURL('http://xt-studio.com/samples/RedView.js', undefined, (rootViewController) => {
-                            //     if (this.navigationController) {
-                            //         this.navigationController.pushViewController(rootViewController)
-                            //     }
-                            // }, () => {}).retain(this)
                         },
                     },
                 ]

@@ -4,10 +4,10 @@ import { RectMake } from "../interface/Rect";
 
 export class Context extends XT.BaseObject {
 
-    static bundleURL = "./"
+    static bundleURL: string | undefined = undefined
 
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController, context: Context) => void): Context {
-        return this.startWithURL(this.bundleURL + name, options, completion, () => { })
+        return this.startWithURL((this.bundleURL || "./") + name, options, completion, () => { })
     }
 
     static startWithURL(url: string, options: any, completion: (rootViewController: ViewController, context: Context) => void, failure: (error: Error) => void): Context {

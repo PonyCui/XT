@@ -10,7 +10,7 @@ import { Data } from './Data';
 export class WebSocket extends XT.BaseObject {
 
     constructor(url: string) {
-        super()
+        super(undefined, false)
         this.objectRef = _XTFWebSocket.create(url)
         objectRefs[this.objectRef] = this
     }

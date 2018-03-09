@@ -7,7 +7,7 @@ export class RefreshControl extends XT.BaseObject {
     }
 
     constructor(ref: string | undefined = undefined) {
-        super()
+        super(undefined, false)
         if (typeof ref === "string") {
             this.objectRef = ref
         }

@@ -3,7 +3,7 @@
 export class Font extends XT.BaseObject {
 
     constructor(pointSize: number | string, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
-        super()
+        super(undefined, false)
         if (typeof pointSize === "string") {
             if (objectRefs[pointSize]) { return objectRefs[pointSize] }
             this.objectRef = pointSize;

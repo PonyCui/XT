@@ -16,11 +16,12 @@ export class BaseObject {
         return this
     }
 
-    constructor(objects: { [key: string]: any } | undefined = undefined) {
-        if (this.constructor === BaseObject) {
+    constructor(objects: { [key: string]: any } | undefined = undefined, isBaseObject: boolean = true) {
+        if (this.constructor === BaseObject && isBaseObject === true) {
             this.objectRef = _XTBaseObject.create()
             objectRefs[this.objectRef] = this
         }
+        if (this.constructor instanceof XT.BaseArray) { return; }
         const proxy = new Proxy(this, {
             get: function (obj: any, prop: any) {
                 const value = obj[prop]

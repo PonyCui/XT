@@ -30,7 +30,7 @@ export enum ViewControllerLayoutOptions {
 export class ViewController extends XT.BaseObject implements NavigationBarDelegate {
 
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
-        super()
+        super(undefined, false)
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
                 return objectRefs[ref]

@@ -60,10 +60,10 @@ export class LayoutConstraint extends ILayoutConstraint {
             return "equ"
         }
         return {
-            view1: this.firstItem !== undefined ? (this.firstItem as any).nativeObject.objectUUID : undefined,
+            view1: this.firstItem !== undefined ? (this.firstItem as any).nativeObject.objectRef : undefined,
             attr1: toAttr(this.firstAttr),
             relation: toLayoutRelation(this.relation),
-            view2: this.secondItem !== undefined ? (this.secondItem as any).nativeObject.objectUUID : undefined,
+            view2: this.secondItem !== undefined ? (this.secondItem as any).nativeObject.objectRef : undefined,
             attr2: toAttr(this.secondAttr),
             multiplier: this.multiplier,
             constant: this.constant,

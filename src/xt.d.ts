@@ -4,11 +4,16 @@ export var minSDK: string /* @available(0.1.1) */
 export const currentSDK: string /* @available(0.1.1) */
 export const platform: "iOS" | "Android" | "Web" /* @available(0.1.1) */
 
+export class BaseArray<T> extends Array {
+    constructor(items?: T[])
+    clear(): void
+}
+
 export class BaseObject {
     [key: string]: any;
     retain(owner?: any): this
     release(): this
-    constructor(objects?: { [key: string]: any } | undefined)
+    constructor(objects?: { [key: string]: any } | undefined, isBaseObject?: boolean)
 }
 
 export enum ClassType /* @available(0.1.1) */ {
@@ -44,9 +49,9 @@ export enum SwipeDirection /* @available(0.1.1) */ {
 }
 
 export class Context extends XT.BaseObject /* @available(0.1.1) */ {
+    static bundleURL: string | undefined
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context
     static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context
-
 }
 
 export class View extends XT.BaseObject /* @available(0.1.1) */ {
@@ -824,6 +829,7 @@ declare global {
         currentSDK: typeof currentSDK,
         platform: typeof platform,
         BaseObject: typeof BaseObject,
+        BaseArray: typeof BaseArray,
         ClassType: typeof ClassType,
         ClassLoader: typeof ClassLoader,
         Debug: typeof Debug,

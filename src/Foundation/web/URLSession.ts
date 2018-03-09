@@ -5,7 +5,7 @@ import { URLRequest } from './URLRequest';
 import { URLSessionTask } from './URLSessionTask';
 import { URLResponse } from './URLResponse';
 
-export class URLSession extends IURLSession {
+export class URLSession extends XT.BaseObject {
 
     static sharedSession: URLSession = new URLSession()
 

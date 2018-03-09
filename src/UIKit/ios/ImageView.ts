@@ -24,7 +24,7 @@ export class Image extends XT.BaseObject {
     objectRef: any;
 
     constructor(objectRef: any) {
-        super()
+        super(undefined, false)
         if (objectRefs[this.objectRef]) {
             return objectRefs[this.objectRef]
         }

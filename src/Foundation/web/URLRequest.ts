@@ -9,14 +9,14 @@ import { Data } from './Data';
 
 export const URLCachePolily = IURLCachePolily
 
-export class URLRequest extends IURLRequest {
+export class URLRequest extends XT.BaseObject {
 
     private HTTPMethod: string = "GET"
     private HTTPBody: string | Data | undefined = undefined
     private HTTPHeaders: { [key: string]: string } = {}
 
     constructor(readonly url: string, readonly timeout = 15, readonly cachePolicy: IURLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
-        super(url, timeout, cachePolicy);
+        super(undefined, false);
     }
 
     buildRequest(): { request: XMLHttpRequest, body: string | Data | undefined } {

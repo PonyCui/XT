@@ -1,6 +1,6 @@
 export class BaseElement {
 
-    objectUUID = performance.now().toString() + "-" + Math.random()
+    objectRef = performance.now().toString() + "-" + Math.random()
     nativeObject: SVGGElement
     scriptObject: any
 

@@ -492,8 +492,8 @@ export class View extends XT.BaseObject implements Touchable, CoordinateOwner, G
         if (this._constraints.length > 0) {
             let viewMapping: { [key: string]: View } = {}
             this._constraints.forEach(item => {
-                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).nativeObject.objectUUID] = item.firstItem as any }
-                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).nativeObject.objectUUID] = item.secondItem as any }
+                if (item.firstItem !== undefined) { viewMapping[(item.firstItem as any).nativeObject.objectRef] = item.firstItem as any }
+                if (item.secondItem !== undefined) { viewMapping[(item.secondItem as any).nativeObject.objectRef] = item.secondItem as any }
             })
             const view = this.autoLayoutViewCache || (() => {
                 let constraints = this._constraints.map(item => (item as any).toALObject())

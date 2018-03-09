@@ -8,7 +8,7 @@ import { URLResponse as IURLResponse } from '../interface/URLResponse'
 export class URLResponse extends XT.BaseObject {
 
     constructor(objectRef: any) {
-        super()
+        super(undefined, false)
         this.objectRef = objectRef
     }
 

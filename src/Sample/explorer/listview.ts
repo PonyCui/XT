@@ -117,7 +117,7 @@ export class ListViewSample extends UI.ViewController {
 	}
 
 	loadData(complete: () => void) {
-		NS.URLSession.sharedSession.dataTaskWithURL("https://api.github.com/users?since=" + this.since.toString(), (data) => {
+		NS.URLSession.sharedSession.dataTaskWithURL("http://xt-studio.com/GHUser/" + this.since.toString() + ".json", (data) => {
 			if (data) {
 				try {
 					const json: any[] = JSON.parse(data.utf8String()!)

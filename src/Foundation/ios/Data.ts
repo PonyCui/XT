@@ -31,7 +31,7 @@ export class Data extends XT.BaseObject {
         return typeof ref === "string" ? Data.initWithRef(ref) : undefined
     }
 
-    protected constructor() { super() }
+    protected constructor() { super(undefined, false) }
 
     isEqualTo(data: Data): boolean {
         return _XTFData.isEqualToObjectRef(data.objectRef, this.objectRef)

@@ -17,7 +17,7 @@ export class URLRequest extends XT.BaseObject {
     readonly objectRef: any
 
     constructor(url: string, timeout = 15, cachePolicy: IURLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
-        super();
+        super(undefined, false);
         this.url = url
         this.timeout = timeout
         this.cachePolicy = cachePolicy

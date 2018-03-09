@@ -23,14 +23,14 @@ export class TextFieldElement extends ViewElement {
         this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
         this.inputGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
         this.inputGroupMask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
-        this.inputGroupMask.setAttribute('id', this.objectUUID + ".inputGroup.mask");
+        this.inputGroupMask.setAttribute('id', this.objectRef + ".inputGroup.mask");
         this.inputGroupMask.innerHTML = '';
         setTimeout(() => {
             if (!Application.sharedApplication()!.defsElement.contains(this.inputGroupMask)) {
                 Application.sharedApplication()!.defsElement.appendChild(this.inputGroupMask)
             }
         })
-        this.inputGroup.style.mask = 'url(#' + (this.objectUUID + ".inputGroup.mask") + ')'
+        this.inputGroup.style.mask = 'url(#' + (this.objectRef + ".inputGroup.mask") + ')'
         this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
         this.inputObject = document.createElement("input");
         this.inputObject.style.backgroundColor = "transparent"

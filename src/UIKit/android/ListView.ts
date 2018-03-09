@@ -22,7 +22,7 @@ export class ListCell extends View {
     context?: any
 
     constructor() {
-        super();
+        super(undefined, false);
         this.selectionView.backgroundColor = new Color(0xd0 / 0xff, 0xd0 / 0xff, 0xd0 / 0xff);
         this.selectionView.alpha = 0.0;
         this.selectionView.hidden = true;
@@ -153,7 +153,7 @@ class RefreshAnimationView extends View {
     rightDot = new View
 
     constructor() {
-        super()
+        super(undefined, false)
         this.leftDot.alpha = 0.5
         this.leftDot.cornerRadius = 4
         this.midDot.alpha = 0.5

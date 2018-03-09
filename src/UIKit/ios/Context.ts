@@ -23,7 +23,7 @@ export class Context extends XT.BaseObject {
     }
 
     constructor(readonly objectRef: any) {
-        super()
+        super(undefined, false)
         if (typeof objectRef === "string") {
             if (objectRefs[objectRef]) {
                 return objectRefs[objectRef]

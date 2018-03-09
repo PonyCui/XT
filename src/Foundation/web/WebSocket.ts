@@ -7,12 +7,12 @@ import { Data } from './Data';
  * Author: Pony Cui
  */
 
-export class WebSocket extends IWebSocket {
+export class WebSocket extends XT.BaseObject {
 
     socket: any
 
-    constructor(url: string) {
-        super(url)
+    constructor(readonly url: string) {
+        super(undefined, false)
         this.socket = new (window as any).WebSocket(url)
         this.socket.addEventListener('open', () => {
             this.onOpen && this.onOpen()
@@ -51,14 +51,6 @@ export class WebSocket extends IWebSocket {
 
     close(): void {
         this.socket.close()
-    }
-
-    retain(): this {
-        return this
-    }
-
-    release(): this {
-        return this
     }
 
 }

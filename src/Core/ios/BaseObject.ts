@@ -1,3 +1,5 @@
+import { BaseArray } from "./BaseArray";
+
 declare var Proxy: any
 
 const supportProxy = typeof Proxy === "function"
@@ -8,16 +10,16 @@ export class BaseObject {
 
     private _objectRef: string
 
-	public get objectRef(): string  {
-		return this._objectRef;
-	}
+    public get objectRef(): string {
+        return this._objectRef;
+    }
 
-	public set objectRef(value: string) {
+    public set objectRef(value: string) {
         this._objectRef = value;
         if (!supportProxy) {
             this.retain()
         }
-	}
+    }
 
     retain(owner: any = undefined): this {
         _XTRetain(this.objectRef, owner)
@@ -29,7 +31,7 @@ export class BaseObject {
         return this
     }
 
-    private isDealloced = false
+    protected isDealloced = false
 
     dealloc() {
         if (this.isDealloced) { return }
@@ -44,12 +46,12 @@ export class BaseObject {
         }
     }
 
-    constructor(objects: { [key: string]: any } | undefined = undefined) {
-        if (this.constructor === BaseObject) {
+    constructor(objects: { [key: string]: any } | undefined = undefined, isBaseObject: boolean = true) {
+        if (this.constructor === BaseObject && isBaseObject === true) {
             this.objectRef = _XTBaseObject.create()
             objectRefs[this.objectRef] = this
         }
-        if (supportProxy) {
+        if (supportProxy && !(this.constructor instanceof XT.BaseArray)) {
             const proxy = new Proxy(this, {
                 get: function (obj: any, prop: any) {
                     const value = obj[prop]

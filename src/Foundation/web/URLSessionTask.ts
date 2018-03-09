@@ -8,21 +8,13 @@ import { URLSessionTask as IURLSessionTask } from '../interface/URLSessionTask'
 import { Data } from './Data';
 import { URLResponse } from './URLResponse';
 
-export class URLSessionTask extends IURLSessionTask {
+export class URLSessionTask extends XT.BaseObject {
 
     constructor(
         readonly xmlReuqest: XMLHttpRequest,
         readonly body: string | Data | undefined,
         readonly completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void) {
-        super()
-    }
-
-    retain(): this {
-        return this
-    }
-
-    release(): this {
-        return this
+        super(undefined, false)
     }
 
     cancel(): void {

@@ -7,15 +7,7 @@ declare var escape: any;
 declare var TextEncoder: any;
 declare var TextDecoder: any;
 
-export class Data extends IData {
-
-    retain(): this {
-        return this
-    }
-
-    release(): this {
-        return this
-    }
+export class Data extends XT.BaseObject {
 
     static initWithString(value: string): Data {
         if (typeof TextEncoder === "function") {
@@ -54,7 +46,7 @@ export class Data extends IData {
         return this.initWithBase64EncodedString(String.fromCharCode.apply(null, new Uint8Array(data.buffer)))
     }
 
-    protected constructor(readonly buffer: ArrayBuffer) { super() }
+    protected constructor(readonly buffer: ArrayBuffer) { super(undefined, false) }
 
     isEqualTo(data: Data): boolean {
         const b1 = new Uint8Array(this.buffer)

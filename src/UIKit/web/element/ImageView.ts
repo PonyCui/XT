@@ -125,7 +125,7 @@ export class ImageViewElement extends ViewElement {
             const tintColorFilterWrapper = this.tintColorFilterWrapper || document.createElementNS("http://www.w3.org/2000/svg", "filter")
             const tintColorFilter = this.tintColorFilter || document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix")
             tintColorFilter.setAttribute("values", "0 0 0 0 " + tintColor.r.toFixed(3) + " 0 0 0 0 " + tintColor.g.toFixed(3) + " 0 0 0 0 " + tintColor.b.toFixed(3) + " 0 0 0 " + tintColor.a.toFixed(3) + " 0")
-            tintColorFilterWrapper.setAttribute('id', this.objectUUID + ".tintColorFilter");
+            tintColorFilterWrapper.setAttribute('id', this.objectRef + ".tintColorFilter");
             tintColorFilterWrapper.innerHTML = '';
             tintColorFilterWrapper.appendChild(tintColorFilter);
             this.tintColorFilterWrapper = tintColorFilterWrapper;
@@ -133,7 +133,7 @@ export class ImageViewElement extends ViewElement {
             if (!Application.sharedApplication()!.defsElement.contains(tintColorFilterWrapper)) {
                 Application.sharedApplication()!.defsElement.appendChild(tintColorFilterWrapper)
             }
-            this.contentObject.style.filter = 'url(#' + (this.objectUUID + ".tintColorFilter") + ')'
+            this.contentObject.style.filter = 'url(#' + (this.objectRef + ".tintColorFilter") + ')'
         }
         else if (this.contentObject) {
             this.contentObject.style.filter = ''

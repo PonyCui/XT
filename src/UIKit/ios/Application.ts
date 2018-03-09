@@ -6,7 +6,7 @@ let sharedApplication: Application | undefined = undefined;
 export class ApplicationDelegate extends XT.BaseObject {
 
     constructor() {
-        super()
+        super(undefined, false)
         this.objectRef = _XTUIApplicationDelegate.create();
         objectRefs[this.objectRef] = this;
     }
@@ -44,7 +44,7 @@ export class Application extends XT.BaseObject {
     }
 
     constructor(t: any, delegate: ApplicationDelegate) {
-        super()
+        super(undefined, false)
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }

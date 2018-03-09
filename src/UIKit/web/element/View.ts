@@ -15,7 +15,7 @@ export class ViewElement extends BaseElement {
 
     constructor(scriptObject: any) {
         super(scriptObject);
-        this.nativeObject.setAttribute('id', this.objectUUID);
+        this.nativeObject.setAttribute('id', this.objectRef);
         this.backgroundObject.setAttribute('visibility', 'hidden');
         this.loadContent();
         if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }
@@ -130,14 +130,14 @@ export class ViewElement extends BaseElement {
         this.previousMaskParams.cornerRadius = this.cornerRadius
         if (this.clipsToBounds) {
             const clipPathObject = this.clipPathObject || document.createElementNS("http://www.w3.org/2000/svg", "clipPath")
-            clipPathObject.setAttribute('id', this.objectUUID + ".clipPath");
+            clipPathObject.setAttribute('id', this.objectRef + ".clipPath");
             clipPathObject.innerHTML = '';
             clipPathObject.appendChild(this.createMaskPath())
             this.clipPathObject = clipPathObject;
             if (!Application.sharedApplication()!.defsElement.contains(clipPathObject)) {
                 Application.sharedApplication()!.defsElement.appendChild(clipPathObject)
             }
-            this.nativeObject.style.clipPath = 'url(#' + (this.objectUUID + ".clipPath") + ')'
+            this.nativeObject.style.clipPath = 'url(#' + (this.objectRef + ".clipPath") + ')'
         }
         else {
             this.nativeObject.style.clipPath = null
@@ -320,7 +320,7 @@ export class ViewElement extends BaseElement {
             filterObject.setAttribute("y", "-500%")
             filterObject.setAttribute("width", "1000%")
             filterObject.setAttribute("height", "1000%")
-            filterObject.setAttribute('id', this.objectUUID + ".filter");
+            filterObject.setAttribute('id', this.objectRef + ".filter");
             filterObject.innerHTML = '';
             if (this.shadowColor !== undefined) {
                 const shadowObject = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
@@ -335,7 +335,7 @@ export class ViewElement extends BaseElement {
             if (!Application.sharedApplication()!.defsElement.contains(filterObject)) {
                 Application.sharedApplication()!.defsElement.appendChild(filterObject)
             }
-            this.nativeObject.style.filter = 'url(#' + (this.objectUUID + ".filter") + ')'
+            this.nativeObject.style.filter = 'url(#' + (this.objectRef + ".filter") + ')'
         }
         else {
             this.nativeObject.style.filter = '';
