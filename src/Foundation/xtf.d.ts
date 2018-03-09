@@ -1,6 +1,3 @@
-declare var objectRefs: any
-declare var _XTRetain: any
-declare var _XTRelease: any
 declare var _XTFURLRequest: any
 declare var _XTFURLResponse: any
 declare var _XTFURLSession: any

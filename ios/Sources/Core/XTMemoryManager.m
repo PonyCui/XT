@@ -32,6 +32,9 @@
     context[@"_XTRelease"] = ^(NSString *objectUUID){
         [XTMemoryManager release:objectUUID];
     };
+    context[@"_XTValidObject"] = ^(NSString *objectUUID){
+        return [XTMemoryManager sharedManager].objectMapping[objectUUID].weakRef != nil;
+    };
 }
 
 + (void)add:(XTManagedObject *)managedObject {

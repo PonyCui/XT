@@ -1,6 +1,5 @@
 import { View } from "./View";
 import { Size, Rect } from "./Rect";
-import { Releasable } from "./Releasable";
 
 export enum ImageRenderingMode {
     Automatic = 0,
@@ -8,14 +7,7 @@ export enum ImageRenderingMode {
     Template = 2,
 }
 
-export class Image implements Releasable {
-
-    retain(): this {
-        throw new Error("Method not implemented.");
-    }
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
+export class Image extends XT.BaseObject {
 
     readonly size: Size;
     readonly scale: number;

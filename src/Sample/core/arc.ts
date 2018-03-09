@@ -31,9 +31,27 @@ export class ARCSample extends TestBase {
         setTimeout(() => {
             try {
                 this.assert(data2.base64EncodedString() === "SGVsbG8sIFdvcmxkIQ==")
+                _.asyncRejector(Error("data2 not released."))
             } catch (error) {
                 _.asyncResolover()
             }
+        }, 3000)
+    }
+
+    baseObject2: any = new XT.BaseObject()
+
+    circularReferenceTests(_: TestCase) {
+        _.isAsync = true
+        const innerObject = new XT.BaseObject().retain()
+        this.baseObject2.innerObject = innerObject
+        innerObject.weakBaseObject2 = this.baseObject2
+        setTimeout(() => {
+            this.baseObject2 = undefined
+        }, 1500)
+        setTimeout(() => {
+            this.assert(innerObject.weakBaseObject2 === undefined)
+            innerObject.release()
+            _.asyncResolover()
         }, 3000)
     }
 

@@ -38,6 +38,7 @@ class XTMemoryManager {
             val retainClass = RetainClass(WeakReference(runtime))
             runtime.registerJavaMethod(retainClass, "retain", "_XTRetain", arrayOf(String::class.java, Object::class.java))
             runtime.registerJavaMethod(this, "release", "_XTRelease", arrayOf(String::class.java))
+            runtime.registerJavaMethod(this, "validObject", "_XTValidObject", arrayOf(String::class.java))
         }
 
         fun add(obj: XTManagedObject) {
@@ -55,12 +56,15 @@ class XTMemoryManager {
             }
         }
 
+        fun validObject(objectUUID: String): Boolean {
+            return objectMapping[objectUUID]?.weakRef?.get() != null
+        }
+
         fun find(objectUUID: String): Any? {
             return objectMapping[objectUUID]?.takeIf {
                 return@takeIf !(!it.objectThreadSafe && it.objectThread != Thread.currentThread())
             }?.weakRef?.get()
         }
-
 
         private fun runGC(force: Boolean = false) {
             if (Thread.currentThread() != Looper.getMainLooper().thread) { return }

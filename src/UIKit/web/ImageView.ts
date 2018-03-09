@@ -4,19 +4,10 @@ import { View } from "./View";
 import { Size, Rect, RectZero, SizeMake } from "../interface/Rect";
 import { ImageRenderingMode } from "../interface/ImageView";
 import { ImageViewElement } from "./element/ImageView";
-import { Releasable } from "../interface/Releasable";
 
 const scaleOptions = [3, 2]
 
-export class Image implements Releasable {
-
-    retain(): this {
-        return this
-    }
-
-    release(): this {
-        return this
-    }
+export class Image extends XT.BaseObject {
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         const request = new XMLHttpRequest()
@@ -77,7 +68,7 @@ export class Image implements Releasable {
         readonly URLString: string,
         readonly size: Size = { width: 0, height: 0 },
         readonly scale: number = 1.0,
-        readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original) { }
+        readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original) { super() }
 
     toObject(): any {
         return {

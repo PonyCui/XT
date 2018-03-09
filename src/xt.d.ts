@@ -1,8 +1,3 @@
-export interface Releasable {
-    retain(owner?: any): this;
-    release(): this;
-}
-
 export as namespace XT;
 
 export var minSDK: string /* @available(0.1.1) */
@@ -48,18 +43,13 @@ export enum SwipeDirection /* @available(0.1.1) */ {
     ToBottom,
 }
 
-export class Context implements Releasable /* @available(0.1.1) */ {
-    retain(owner?: any): this
-    release(): this
+export class Context extends XT.BaseObject /* @available(0.1.1) */ {
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context
     static startWithURL(url: string, options: any, completion: (rootViewController: ViewController) => void, failure: (error: Error) => void): Context
 
 }
 
-export class View implements Releasable /* @available(0.1.1) */ {
-
-    retain(owner?: any): this;
-    release(): this;
+export class View extends XT.BaseObject /* @available(0.1.1) */ {
     constructor()
     frame: Rect;
     bounds: Rect;
@@ -277,9 +267,7 @@ export enum ImageRenderingMode /* @available(0.1.1) */ {
     Template,
 }
 
-export class Image implements Releasable /* @available(0.1.1) */ {
-    retain(owner?: any): this;
-    release(): this;
+export class Image extends XT.BaseObject /* @available(0.1.1) */ {
     readonly size: Size;
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode;
@@ -779,7 +767,7 @@ export enum URLCachePolily /* @available(0.1.1) */ {
     ReturnCacheDataDontLoad = 3,
 }
 
-export class URLRequest implements Releasable /* @available(0.1.1) */ {
+export class URLRequest extends XT.BaseObject /* @available(0.1.1) */ {
     readonly url: string
     readonly timeout: number
     readonly cachePolicy: URLCachePolily
@@ -787,8 +775,6 @@ export class URLRequest implements Releasable /* @available(0.1.1) */ {
     setHTTPMethod(value: "GET" | "POST" | "PUT" | "DELETE"): void
     setHTTPHeader(value: string, key: string): void
     setHTTPBody(value: string | Data): void
-    retain(): this
-    release(): this
 }
 
 export class URLResponse /* @available(0.1.1) */ {
@@ -807,9 +793,7 @@ export class URLSession /* @available(0.1.1) */ {
     dataTaskWithRequest(req: URLRequest, completionHandler: (data?: Data, response?: URLResponse, error?: Error) => void): URLSessionTask
 }
 
-export class URLSessionTask implements Releasable /* @available(0.1.1) */ {
-    retain(): this
-    release(): this
+export class URLSessionTask extends XT.BaseObject /* @available(0.1.1) */ {
     cancel(): void
     resume(): void
 }
@@ -821,9 +805,7 @@ export class UserDefaults /* @available(0.1.1) */ {
     get(forKey: string): any
 }
 
-export class WebSocket implements Releasable /* @available(0.1.1) */ {
-    retain(): this
-    release(): this
+export class WebSocket extends XT.BaseObject /* @available(0.1.1) */ {
     constructor(url: string)
     onOpen?: () => void
     onClose?: (code: number, reason: string) => void
@@ -847,7 +829,6 @@ declare global {
         Debug: typeof Debug,
     }
     const UI: {
-        Releasable: Releasable,
         InteractionState: typeof InteractionState,
         SwipeDirection: typeof SwipeDirection,
         Context: typeof Context,

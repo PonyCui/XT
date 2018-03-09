@@ -1,17 +1,8 @@
 import { ViewController } from "./ViewController";
-import { Releasable } from "../interface/Releasable";
 import { Application } from "./Application";
 import { RectMake } from "../interface/Rect";
 
-export class Context implements Releasable {
-
-    retain(): this {
-        return this
-    }
-
-    release(): this {
-        return this
-    }
+export class Context extends XT.BaseObject {
 
     static bundleURL = "./"
 

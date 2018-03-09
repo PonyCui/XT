@@ -1,6 +1,5 @@
 import { View } from "./View";
 import { Size, Rect, RectZero } from "../interface/Rect";
-import { Releasable } from "../interface/Releasable";
 
 export enum ImageRenderingMode {
     Automatic = 0,

@@ -1,7 +1,6 @@
 import { View } from "./View";
 import { Rect, Insets } from "./Rect";
 import { DeviceOrientation } from "./Device";
-import { Releasable } from "./Releasable";
 import { NavigationBar } from "./NavigationBar";
 
 interface NavigationControllerInterface extends ViewController {
@@ -22,17 +21,9 @@ export enum ViewControllerLayoutOptions {
     AndroidDark,
 }
 
-export class ViewController implements Releasable {
+export class ViewController extends XT.BaseObject {
 
-    retain(): this {
-        throw new Error("Method not implemented.");
-    }
-
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
-
-    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) { throw "" }
+    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) { super() }
 
     title?: string
     readonly view: View

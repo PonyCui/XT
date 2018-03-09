@@ -22,12 +22,19 @@ export class BaseObject {
             objectRefs[this.objectRef] = this
         }
         const proxy = new Proxy(this, {
+            get: function (obj: any, prop: any) {
+                const value = obj[prop]
+                if (value instanceof BaseObject && typeof value.objectRef === "string" && !_XTValidObject(value.objectRef)) {
+                    return undefined
+                }
+                return value;
+            },
             set: function (obj: any, prop: any, value: any) {
-                if (obj[prop] instanceof BaseObject) {
+                if (prop.indexOf("weak") < 0 && obj[prop] instanceof BaseObject) {
                     obj[prop].release()
                 }
                 obj[prop] = value
-                if (value instanceof BaseObject && obj instanceof BaseObject) {
+                if (prop.indexOf("weak") < 0 && value instanceof BaseObject && obj instanceof BaseObject) {
                     value.retain(obj)
                 }
                 return true

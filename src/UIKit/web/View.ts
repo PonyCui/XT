@@ -12,7 +12,6 @@ import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
 import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
 import { ViewElement } from './element/View';
-import { Releasable } from '../interface/Releasable';
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
@@ -30,20 +29,13 @@ export enum SwipeDirection {
     ToBottom,
 }
 
-export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
-
-    retain(owner: any = undefined): this {
-        return this
-    }
-
-    release(): this {
-        return this
-    }
+export class View extends XT.BaseObject implements Touchable, CoordinateOwner, GestureOwner {
 
     nativeObject: any;
     viewDelegate: any;
 
     constructor(nativeClazz: any = ViewElement, arg0?: any, arg1?: any, arg2?: any) {
+        super()
         this.nativeObject = new nativeClazz(this, arg0, arg1, arg2)
     }
 

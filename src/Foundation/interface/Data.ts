@@ -1,18 +1,9 @@
-import { Releasable } from "./Releasable";
-
 /**
  * Apache Licenses Version 2.0
  * Author: Pony Cui
  */
-export class Data implements Releasable {
 
-    retain(): this {
-        throw new Error("Method not implemented.");
-    }
-    
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
+export class Data extends XT.BaseObject {
 
     public objectRef?: string
 
@@ -22,7 +13,7 @@ export class Data implements Releasable {
     static initWithBase64EncodedString(string: string): Data | undefined { throw Error("Not implemented.") }
     static initWithBase64EncodedData(data: Data): Data | undefined { throw Error("Not implemented.") }
 
-    protected constructor() { }
+    protected constructor() { super() }
     isEqualTo(data: Data): boolean { throw Error("Not implemented.") }
     length(): number { throw Error("Not implemented.") }
     getBytes(): Uint8Array { throw Error("Not implemented.") }

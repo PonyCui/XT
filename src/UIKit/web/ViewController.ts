@@ -3,9 +3,7 @@ import { View } from "./View";
 import { Rect, RectMake, Insets, InsetsMake } from "../interface/Rect";
 import { Color } from "../interface/Color";
 import { DeviceOrientation } from "../interface/Device";
-// import { Device } from "./Device";
 import { TransformMatrix } from "../interface/TransformMatrix";
-import { Releasable } from "../interface/Releasable";
 import { NavigationBar } from "./NavigationBar";
 
 export interface NavigationControllerInterface extends ViewController {
@@ -20,15 +18,7 @@ export enum KeyboardAvoidingMode {
     Pan,
 }
 
-export class ViewController implements Releasable {
-
-    retain(): this {
-        return this
-    }
-
-    release(): this {
-        return this
-    }
+export class ViewController extends XT.BaseObject {
 
     vcID: string = performance.now().toString();
 
@@ -43,7 +33,7 @@ export class ViewController implements Releasable {
         this.navigationBar.title = value
     }
 
-    constructor() { }
+    constructor() { super() }
 
     toObject(): any {
         return {

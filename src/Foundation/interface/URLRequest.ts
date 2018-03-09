@@ -2,7 +2,6 @@
  * Apache Licenses Version 2.0
  * Author: Pony Cui
  */
-import { Releasable } from "./Releasable";
 import { Data } from "./Data";
 
 export enum URLCachePolily {
@@ -12,7 +11,7 @@ export enum URLCachePolily {
     ReturnCacheDataDontLoad = 3,
 }
 
-export class URLRequest implements Releasable {
+export class URLRequest extends XT.BaseObject {
 
     readonly url: string
     readonly timeout: number
@@ -20,6 +19,7 @@ export class URLRequest implements Releasable {
     readonly nativeObject: any;
 
     constructor(url: string, timeout = 15, cachePolicy: URLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
+        super()
         this.url = url
         this.timeout = timeout
         this.cachePolicy = cachePolicy
@@ -28,13 +28,5 @@ export class URLRequest implements Releasable {
     setHTTPMethod(value: "GET" | "POST" | "PUT" | "DELETE"): void { }
     setHTTPHeader(value: string, key: string): void { }
     setHTTPBody(value: string | Data): void { }
-
-    retain(): this {
-        throw new Error("Method not implemented.");
-    }
-
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
 
 }

@@ -1,21 +1,13 @@
 import { Data } from './Data';
-import { Releasable } from './Releasable';
 
 /**
  * Apache Licenses Version 2.0
  * Author: Pony Cui
  */
 
-export class WebSocket implements Releasable {
+export class WebSocket extends XT.BaseObject {
 
-    retain(): this {
-        throw new Error("Method not implemented.");
-    }
-    release(): this {
-        throw new Error("Method not implemented.");
-    }
-
-    constructor(url: string) { }
+    constructor(url: string) { super() }
     onOpen?: () => void
     onClose?: (code: number, reason: string) => void
     onFail?: (error: Error) => void

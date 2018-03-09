@@ -1,6 +1,5 @@
 declare function require(name: string): any;
 import { View } from './View'
-import { Releasable } from './Releasable';
 
 export enum LayoutAttribute {
     Const = 0,

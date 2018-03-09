@@ -5,7 +5,6 @@ import { Color } from "../interface/Color";
 import { DeviceOrientation } from "../interface/Device";
 import { Device } from "./Device";
 import { TransformMatrix } from "../interface/TransformMatrix";
-import { Releasable } from "../interface/Releasable";
 import { NavigationBar, NavigationBarDelegate } from "./NavigationBar";
 import { Screen } from "./Screen";
 import { ScrollView } from "./ScrollView";
@@ -28,7 +27,7 @@ export enum ViewControllerLayoutOptions {
     AndroidDark = 2,
 }
 
-export class ViewController extends XT.BaseObject implements Releasable, NavigationBarDelegate {
+export class ViewController extends XT.BaseObject implements NavigationBarDelegate {
 
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
         super()

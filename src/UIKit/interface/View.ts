@@ -3,7 +3,6 @@ import { Color } from './Color'
 import { Window } from './Window'
 import { TransformMatrix } from './TransformMatrix'
 import { LayoutConstraint } from "./LayoutConstraint";
-import { Releasable } from './Releasable';
 
 export enum InteractionState {
     Began,
@@ -19,12 +18,9 @@ export enum SwipeDirection {
     ToBottom,
 }
 
-export class View implements Releasable {
+export class View extends XT.BaseObject {
 
-    retain(): this { throw "" }
-    release(): this { throw "" }
-
-    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) { throw "" }
+    constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) { super() }
 
     // Mark: View Geometry
     frame: Rect;
