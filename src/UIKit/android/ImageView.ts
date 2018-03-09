@@ -8,19 +8,12 @@ export enum ImageRenderingMode {
     Template = 2,
 }
 
-export class Image implements Releasable {
+export class Image extends XT.BaseObject {
 
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
-        return this
+    constructor(objectRef: any) { 
+        super()
+        this.objectRef = objectRef
     }
-    
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
-
-    constructor(public objectRef: any) { }
 
     readonly size: Size;
     readonly scale: number;

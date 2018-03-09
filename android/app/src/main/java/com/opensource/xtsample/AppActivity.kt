@@ -1,5 +1,6 @@
 package com.opensource.xtsample
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
@@ -25,7 +26,7 @@ class FooFragment: Fragment() {
 
 }
 
-class AppActivity : XTUIActivity() {
+class AppActivity : Activity() {
 
     var currentUIContext: XTUIContext? = null
 

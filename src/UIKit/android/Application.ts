@@ -3,11 +3,10 @@ import { Window } from './Window'
 
 let sharedApplication: Application | undefined = undefined;
 
-export class ApplicationDelegate {
-
-    objectRef: any
+export class ApplicationDelegate extends XT.BaseObject {
 
     constructor() {
+        super()
         this.objectRef = _XTUIApplicationDelegate.create();
         objectRefs[this.objectRef] = this;
     }
@@ -34,13 +33,12 @@ export class ApplicationDelegate {
 
 }
 
-export class Application {
+export class Application extends XT.BaseObject {
 
     delegate: ApplicationDelegate
 
-    objectRef: any
-
     constructor(t: any, delegate: ApplicationDelegate) {
+        super()
         if (sharedApplication === undefined) {
             sharedApplication = this;
         }

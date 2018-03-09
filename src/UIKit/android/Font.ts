@@ -1,16 +1,15 @@
 /// <reference path="xtr.d.ts" />
 
-export class Font {
-
-    objectRef: any;
+export class Font extends XT.BaseObject {
 
     constructor(pointSize: number | string, fontWeight: string = '400', fontStyle: string = 'normal', familyName?: string) {
+        super()
         if (typeof pointSize === "string") {
             if (objectRefs[pointSize]) { return objectRefs[pointSize] }
             this.objectRef = pointSize;
         }
         else {
-            this.objectRef = _XTUIFont.create(pointSize, fontWeight, fontStyle, familyName || "");
+            this.objectRef = _XTUIFont.create(pointSize || 14, fontWeight || "400", fontStyle || "normal", familyName || "");
         }
         objectRefs[this.objectRef] = this;
     }

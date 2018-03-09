@@ -13,7 +13,7 @@ export class NavigationBarButtonItem {
     onTouchUpInside?: () => void
 
     constructor() {
-        this.customView = new Button()
+        this.customView = new Button().retain()
         this.customView.frame = RectMake(0, 0, 44, 44);
         (this.customView as Button).onTouchUpInside = () => {
             if (this.onTouchUpInside) {

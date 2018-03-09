@@ -9,7 +9,7 @@ import { Data } from './Data';
 
 export const URLCachePolily = IURLCachePolily
 
-export class URLRequest extends IURLRequest {
+export class URLRequest extends XT.BaseObject {
 
     readonly url: string
     readonly timeout: number
@@ -17,7 +17,10 @@ export class URLRequest extends IURLRequest {
     readonly objectRef: any
 
     constructor(url: string, timeout = 15, cachePolicy: IURLCachePolily = URLCachePolily.UseProtocolCachePolicy) {
-        super(url, timeout, cachePolicy);
+        super();
+        this.url = url
+        this.timeout = timeout
+        this.cachePolicy = cachePolicy
         this.objectRef = _XTFURLRequest.create(url, timeout, cachePolicy);
     }
 
@@ -36,16 +39,6 @@ export class URLRequest extends IURLRequest {
         else if (value instanceof Data) {
             _XTFURLRequest.xtr_setHTTPBodyFromData(value.objectRef, this.objectRef)
         }
-    }
-
-    retain(): this {
-        _XTRetain(this.objectRef)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
     }
 
 }

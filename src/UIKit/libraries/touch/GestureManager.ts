@@ -76,7 +76,7 @@ export class GestureManager {
 
     static onTouchesMoved(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            if (this.activeGesture.owner == owner) {
+            if (this.isOwnerEqual(this.activeGesture.owner, owner)) {
                 this.activeGesture.touchesMoved(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
             if (!this.activeGesture.cancellable) {
@@ -101,7 +101,7 @@ export class GestureManager {
         GestureManager.activeTimerHanders.forEach(t => clearTimeout(t));
         GestureManager.activeTimerHanders = [];
         if (this.activeGesture !== undefined) {
-            if (this.activeGesture.owner == owner) {
+            if (this.isOwnerEqual(this.activeGesture.owner, owner)) {
                 this.activeGesture.touchesEnded(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
             setTimeout(() => {
@@ -122,7 +122,7 @@ export class GestureManager {
 
     static onTouchesCancelled(owner: GestureOwner, touches: Touch[], event: Event): void {
         if (this.activeGesture !== undefined) {
-            if (this.activeGesture.owner == owner) {
+            if (this.isOwnerEqual(this.activeGesture.owner, owner)) {
                 this.activeGesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this), this.onRelease.bind(this));
             }
             return;
@@ -133,6 +133,19 @@ export class GestureManager {
                 gesture.touchesCancelled(owner, touches, event, this.onTrigger.bind(this))
             }
         }
+    }
+
+    static isOwnerEqual(owner1: any, owner2: any): boolean {
+        if (owner1 == owner2) {
+            return true
+        }
+        if (typeof owner1 === "object" &&
+            typeof owner2 === "object" &&
+            typeof owner1.objectRef === "string" &&
+            typeof owner2.objectRef === "string") {
+            return owner1.objectRef === owner2.objectRef
+        }
+        return false
     }
 
 }

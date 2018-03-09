@@ -7,12 +7,10 @@ import { Data } from './Data';
  * Author: Pony Cui
  */
 
-export class WebSocket extends IWebSocket {
-
-    objectRef: string
+export class WebSocket extends XT.BaseObject {
 
     constructor(url: string) {
-        super(url)
+        super()
         this.objectRef = _XTFWebSocket.create(url)
         objectRefs[this.objectRef] = this
     }
@@ -55,16 +53,6 @@ export class WebSocket extends IWebSocket {
 
     close(): void {
         _XTFWebSocket.xtr_close(this.objectRef)
-    }
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
     }
 
 }

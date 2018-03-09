@@ -1,17 +1,7 @@
 /// <reference path="../xtf.d.ts" />
 import { Data as IData } from '../interface/Data'
 
-export class Data extends IData {
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
+export class Data extends XT.BaseObject {
 
     static initWithString(value: string): Data {
         return Data.initWithRef(_XTFData.createWithString(value))

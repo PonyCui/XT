@@ -27,21 +27,10 @@ export enum SwipeDirection {
     ToBottom,
 }
 
-export class View implements Touchable, CoordinateOwner, GestureOwner, Releasable {
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
-
-    public objectRef: any;
+export class View extends XT.BaseObject implements Touchable, CoordinateOwner, GestureOwner, Releasable {
 
     constructor(ref: string | Object | Function | undefined = undefined, ...args: any[]) {
+        super()
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
                 return objectRefs[ref]
@@ -57,7 +46,7 @@ export class View implements Touchable, CoordinateOwner, GestureOwner, Releasabl
             }
             this.objectRef = ref.apply(this, args)
         }
-        else if (typeof ref === "object") {
+        else if (typeof ref === "object" && ref !== null) {
             this.objectRef = (ref as any).create()
         }
         else {

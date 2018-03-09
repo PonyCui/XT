@@ -59,7 +59,8 @@ open class XTContext(val appContext: android.content.Context, val attachingConte
         _registeredComponents = mutableMapOf()
         val components: List<XTComponentExport> = listOf(
                 XTClassLoader.JSExports(this),
-                XTDebug.JSExports(this)
+                XTDebug.JSExports(this),
+                XTBaseObject.JSExports(this)
         )
         components.forEach {
             val obj = it.exports()

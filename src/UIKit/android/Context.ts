@@ -1,6 +1,6 @@
 import { ViewController } from "./ViewController";
 
-export class Context {
+export class Context extends XT.BaseObject {
 
     static startWithNamed(name: string, options: any, completion: (rootViewController: ViewController) => void): Context {
         const contextRef = _XTUIContext.xtr_startWithNamed(name, options, (rootViewControllerRef: any) => {
@@ -22,17 +22,8 @@ export class Context {
         return new Context(contextRef)
     }
 
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
-
-    constructor(readonly objectRef: any) {
+    constructor(objectRef: any) {
+        super()
         if (typeof objectRef === "string") {
             if (objectRefs[objectRef]) {
                 return objectRefs[objectRef]

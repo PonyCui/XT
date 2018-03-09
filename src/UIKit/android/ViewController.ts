@@ -28,21 +28,10 @@ export enum ViewControllerLayoutOptions {
     AndroidDark = 2,
 }
 
-export class ViewController implements Releasable, NavigationBarDelegate {
-
-    retain(owner: any = undefined): this {
-        _XTRetain(this.objectRef, owner && owner.objectRef ? owner.objectRef : undefined)
-        return this
-    }
-
-    release(): this {
-        _XTRelease(this.objectRef)
-        return this
-    }
-
-    public objectRef: any;
+export class ViewController extends XT.BaseObject implements Releasable, NavigationBarDelegate {
 
     constructor(ref: string | Object | Function | undefined, ...args: any[]) {
+        super()
         if (typeof ref === "string") {
             if (objectRefs[ref]) {
                 return objectRefs[ref]
