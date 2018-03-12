@@ -8,7 +8,7 @@ class FooClass extends XT.ExtObject {
 
     static sayHello: () => string = FooClass.defineStaticFunction("FooClass", "sayHello")
 
-    fooValue: string = this.defineProperty("fooValue")
+    fooValue: string = this.defineProperty("fooValue", "Hello, World!")
 
     callYamiedie: (roleA: string, roleB: string) => string = this.defineFunction("callYamiedie")
 

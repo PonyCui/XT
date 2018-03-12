@@ -31,7 +31,7 @@ export class ExtObject extends BaseObject {
         }
     }
 
-    defineProperty(prop: string): any {
+    defineProperty(prop: string, defaultValue: any = undefined): any {
         Object.defineProperty(this, prop, {
             get: () => {
                 return _XTExtObject.xtr_getValueObjectRef(prop, this.objectRef)
@@ -40,6 +40,9 @@ export class ExtObject extends BaseObject {
                 _XTExtObject.xtr_setValuePropKeyObjectRef(newValue, prop, this.objectRef)
             },
         })
+        if (defaultValue !== undefined) {
+            this[prop] = defaultValue
+        }
     }
 
 }

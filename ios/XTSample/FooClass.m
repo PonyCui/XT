@@ -42,15 +42,6 @@
                         }];
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        _fooValue = @"Hello, World!";
-    }
-    return self;
-}
-
 - (NSString *)callYamiedie:(NSString *)roleA roleB:(NSString *)roleB {
     return [NSString stringWithFormat:@"%@ said: '%@ Yamiedie'.", roleB, roleA];
 }
