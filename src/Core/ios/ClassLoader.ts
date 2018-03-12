@@ -12,6 +12,7 @@ export class ClassLoader extends IClassLoader {
 
     static loadClass(classType: IClassType, className: string, globalName: string): void {
         if (classType == IClassType.ObjC) {
+            if (eval('typeof ' + globalName) !== "undefined") { return }
             if (_XTClassLoader.loadClassGlobalName(className, globalName) !== true) {
                 throw Error("ClassLoader load class '" + className + "' failed.")
             }

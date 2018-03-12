@@ -27,6 +27,13 @@ export class ClassLoader /* @available(0.1.1) */ {
     static loadClass(classType: ClassType, className: string | Object, globalName: string): void
 }
 
+export class ExtObject extends BaseObject {
+    constructor(objectRef?: string, clazz?: string)
+    static defineStaticFunction(clazz: string, prop: string): any
+    defineFunction(prop: string): any
+    defineProperty(prop: string): any
+}
+
 export class Debug /* @available(0.1.1) */ {
     static run(id: string, t: any, s: any): void
     static stringify(object: any): string
@@ -832,6 +839,7 @@ declare global {
         BaseArray: typeof BaseArray,
         ClassType: typeof ClassType,
         ClassLoader: typeof ClassLoader,
+        ExtObject: typeof ExtObject,
         Debug: typeof Debug,
     }
     const UI: {

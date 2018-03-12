@@ -12,13 +12,13 @@
 
 @class XTBaseObject;
 
-@protocol XTObjectExport<JSExport>
+@protocol XTBaseObjectExport<JSExport>
 
 + (NSString *)create;
 
 @end
 
-@interface XTBaseObject : NSObject<XTComponent, XTObjectExport>
+@interface XTBaseObject : NSObject<XTComponent, XTBaseObjectExport>
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, weak) JSContext *context;

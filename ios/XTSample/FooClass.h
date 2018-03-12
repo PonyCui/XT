@@ -17,4 +17,6 @@
 
 @interface FooClass : NSObject<FooClassExport>
 
+@property (nonatomic, strong) NSString *fooValue;
+
 @end

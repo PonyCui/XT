@@ -70,6 +70,7 @@
 		90EA881B201B2A0C0012A985 /* XTClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA8819201B2A0C0012A985 /* XTClassLoader.m */; };
 		90EA881D201B2D470012A985 /* xt.core.ios.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90EA881C201B2D470012A985 /* xt.core.ios.min.js */; };
 		90EA8820201B2FBC0012A985 /* FooClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA881F201B2FBC0012A985 /* FooClass.m */; };
+		90EE56F420562A14006AD6FD /* XTExtObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F320562A14006AD6FD /* XTExtObject.m */; };
 		B8D72A0A1105D65D76D476D3 /* libPods-XTSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E64B919FD46226B773416D45 /* libPods-XTSample.a */; };
 /* End PBXBuildFile section */
 
@@ -195,6 +196,8 @@
 		90EA881C201B2D470012A985 /* xt.core.ios.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = xt.core.ios.min.js; sourceTree = "<group>"; };
 		90EA881E201B2FBC0012A985 /* FooClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FooClass.h; sourceTree = "<group>"; };
 		90EA881F201B2FBC0012A985 /* FooClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooClass.m; sourceTree = "<group>"; };
+		90EE56F220562A14006AD6FD /* XTExtObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTExtObject.h; sourceTree = "<group>"; };
+		90EE56F320562A14006AD6FD /* XTExtObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTExtObject.m; sourceTree = "<group>"; };
 		E2362DDEEAB492E0B2DFC3DA /* Pods-XTSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XTSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-XTSample/Pods-XTSample.debug.xcconfig"; sourceTree = "<group>"; };
 		E64B919FD46226B773416D45 /* libPods-XTSample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XTSample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -295,6 +298,8 @@
 				903211EF2045506800272AEF /* XTFrameworkLoader.m */,
 				9001FA76204FEE66005D8736 /* XTBaseObject.h */,
 				9001FA792050018D005D8736 /* XTBaseObject.m */,
+				90EE56F220562A14006AD6FD /* XTExtObject.h */,
+				90EE56F320562A14006AD6FD /* XTExtObject.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -607,6 +612,7 @@
 				9001FA752047E94E005D8736 /* XTUILoadMoreControl.m in Sources */,
 				90EA87EE2019C0BF0012A985 /* XTUIWebView.m in Sources */,
 				90AFB4F720197F4E001E9DA7 /* XTPolyfill.m in Sources */,
+				90EE56F420562A14006AD6FD /* XTExtObject.m in Sources */,
 				90EA87EF2019C0BF0012A985 /* XTUISlider.m in Sources */,
 				90EA8811201AE0F80012A985 /* XTFWebSocket.m in Sources */,
 				90AFB4F420197F4E001E9DA7 /* XTDebug.m in Sources */,

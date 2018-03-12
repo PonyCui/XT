@@ -1,6 +1,18 @@
 import { TestBase, TestCase } from "./base";
 
-declare var Foo: any;
+class FooClass extends XT.ExtObject {
+
+    constructor(objectRef: string | undefined = undefined) {
+        super(objectRef, "FooClass")
+    }
+
+    static sayHello: () => string = FooClass.defineStaticFunction("FooClass", "sayHello")
+
+    fooValue: string = this.defineProperty("fooValue")
+
+    callYamiedie: (roleA: string, roleB: string) => string = this.defineFunction("callYamiedie")
+
+}
 
 export class ClassLoaderSample extends TestBase {
 
@@ -10,15 +22,12 @@ export class ClassLoaderSample extends TestBase {
     }
 
     loadClassTests() {
-        XT.ClassLoader.loadClass(XT.ClassType.ObjC, "FooClass", "Foo");
-        XT.ClassLoader.loadClass(XT.ClassType.Java, "com.opensource.xtsample.FooClass", "Foo");
-        (function () {
-            var FooClass = {
-                sayHello: () => { return "Hello, World!" }
-            }
-            XT.ClassLoader.loadClass(XT.ClassType.JavaScript, FooClass, "Foo")
-        })();
-        this.assert(Foo.sayHello() === "Hello, World!")
+        this.assert(FooClass.sayHello() === "Hello, World!")
+        const fooObject = new FooClass()
+        this.assert(fooObject.fooValue === "Hello, World!")
+        fooObject.fooValue = "Don't say that."
+        this.assert(fooObject.fooValue === "Don't say that.")
+        this.assert(fooObject.callYamiedie("Mr.Boy", "Miss.Cang") === "Miss.Cang said: 'Mr.Boy Yamiedie'.")
     }
 
 }
