@@ -2,26 +2,24 @@ import { BaseObject } from "./BaseObject";
 
 export class ExtObject extends BaseObject {
 
+    nativeObject: any
+
     constructor(objectRef: string | undefined = undefined, clazz: string | undefined = undefined) {
         super(undefined, false);
-        if (objectRef) {
-            this.objectRef = objectRef
-        }
-        else if (clazz) {
+        if (clazz) {
             try {
-                XT.ClassLoader.loadClass(XT.ClassType.Java, clazz, "_meta_class_" + clazz);
+                XT.ClassLoader.loadClass(XT.ClassType.JavaScript, clazz, "_meta_class_" + clazz);
             } catch (error) { }
-            this.objectRef = _XTExtObject.create(clazz)
+            this.nativeObject = eval('new ' + "_meta_class_" + clazz)
         }
-        objectRefs[this.objectRef] = this
     }
 
     static defineStaticFunction(clazz: string, prop: string): any {
         try {
-            XT.ClassLoader.loadClass(XT.ClassType.Java, clazz, "_meta_class_" + clazz);
+            XT.ClassLoader.loadClass(XT.ClassType.JavaScript, clazz, "_meta_class_" + clazz);
         } catch (error) { }
         return function () {
-            return eval("_meta_class_" + clazz + "." + prop + "()")
+            return eval("_meta_class_" + clazz + '.' + prop + '()')
         }
     }
 
@@ -31,18 +29,18 @@ export class ExtObject extends BaseObject {
             for (let index = 0; index < arguments.length; index++) {
                 args.push(arguments[index])
             }
-            return _XTExtObject.xtr_callMethod(prop, args, this.objectRef)
+            return this.nativeObject[prop].apply(this.nativeObject, args)
         }
     }
 
     defineProperty(prop: string, defaultValue: any = undefined): any {
         Object.defineProperty(this, prop, {
             get: () => {
-                return _XTExtObject.xtr_getValue(prop, this.objectRef)
+                return this.nativeObject[prop]
             },
-            set: function (newValue) {
+            set: (newValue) => {
                 if (newValue instanceof Error) { return; }
-                _XTExtObject.xtr_setValue(newValue, prop, this.objectRef)
+                this.nativeObject[prop] = newValue
             },
         })
         if (defaultValue !== undefined) {

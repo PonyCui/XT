@@ -36,13 +36,15 @@ export class ExtObject extends BaseObject {
             get: () => {
                 return _XTExtObject.xtr_getValueObjectRef(prop, this.objectRef)
             },
-            set: function (newValue) {
+            set: (newValue) => {
+                if (newValue instanceof Error) { return; }
                 _XTExtObject.xtr_setValuePropKeyObjectRef(newValue, prop, this.objectRef)
             },
         })
         if (defaultValue !== undefined) {
             this[prop] = defaultValue
         }
+        return Error()
     }
 
 }

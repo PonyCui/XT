@@ -11,6 +11,7 @@ export const ClassType = IClassType
 export class ClassLoader extends IClassLoader {
 
     static loadClass(classType: IClassType, className: string, globalName: string): void {
+        if (eval('typeof ' + globalName) !== "undefined") { return }
         if (classType == IClassType.Java) {
             if (_XTClassLoader.loadClass(className, globalName) !== true) {
                 throw Error("ClassLoader load class '" + className + "' failed.")

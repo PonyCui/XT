@@ -1,4 +1,5 @@
 import { TestBase, TestCase } from "./base";
+require('./FooClass')
 
 class FooClass extends XT.ExtObject {
 
