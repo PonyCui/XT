@@ -22,5 +22,6 @@
 
 @property (nonatomic, copy) NSString *objectUUID;
 @property (nonatomic, weak) JSContext *context;
+@property (nonatomic, readonly) JSValue *scriptObject;
 
 @end

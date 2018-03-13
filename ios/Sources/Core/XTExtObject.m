@@ -27,10 +27,34 @@
 
 @property (nonatomic, strong) id innerObject;
 @property (nonatomic, strong) XTExtEntity *extItem;
+@property (nonatomic, copy) XTExtObjectInvoker invoker;
 
 @end
 
 @implementation XTExtObject
+
+- (void)dealloc {
+#ifdef LOGDEALLOC
+    NSLog(@"XTExtObject dealloc.");
+#endif
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        __weak XTExtObject *welf = self;
+        [self setInvoker:^JSValue *(NSString *invokeMethod, NSArray<id> *arguments) {
+            __strong XTExtObject *self = welf;
+            JSValue *scriptObject = [self scriptObject];
+            if (scriptObject != nil) {
+                return [scriptObject invokeMethod:invokeMethod withArguments:arguments];
+            }
+            return nil;
+        }];
+    }
+    return self;
+}
 
 static NSDictionary *registeredClasses;
 
@@ -39,7 +63,7 @@ static NSDictionary *registeredClasses;
     if (registeredClasses[clazz] != nil) {
         XTExtEntity *item = registeredClasses[clazz];
         if (item.initializer) {
-            obj.innerObject = item.initializer();
+            obj.innerObject = item.initializer(obj.invoker);
         }
         else {
             obj.innerObject = [item.clazz new];

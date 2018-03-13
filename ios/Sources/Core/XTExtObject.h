@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "XTBaseObject.h"
 
-typedef id(^XTExtObjectInitializer)(void);
+typedef JSValue *(^XTExtObjectInvoker)(NSString *invokeMethod, NSArray<id> *arguments);
+typedef id(^XTExtObjectInitializer)(XTExtObjectInvoker invoker);
 typedef id (^XTExtObjectGetter)(NSString *propKey, id obj);
 typedef void(^XTExtObjectSetter)(JSValue *value, NSString *propKey, id obj);
 typedef id(^XTExtObjectCaller)(NSString *methodName, NSArray<id> *arguments, id obj);

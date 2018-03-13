@@ -11,6 +11,12 @@ class FooClass extends XT.ExtObject {
 
     callYamiedie: (roleA: string, roleB: string) => string = this.defineFunction("callYamiedie")
 
+    nativeCalled = false
+
+    handleNativeCall() {
+        this.nativeCalled = true
+    }
+
 }
 
 export class ClassLoaderSample extends TestBase {
@@ -27,6 +33,7 @@ export class ClassLoaderSample extends TestBase {
         fooObject.fooValue = "Don't say that."
         this.assert(fooObject.fooValue === "Don't say that.")
         this.assert(fooObject.callYamiedie("Mr.Boy", "Miss.Cang") === "Miss.Cang said: 'Mr.Boy Yamiedie'.")
+        this.assert(fooObject.nativeCalled === true)
     }
 
 }

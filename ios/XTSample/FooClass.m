@@ -9,6 +9,12 @@
 #import "FooClass.h"
 #import "XTExtObject.h"
 
+@interface FooClass()
+
+@property (nonatomic, copy) XTExtObjectInvoker invoker;
+
+@end
+
 @implementation FooClass
 
 + (NSString *)sayHello {
@@ -17,8 +23,10 @@
 
 + (void)load {
     [XTExtObject registerClass:[self class]
-                   initializer:^id{
-                       return [FooClass new];
+                   initializer:^id(XTExtObjectInvoker invoker) {
+                       FooClass *foo = [FooClass new];
+                       foo.invoker = invoker;
+                       return foo;
                    }
                         getter:^id(NSString *propKey, FooClass *obj) {
                             if ([propKey isEqualToString:@"fooValue"]) {
@@ -43,6 +51,9 @@
 }
 
 - (NSString *)callYamiedie:(NSString *)roleA roleB:(NSString *)roleB {
+    if (self.invoker) {
+        self.invoker(@"handleNativeCall", @[]);
+    }
     return [NSString stringWithFormat:@"%@ said: '%@ Yamiedie'.", roleB, roleA];
 }
 
