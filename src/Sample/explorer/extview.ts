@@ -1,4 +1,5 @@
 /// <reference path="../../xt.d.ts" />
+require('./FooView')
 
 class FooView extends UI.ExtView {
 
