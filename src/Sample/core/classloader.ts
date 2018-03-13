@@ -3,11 +3,9 @@ require('./FooClass')
 
 class FooClass extends XT.ExtObject {
 
-    constructor(objectRef: string | undefined = undefined) {
-        super(objectRef, "FooClass")
-    }
+    static className = "FooClass"
 
-    static sayHello: () => string = FooClass.defineStaticFunction("FooClass", "sayHello")
+    static sayHello: () => string = FooClass.defineFunction("sayHello")
 
     fooValue: string = this.defineProperty("fooValue", "Hello, World!")
 

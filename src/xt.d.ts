@@ -28,8 +28,8 @@ export class ClassLoader /* @available(0.1.1) */ {
 }
 
 export class ExtObject extends BaseObject {
-    constructor(objectRef?: string, clazz?: string)
-    static defineStaticFunction(clazz: string, prop: string): any
+    static className: string
+    static defineFunction(prop: string): any
     defineFunction(prop: string): any
     defineProperty(prop: string, defaultValue?: any): any
 }

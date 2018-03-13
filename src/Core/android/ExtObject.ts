@@ -2,26 +2,37 @@ import { BaseObject } from "./BaseObject";
 
 export class ExtObject extends BaseObject {
 
-    constructor(objectRef: string | undefined = undefined, clazz: string | undefined = undefined) {
+    private static _className: string
+
+    public static get className(): string {
+        return this._className;
+    }
+
+    public static set className(value: string) {
+        this._className = value;
+        this.register()
+    }
+
+    constructor(objectRef: string | undefined = undefined) {
         super(undefined, false);
         if (objectRef) {
             this.objectRef = objectRef
         }
-        else if (clazz) {
-            try {
-                XT.ClassLoader.loadClass(XT.ClassType.Java, clazz, "_meta_class_" + clazz);
-            } catch (error) { }
-            this.objectRef = _XTExtObject.create(clazz)
+        else {
+            this.objectRef = _XTExtObject.create((this.constructor as typeof ExtObject).className)
         }
         objectRefs[this.objectRef] = this
     }
 
-    static defineStaticFunction(clazz: string, prop: string): any {
+    static register(): void {
         try {
-            XT.ClassLoader.loadClass(XT.ClassType.Java, clazz, "_meta_class_" + clazz);
+            XT.ClassLoader.loadClass(XT.ClassType.Java, this.className, "_meta_class_" + this.className);
         } catch (error) { }
+    }
+
+    static defineFunction(prop: string): any {
         return function () {
-            return eval("_meta_class_" + clazz + "." + prop + "()")
+            return eval("_meta_class_" + this.className + "." + prop + "()")
         }
     }
 
@@ -41,14 +52,10 @@ export class ExtObject extends BaseObject {
                 return _XTExtObject.xtr_getValue(prop, this.objectRef)
             },
             set: function (newValue) {
-                if (newValue instanceof Error) { return; }
                 _XTExtObject.xtr_setValue(newValue, prop, this.objectRef)
             },
         })
-        if (defaultValue !== undefined) {
-            this[prop] = defaultValue
-        }
-        return Error()
+        return defaultValue
     }
 
 }

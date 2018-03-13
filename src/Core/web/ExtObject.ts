@@ -2,24 +2,33 @@ import { BaseObject } from "./BaseObject";
 
 export class ExtObject extends BaseObject {
 
-    nativeObject: any
+    private static _className: string
 
-    constructor(objectRef: string | undefined = undefined, clazz: string | undefined = undefined) {
-        super(undefined, false);
-        if (clazz) {
-            try {
-                XT.ClassLoader.loadClass(XT.ClassType.JavaScript, clazz, "_meta_class_" + clazz);
-            } catch (error) { }
-            this.nativeObject = eval('new ' + "_meta_class_" + clazz)
-        }
+    public static get className(): string {
+        return this._className;
     }
 
-    static defineStaticFunction(clazz: string, prop: string): any {
+    public static set className(value: string) {
+        this._className = value;
+        this.register()
+    }
+
+    static register(): void {
         try {
-            XT.ClassLoader.loadClass(XT.ClassType.JavaScript, clazz, "_meta_class_" + clazz);
+            XT.ClassLoader.loadClass(XT.ClassType.JavaScript, this.className, "_meta_class_" + this.className);
         } catch (error) { }
+    }
+
+    nativeObject: any
+
+    constructor(objectRef: string | undefined = undefined) {
+        super(undefined, false);
+        this.nativeObject = eval('new ' + "_meta_class_" + (this.constructor as typeof ExtObject).className)
+    }
+
+    static defineFunction(prop: string): any {
         return function () {
-            return eval("_meta_class_" + clazz + '.' + prop + '()')
+            return eval("_meta_class_" + this.className + '.' + prop + '()')
         }
     }
 
@@ -39,14 +48,10 @@ export class ExtObject extends BaseObject {
                 return this.nativeObject[prop]
             },
             set: (newValue) => {
-                if (newValue instanceof Error) { return; }
                 this.nativeObject[prop] = newValue
             },
         })
-        if (defaultValue !== undefined) {
-            this[prop] = defaultValue
-        }
-        return Error()
+        return defaultValue
     }
 
 }

@@ -2,22 +2,38 @@ import { BaseObject } from "./BaseObject";
 
 export class ExtObject extends BaseObject {
 
-    constructor(objectRef: string | undefined = undefined, clazz: string | undefined = undefined) {
+    private static _className: string
+
+    public static get className(): string {
+        return this._className;
+    }
+
+    public static set className(value: string) {
+        this._className = value;
+        this.register()
+    }
+
+    constructor(objectRef: string | undefined = undefined) {
         super(undefined, false);
         if (objectRef) {
             this.objectRef = objectRef
         }
-        else if (clazz) {
-            XT.ClassLoader.loadClass(XT.ClassType.ObjC, clazz, "_meta_class_" + clazz);
-            this.objectRef = _XTExtObject.create(clazz)
+        else {
+            this.objectRef = _XTExtObject.create((this.constructor as typeof ExtObject).className)
         }
         objectRefs[this.objectRef] = this
     }
 
-    static defineStaticFunction(clazz: string, prop: string): any {
-        XT.ClassLoader.loadClass(XT.ClassType.ObjC, clazz, "_meta_class_" + clazz);
+    static register(): void {
+        try {
+            XT.ClassLoader.loadClass(XT.ClassType.ObjC, this.className, "_meta_class_" + this.className);
+            (ExtObject as any)[this.className] = this
+        } catch (error) { }
+    }
+
+    static defineFunction(prop: string): any {
         return function () {
-            return eval("_meta_class_" + clazz + "." + prop + "()")
+            return eval("_meta_class_" + this.className + "." + prop + "()")
         }
     }
 
@@ -37,14 +53,10 @@ export class ExtObject extends BaseObject {
                 return _XTExtObject.xtr_getValueObjectRef(prop, this.objectRef)
             },
             set: (newValue) => {
-                if (newValue instanceof Error) { return; }
                 _XTExtObject.xtr_setValuePropKeyObjectRef(newValue, prop, this.objectRef)
             },
         })
-        if (defaultValue !== undefined) {
-            this[prop] = defaultValue
-        }
-        return Error()
+        return defaultValue
     }
 
 }
