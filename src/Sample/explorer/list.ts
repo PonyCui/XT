@@ -18,6 +18,7 @@ import { WebViewSample } from "./webview";
 import { FoundationList } from "../foundation/list";
 import { CoreList } from "../core/list";
 import { CanvasSample } from "./canvas";
+import { ExtViewSample } from "./extview";
 
 class ListHeader extends UI.View {
 
@@ -293,6 +294,17 @@ export class List extends UI.ViewController {
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new ListViewSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "ExtView",
+                        isSectionLast: true,
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new ExtViewSample())
                             }
                         },
                     },

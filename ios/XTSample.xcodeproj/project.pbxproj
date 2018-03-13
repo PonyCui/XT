@@ -71,6 +71,8 @@
 		90EA881D201B2D470012A985 /* xt.core.ios.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90EA881C201B2D470012A985 /* xt.core.ios.min.js */; };
 		90EA8820201B2FBC0012A985 /* FooClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA881F201B2FBC0012A985 /* FooClass.m */; };
 		90EE56F420562A14006AD6FD /* XTExtObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F320562A14006AD6FD /* XTExtObject.m */; };
+		90EE56F720576DAC006AD6FD /* XTUIExtView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F620576DAC006AD6FD /* XTUIExtView.m */; };
+		90EE56FA205776EF006AD6FD /* FooView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F9205776EF006AD6FD /* FooView.m */; };
 		B8D72A0A1105D65D76D476D3 /* libPods-XTSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E64B919FD46226B773416D45 /* libPods-XTSample.a */; };
 /* End PBXBuildFile section */
 
@@ -198,6 +200,10 @@
 		90EA881F201B2FBC0012A985 /* FooClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooClass.m; sourceTree = "<group>"; };
 		90EE56F220562A14006AD6FD /* XTExtObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTExtObject.h; sourceTree = "<group>"; };
 		90EE56F320562A14006AD6FD /* XTExtObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTExtObject.m; sourceTree = "<group>"; };
+		90EE56F520576DAC006AD6FD /* XTUIExtView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTUIExtView.h; sourceTree = "<group>"; };
+		90EE56F620576DAC006AD6FD /* XTUIExtView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTUIExtView.m; sourceTree = "<group>"; };
+		90EE56F8205776EF006AD6FD /* FooView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FooView.h; sourceTree = "<group>"; };
+		90EE56F9205776EF006AD6FD /* FooView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooView.m; sourceTree = "<group>"; };
 		E2362DDEEAB492E0B2DFC3DA /* Pods-XTSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XTSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-XTSample/Pods-XTSample.debug.xcconfig"; sourceTree = "<group>"; };
 		E64B919FD46226B773416D45 /* libPods-XTSample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XTSample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -247,6 +253,8 @@
 				90BB255D1FBC3C4800286398 /* Modulize */,
 				90EA881E201B2FBC0012A985 /* FooClass.h */,
 				90EA881F201B2FBC0012A985 /* FooClass.m */,
+				90EE56F8205776EF006AD6FD /* FooView.h */,
+				90EE56F9205776EF006AD6FD /* FooView.m */,
 				90EA87F4201AD13F0012A985 /* sample.min.js */,
 				9057080D1F4EB2AF00D5EC05 /* Main.storyboard */,
 				905708101F4EB2AF00D5EC05 /* Assets.xcassets */,
@@ -400,6 +408,8 @@
 				90EA8798201992850012A985 /* XTUIApplication.m */,
 				90EA879B201992860012A985 /* XTUIApplicationDelegate.h */,
 				90EA879A201992850012A985 /* XTUIApplicationDelegate.m */,
+				90EE56F520576DAC006AD6FD /* XTUIExtView.h */,
+				90EE56F620576DAC006AD6FD /* XTUIExtView.m */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -585,6 +595,7 @@
 				9001FA722047E001005D8736 /* XTUIRefreshControl.m in Sources */,
 				90EA87DB2019C0BF0012A985 /* XTUIUtils.m in Sources */,
 				9001FA7A2050018E005D8736 /* XTBaseObject.m in Sources */,
+				90EE56F720576DAC006AD6FD /* XTUIExtView.m in Sources */,
 				90EA8820201B2FBC0012A985 /* FooClass.m in Sources */,
 				90EA87E62019C0BF0012A985 /* XTUIListView.m in Sources */,
 				90EA87D62019C0BF0012A985 /* XTUITextView.m in Sources */,
@@ -600,6 +611,7 @@
 				90EA879D201992860012A985 /* XTUIApplicationDelegate.m in Sources */,
 				90EA87F12019C0BF0012A985 /* XTUIScreen.m in Sources */,
 				905708061F4EB2AF00D5EC05 /* main.m in Sources */,
+				90EE56FA205776EF006AD6FD /* FooView.m in Sources */,
 				90EA87E82019C0BF0012A985 /* XTUIActivityIndicatorView.m in Sources */,
 				90AFB4F520197F4E001E9DA7 /* XTContext.m in Sources */,
 				90EA87EA2019C0BF0012A985 /* XTUISwitch.m in Sources */,

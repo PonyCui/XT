@@ -726,6 +726,12 @@ export class ActivityIndicatorView extends View /* @available(0.1.1) */ {
     stopAnimating(): void
 }
 
+export class ExtView extends View {
+    static className: string
+    defineFunction(prop: string): any
+    defineProperty(prop: string, defaultValue?: any): any
+}
+
 export as namespace NS;
 
 export class Data extends XT.BaseObject /* @available(0.1.1) */ {
@@ -915,6 +921,7 @@ declare global {
         Slider: typeof Slider,
         ActivityIndicatorViewStyle: typeof ActivityIndicatorViewStyle,
         ActivityIndicatorView: typeof ActivityIndicatorView,
+        ExtView: typeof ExtView,
     };
     const NS: {
         Data: typeof Data,

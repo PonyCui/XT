@@ -200,6 +200,7 @@ class XTUIContext(appContext: android.content.Context,
                 XTUIWebView.JSExports(this),
                 XTUISwitch.JSExports(this),
                 XTUISlider.JSExports(this),
+                XTUIExtView.JSExports(this),
                 XTUIActivityIndicatorView.JSExports(this)
         )
         components.forEach {

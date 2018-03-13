@@ -11,6 +11,7 @@ class AppApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         FooClass.register()
+        FooView.register()
     }
 
 }

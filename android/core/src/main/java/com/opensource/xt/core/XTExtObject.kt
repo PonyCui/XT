@@ -13,7 +13,7 @@ class XTExtObject: XTComponentInstance {
 
     var innerObject: Any? = null
 
-    internal var extItem: XTExtEntity<Any>? = null
+    internal var options: XTExtOptions<Any>? = null
 
     class JSExports(val context: XTContext): XTComponentExport() {
 
@@ -40,7 +40,7 @@ class XTExtObject: XTComponentInstance {
                         item.clazz.getDeclaredConstructor(XTContext::class.java).newInstance(context)
                     } catch (e: Exception) { null }
                 }
-                obj.extItem = item
+                obj.options = item.options
             }
             val managedObject = XTManagedObject(obj)
             obj.objectUUID = managedObject.objectUUID
@@ -51,7 +51,7 @@ class XTExtObject: XTComponentInstance {
         fun xtr_getValue(propKey: String, objectRef: String): Object? {
             (XTMemoryManager.find(objectRef) as? XTExtObject)?.let { obj ->
                 val innerObject = obj.innerObject ?: return@let
-                return obj.extItem?.options?.doGetValue(propKey, innerObject) ?: kotlin.run {
+                return obj.options?.doGetValue(propKey, innerObject) ?: kotlin.run {
                     return try {
                         val declaredField = innerObject::class.java.getDeclaredField(propKey)
                         declaredField.isAccessible = true
@@ -67,7 +67,7 @@ class XTExtObject: XTComponentInstance {
         fun xtr_setValue(value: Object, propKey: String, objectRef: String) {
             (XTMemoryManager.find(objectRef) as? XTExtObject)?.let { obj ->
                 val innerObject = obj.innerObject ?: return@let
-                obj.extItem?.options?.doSetValue(value, propKey, innerObject) ?: kotlin.run {
+                obj.options?.doSetValue(value, propKey, innerObject) ?: kotlin.run {
                     try {
                         val declaredField = innerObject::class.java.getDeclaredField(propKey)
                         declaredField.isAccessible = true
@@ -82,7 +82,7 @@ class XTExtObject: XTComponentInstance {
         fun xtr_callMethod(methodName: String, args: V8Array, objectRef: String): Object? {
             (XTMemoryManager.find(objectRef) as? XTExtObject)?.let { obj ->
                 val innerObject = obj.innerObject ?: return@let
-                return obj.extItem?.options?.doCall(methodName, V8ObjectUtils.toList(args).mapNotNull { it }, innerObject)
+                return obj.options?.doCall(methodName, V8ObjectUtils.toList(args).mapNotNull { it }, innerObject)
             }
             return null
         }

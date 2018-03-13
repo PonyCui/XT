@@ -150,3 +150,7 @@ import { ActivityIndicatorViewStyle as IActivityIndicatorViewStyle, ActivityIndi
 import { ActivityIndicatorView as MActivityIndicatorView } from './ActivityIndicatorView'
 export const ActivityIndicatorViewStyle = IActivityIndicatorViewStyle
 export const ActivityIndicatorView = MActivityIndicatorView
+
+import { ExtView as IExtView } from "../interface/ExtView";
+import { ExtView as MExtView } from "./ExtView";
+export const ExtView = MExtView

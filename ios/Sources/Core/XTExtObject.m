@@ -32,12 +32,12 @@
 
 @implementation XTExtObject
 
-static NSDictionary *registedClasses;
+static NSDictionary *registeredClasses;
 
 + (NSString *)create:(NSString *)clazz {
     XTExtObject *obj = [[self alloc] init];
-    if (registedClasses[clazz] != nil) {
-        XTExtEntity *item = registedClasses[clazz];
+    if (registeredClasses[clazz] != nil) {
+        XTExtEntity *item = registeredClasses[clazz];
         if (item.initializer) {
             obj.innerObject = item.initializer();
         }
@@ -91,6 +91,9 @@ static NSDictionary *registedClasses;
                 else if (value.isBoolean) {
                     [obj.innerObject setValue:@(value.toBool) forKey:propKey];
                 }
+                else if (value.isObject) {
+                    [obj.innerObject setValue:value.toObject forKey:propKey];
+                }
             } @catch (NSException *exception) { } @finally { }
         }
     }
@@ -112,7 +115,7 @@ static NSDictionary *registedClasses;
                getter:(XTExtObjectGetter)getter
                setter:(XTExtObjectSetter)setter
                caller:(XTExtObjectCaller)caller {
-    NSMutableDictionary *mutable = (registedClasses ?: @{}).mutableCopy;
+    NSMutableDictionary *mutable = (registeredClasses ?: @{}).mutableCopy;
     XTExtEntity *item = [[XTExtEntity alloc] init];
     item.clazz = clazz;
     item.initializer = initializer;
@@ -121,7 +124,7 @@ static NSDictionary *registedClasses;
     item.caller = caller;
     [mutable setObject:item
                 forKey:NSStringFromClass(clazz)];
-    registedClasses = mutable.copy;
+    registeredClasses = mutable.copy;
 }
 
 @end
