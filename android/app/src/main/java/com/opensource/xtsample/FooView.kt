@@ -28,7 +28,7 @@ class FooView @JvmOverloads constructor(
         fun register() {
             XTUIExtView.registerClass(FooView::class.java, object : XTUIExtView.XTUIExtOptions<FooView> {
 
-                override fun doInit(context: XTUIContext): FooView {
+                override fun doInit(context: XTUIContext, invoker: (methodName: String, arguments: List<Any>) -> Object?): FooView {
                     return FooView(context.appContext)
                 }
 

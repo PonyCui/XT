@@ -1,13 +1,6 @@
 import { View } from "./View";
 import { ExtViewElement } from "./element/ExtView";
 
-export interface ExtViewOptions {
-    initializer: () => HTMLElement
-    getter: (propKey: string, obj: HTMLElement) => any;
-    setter: (newValue: any, propKey: string, obj: HTMLElement) => void;
-    caller: (methodName: string, args: any[], obj: HTMLElement) => any;
-}
-
 export class ExtView extends View {
 
     static className: string
@@ -19,6 +12,11 @@ export class ExtView extends View {
         const className = (this.constructor as any).className
         if ((window as any)[className]) {
             this.nativeObject.setExtObject(new (window as any)[className])
+            this.nativeObject.invoker = (methodName: string, args: any[]) => {
+                try {
+                    return this[methodName].apply(this, args)
+                } catch (error) { }
+            }
         }
     }
 
@@ -48,13 +46,5 @@ export class ExtView extends View {
         })
         return defaultValue
     }
-
-    // Private Methods
-
-    // static registeredClasses: { [key: string]: ExtViewOptions } = {}
-
-    // static register(className: string, options: ExtViewOptions) {
-    //     this.registeredClasses[className] = options
-    // }
 
 }

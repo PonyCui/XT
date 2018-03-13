@@ -8,7 +8,8 @@
 
 #import "XTUIView.h"
 
-typedef id(^XTExtViewInitializer)(void);
+typedef JSValue *(^XTExtViewInvoker)(NSString *invokeMethod, NSArray<id> *arguments);
+typedef id(^XTExtViewInitializer)(XTExtViewInvoker invoker);
 typedef id (^XTExtViewGetter)(NSString *propKey, id obj);
 typedef void(^XTExtViewSetter)(JSValue *value, NSString *propKey, id obj);
 typedef id(^XTExtViewCaller)(NSString *methodName, NSArray<id> *arguments, id obj);

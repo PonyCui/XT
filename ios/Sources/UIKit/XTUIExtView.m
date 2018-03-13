@@ -27,12 +27,31 @@
 
 @property (nonatomic, strong) UIView *innerView;
 @property (nonatomic, strong) XTUIExtEntity *extItem;
+@property (nonatomic, copy) XTExtViewInvoker invoker;
 
 @end
 
 @implementation XTUIExtView
 
 static NSDictionary *registeredClasses;
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        __weak XTUIExtView *welf = self;
+        [self setInvoker:^JSValue *(NSString *invokeMethod, NSArray<id> *arguments) {
+            __strong XTUIExtView *self = welf;
+            if (self == nil) { return nil; }
+            JSValue *scriptObject = [self scriptObject];
+            if (scriptObject != nil) {
+                return [scriptObject invokeMethod:invokeMethod withArguments:arguments];
+            }
+            return nil;
+        }];
+    }
+    return self;
+}
 
 + (NSString *)name {
     return @"_XTUIExtView";
@@ -64,7 +83,7 @@ static NSDictionary *registeredClasses;
         if (registeredClasses[viewClass] != nil) {
             XTUIExtEntity *item = registeredClasses[viewClass];
             if (item.initializer) {
-                view.innerView = item.initializer();
+                view.innerView = item.initializer(view.invoker);
             }
             else {
                 view.innerView = [item.clazz new];

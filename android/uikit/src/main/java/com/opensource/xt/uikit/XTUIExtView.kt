@@ -29,6 +29,14 @@ class XTUIExtView @JvmOverloads constructor(
 
     var options: XTUIExtOptions<Any>? = null
 
+    var invoker: (methodName: String, arguments: List<Any>) -> Object? = { methodName, arguments ->
+        scriptObject()?.let {
+            val returnValue = XTContext.invokeMethod(it, methodName, arguments)
+            XTContext.release(it)
+            return@let returnValue as? Object
+        } ?: null
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         if (changed) {
@@ -61,7 +69,7 @@ class XTUIExtView @JvmOverloads constructor(
             registeredClasses[viewClass]?.let {
                 view.options = it.options
                 if (view.innerView != null) { return@let }
-                (view.options?.doInit(context) as? View)?.let {
+                (view.options?.doInit(context, view.invoker) as? View)?.let {
                     view.innerView = it
                 } ?: kotlin.run {
                     if (View::class.java.isAssignableFrom(it.clazz)) {
@@ -121,7 +129,7 @@ class XTUIExtView @JvmOverloads constructor(
 
     interface XTUIExtOptions<T> {
 
-        fun doInit(context: XTUIContext): T
+        fun doInit(context: XTUIContext, invoker:(methodName: String, arguments: List<Any>) -> Object?): T
         fun doGetValue(propKey: String, obj: T): Object?
         fun doSetValue(value: Object, propKey: String, obj: T): Unit
         fun doCall(methodName: String, arguments: List<Any>, obj: T): Object?

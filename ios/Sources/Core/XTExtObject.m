@@ -46,6 +46,7 @@
         __weak XTExtObject *welf = self;
         [self setInvoker:^JSValue *(NSString *invokeMethod, NSArray<id> *arguments) {
             __strong XTExtObject *self = welf;
+            if (self == nil) { return nil; }
             JSValue *scriptObject = [self scriptObject];
             if (scriptObject != nil) {
                 return [scriptObject invokeMethod:invokeMethod withArguments:arguments];
