@@ -6,7 +6,10 @@ class FooClass {
 
     fooValue: string = ""
 
+    invoker: (methodName: string, args: any[]) => void
+
     callYamiedie(roleA: string, roleB: string) {
+        this.invoker("handleNativeCall", [])
         return roleB + " said: '" + roleA + " Yamiedie'."
     }
 

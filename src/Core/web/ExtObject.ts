@@ -24,6 +24,11 @@ export class ExtObject extends BaseObject {
     constructor(objectRef: string | undefined = undefined) {
         super(undefined, false);
         this.nativeObject = eval('new ' + "_meta_class_" + (this.constructor as typeof ExtObject).className)
+        this.nativeObject.invoker = (methodName: string, args: any[]) => {
+            try {
+                return this[methodName].apply(this, args)
+            } catch (error) { }
+        }
     }
 
     static defineFunction(prop: string): any {
