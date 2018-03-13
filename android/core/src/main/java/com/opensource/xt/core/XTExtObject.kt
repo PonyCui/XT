@@ -7,13 +7,25 @@ import com.eclipsesource.v8.utils.V8ObjectUtils
 /**
  * Created by cuiminghui on 2018/3/12.
  */
-class XTExtObject: XTComponentInstance {
+class XTExtObject(val xtrContext: XTContext): XTComponentInstance {
 
     override var objectUUID: String? = null
 
     var innerObject: Any? = null
 
     internal var options: XTExtOptions<Any>? = null
+
+    var invoker: (methodName: String, arguments: List<Any>) -> Object? = { methodName, arguments ->
+        scriptObject()?.let {
+            val returnValue = XTContext.invokeMethod(it, methodName, arguments)
+            XTContext.release(it)
+            return@let returnValue as? Object
+        } ?: null
+    }
+
+    fun scriptObject(): V8Object? {
+        return xtrContext.evaluateScript("objectRefs['$objectUUID']") as? V8Object
+    }
 
     class JSExports(val context: XTContext): XTComponentExport() {
 
@@ -29,9 +41,9 @@ class XTExtObject: XTComponentInstance {
         }
 
         fun create(clazz: String): String {
-            val obj = XTExtObject()
+            val obj = XTExtObject(context)
             registeredClasses[clazz]?.let { item ->
-                obj.innerObject = (item.options?.doInit(context)) ?: kotlin.run {
+                obj.innerObject = (item.options?.doInit(context, obj.invoker)) ?: kotlin.run {
                     return@run try {
                         item.clazz.getDeclaredConstructor().newInstance()
                     } catch (e: Exception) { null }
@@ -91,9 +103,9 @@ class XTExtObject: XTComponentInstance {
 
     interface XTExtOptions<T> {
 
-        fun doInit(context: XTContext): Any
+        fun doInit(context: XTContext, invoker:(methodName: String, arguments: List<Any>) -> Object?): Any
         fun doGetValue(propKey: String, obj: T): Object?
-        fun doSetValue(value: Object, propKey: String, obj: T): Unit
+        fun doSetValue(value: Object, propKey: String, obj: T)
         fun doCall(methodName: String, arguments: List<Any>, obj: T): Object?
 
     }

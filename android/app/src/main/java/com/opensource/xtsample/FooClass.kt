@@ -14,6 +14,8 @@ class FooClass(val context: XTContext): XTComponentExport() {
 
     override val name: String = "FooClass"
 
+    lateinit var invoker: (methodName: String, arguments: List<Any>) -> Object?
+
     override fun exports(): V8Object {
         val exports = V8Object(context.runtime)
         exports.registerJavaMethod(this, "sayHello", "sayHello", arrayOf())
@@ -27,6 +29,7 @@ class FooClass(val context: XTContext): XTComponentExport() {
     }
 
     fun callYamiedie(roleA: String, roleB: String): String {
+        invoker.invoke("handleNativeCall", listOf())
         return "$roleB said: '$roleA Yamiedie'."
     }
 
@@ -35,8 +38,10 @@ class FooClass(val context: XTContext): XTComponentExport() {
         fun register() {
             XTExtObject.registerClass(FooClass::class.java, object : XTExtObject.XTExtOptions<FooClass> {
 
-                override fun doInit(context: XTContext): Any {
-                    return FooClass(context)
+                override fun doInit(context: XTContext, invoker: (methodName: String, arguments: List<Any>) -> Object?): Any {
+                    val foo = FooClass(context)
+                    foo.invoker = invoker
+                    return foo
                 }
 
                 override fun doGetValue(propKey: String, obj: FooClass): Object? {
