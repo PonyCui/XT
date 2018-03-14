@@ -5,8 +5,6 @@ class FooClass extends XT.ExtObject {
 
     static className = "FooClass"
 
-    static sayHello: () => string = FooClass.defineFunction("sayHello")
-
     fooValue: string = this.defineProperty("fooValue", "Hello, World!")
 
     callYamiedie: (roleA: string, roleB: string) => string = this.defineFunction("callYamiedie")
@@ -27,7 +25,6 @@ export class ClassLoaderSample extends TestBase {
     }
 
     loadClassTests() {
-        this.assert(FooClass.sayHello() === "Hello, World!")
         const fooObject = new FooClass()
         this.assert(fooObject.fooValue === "Hello, World!")
         fooObject.fooValue = "Don't say that."

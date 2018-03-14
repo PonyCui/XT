@@ -7,15 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <JavaScriptCore/JavaScriptCore.h>
+#import "XTExtObject.h"
 
-@protocol FooClassExport<JSExport>
-
-+ (NSString *)sayHello;
-
-@end
-
-@interface FooClass : NSObject<FooClassExport>
+@interface FooClass : XTExtObjectImplementation
 
 @property (nonatomic, strong) NSString *fooValue;
 

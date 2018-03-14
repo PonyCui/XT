@@ -11,7 +11,7 @@
 @implementation XTClassLoader
 
 + (BOOL)loadClass:(NSString *)className globalName:(NSString *)globalName {
-    Class clazz = NSClassFromString(className);
+    Class clazz = [[NSBundle mainBundle] classNamed:className];
     if (clazz != NULL) {
         [JSContext currentContext][globalName] = clazz;
         return YES;

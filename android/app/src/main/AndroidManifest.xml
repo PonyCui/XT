@@ -18,6 +18,8 @@
             </intent-filter>
         </activity>
 
+        <meta-data android:name="XT.ExtObject.FooClass" android:value="com.opensource.xtsample.FooClass" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

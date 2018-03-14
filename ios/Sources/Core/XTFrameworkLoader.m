@@ -19,7 +19,7 @@
 
 + (void)loadFrameworks:(NSString *)evalCode context:(XTContext *)context {
     if ([evalCode containsString:@"NS."]) {
-        Class clazz = NSClassFromString(@"XTFoundationContext");
+        Class clazz = [[NSBundle mainBundle] classNamed:@"XTFoundationContext"];
         if (clazz != NULL && ![context isKindOfClass:clazz]) {
             [[[clazz alloc] initWithParentContext:context] description];
         }

@@ -9,25 +9,37 @@
 #import "XTExtObject.h"
 #import "XTMemoryManager.h"
 
-@interface XTExtEntity: NSObject
+@interface XTExtObjectImplementation()
 
-@property (nonatomic, assign) Class clazz;
-@property (nonatomic, copy) XTExtObjectInitializer initializer;
-@property (nonatomic, copy) XTExtObjectSetter setter;
-@property (nonatomic, copy) XTExtObjectGetter getter;
-@property (nonatomic, copy) XTExtObjectCaller caller;
+@property (nonatomic, weak) XTExtObject *owner;
 
 @end
 
-@implementation XTExtEntity
+@implementation XTExtObjectImplementation
+
+- (id)onGetValue:(NSString *)propKey {
+    return [NSError errorWithDomain:@"Not Implemented" code:-999 userInfo:nil];
+}
+
+- (void)onSetValue:(NSString *)propKey value:(id)value { }
+
+- (id)onCallMethod:(NSString *)methodName args:(NSArray *)args {
+    return [NSError errorWithDomain:@"Not Implemented" code:-999 userInfo:nil];
+}
+
+- (id)invokeMethod:(NSString *)methodName args:(NSArray *)args {
+    JSValue *scriptObject = self.owner.scriptObject;
+    if (scriptObject != nil) {
+        return [scriptObject invokeMethod:methodName withArguments:args];
+    }
+    return nil;
+}
 
 @end
 
 @interface XTExtObject ()
 
-@property (nonatomic, strong) id innerObject;
-@property (nonatomic, strong) XTExtEntity *extItem;
-@property (nonatomic, copy) XTExtObjectInvoker invoker;
+@property (nonatomic, strong) XTExtObjectImplementation *innerObject;
 
 @end
 
@@ -39,37 +51,12 @@
 #endif
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        __weak XTExtObject *welf = self;
-        [self setInvoker:^JSValue *(NSString *invokeMethod, NSArray<id> *arguments) {
-            __strong XTExtObject *self = welf;
-            if (self == nil) { return nil; }
-            JSValue *scriptObject = [self scriptObject];
-            if (scriptObject != nil) {
-                return [scriptObject invokeMethod:invokeMethod withArguments:arguments];
-            }
-            return nil;
-        }];
-    }
-    return self;
-}
-
-static NSDictionary *registeredClasses;
-
 + (NSString *)create:(NSString *)clazz {
     XTExtObject *obj = [[self alloc] init];
-    if (registeredClasses[clazz] != nil) {
-        XTExtEntity *item = registeredClasses[clazz];
-        if (item.initializer) {
-            obj.innerObject = item.initializer(obj.invoker);
-        }
-        else {
-            obj.innerObject = [item.clazz new];
-        }
-        obj.extItem = item;
+    Class clz = [[NSBundle mainBundle] classNamed:clazz];
+    if (clz != NULL && [clz isSubclassOfClass:[XTExtObjectImplementation class]]) {
+        obj.innerObject = [clz new];
+        obj.innerObject.owner = obj;
     }
     XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:obj];
     [XTMemoryManager add:managedObject];
@@ -82,17 +69,17 @@ static NSDictionary *registeredClasses;
     return @"_XTExtObject";
 }
 
-+ (JSValue *)xtr_getValue:(NSString *)propKey objectRef:(NSString *)objectRef {
++ (id)xtr_getValue:(NSString *)propKey objectRef:(NSString *)objectRef {
     XTExtObject *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTExtObject class]]) {
-        XTExtObjectGetter getter = obj.extItem.getter;
-        if (getter) {
-            return [JSValue valueWithObject:getter(propKey, obj.innerObject) inContext:[JSContext currentContext]];
-        }
-        else {
+        id returnValue = [obj.innerObject onGetValue:propKey];
+        if ([returnValue isKindOfClass:[NSError class]] && [returnValue code] == -999) {
             @try {
                 return [JSValue valueWithObject:[obj.innerObject valueForKey:propKey] inContext:[JSContext currentContext]];
             } @catch (NSException *exception) { } @finally { }
+        }
+        else {
+            return returnValue;
         }
     }
     return nil;
@@ -101,55 +88,32 @@ static NSDictionary *registeredClasses;
 + (void)xtr_setValue:(JSValue *)value propKey:(NSString *)propKey objectRef:(NSString *)objectRef {
     XTExtObject *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTExtObject class]]) {
-        XTExtObjectSetter setter = obj.extItem.setter;
-        if (setter) {
-            setter(value, propKey, obj.innerObject);
+        id newValue = value;
+        if (value.isString) {
+            newValue = value.toString;
         }
-        else {
-            @try {
-                if (value.isString) {
-                    [obj.innerObject setValue:value.toString forKey:propKey];
-                }
-                else if (value.isNumber) {
-                    [obj.innerObject setValue:value.toNumber forKey:propKey];
-                }
-                else if (value.isBoolean) {
-                    [obj.innerObject setValue:@(value.toBool) forKey:propKey];
-                }
-                else if (value.isObject) {
-                    [obj.innerObject setValue:value.toObject forKey:propKey];
-                }
-            } @catch (NSException *exception) { } @finally { }
+        else if (value.isNumber) {
+            newValue = value.toNumber;
         }
+        else if (value.isBoolean) {
+            newValue = @(value.toBool);
+        }
+        else if (value.isObject) {
+            newValue = value.toObject;
+        }
+        @try {
+            [obj.innerObject setValue:newValue forKey:propKey];
+        } @catch (NSException *exception) { } @finally { }
+        [obj.innerObject onSetValue:propKey value:newValue];
     }
 }
 
-+ (JSValue *)xtr_callMethod:(NSString *)methodName arguments:(NSArray *)arguments objectRef:(NSString *)objectRef {
++ (id)xtr_callMethod:(NSString *)methodName arguments:(NSArray *)arguments objectRef:(NSString *)objectRef {
     XTExtObject *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTExtObject class]]) {
-        XTExtObjectCaller caller = obj.extItem.caller;
-        if (caller) {
-            return [JSValue valueWithObject:caller(methodName, arguments, obj.innerObject) inContext:[JSContext currentContext]];
-        }
+        return [obj.innerObject onCallMethod:methodName args:arguments];
     }
     return nil;
-}
-
-+ (void)registerClass:(Class)clazz
-          initializer:(XTExtObjectInitializer)initializer
-               getter:(XTExtObjectGetter)getter
-               setter:(XTExtObjectSetter)setter
-               caller:(XTExtObjectCaller)caller {
-    NSMutableDictionary *mutable = (registeredClasses ?: @{}).mutableCopy;
-    XTExtEntity *item = [[XTExtEntity alloc] init];
-    item.clazz = clazz;
-    item.initializer = initializer;
-    item.getter = getter;
-    item.setter = setter;
-    item.caller = caller;
-    [mutable setObject:item
-                forKey:NSStringFromClass(clazz)];
-    registeredClasses = mutable.copy;
 }
 
 @end

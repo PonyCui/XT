@@ -19,7 +19,7 @@ class XTClassLoader {
 
         fun loadClass(className: String, globalName: String): Boolean {
             try {
-                val constructor = (XTExtObject.registeredClasses[className]?.clazz ?: Class.forName(className)).getDeclaredConstructor(XTContext::class.java)
+                val constructor = Class.forName(className).getDeclaredConstructor(XTContext::class.java)
                 (constructor.newInstance(context) as? XTComponentExport)?.let {
                     context.addComponent(it, globalName)
                     return true

@@ -9,27 +9,24 @@
 #import <Foundation/Foundation.h>
 #import "XTBaseObject.h"
 
-typedef JSValue *(^XTExtObjectInvoker)(NSString *invokeMethod, NSArray<id> *arguments);
-typedef id(^XTExtObjectInitializer)(XTExtObjectInvoker invoker);
-typedef id (^XTExtObjectGetter)(NSString *propKey, id obj);
-typedef void(^XTExtObjectSetter)(JSValue *value, NSString *propKey, id obj);
-typedef id(^XTExtObjectCaller)(NSString *methodName, NSArray<id> *arguments, id obj);
-
 @protocol XTExtObjectExport<JSExport>
 
 + (NSString *)create:(NSString *)clazz;
-+ (JSValue *)xtr_getValue:(NSString *)propKey objectRef:(NSString *)objectRef;
++ (id)xtr_getValue:(NSString *)propKey objectRef:(NSString *)objectRef;
 + (void)xtr_setValue:(JSValue *)value propKey:(NSString *)propKey objectRef:(NSString *)objectRef;
-+ (JSValue *)xtr_callMethod:(NSString *)methodName arguments:(NSArray *)arguments objectRef:(NSString *)objectRef;
++ (id)xtr_callMethod:(NSString *)methodName arguments:(NSArray *)arguments objectRef:(NSString *)objectRef;
+
+@end
+
+@interface XTExtObjectImplementation: NSObject
+
+- (id)onGetValue:(NSString *)propKey;
+- (void)onSetValue:(NSString *)propKey value:(id)value;
+- (id)onCallMethod:(NSString *)methodName args:(NSArray *)args;
+- (id)invokeMethod:(NSString *)methodName args:(NSArray *)args;
 
 @end
 
 @interface XTExtObject : XTBaseObject <XTExtObjectExport>
-
-+ (void)registerClass:(Class)clazz
-          initializer:(XTExtObjectInitializer)initializer
-               getter:(XTExtObjectGetter)getter
-               setter:(XTExtObjectSetter)setter
-               caller:(XTExtObjectCaller)caller;
 
 @end
