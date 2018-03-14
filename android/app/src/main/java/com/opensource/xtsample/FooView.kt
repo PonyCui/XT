@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import com.opensource.xt.uikit.XTUIContext
-import com.opensource.xt.uikit.XTUIExtView
 
 /**
  * Created by cuiminghui on 2018/3/13.

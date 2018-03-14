@@ -1,8 +1,5 @@
 package com.opensource.ext.implementations
 
-import com.eclipsesource.v8.V8Object
-import com.opensource.xt.core.XTComponentExport
-import com.opensource.xt.core.XTContext
 import com.opensource.xt.core.XTExtObject
 
 /**
@@ -11,6 +8,10 @@ import com.opensource.xt.core.XTExtObject
 class FooClass: XTExtObject.Implementation() {
 
     var fooValue: String = ""
+        set(value) {
+            field = value
+            System.out.println(value)
+        }
 
     fun callYamiedie(roleA: String, roleB: String): String {
         invokeMethod("handleNativeCall", listOf())

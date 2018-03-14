@@ -12,7 +12,7 @@ export class ExtView extends View {
         const className = (this.constructor as any).className
         if ((window as any)[className]) {
             this.nativeObject.setExtObject(new (window as any)[className])
-            this.nativeObject.invoker = (methodName: string, args: any[]) => {
+            this.nativeObject.invokeMethod = (methodName: string, args: any[]) => {
                 try {
                     return this[methodName].apply(this, args)
                 } catch (error) { }
