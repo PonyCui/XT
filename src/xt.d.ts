@@ -27,7 +27,7 @@ export class ClassLoader /* @available(0.1.1) */ {
     static loadClass(classType: ClassType, className: string | Object, globalName: string): void
 }
 
-export class ExtObject extends BaseObject {
+export class ExtObject extends BaseObject /* @available(0.2.0) */ {
     static className: string
     defineFunction(prop: string): any
     defineProperty(prop: string, defaultValue?: any): any

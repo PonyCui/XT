@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "XT"
-  s.version      = "0.1.3"
+  s.version      = "0.2.0"
   s.summary      = "A Cross-Platform Application Framework."
 
   s.description  = <<-DESC
