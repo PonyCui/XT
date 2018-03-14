@@ -67,17 +67,17 @@ class XTExtObject(val xtrContext: XTContext): XTComponentInstance {
             return managedObject.objectUUID
         }
 
-        fun xtr_getValue(propKey: String, objectRef: String): Object? {
+        fun xtr_getValue(propKey: String, objectRef: String): Any? {
             (XTMemoryManager.find(objectRef) as? XTExtObject)?.let { obj ->
                 val innerObject = obj.innerObject ?: return@let
                 return try {
-                    innerObject.onGetValue(propKey) as? Object
+                    innerObject.onGetValue(propKey)
                 } catch (e: Exception) {
                     if (e.message == "Not Implemented") {
                         return try {
                             val declaredField = innerObject::class.java.getDeclaredField(propKey)
                             declaredField.isAccessible = true
-                            declaredField.get(innerObject) as? Object
+                            declaredField.get(innerObject)
                         } catch (e: Exception) { null }
                     }
                     else { null }

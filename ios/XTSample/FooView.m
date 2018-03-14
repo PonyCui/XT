@@ -11,14 +11,6 @@
 
 @implementation FooView
 
-+ (void)load {
-    [XTUIExtView registerClass:[self class]
-                   initializer:nil
-                        getter:nil
-                        setter:nil
-                        caller:nil];
-}
-
 - (void)setFooColor:(NSString *)fooColor {
     _fooColor = fooColor;
     if ([fooColor isEqualToString:@"gray"]) {

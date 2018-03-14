@@ -10,7 +10,6 @@ class AppApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        FooView.register()
     }
 
 }

@@ -1,4 +1,4 @@
-package com.opensource.xtsample
+package com.opensource.ext.implementations
 
 import android.content.Context
 import android.graphics.Color
@@ -22,38 +22,5 @@ class FooView @JvmOverloads constructor(
                 "green" -> this.setBackgroundColor(Color.GREEN)
             }
         }
-
-    companion object {
-
-        fun register() {
-            XTUIExtView.registerClass(FooView::class.java, object : XTUIExtView.XTUIExtOptions<FooView> {
-
-                override fun doInit(context: XTUIContext, invoker: (methodName: String, arguments: List<Any>) -> Object?): FooView {
-                    return FooView(context.appContext)
-                }
-
-                override fun doGetValue(propKey: String, obj: FooView): Object? {
-                    if (propKey == "fooColor") {
-                        return obj.fooColor as? Object
-                    }
-                    return null
-                }
-
-                override fun doSetValue(value: Object, propKey: String, obj: FooView) {
-                    if (propKey == "fooColor") {
-                        (value as? String)?.let {
-                            obj.fooColor = it
-                        }
-                    }
-                }
-
-                override fun doCall(methodName: String, arguments: List<Any>, obj: FooView): Object? {
-                    return null
-                }
-
-            })
-        }
-
-    }
 
 }

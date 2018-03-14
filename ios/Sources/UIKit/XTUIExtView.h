@@ -8,27 +8,31 @@
 
 #import "XTUIView.h"
 
-typedef JSValue *(^XTExtViewInvoker)(NSString *invokeMethod, NSArray<id> *arguments);
-typedef id(^XTExtViewInitializer)(XTExtViewInvoker invoker);
-typedef id (^XTExtViewGetter)(NSString *propKey, id obj);
-typedef void(^XTExtViewSetter)(JSValue *value, NSString *propKey, id obj);
-typedef id(^XTExtViewCaller)(NSString *methodName, NSArray<id> *arguments, id obj);
+@class XTUIExtView;
 
 @protocol XTExtViewExport<XTUIViewExport, JSExport>
 
 + (void)xtr_initWithViewClass:(NSString *)viewClass objectRef:(NSString *)objectRef;
-+ (JSValue *)xtr_getValue:(NSString *)propKey objectRef:(NSString *)objectRef;
++ (id)xtr_getValue:(NSString *)propKey objectRef:(NSString *)objectRef;
 + (void)xtr_setValue:(JSValue *)value propKey:(NSString *)propKey objectRef:(NSString *)objectRef;
-+ (JSValue *)xtr_callMethod:(NSString *)methodName arguments:(NSArray *)arguments objectRef:(NSString *)objectRef;
++ (id)xtr_callMethod:(NSString *)methodName arguments:(NSArray *)arguments objectRef:(NSString *)objectRef;
+
+@end
+
+@protocol XTExtViewProtocol
+
+@required
+@property (nonatomic, weak) XTUIExtView *extView;
+
+@optional
+- (id)onGetValue:(NSString *)propKey;
+- (void)onSetValue:(NSString *)propKey value:(id)value;
+- (id)onCallMethod:(NSString *)methodName args:(NSArray *)args;
 
 @end
 
 @interface XTUIExtView : XTUIView <XTExtViewExport>
 
-+ (void)registerClass:(Class)clazz
-          initializer:(XTExtViewInitializer)initializer
-               getter:(XTExtViewGetter)getter
-               setter:(XTExtViewSetter)setter
-               caller:(XTExtViewCaller)caller;
+- (id)invokeMethod:(NSString *)methodName args:(NSArray *)args;
 
 @end

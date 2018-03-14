@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XTUIExtView.h"
 
-@interface FooView : UIView
+@interface FooView : UIView<XTExtViewProtocol>
 
+@property (nonatomic, weak) XTUIExtView *extView;
 @property (nonatomic, strong) NSString *fooColor;
 
 @end
