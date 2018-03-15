@@ -68,7 +68,7 @@
         self.layout = [[UICollectionViewFlowLayout alloc] init];
         self.innerView = [[UICollectionView alloc] initWithFrame:CGRectZero
                                             collectionViewLayout:self.layout];
-        [self.innerView setBackgroundColor:[UIColor grayColor]];
+        [self.innerView setBackgroundColor:[UIColor clearColor]];
         self.innerView.alwaysBounceVertical = YES;
         self.innerView.delegate = self;
         [self.innerView setDataSource:self];

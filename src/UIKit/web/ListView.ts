@@ -268,15 +268,7 @@ export class ListView extends ScrollView {
         this.reloadData()
     }
 
-    private _items: (ListItem | ListSection)[] = [];
-
-    public get items() {
-        return this._items;
-    }
-
-    public set items(value: (ListItem | ListSection)[]) {
-        this._items = value;
-    }
+    public items: (ListItem | ListSection)[] = [];
 
     private _cacheRows: {
         minY: number;
