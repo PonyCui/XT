@@ -14,7 +14,7 @@ export class ExtView extends View {
             this.nativeObject.setExtObject(new (window as any)[className])
             this.nativeObject.invokeMethod = (methodName: string, args: any[]) => {
                 try {
-                    return this[methodName].apply(this, args)
+                    return (this as any)[methodName].apply(this, args)
                 } catch (error) { }
             }
         }

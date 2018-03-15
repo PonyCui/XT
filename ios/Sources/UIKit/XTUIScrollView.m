@@ -28,173 +28,189 @@
 #pragma mark - XTUIScrollViewExport
 
 + (NSDictionary *)xtr_contentOffset:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return [JSValue fromPoint:view.innerView.contentOffset];
     }
     return @{};
 }
 
 + (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(BOOL)animated objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setContentOffset:[contentOffset toPoint] animated:animated];
     }
 }
 
 + (NSDictionary *)xtr_contentInset:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return [JSValue fromInsets:view.innerView.contentInset];
     }
     return @{};
 }
 
 + (void)xtr_setContentInset:(JSValue *)contentInset objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setContentInset:[contentInset toInsets]];
     }
 }
 
-+ (void)xtr_scrollRectToVisible:(JSValue *)rect animated:(BOOL)animated objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
-        [view scrollRectToVisible:[rect toRect] animated:animated];
++ (void)xtr_scrollRectToVisible:(JSValue *)argRect animated:(BOOL)animated objectRef:(NSString *)objectRef {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
+        CGRect rect = [argRect toRect];
+        CGPoint targetContentOffset = view.innerView.contentOffset;
+        if (rect.origin.x < view.innerView.contentOffset.x) {
+            targetContentOffset.x = rect.origin.x;
+        }
+        else if (rect.origin.x + rect.size.width > view.innerView.contentOffset.x + view.innerView.bounds.size.width) {
+            targetContentOffset.x = rect.origin.x + rect.size.width - view.bounds.size.width;
+        }
+        if (rect.origin.y < view.innerView.contentOffset.y) {
+            targetContentOffset.y = rect.origin.y;
+        }
+        else if (rect.origin.y + rect.size.height > view.innerView.contentOffset.y + view.innerView.bounds.size.height) {
+            targetContentOffset.y = rect.origin.y + rect.size.height - view.innerView.bounds.size.height;
+        }
+        targetContentOffset.x = MAX(0, MIN(view.innerView.contentSize.width - view.innerView.bounds.size.width, targetContentOffset.x));
+        targetContentOffset.y = MAX(0, MIN(view.innerView.contentSize.height - view.innerView.bounds.size.height, targetContentOffset.y));
+        [view.innerView setContentOffset:targetContentOffset animated:animated];
     }
 }
 
 + (NSDictionary *)xtr_contentSize:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return [JSValue fromSize:view.innerView.contentSize];
     }
     return @{};
 }
 
 + (void)xtr_setContentSize:(JSValue *)contentSize objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setContentSize:[contentSize toSize]];
     }
 }
 
 + (BOOL)xtr_isDirectionalLockEnabled:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.isDirectionalLockEnabled;
     }
     return NO;
 }
 
 + (void)xtr_setDirectionalLockEnabled:(BOOL)isDirectionalLockEnabled objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return [view.innerView setDirectionalLockEnabled:isDirectionalLockEnabled];
     }
 }
 
 + (BOOL)xtr_bounces:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.bounces;
     }
     return NO;
 }
 
 + (void)xtr_setBounces:(BOOL)bounces objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         view.innerView.bounces = bounces;
     }
 }
 
 + (BOOL)xtr_isPagingEnabled:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.isPagingEnabled;
     }
     return NO;
 }
 
 + (void)xtr_setPagingEnabled:(BOOL)isPagingEnabled objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setPagingEnabled:isPagingEnabled];
     }
 }
 
 + (BOOL)xtr_isScrollEnabled:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.isScrollEnabled;
     }
     return NO;
 }
 
 + (void)xtr_setScrollEnabled:(BOOL)isScrollEnabled objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setScrollEnabled:isScrollEnabled];
     }
 }
 
 + (BOOL)xtr_showsHorizontalScrollIndicator:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.showsHorizontalScrollIndicator;
     }
     return NO;
 }
 
 + (void)xtr_setShowsHorizontalScrollIndicator:(BOOL)showsHorizontalScrollIndicator objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setShowsHorizontalScrollIndicator:showsHorizontalScrollIndicator];
     }
 }
 
 + (BOOL)xtr_showsVerticalScrollIndicator:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.showsVerticalScrollIndicator;
     }
     return NO;
 }
 
 + (void)xtr_setShowsVerticalScrollIndicator:(BOOL)showsVerticalScrollIndicator objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setShowsVerticalScrollIndicator:showsVerticalScrollIndicator];
     }
 }
 
 + (BOOL)xtr_alwaysBounceVertical:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.alwaysBounceVertical;
     }
     return NO;
 }
 
 + (void)xtr_setAlwaysBounceVertical:(BOOL)alwaysBounceVertical objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setAlwaysBounceVertical:alwaysBounceVertical];
     }
 }
 
 + (BOOL)xtr_alwaysBounceHorizontal:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         return view.innerView.alwaysBounceHorizontal;
     }
     return NO;
 }
 
 + (void)xtr_setAlwaysBounceHorizontal:(BOOL)alwaysBounceHorizontal objectRef:(NSString *)objectRef {
-    XTUIScrollView *view = [XTMemoryManager find:objectRef];
-    if ([view isKindOfClass:[XTUIScrollView class]]) {
+    XTUIView<XTUIScrollable> *view = [XTMemoryManager find:objectRef];
+    if ([view isKindOfClass:[XTUIView class]] && [view conformsToProtocol:@protocol(XTUIScrollable)]) {
         [view.innerView setAlwaysBounceHorizontal:alwaysBounceHorizontal];
     }
 }
@@ -224,25 +240,6 @@
 #ifdef LOGDEALLOC
     NSLog(@"XTUIScrollView dealloc.");
 #endif
-}
-
-- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated {
-    CGPoint targetContentOffset = self.innerView.contentOffset;
-    if (rect.origin.x < self.innerView.contentOffset.x) {
-        targetContentOffset.x = rect.origin.x;
-    }
-    else if (rect.origin.x + rect.size.width > self.innerView.contentOffset.x + self.innerView.bounds.size.width) {
-        targetContentOffset.x = rect.origin.x + rect.size.width - self.bounds.size.width;
-    }
-    if (rect.origin.y < self.innerView.contentOffset.y) {
-        targetContentOffset.y = rect.origin.y;
-    }
-    else if (rect.origin.y + rect.size.height > self.innerView.contentOffset.y + self.innerView.bounds.size.height) {
-        targetContentOffset.y = rect.origin.y + rect.size.height - self.innerView.bounds.size.height;
-    }
-    targetContentOffset.x = MAX(0, MIN(self.innerView.contentSize.width - self.innerView.bounds.size.width, targetContentOffset.x));
-    targetContentOffset.y = MAX(0, MIN(self.innerView.contentSize.height - self.innerView.bounds.size.height, targetContentOffset.y));
-    [self.innerView setContentOffset:targetContentOffset animated:animated];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -286,8 +283,20 @@
     [self.innerView sendSubviewToBack:view];
 }
 
+static BOOL hitTesting = NO;
+
 - (NSArray<UIView *> *)subviews {
+    if (hitTesting) {
+        return [super subviews];
+    }
     return [self.innerView subviews];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    hitTesting = YES;
+    id target = [super hitTest:point withEvent:event];
+    hitTesting = NO;
+    return target;
 }
 
 @end

@@ -5,8 +5,6 @@
 
 export class Data extends XT.BaseObject {
 
-    public objectRef?: string
-
     static initWithString(value: string): Data { throw Error("Not implemented.") }
     static initWithBytes(bytes: Uint8Array): Data { throw Error("Not implemented.") }
     static initWithData(data: Data): Data { throw Error("Not implemented.") }

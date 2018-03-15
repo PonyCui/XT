@@ -23,6 +23,8 @@
 
 @end
 
-@interface XTUIListView : XTUIScrollView<XTComponent, XTUIListViewExport>
+@interface XTUIListView : XTUIView<XTUIListViewExport, XTUIScrollable>
+
+@property (nonatomic, readonly) UITableView *innerView;
 
 @end

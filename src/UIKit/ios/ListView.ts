@@ -147,16 +147,8 @@ export class ListView extends ScrollView {
         }
     }
 
-    private _items: (ListItem | ListSection)[];
+    public items: (ListItem | ListSection)[];
     private _sectionsItems: ListSection[]
-
-    public get items(): (ListItem | ListSection)[] {
-        return this._items;
-    }
-
-    public set items(value: (ListItem | ListSection)[]) {
-        this._items = value;
-    }
 
     renderItem?: (cell: ListCell, item: ListItem) => void
 
@@ -190,7 +182,7 @@ export class ListView extends ScrollView {
     reloadData() {
         this._sectionsItems = []
         let defaultSection = new ListSection()
-        this._items.forEach(item => {
+        this.items.forEach(item => {
             if (item instanceof ListSection) {
                 defaultSection = new ListSection()
                 if (item.headerView) {

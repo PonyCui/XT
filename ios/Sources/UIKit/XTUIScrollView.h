@@ -39,13 +39,18 @@
 
 @end
 
-@interface XTUIScrollView : XTUIView<XTComponent, XTUIScrollViewExport>
+@protocol XTUIScrollable
+
+@property (nonatomic, readonly) UIScrollView *innerView;
+
+@end
+
+@interface XTUIScrollView : XTUIView<XTComponent, XTUIScrollViewExport, XTUIScrollable>
 
 @property (nonatomic, readonly) UIScrollView *innerView;
 
 #pragma - Private
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
-- (void)_addSubview:(UIView *)view;
 
 @end

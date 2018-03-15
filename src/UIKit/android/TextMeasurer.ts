@@ -15,7 +15,7 @@ export class TextMeasurer {
 
     static measureText(text: string, params: TextMeasureParams): Rect {
         if (params.font) {
-            params.font = params.font.objectRef
+            params.font = params.font.objectRef as any
         }
         return _XTUITextMeasurer.measureText(text, params);
     }

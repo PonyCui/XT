@@ -2,6 +2,10 @@ import { TestBase, TestCase } from "./base";
 
 export class ARCSample extends TestBase {
 
+    data?: NS.Data
+    data2?: NS.Data
+    weakBaseObject2?: NS.BaseObject
+
     baseObject = new XT.BaseObject({
         xxx: new UI.ActivityIndicatorView()
     })
@@ -42,7 +46,7 @@ export class ARCSample extends TestBase {
 
     circularReferenceTests(_: TestCase) {
         _.isAsync = true
-        const innerObject = new XT.BaseObject().retain()
+        const innerObject: any = new XT.BaseObject().retain()
         this.baseObject2.innerObject = innerObject
         innerObject.weakBaseObject2 = this.baseObject2
         setTimeout(() => {

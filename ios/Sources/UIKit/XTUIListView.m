@@ -17,14 +17,9 @@
 #import "XTUILoadMoreControl.h"
 #import "XTMemoryManager.h"
 
-@interface XTUIScrollView (XTUIListView)
-
-@property (nonatomic, readwrite) UIScrollView *innerView;
-
-@end
-
 @interface XTUIListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, readwrite) UITableView *innerView;
 @property (nonatomic, strong) XTUIRefreshControl *myRefreshControl;
 @property (nonatomic, strong) XTUILoadMoreControl *loadMoreControl;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
@@ -118,7 +113,6 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self.innerView removeFromSuperview];
         self.innerView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
         [self.innerView setBackgroundColor:[UIColor clearColor]];
         self.innerView.delegate = self;
@@ -135,9 +129,14 @@
             self.innerView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
         self.retainViews = [NSMutableSet set];
-        [self _addSubview:self.innerView];
+        [self addSubview:self.innerView];
     }
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.innerView.frame = self.bounds;
 }
 
 - (UIEdgeInsets)contentInset {
@@ -197,7 +196,10 @@
 #pragma mark - UITableViewDelegate & UITableViewDatasource
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [super scrollViewDidScroll:scrollView];
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleScroll" withArguments:@[]];
+    }
     if (scrollView.contentOffset.y + scrollView.bounds.size.height > scrollView.contentSize.height - 200.0) {
         [self tableViewWillTriggerLoadMoreControl];
     }

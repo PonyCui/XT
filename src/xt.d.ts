@@ -10,10 +10,10 @@ export class BaseArray<T> extends Array {
 }
 
 export class BaseObject {
-    [key: string]: any;
     retain(owner?: any): this
     release(): this
     constructor(objects?: { [key: string]: any } | undefined, isBaseObject?: boolean)
+    objectRef: string /** @Private */
 }
 
 export enum ClassType /* @available(0.1.1) */ {
@@ -731,6 +731,50 @@ export class ExtView extends View {
     defineProperty(prop: string, defaultValue?: any): any
 }
 
+export interface CollectionItem {
+
+    [key: string]: any,
+    reuseIdentifier: string
+    itemSize: (width: number, height: number) => Size
+
+}
+
+export class CollectionEntity implements CollectionItem {
+
+    [key: string]: any;
+    reuseIdentifier: string;
+    itemSize: (width: number, height: number) => Size;
+
+}
+
+export class CollectionCell extends View {
+
+    readonly reuseIdentifier: string
+    readonly currentItem?: CollectionItem
+    readonly contentView: View
+    didHighlighted(highlighted: boolean): void
+    didSelected(): void
+    didRender(): void
+
+}
+
+export enum CollectionViewScrollDirection {
+    Vertical,
+    Horizontal,
+}
+
+export class CollectionView extends ScrollView {
+
+    scrollDirection: CollectionViewScrollDirection
+    items: CollectionItem[]
+    register(clazz: typeof CollectionCell, reuseIdentifier: string): void
+    edgeInsets: Insets
+    lineSpacing: number
+    itemSpacing: number
+    reloadData(): void
+
+}
+
 export as namespace NS;
 
 export class Data extends XT.BaseObject /* @available(0.1.1) */ {
@@ -921,6 +965,11 @@ declare global {
         ActivityIndicatorViewStyle: typeof ActivityIndicatorViewStyle,
         ActivityIndicatorView: typeof ActivityIndicatorView,
         ExtView: typeof ExtView,
+        CollectionItem: CollectionItem,
+        CollectionEntity: typeof CollectionEntity,
+        CollectionCell: typeof CollectionCell,
+        CollectionViewScrollDirection: typeof CollectionViewScrollDirection,
+        CollectionView: typeof CollectionView,
     };
     const NS: {
         Data: typeof Data,

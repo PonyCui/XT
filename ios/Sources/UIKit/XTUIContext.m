@@ -45,6 +45,7 @@
 #import "XTUIRefreshControl.h"
 #import "XTUILoadMoreControl.h"
 #import "XTUIExtView.h"
+#import "XTUICollectionView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @interface XTUIContext ()<UINavigationControllerDelegate, XTDebugDelegate>
@@ -192,7 +193,7 @@
                               [XTUIRefreshControl class],
                               [XTUILoadMoreControl class],
                               [XTUIExtView class],
-                              [XTDebug class],
+                              [XTUICollectionView class],
                               ]) {
         if ([component conformsToProtocol:@protocol(XTComponent)]) {
             self[[component name]] = component;

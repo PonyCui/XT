@@ -154,3 +154,10 @@ export const ActivityIndicatorView = MActivityIndicatorView
 import { ExtView as IExtView } from "../interface/ExtView";
 import { ExtView as MExtView } from "./ExtView";
 export const ExtView = MExtView
+
+import { CollectionViewScrollDirection as ICollectionViewScrollDirection, CollectionItem as ICollectionItem, CollectionEntity as ICollectionEntity, CollectionCell as ICollectionCell, CollectionView as ICollectionView } from "../interface/CollectionView";
+import { CollectionViewScrollDirection as MCollectionViewScrollDirection, CollectionCell as MCollectionCell, CollectionView as MCollectionView } from "./CollectionView";
+export const CollectionEntity = ICollectionEntity
+export const CollectionCell = MCollectionCell
+export const CollectionView = MCollectionView
+export const CollectionViewScrollDirection = MCollectionViewScrollDirection

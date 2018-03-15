@@ -57,7 +57,7 @@ export class ListView extends ScrollView {
     listFooterView?: View
     items: (ListItem | ListSection)[]
     renderItem?: (cell: ListCell, item: ListItem) => void
-    register(clazz: typeof ListCell, reuseIdentifier: string) { }
+    register(clazz: typeof ListCell, reuseIdentifier: string, context: any = undefined) { }
     reloadData() { }
 
 }

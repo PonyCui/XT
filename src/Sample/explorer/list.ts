@@ -19,6 +19,7 @@ import { FoundationList } from "../foundation/list";
 import { CoreList } from "../core/list";
 import { CanvasSample } from "./canvas";
 import { ExtViewSample } from "./extview";
+import { CollectionViewSample } from "./collectionview";
 
 class ListHeader extends UI.View {
 
@@ -290,7 +291,6 @@ export class List extends UI.ViewController {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
                         name: "ListView",
-                        isSectionLast: true,
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new ListViewSample())
@@ -300,8 +300,17 @@ export class List extends UI.ViewController {
                     {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
+                        name: "CollectionView",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new CollectionViewSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
                         name: "ExtView",
-                        isSectionLast: true,
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new ExtViewSample())
@@ -359,7 +368,7 @@ export class List extends UI.ViewController {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
                         name: "WebView",
-                        isSectionLast: true,
+
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new WebViewSample())
@@ -387,7 +396,7 @@ export class List extends UI.ViewController {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
                         name: "TextField",
-                        isSectionLast: true,
+
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new TextFieldSample())
@@ -425,7 +434,7 @@ export class List extends UI.ViewController {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
                         name: "Pan",
-                        isSectionLast: true,
+
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new PanSample())
@@ -453,7 +462,7 @@ export class List extends UI.ViewController {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
                         name: "AutoLayout",
-                        isSectionLast: true,
+
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new AutoLayoutSample())
@@ -481,7 +490,7 @@ export class List extends UI.ViewController {
                         reuseIdentifier: "Cell",
                         rowHeight: () => 44,
                         name: "Spring Animation",
-                        isSectionLast: true,
+
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new SpringAnimationSample())

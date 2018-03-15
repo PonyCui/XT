@@ -35,3 +35,4 @@ declare var _XTUIContext: any
 declare var _XTUIRefreshControl: any
 declare var _XTUILoadMoreControl: any
 declare var _XTUIExtView: any
+declare var _XTUICollectionView: any
