@@ -11,9 +11,8 @@
 
 @class XTUIScrollView;
 
-@protocol XTUIScrollViewExport <JSExport>
+@protocol XTUIScrollViewExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSDictionary *)xtr_contentOffset:(NSString *)objectRef;
 + (void)xtr_setContentOffset:(JSValue *)contentOffset animated:(BOOL)animated objectRef:(NSString *)objectRef;
 + (NSDictionary *)xtr_contentInset:(NSString *)objectRef;
@@ -40,10 +39,13 @@
 
 @end
 
-@interface XTUIScrollView : UIScrollView<XTComponent, XTUIScrollViewExport>
+@interface XTUIScrollView : XTUIView<XTComponent, XTUIScrollViewExport>
 
-@property (nonatomic, copy) NSString *objectUUID;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, readonly) JSValue *scriptObject;
+@property (nonatomic, readonly) UIScrollView *innerView;
+
+#pragma - Private
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView;
+- (void)_addSubview:(UIView *)view;
 
 @end

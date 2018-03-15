@@ -73,6 +73,7 @@
 		90EE56F420562A14006AD6FD /* XTExtObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F320562A14006AD6FD /* XTExtObject.m */; };
 		90EE56F720576DAC006AD6FD /* XTUIExtView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F620576DAC006AD6FD /* XTUIExtView.m */; };
 		90EE56FA205776EF006AD6FD /* FooView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56F9205776EF006AD6FD /* FooView.m */; };
+		90EE56FD2059FEE0006AD6FD /* XTUICollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EE56FC2059FEE0006AD6FD /* XTUICollectionView.m */; };
 		B8D72A0A1105D65D76D476D3 /* libPods-XTSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E64B919FD46226B773416D45 /* libPods-XTSample.a */; };
 /* End PBXBuildFile section */
 
@@ -204,6 +205,8 @@
 		90EE56F620576DAC006AD6FD /* XTUIExtView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTUIExtView.m; sourceTree = "<group>"; };
 		90EE56F8205776EF006AD6FD /* FooView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FooView.h; sourceTree = "<group>"; };
 		90EE56F9205776EF006AD6FD /* FooView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooView.m; sourceTree = "<group>"; };
+		90EE56FB2059FEE0006AD6FD /* XTUICollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTUICollectionView.h; sourceTree = "<group>"; };
+		90EE56FC2059FEE0006AD6FD /* XTUICollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTUICollectionView.m; sourceTree = "<group>"; };
 		E2362DDEEAB492E0B2DFC3DA /* Pods-XTSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XTSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-XTSample/Pods-XTSample.debug.xcconfig"; sourceTree = "<group>"; };
 		E64B919FD46226B773416D45 /* libPods-XTSample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-XTSample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -368,6 +371,8 @@
 				90EA87A72019C0B90012A985 /* XTUIListCell.m */,
 				90EA87C72019C0BD0012A985 /* XTUIListView.h */,
 				90EA87BB2019C0BB0012A985 /* XTUIListView.m */,
+				90EE56FB2059FEE0006AD6FD /* XTUICollectionView.h */,
+				90EE56FC2059FEE0006AD6FD /* XTUICollectionView.m */,
 				9001FA702047E001005D8736 /* XTUIRefreshControl.h */,
 				9001FA712047E001005D8736 /* XTUIRefreshControl.m */,
 				9001FA732047E94E005D8736 /* XTUILoadMoreControl.h */,
@@ -614,6 +619,7 @@
 				90EE56FA205776EF006AD6FD /* FooView.m in Sources */,
 				90EA87E82019C0BF0012A985 /* XTUIActivityIndicatorView.m in Sources */,
 				90AFB4F520197F4E001E9DA7 /* XTContext.m in Sources */,
+				90EE56FD2059FEE0006AD6FD /* XTUICollectionView.m in Sources */,
 				90EA87EA2019C0BF0012A985 /* XTUISwitch.m in Sources */,
 				90EA87ED2019C0BF0012A985 /* XTUIViewController.m in Sources */,
 				90EA8815201AE0F80012A985 /* XTFURLRequest.m in Sources */,

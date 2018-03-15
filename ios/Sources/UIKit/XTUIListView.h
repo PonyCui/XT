@@ -10,9 +10,8 @@
 
 @class XTUIListView;
 
-@protocol XTUIListViewExport <JSExport>
+@protocol XTUIListViewExport <XTUIViewExport, JSExport>
 
-+ (NSString *)create;
 + (NSString *)xtr_refreshControl:(NSString *)objectRef;
 + (void)xtr_setRefreshControl:(NSString *)rcRef objectRef:(NSString *)objectRef;
 + (NSString *)xtr_loadMoreControl:(NSString *)objectRef;
@@ -24,10 +23,6 @@
 
 @end
 
-@interface XTUIListView : UITableView<XTComponent, XTUIListViewExport>
-
-@property (nonatomic, copy) NSString *objectUUID;
-@property (nonatomic, weak) JSContext *context;
-@property (nonatomic, readonly) JSValue *scriptObject;
+@interface XTUIListView : XTUIScrollView<XTComponent, XTUIListViewExport>
 
 @end

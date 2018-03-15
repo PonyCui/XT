@@ -82,17 +82,18 @@
     [self.indicatorView startAnimating];
     XTUIListView *listView = self.listView;
     if (listView != nil) {
-        if (listView.tableFooterView != nil) {
-            [listView.tableFooterView addSubview:self];
-            self.frame = CGRectMake(0, listView.tableFooterView.frame.size.height, listView.tableFooterView.frame.size.width, self.frame.size.height);
-            listView.tableFooterView.frame = CGRectMake(0,
+        UITableView *tableView = ((UITableView *)listView.innerView);
+        if (tableView.tableFooterView != nil) {
+            [tableView.tableFooterView addSubview:self];
+            self.frame = CGRectMake(0, tableView.tableFooterView.frame.size.height, tableView.tableFooterView.frame.size.width, self.frame.size.height);
+            tableView.tableFooterView.frame = CGRectMake(0,
                                                         0,
-                                                        listView.tableFooterView.frame.size.width,
-                                                        listView.tableFooterView.frame.size.height + self.frame.size.height);
-            listView.tableFooterView = listView.tableFooterView;
+                                                        tableView.tableFooterView.frame.size.width,
+                                                        tableView.tableFooterView.frame.size.height + self.frame.size.height);
+            tableView.tableFooterView = tableView.tableFooterView;
         }
         else {
-            listView.tableFooterView = self;
+            tableView.tableFooterView = self;
         }
     }
     if ([self scriptObject] != nil) {
@@ -105,16 +106,17 @@
     [self.indicatorView stopAnimating];
     XTUIListView *listView = self.listView;
     if (listView != nil) {
-        if (![listView.tableFooterView isKindOfClass:[XTUILoadMoreControl class]]) {
-            listView.tableFooterView.frame = CGRectMake(0,
+        UITableView *tableView = ((UITableView *)listView.innerView);
+        if (![tableView.tableFooterView isKindOfClass:[XTUILoadMoreControl class]]) {
+            tableView.tableFooterView.frame = CGRectMake(0,
                                                         0,
-                                                        listView.tableFooterView.frame.size.width,
-                                                        listView.tableFooterView.frame.size.height - self.frame.size.height);
+                                                        tableView.tableFooterView.frame.size.width,
+                                                        tableView.tableFooterView.frame.size.height - self.frame.size.height);
             [self removeFromSuperview];
-            listView.tableFooterView = listView.tableFooterView;
+            tableView.tableFooterView = tableView.tableFooterView;
         }
         else {
-            listView.tableFooterView = nil;
+            tableView.tableFooterView = nil;
         }
     }
 }

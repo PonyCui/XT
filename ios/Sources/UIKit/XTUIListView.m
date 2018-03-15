@@ -17,6 +17,12 @@
 #import "XTUILoadMoreControl.h"
 #import "XTMemoryManager.h"
 
+@interface XTUIScrollView (XTUIListView)
+
+@property (nonatomic, readwrite) UIScrollView *innerView;
+
+@end
+
 @interface XTUIListView ()<UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) XTUIRefreshControl *myRefreshControl;
@@ -27,17 +33,6 @@
 @end
 
 @implementation XTUIListView
-
-+ (NSString *)create {
-    XTUIListView *view = [[XTUIListView alloc] initWithFrame:CGRectZero];
-    view.delegate = view;
-    view.dataSource = view;
-    XTManagedObject *managedObject = [[XTManagedObject alloc] initWithObject:view];
-    [XTMemoryManager add:managedObject];
-    view.context = [JSContext currentContext];
-    view.objectUUID = managedObject.objectUUID;
-    return managedObject.objectUUID;
-}
 
 + (NSString *)name {
     return @"_XTUIListView";
@@ -100,7 +95,7 @@
     UIView *view = [XTMemoryManager find:viewRef];
     XTUIListView *listView = [XTMemoryManager find:objectRef];
     if ([listView isKindOfClass:[XTUIListView class]]) {
-        listView.tableHeaderView = [view isKindOfClass:[UIView class]] ? view : nil;
+        ((UITableView *)listView.innerView).tableHeaderView = [view isKindOfClass:[UIView class]] ? view : nil;
     }
 }
 
@@ -108,60 +103,58 @@
     UIView *view = [XTMemoryManager find:viewRef];
     XTUIListView *listView = [XTMemoryManager find:objectRef];
     if ([listView isKindOfClass:[XTUIListView class]]) {
-        listView.tableFooterView = [view isKindOfClass:[UIView class]] ? view : nil;
+        ((UITableView *)listView.innerView).tableFooterView = [view isKindOfClass:[UIView class]] ? view : nil;
     }
 }
 
 + (void)xtr_reloadData:(NSString *)objectRef {
     XTUIListView *view = [XTMemoryManager find:objectRef];
     if ([view isKindOfClass:[XTUIListView class]]) {
-        [view reloadData];
+        [((UITableView *)view.innerView) reloadData];
     }
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame style:UITableViewStyleGrouped];
+    self = [super initWithFrame:frame];
     if (self) {
-        self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        [self.innerView removeFromSuperview];
+        self.innerView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+        [self.innerView setBackgroundColor:[UIColor clearColor]];
+        self.innerView.delegate = self;
+        [(UITableView *)self.innerView setDataSource:self];
+        ((UITableView *)self.innerView).separatorStyle = UITableViewCellSeparatorStyleNone;
         UIView *headerView = [UIView new];
         headerView.frame = CGRectMake(0, 0, 0, 0.01);
-        self.tableHeaderView = headerView;
+        ((UITableView *)self.innerView).tableHeaderView = headerView;
         UIView *footerView = [UIView new];
         footerView.frame = CGRectMake(0, 0, 0, 0.01);
-        self.tableFooterView = footerView;
+        ((UITableView *)self.innerView).tableFooterView = footerView;
         self.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
         if (@available(iOS 11.0, *)) {
-            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            self.innerView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
         self.retainViews = [NSMutableSet set];
+        [self _addSubview:self.innerView];
     }
     return self;
 }
 
 - (UIEdgeInsets)contentInset {
-    UIEdgeInsets insets = [super contentInset];
+    UIEdgeInsets insets = [self.innerView contentInset];
     return UIEdgeInsetsMake(insets.top, insets.left, insets.bottom + 20, insets.right);
 }
 
 - (void)setContentInset:(UIEdgeInsets)contentInset {
-    [super setContentInset:UIEdgeInsetsMake(contentInset.top, contentInset.left, contentInset.bottom - 20, contentInset.right)];
+    [self.innerView setContentInset:UIEdgeInsetsMake(contentInset.top, contentInset.left, contentInset.bottom - 20, contentInset.right)];
 }
 
 - (void)dealloc {
-    self.delegate = nil;
-    self.dataSource = nil;
-    JSValue *scriptObject = [self scriptObject];
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"dealloc" withArguments:nil];
-    }
+    ((UITableView *)self.innerView).delegate = nil;
+    ((UITableView *)self.innerView).dataSource = nil;
 #ifdef LOGDEALLOC
     NSLog(@"XTUIListView dealloc.");
 #endif
-}
-
-- (JSValue *)scriptObject {
-    return [self.context evaluateScript:[NSString stringWithFormat:@"objectRefs['%@']", self.objectUUID]];
 }
 
 - (void)setItems:(NSArray<NSDictionary *> *)items {
@@ -190,13 +183,13 @@
 
 - (void)setMyRefreshControl:(XTUIRefreshControl *)myRefreshControl {
     if (@available(iOS 10.0, *)) {
-        [self setRefreshControl:myRefreshControl];
+        [self.innerView setRefreshControl:myRefreshControl];
     }
     else {
         if (_myRefreshControl != nil) {
             [_myRefreshControl removeFromSuperview];
         }
-        [self addSubview:myRefreshControl];
+        [self.innerView addSubview:myRefreshControl];
     }
     _myRefreshControl = myRefreshControl;
 }
@@ -204,10 +197,7 @@
 #pragma mark - UITableViewDelegate & UITableViewDatasource
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    JSValue *value = self.scriptObject;
-    if (value != nil) {
-        [value invokeMethod:@"handleScroll" withArguments:@[]];
-    }
+    [super scrollViewDidScroll:scrollView];
     if (scrollView.contentOffset.y + scrollView.bounds.size.height > scrollView.contentSize.height - 200.0) {
         [self tableViewWillTriggerLoadMoreControl];
     }
@@ -368,60 +358,6 @@
                 [fakeCell.scriptObject invokeMethod:@"didHighlighted" withArguments:@[@(NO)]];
             }
         }
-    }
-}
-
-#pragma mark - View callbacks
-
-- (void)didAddSubview:(XTUIView *)subview {
-    [super didAddSubview:subview];
-    JSValue *scriptObject = self.scriptObject;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didAddSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
-                                                                   ? @[[subview objectUUID] ?: @""] : @[])];
-    }
-}
-
-- (void)willRemoveSubview:(XTUIView *)subview {
-    [super willRemoveSubview:subview];
-    JSValue *scriptObject = self.scriptObject;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willRemoveSubview" withArguments:([subview conformsToProtocol:@protocol(XTComponent)]
-                                                                       ? @[[subview objectUUID] ?: @""] : @[])];
-    }
-}
-
-- (void)willMoveToSuperview:(XTUIView *)newSuperview {
-    [super willMoveToSuperview:newSuperview];
-    JSValue *scriptObject = self.scriptObject;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToSuperview" withArguments:([newSuperview conformsToProtocol:@protocol(XTComponent)]
-                                                                         ? @[[newSuperview objectUUID] ?: @""] : @[])];
-    }
-}
-
-- (void)didMoveToSuperview {
-    [super didMoveToSuperview];
-    JSValue *scriptObject = self.scriptObject;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didMoveToSuperview" withArguments:@[]];
-    }
-}
-
-- (void)willMoveToWindow:(XTUIWindow *)newWindow {
-    [super willMoveToWindow:newWindow];
-    JSValue *scriptObject = self.scriptObject;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"willMoveToWindow" withArguments:([newWindow conformsToProtocol:@protocol(XTComponent)]
-                                                                      ? @[[newWindow objectUUID] ?: @""] : @[])];
-    }
-}
-
-- (void)didMoveToWindow {
-    [super didMoveToWindow];
-    JSValue *scriptObject = self.scriptObject;
-    if (scriptObject != nil) {
-        [scriptObject invokeMethod:@"didMoveToWindow" withArguments:@[]];
     }
 }
 
