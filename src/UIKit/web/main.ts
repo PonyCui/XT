@@ -91,7 +91,7 @@ export const Window = MWindow
 import { ViewController as IViewController, KeyboardAvoidingMode as IKeyboardAvoidingMode } from '../interface/ViewController'
 import { ViewController as MViewController } from './ViewController'
 export const ViewController = MViewController
-export const KeyboardAvoidingMode = IKeyboardAvoidingMode 
+export const KeyboardAvoidingMode = IKeyboardAvoidingMode
 
 import { NavigationBar as INavigationBar, NavigationBarButtonItem as INavigationBarButtonItem } from '../interface/NavigationBar'
 import { NavigationBar as MNavigationBar, NavigationBarButtonItem as MNavigationBarButtonItem } from './NavigationBar'
@@ -158,9 +158,10 @@ import { ExtView as IExtView } from "../interface/ExtView";
 import { ExtView as MExtView } from "./ExtView";
 export const ExtView = MExtView
 
-import { CollectionViewScrollDirection as ICollectionViewScrollDirection, CollectionItem as ICollectionItem, CollectionEntity as ICollectionEntity, CollectionCell as ICollectionCell, CollectionView as ICollectionView } from "../interface/CollectionView";
+import { CollectionViewScrollDirection as ICollectionViewScrollDirection, CollectionItem as ICollectionItem, CollectionSection as ICollectionSection, CollectionEntity as ICollectionEntity, CollectionCell as ICollectionCell, CollectionView as ICollectionView } from "../interface/CollectionView";
 import { CollectionViewScrollDirection as MCollectionViewScrollDirection, CollectionCell as MCollectionCell, CollectionView as MCollectionView } from "./CollectionView";
 export const CollectionEntity = ICollectionEntity
 export const CollectionCell = MCollectionCell
 export const CollectionView = MCollectionView
 export const CollectionViewScrollDirection = MCollectionViewScrollDirection
+export const CollectionSection = ICollectionSection

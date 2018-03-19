@@ -180,6 +180,24 @@
     return CGSizeZero;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    if (section < self.items.count) {
+        NSString *objectRef = self.items[section][@"__footerViewObjectRef"];
+        if ([objectRef isKindOfClass:[NSString class]]) {
+            UIView *view = [XTMemoryManager find:objectRef];
+            if ([view isKindOfClass:[UIView class]]) {
+                if (self.layout.scrollDirection == UICollectionViewScrollDirectionVertical) {
+                    return CGSizeMake(collectionView.bounds.size.width, view.frame.size.height);
+                }
+                else if (self.layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+                    return CGSizeMake(view.frame.size.width, collectionView.bounds.size.height);
+                }
+            }
+        }
+    }
+    return CGSizeZero;
+}
+
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *sectionView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"SectionView" forIndexPath:indexPath];
     [[sectionView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];

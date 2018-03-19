@@ -1,7 +1,7 @@
 import { ScrollView } from "./ScrollView";
 import { Size, SizeMake, Insets, InsetsMake, Rect, RectMake, RectEqual, Point } from "../interface/Rect";
 import { View, InteractionState } from "./View";
-import { CollectionItem } from "../interface/CollectionView";
+import { CollectionItem, CollectionSection } from "../interface/CollectionView";
 import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
 
 export class CollectionCell extends View {
@@ -91,7 +91,7 @@ class CollectionViewFlowLayout {
         this.contentSize.height = 0
         if (this.collectionView.scrollDirection === CollectionViewScrollDirection.Vertical) {
             const wrapWidth = this.collectionView.bounds.width - this.collectionView.edgeInsets.left - this.collectionView.edgeInsets.right
-            const itemSizes = this.collectionView.items.map(item => {
+            const itemSizes = this.collectionView.flatItems.map(item => {
                 return item.itemSize(this.collectionView.bounds.width, this.collectionView.bounds.height)
             })
             const sizeEqually = itemSizes.length > 0 && itemSizes.every(v => {
@@ -105,6 +105,7 @@ class CollectionViewFlowLayout {
             let lastItemGap = 0;
             let lineStartIndex = 0;
             let lineEndIndex = -1;
+            let footerView: View | undefined = undefined;
             this.itemFrames = itemSizes.map((item, idx) => {
                 if (idx > lineEndIndex) {
                     firstItem = true
@@ -140,6 +141,25 @@ class CollectionViewFlowLayout {
                     }
                     firstItem = false
                 }
+                if (this.collectionView.flatSegments.indexOf(idx) >= 0) {
+                    const sectionIndex = this.collectionView.flatSegments.indexOf(idx)
+                    const sectionItem = this.collectionView.sectionsItems[sectionIndex]
+                    currentY += sectionIndex > 0 ? this.collectionView.edgeInsets.bottom : 0
+                    if (footerView) {
+                        footerView.frame = RectMake(0, currentY, this.collectionView.bounds.width, footerView.frame.height)
+                    }
+                    currentY += footerView ? footerView.frame.height : 0
+                    if (sectionItem.headerView) {
+                        sectionItem.headerView.frame = RectMake(0, currentY, this.collectionView.bounds.width, sectionItem.headerView.frame.height)
+                        currentY += sectionItem.headerView.frame.height
+                    }
+                    if (sectionItem.footerView) {
+                        footerView = sectionItem.footerView as View
+                    }
+                    else {
+                        footerView = undefined
+                    }
+                }
                 const frame = RectMake(this.collectionView.edgeInsets.left + currentX, this.collectionView.edgeInsets.top + currentY + (lineHeight - item.height) / 2.0, item.width, item.height)
                 this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.edgeInsets.right)
                 this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.edgeInsets.bottom)
@@ -156,10 +176,14 @@ class CollectionViewFlowLayout {
                 }
                 return frame
             })
+            if (footerView) {
+                (footerView as View).frame = RectMake(0, this.contentSize.height, this.collectionView.bounds.width, (footerView as View).frame.height)
+                this.contentSize.height += (footerView as View).frame.height
+            }
         }
         else if (this.collectionView.scrollDirection === CollectionViewScrollDirection.Horizontal) {
             const wrapHeight = this.collectionView.bounds.height - this.collectionView.edgeInsets.top - this.collectionView.edgeInsets.bottom
-            const itemSizes = this.collectionView.items.map(item => {
+            const itemSizes = this.collectionView.flatItems.map(item => {
                 return item.itemSize(this.collectionView.bounds.width, this.collectionView.bounds.height)
             })
             const sizeEqually = itemSizes.length > 0 && itemSizes.every(v => {
@@ -173,6 +197,7 @@ class CollectionViewFlowLayout {
             let lastItemGap = 0;
             let lineStartIndex = 0;
             let lineEndIndex = -1;
+            let footerView: View | undefined = undefined;
             this.itemFrames = itemSizes.map((item, idx) => {
                 if (idx > lineEndIndex) {
                     firstItem = true
@@ -208,6 +233,27 @@ class CollectionViewFlowLayout {
                     }
                     firstItem = false
                 }
+                if (this.collectionView.flatSegments.indexOf(idx) >= 0) {
+                    const sectionIndex = this.collectionView.flatSegments.indexOf(idx)
+                    const sectionItem = this.collectionView.sectionsItems[sectionIndex]
+                    currentX += sectionIndex > 0 ? this.collectionView.edgeInsets.right + lineWidth : 0
+                    currentY = 0
+                    currentX += sectionIndex > 0 ? this.collectionView.edgeInsets.right : 0
+                    if (footerView) {
+                        footerView.frame = RectMake(currentX, 0, footerView.frame.width, this.collectionView.bounds.height)
+                        currentX += footerView.frame.width
+                    }
+                    if (sectionItem.headerView) {
+                        sectionItem.headerView.frame = RectMake(currentX, 0, sectionItem.headerView.frame.width, this.collectionView.bounds.height)
+                        currentX += sectionItem.headerView.frame.width
+                    }
+                    if (sectionItem.footerView) {
+                        footerView = sectionItem.footerView as View
+                    }
+                    else {
+                        footerView = undefined
+                    }
+                }
                 const frame = RectMake(this.collectionView.edgeInsets.left + currentX + (lineWidth - item.width) / 2.0, this.collectionView.edgeInsets.top + currentY, item.width, item.height)
                 this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.edgeInsets.right)
                 this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.edgeInsets.bottom)
@@ -224,6 +270,10 @@ class CollectionViewFlowLayout {
                 }
                 return frame
             })
+            if (footerView) {
+                (footerView as View).frame = RectMake(this.contentSize.width, 0, (footerView as View).frame.width, this.collectionView.bounds.height)
+                this.contentSize.width += (footerView as View).frame.width
+            }
         }
     }
 
@@ -259,17 +309,20 @@ export class CollectionView extends ScrollView {
 
     private _scrollDirection: CollectionViewScrollDirection = CollectionViewScrollDirection.Vertical
 
-	public get scrollDirection(): CollectionViewScrollDirection  {
-		return this._scrollDirection;
-	}
+    public get scrollDirection(): CollectionViewScrollDirection {
+        return this._scrollDirection;
+    }
 
-	public set scrollDirection(value: CollectionViewScrollDirection ) {
+    public set scrollDirection(value: CollectionViewScrollDirection) {
         this._scrollDirection = value;
         this.showsVerticalScrollIndicator = value === CollectionViewScrollDirection.Vertical
         this.showsHorizontalScrollIndicator = value === CollectionViewScrollDirection.Horizontal
-	}
+    }
 
-    items: CollectionItem[]
+    items: (CollectionItem | CollectionSection)[]
+    sectionsItems: CollectionSection[]
+    flatSegments: number[] = []
+    flatItems: CollectionItem[]
 
     private reuseMapping: { [key: string]: typeof CollectionCell } = {};
     private reuseContexts: { [key: string]: any } = {};
@@ -284,6 +337,42 @@ export class CollectionView extends ScrollView {
     itemSpacing: number = 0
 
     reloadData() {
+        this.subviews.forEach(it => {
+            if ((it as any).__is__header__ === true) { it.removeFromSuperview() }
+            if ((it as any).__is__footer__ === true) { it.removeFromSuperview() }
+        })
+        this.sectionsItems = []
+        let defaultSection = new CollectionSection()
+        this.flatItems = []
+        this.flatSegments = []
+        this.items.forEach(item => {
+            if (item instanceof CollectionSection) {
+                defaultSection = new CollectionSection()
+                if (item.headerView) {
+                    item.headerView.retain(this);
+                    (item.headerView as any).__is__header__ = true
+                    this.addSubview(item.headerView as View)
+                }
+                if (item.footerView) {
+                    item.footerView.retain(this);
+                    (item.footerView as any).__is__header__ = true
+                    this.addSubview(item.footerView as View)
+                }
+                this.flatSegments.push(this.flatItems.length)
+                item.items.forEach(it => {
+                    this.flatItems.push(it)
+                })
+                this.sectionsItems.push(item)
+            }
+            else {
+                if (this.sectionsItems.indexOf(defaultSection) < 0) {
+                    this.sectionsItems.push(defaultSection)
+                    this.flatSegments.push(this.flatItems.length)
+                }
+                defaultSection.items.push(item)
+                this.flatItems.push(item)
+            }
+        })
         this.layout.reload()
         this.contentSize = SizeMake(this.layout.contentSize.width, this.layout.contentSize.height)
         this.reloadVisibleItems()
@@ -315,10 +404,10 @@ export class CollectionView extends ScrollView {
             }
         })
         const renderingIndexes = visibleIndexes.filter(index => {
-            return this._reusingCells.filter(cell => cell._isBusy && cell.currentItem === this.items[index]).length == 0
+            return this._reusingCells.filter(cell => cell._isBusy && cell.currentItem === this.flatItems[index]).length == 0
         })
         const visibleCells: CollectionCell[] = renderingIndexes.map(index => {
-            const dataItem = this.items[index]
+            const dataItem = this.flatItems[index]
             const cell = this._reusingCells.filter(cell => { return !cell._isBusy && cell.reuseIdentifier === dataItem.reuseIdentifier })[0]
                 || (this.reuseMapping[dataItem.reuseIdentifier] !== undefined ? new this.reuseMapping[dataItem.reuseIdentifier]() : undefined)
                 || new CollectionCell();

@@ -39,7 +39,7 @@ export class CollectionViewSample extends UI.ViewController {
 		this.collectionView.lineSpacing = 20
 		this.collectionView.itemSpacing = 20
 		let items = [];
-		for (let index = 0; index < 20000; index++) {
+		for (let index = 0; index < 200; index++) {
 			items.push({
 				reuseIdentifier: "Cell",
 				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
@@ -49,8 +49,14 @@ export class CollectionViewSample extends UI.ViewController {
 		firstSection.headerView = new UI.View()
 		firstSection.headerView.frame = UI.RectMake(0, 0, 44, 44)
 		firstSection.headerView.backgroundColor = UI.Color.yellowColor
+		firstSection.footerView = new UI.View()
+		firstSection.footerView.frame = UI.RectMake(0, 0, 44, 66)
+		firstSection.footerView.backgroundColor = UI.Color.greenColor
 		firstSection.items = items
-		this.collectionView.items = [firstSection]
+		this.collectionView.items = [firstSection, {
+			reuseIdentifier: "Cell",
+			itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
+		}]
 		this.collectionView.reloadData()
 	}
 
