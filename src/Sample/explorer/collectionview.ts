@@ -35,7 +35,7 @@ export class CollectionViewSample extends UI.ViewController {
 	setupCollectionView() {
 		this.collectionView.register(SampleCell, "Cell")
 		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Horizontal
-		this.collectionView.edgeInsets = UI.InsetsMake(20, 10, 20, 10)
+		this.collectionView.sectionInsets = UI.InsetsMake(20, 10, 20, 10)
 		this.collectionView.lineSpacing = 20
 		this.collectionView.itemSpacing = 20
 		let items = [];

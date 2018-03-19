@@ -90,7 +90,7 @@ class CollectionViewFlowLayout {
         this.contentSize.width = 0
         this.contentSize.height = 0
         if (this.collectionView.scrollDirection === CollectionViewScrollDirection.Vertical) {
-            const wrapWidth = this.collectionView.bounds.width - this.collectionView.edgeInsets.left - this.collectionView.edgeInsets.right
+            const wrapWidth = this.collectionView.bounds.width - this.collectionView.sectionInsets.left - this.collectionView.sectionInsets.right
             const itemSizes = this.collectionView.flatItems.map(item => {
                 return item.itemSize(this.collectionView.bounds.width, this.collectionView.bounds.height)
             })
@@ -144,7 +144,7 @@ class CollectionViewFlowLayout {
                 if (this.collectionView.flatSegments.indexOf(idx) >= 0) {
                     const sectionIndex = this.collectionView.flatSegments.indexOf(idx)
                     const sectionItem = this.collectionView.sectionsItems[sectionIndex]
-                    currentY += sectionIndex > 0 ? this.collectionView.edgeInsets.bottom : 0
+                    currentY += sectionIndex > 0 ? this.collectionView.sectionInsets.bottom : 0
                     if (footerView) {
                         footerView.frame = RectMake(0, currentY, this.collectionView.bounds.width, footerView.frame.height)
                     }
@@ -160,9 +160,9 @@ class CollectionViewFlowLayout {
                         footerView = undefined
                     }
                 }
-                const frame = RectMake(this.collectionView.edgeInsets.left + currentX, this.collectionView.edgeInsets.top + currentY + (lineHeight - item.height) / 2.0, item.width, item.height)
-                this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.edgeInsets.right)
-                this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.edgeInsets.bottom)
+                const frame = RectMake(this.collectionView.sectionInsets.left + currentX, this.collectionView.sectionInsets.top + currentY + (lineHeight - item.height) / 2.0, item.width, item.height)
+                this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.sectionInsets.right)
+                this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.sectionInsets.bottom)
                 if (lineEndIndex === Infinity) {
                     if (sizeEqually) {
                         currentX += frame.width + lastItemGap
@@ -182,7 +182,7 @@ class CollectionViewFlowLayout {
             }
         }
         else if (this.collectionView.scrollDirection === CollectionViewScrollDirection.Horizontal) {
-            const wrapHeight = this.collectionView.bounds.height - this.collectionView.edgeInsets.top - this.collectionView.edgeInsets.bottom
+            const wrapHeight = this.collectionView.bounds.height - this.collectionView.sectionInsets.top - this.collectionView.sectionInsets.bottom
             const itemSizes = this.collectionView.flatItems.map(item => {
                 return item.itemSize(this.collectionView.bounds.width, this.collectionView.bounds.height)
             })
@@ -236,9 +236,9 @@ class CollectionViewFlowLayout {
                 if (this.collectionView.flatSegments.indexOf(idx) >= 0) {
                     const sectionIndex = this.collectionView.flatSegments.indexOf(idx)
                     const sectionItem = this.collectionView.sectionsItems[sectionIndex]
-                    currentX += sectionIndex > 0 ? this.collectionView.edgeInsets.right + lineWidth : 0
+                    currentX += sectionIndex > 0 ? this.collectionView.sectionInsets.right + lineWidth : 0
                     currentY = 0
-                    currentX += sectionIndex > 0 ? this.collectionView.edgeInsets.right : 0
+                    currentX += sectionIndex > 0 ? this.collectionView.sectionInsets.right : 0
                     if (footerView) {
                         footerView.frame = RectMake(currentX, 0, footerView.frame.width, this.collectionView.bounds.height)
                         currentX += footerView.frame.width
@@ -254,9 +254,9 @@ class CollectionViewFlowLayout {
                         footerView = undefined
                     }
                 }
-                const frame = RectMake(this.collectionView.edgeInsets.left + currentX + (lineWidth - item.width) / 2.0, this.collectionView.edgeInsets.top + currentY, item.width, item.height)
-                this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.edgeInsets.right)
-                this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.edgeInsets.bottom)
+                const frame = RectMake(this.collectionView.sectionInsets.left + currentX + (lineWidth - item.width) / 2.0, this.collectionView.sectionInsets.top + currentY, item.width, item.height)
+                this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.sectionInsets.right)
+                this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.sectionInsets.bottom)
                 if (lineEndIndex === Infinity) {
                     if (sizeEqually) {
                         currentY += frame.height + lastItemGap
@@ -332,7 +332,7 @@ export class CollectionView extends ScrollView {
         this.reuseContexts[reuseIdentifier] = context;
     }
 
-    edgeInsets: Insets = InsetsMake(0, 0, 0, 0)
+    sectionInsets: Insets = InsetsMake(0, 0, 0, 0)
     lineSpacing: number = 0
     itemSpacing: number = 0
 

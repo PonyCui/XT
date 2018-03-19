@@ -776,7 +776,7 @@ export class CollectionView extends ScrollView {
     scrollDirection: CollectionViewScrollDirection
     items: (CollectionItem | CollectionSection)[]
     register(clazz: typeof CollectionCell, reuseIdentifier: string): void
-    edgeInsets: Insets
+    sectionInsets: Insets
     lineSpacing: number
     itemSpacing: number
     reloadData(): void

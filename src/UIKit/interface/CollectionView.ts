@@ -47,7 +47,7 @@ export class CollectionView extends ScrollView {
     scrollDirection: CollectionViewScrollDirection
     items: (CollectionItem | CollectionSection)[]
     register(clazz: typeof CollectionCell, reuseIdentifier: string, context: any = undefined) { }
-    edgeInsets: Insets = InsetsMake(0, 0, 0, 0)
+    sectionInsets: Insets = InsetsMake(0, 0, 0, 0)
     lineSpacing: number = 0
     itemSpacing: number = 0
     reloadData() { }

@@ -292,7 +292,7 @@
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return [self.scriptObject invokeMethod:@"_edgeInsets" withArguments:@[]].toInsets;
+    return [self.scriptObject invokeMethod:@"_sectionInsets" withArguments:@[]].toInsets;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {

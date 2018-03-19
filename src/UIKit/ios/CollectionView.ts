@@ -72,14 +72,14 @@ export class CollectionView extends ScrollView {
         this.registedContexts[reuseIdentifier] = context;
     }
 
-    edgeInsets: Insets = InsetsMake(0, 0, 0, 0)
+    sectionInsets: Insets = InsetsMake(0, 0, 0, 0)
 
     lineSpacing: number = 0
 
     itemSpacing: number = 0
 
-    _edgeInsets(): Insets {
-        return this.edgeInsets
+    _sectionInsets(): Insets {
+        return this.sectionInsets
     }
 
     _lineSpacing(): number {
