@@ -1,18 +1,38 @@
 /// <reference path="../../xt.d.ts" />
 
-class SampleCell extends UI.CollectionCell {
+class UserCell extends UI.CollectionCell {
+
+	iconImageView = new UI.ImageView
+	nicknameLabel = new UI.Label
 
 	constructor() {
 		super()
-		this.contentView.backgroundColor = UI.Color.greenColor
+		this.iconImageView.cornerRadius = 44
+		this.iconImageView.clipsToBounds = true
+		this.iconImageView.backgroundColor = UI.Color.lightGrayColor
+		this.addSubview(this.iconImageView)
+		this.nicknameLabel.font = UI.Font.systemFontOfSize(15)
+		this.nicknameLabel.text = "#nickname"
+		this.nicknameLabel.textAlignment = UI.TextAlignment.Center
+		this.addSubview(this.nicknameLabel)
+	}
+
+	layoutSubviews() {
+		super.layoutSubviews()
+		this.iconImageView.frame = UI.RectMake(0, 0, 88, 88)
+		this.nicknameLabel.frame = UI.RectMake(0, 88, 88, 32)
 	}
 
 	didHighlighted(value: boolean) {
-		value ? this.contentView.alpha = 0.5 : this.contentView.alpha = 1.0
+
 	}
 
 	didRender() {
-		this.contentView.backgroundColor = UI.Color.grayColor
+		super.didRender()
+		if (this.currentItem) {
+			this.iconImageView.loadImage(this.currentItem.avatar_url)
+			this.nicknameLabel.text = this.currentItem.login
+		}
 	}
 
 }
@@ -32,32 +52,77 @@ export class CollectionViewSample extends UI.ViewController {
 		this.setupCollectionView()
 	}
 
+	private since = 0
+	private dataItems: any[] = []
+
 	setupCollectionView() {
-		this.collectionView.register(SampleCell, "Cell")
-		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Horizontal
-		this.collectionView.sectionInsets = UI.InsetsMake(20, 10, 20, 10)
+		this.collectionView.register(UserCell, "Cell")
+		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Vertical
+		this.collectionView.sectionInsets = UI.InsetsMake(20, 20, 20, 20)
 		this.collectionView.lineSpacing = 20
 		this.collectionView.itemSpacing = 20
-		let items = [];
-		for (let index = 0; index < 200; index++) {
-			items.push({
-				reuseIdentifier: "Cell",
-				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
+		this.collectionView.items = [{
+			reuseIdentifier: "Cell",
+			itemSize: () => UI.SizeMake(88, 88 + 32)
+		}]
+		this.collectionView.alpha = 0.0
+		this.setupRefreshControl()
+		this.setupLoadMoreControl()
+		this.loadData(() => {
+			UI.View.animationWithDuration(0.3, () => {
+				this.collectionView.alpha = 1.0
+			})
+		})
+	}
+
+	setupRefreshControl() {
+		this.collectionView.refreshControl = new UI.RefreshControl()
+		this.collectionView.refreshControl.onRefresh = () => {
+			this.since = 0
+			this.dataItems = []
+			this.loadData(() => {
+				this.collectionView.refreshControl && this.collectionView.refreshControl.endRefreshing()
+				if (this.collectionView.loadMoreControl) {
+					this.collectionView.loadMoreControl.enabled = true
+				}
 			})
 		}
-		const firstSection = new UI.CollectionSection()
-		firstSection.headerView = new UI.View()
-		firstSection.headerView.frame = UI.RectMake(0, 0, 44, 44)
-		firstSection.headerView.backgroundColor = UI.Color.yellowColor
-		firstSection.footerView = new UI.View()
-		firstSection.footerView.frame = UI.RectMake(0, 0, 44, 66)
-		firstSection.footerView.backgroundColor = UI.Color.greenColor
-		firstSection.items = items
-		this.collectionView.items = [firstSection, {
-			reuseIdentifier: "Cell",
-			itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
-		}]
-		this.collectionView.reloadData()
+	}
+
+	setupLoadMoreControl() {
+		this.collectionView.loadMoreControl = new UI.LoadMoreControl()
+		this.collectionView.loadMoreControl.enabled = true
+		this.collectionView.loadMoreControl.onLoad = () => {
+			console.log("loadMoreControl");
+			
+			this.loadData(() => {
+				if (this.collectionView.loadMoreControl) {
+					this.collectionView.loadMoreControl.enabled = this.since < 300
+					this.collectionView.loadMoreControl.endLoading()
+				}
+			})
+		}
+	}
+
+	loadData(complete: () => void) {
+		NS.URLSession.sharedSession.dataTaskWithURL("http://xt-studio.com/GHUser/" + this.since.toString() + ".json", (data) => {
+			if (data) {
+				try {
+					const json: any[] = JSON.parse(data.utf8String()!)
+					json.forEach(it => {
+						this.dataItems.push({
+							...it,
+							reuseIdentifier: "Cell",
+							itemSize: () => UI.SizeMake(88, 88 + 32)
+						})
+						this.since = it["id"]
+					})
+					this.collectionView.items = this.dataItems
+					this.collectionView.reloadData()
+					complete()
+				} catch (e) { console.log(e.message) }
+			}
+		}).resume()
 	}
 
 }

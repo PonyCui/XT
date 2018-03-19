@@ -9,7 +9,7 @@
 #import "XTUIView.h"
 #import "XTComponent.h"
 
-@class XTUIListView;
+@class XTUIListView, XTUICollectionView;
 
 @protocol XTUILoadMoreControlExport<XTUIViewExport, JSExport>
 
@@ -26,6 +26,7 @@
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, weak) XTUIListView *listView;
+@property (nonatomic, weak) XTUICollectionView *collectionView;
 
 - (void)startLoading;
 

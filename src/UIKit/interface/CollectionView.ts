@@ -1,6 +1,8 @@
 import { ScrollView } from "./ScrollView";
 import { Size, SizeMake, Insets, InsetsMake } from "./Rect";
 import { View } from "./View";
+import { RefreshControl } from "./RefreshControl";
+import { LoadMoreControl } from "./LoadMoreControl";
 
 export interface CollectionItem {
 
@@ -44,6 +46,8 @@ export enum CollectionViewScrollDirection {
 
 export class CollectionView extends ScrollView {
 
+    refreshControl?: RefreshControl
+    loadMoreControl?: LoadMoreControl
     scrollDirection: CollectionViewScrollDirection
     items: (CollectionItem | CollectionSection)[]
     register(clazz: typeof CollectionCell, reuseIdentifier: string, context: any = undefined) { }

@@ -2,6 +2,8 @@ import { ScrollView } from "./ScrollView";
 import { Size, SizeMake, Insets, InsetsMake } from "../interface/Rect";
 import { View } from "./View";
 import { CollectionItem, CollectionSection } from "../interface/CollectionView";
+import { RefreshControl } from "./RefreshControl";
+import { LoadMoreControl } from "./LoadMoreControl";
 
 export class CollectionCell extends View {
 
@@ -165,6 +167,26 @@ export class CollectionView extends ScrollView {
             cell.currentItem = item;
             cell.didHighlighted(highlighted);
         }
+    }
+
+    public get refreshControl(): RefreshControl | undefined {
+        const ref = _XTUICollectionView.xtr_refreshControl(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return RefreshControl.findByRef(ref)
+    }
+
+    public set refreshControl(value: RefreshControl | undefined) {
+        _XTUICollectionView.xtr_setRefreshControlObjectRef(value ? value.objectRef : "", this.objectRef);
+    }
+
+    public get loadMoreControl(): LoadMoreControl | undefined {
+        const ref = _XTUICollectionView.xtr_loadMoreControl(this.objectRef)
+        if (typeof ref !== "string") { return undefined }
+        return LoadMoreControl.findByRef<LoadMoreControl>(ref)
+    }
+
+    public set loadMoreControl(value: LoadMoreControl | undefined) {
+        _XTUICollectionView.xtr_setLoadMoreControlObjectRef(value ? value.objectRef : "", this.objectRef);
     }
 
 }

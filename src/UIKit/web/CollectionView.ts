@@ -3,6 +3,9 @@ import { Size, SizeMake, Insets, InsetsMake, Rect, RectMake, RectEqual, Point } 
 import { View, InteractionState } from "./View";
 import { CollectionItem, CollectionSection } from "../interface/CollectionView";
 import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
+import { RefreshControl } from "./RefreshControl";
+import { LoadMoreControl } from "./LoadMoreControl";
+import { RefreshAnimationView } from "./ListView";
 
 export class CollectionCell extends View {
 
@@ -82,9 +85,7 @@ class CollectionViewFlowLayout {
     public itemFrames: Rect[] = []
     public contentSize: { width: number, height: number } = { width: 0, height: 0 }
 
-    constructor(readonly collectionView: CollectionView) {
-
-    }
+    constructor(readonly collectionView: CollectionView) { }
 
     reload() {
         this.contentSize.width = 0
@@ -295,6 +296,9 @@ export class CollectionView extends ScrollView {
         if (!RectEqual(this._previousBounds, this.bounds)) {
             this._previousBounds = this.bounds
             this.reloadData()
+            if (this.refreshAnimationView) {
+                this.refreshAnimationView.frame = RectMake(0, 0, this.bounds.width, 44)
+            }
         }
     }
 
@@ -341,6 +345,7 @@ export class CollectionView extends ScrollView {
             if ((it as any).__is__header__ === true) { it.removeFromSuperview() }
             if ((it as any).__is__footer__ === true) { it.removeFromSuperview() }
         })
+        this._reusingCells.forEach(it => it._isBusy = false)
         this.sectionsItems = []
         let defaultSection = new CollectionSection()
         this.flatItems = []
@@ -382,6 +387,16 @@ export class CollectionView extends ScrollView {
         super.scrollerDidScroll()
         if (this._reusingCells !== undefined) {
             this.reloadVisibleItems()
+        }
+        if (this.scrollDirection == CollectionViewScrollDirection.Vertical) {
+            if (this.contentOffset.y + this.bounds.height > this.contentSize.height - 200) {
+                this.listViewWillTriggerLoadMoreControl()
+            }
+        }
+        else if (this.scrollDirection == CollectionViewScrollDirection.Horizontal) {
+            if (this.contentOffset.x + this.bounds.width > this.contentSize.width - 200) {
+                this.listViewWillTriggerLoadMoreControl()
+            }
         }
     }
 
@@ -466,6 +481,116 @@ export class CollectionView extends ScrollView {
             }).forEach(cell => {
                 cell._isBusy = false;
             });
+        }
+    }
+
+    // Refresh Control
+
+    private _refreshControl: RefreshControl | undefined = undefined
+    private refreshAnimationView?: RefreshAnimationView
+
+    public get refreshControl(): RefreshControl | undefined {
+        return this._refreshControl;
+    }
+
+    public set refreshControl(value: RefreshControl | undefined) {
+        this._refreshControl = value;
+        this.scroller.refreshEnabled = value instanceof RefreshControl && value.enabled
+        if (this.refreshAnimationView) { this.refreshAnimationView.removeFromSuperview() }
+        if (value) {
+            value.listView = this
+            this.refreshAnimationView = new RefreshAnimationView
+            this.refreshAnimationView.color = value.color
+            this._addSubview(this.refreshAnimationView)
+            this.refreshAnimationView.frame = RectMake(0, 0, this.bounds.width, 44)
+            this.refreshAnimationView.alpha = 0.0
+        }
+    }
+
+    scrollerWillRefresh(progress: number): void {
+        super.scrollerWillRefresh(progress)
+        if (this.refreshControl && this.refreshAnimationView) {
+            this.refreshAnimationView.alpha = progress
+        }
+    }
+
+    private refreshing = false
+
+    scrollerRefreshing() {
+        super.scrollerRefreshing()
+        this.refreshing = true
+    }
+
+    scrollerWillBeginDecelerating() {
+        super.scrollerWillBeginDecelerating()
+        if (this.refreshControl && this.refreshAnimationView) {
+            if (!this.refreshing) {
+                this.refreshAnimationView.alpha = 0.0
+            }
+        }
+    }
+
+    scrollerDidEndDecelerating() {
+        super.scrollerDidEndDecelerating()
+        if (this.refreshControl && this.refreshAnimationView) {
+            if (this.refreshing) {
+                this.refreshControl.handleRefresh()
+                this.refreshAnimationView.startAnimation()
+            }
+            else {
+                this.refreshAnimationView.alpha = 0.0
+            }
+        }
+    }
+
+    private endRefreshing() {
+        this.refreshing = false
+        if (this.refreshAnimationView) {
+            this.refreshAnimationView.stopAnimation()
+            this.refreshAnimationView.alpha = 0.0
+            this.scroller.endRefreshing()
+        }
+    }
+
+    // LoadMoreControl
+
+    private _loadMoreControl: LoadMoreControl | undefined = undefined
+    private loadMoreAnimationView?: RefreshAnimationView
+
+    public get loadMoreControl(): LoadMoreControl | undefined {
+        return this._loadMoreControl;
+    }
+
+    public set loadMoreControl(value: LoadMoreControl | undefined) {
+        this._loadMoreControl = value;
+        if (this.loadMoreAnimationView) { this.loadMoreAnimationView.removeFromSuperview() }
+        if (value) {
+            value.listView = this
+            this.loadMoreAnimationView = new RefreshAnimationView
+            this.loadMoreAnimationView.color = value.color
+            this.loadMoreAnimationView.alpha = 0.0
+            this.loadMoreAnimationView.retain(this)
+        }
+    }
+
+    private listViewWillTriggerLoadMoreControl() {
+        if (this.loadMoreControl && this.loadMoreControl.enabled && !this.loadMoreControl.isLoading && this.loadMoreAnimationView) {
+            this.loadMoreControl.handleLoading()
+            this.loadMoreAnimationView.removeFromSuperview()
+            this.addSubview(this.loadMoreAnimationView)
+            this.loadMoreAnimationView.frame = RectMake(0, this.contentSize.height, this.bounds.width, 44.0)
+            this.contentInset = { ...this.contentInset, bottom: this.contentInset.bottom + 44 }
+            this.loadMoreAnimationView.startAnimation()
+            this.loadMoreAnimationView.alpha = 1.0
+        }
+    }
+
+    private endMoreLoading() {
+        if (this.loadMoreAnimationView) {
+            this.loadMoreAnimationView.stopAnimation()
+            this.loadMoreAnimationView.alpha = 0.0
+            this.loadMoreAnimationView.removeFromSuperview()
+            this.contentInset = { ...this.contentInset, bottom: this.contentInset.bottom - 44 }
         }
     }
 

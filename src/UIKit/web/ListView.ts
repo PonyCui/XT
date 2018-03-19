@@ -146,7 +146,7 @@ export class ListSection {
 }
 
 
-class RefreshAnimationView extends View {
+export class RefreshAnimationView extends View {
 
     leftDot = new View
     midDot = new View
@@ -284,6 +284,7 @@ export class ListView extends ScrollView {
             if ((it as any).__is__header__ === true) { it.removeFromSuperview() }
             if ((it as any).__is__footer__ === true) { it.removeFromSuperview() }
         })
+        this._reusingCells.forEach(it => it._isBusy = false)
         let currentY = 0;
         this._cacheRows = [];
         this._lastRows = {};

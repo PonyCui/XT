@@ -9,10 +9,14 @@
 #import "XTUICollectionView.h"
 #import "XTMemoryManager.h"
 #import "XTUIUtils.h"
+#import "XTUIRefreshControl.h"
+#import "XTUILoadMoreControl.h"
 
 @interface XTUICollectionView()<UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, readwrite) UICollectionView *innerView;
+@property (nonatomic, strong) XTUIRefreshControl *myRefreshControl;
+@property (nonatomic, strong) XTUILoadMoreControl *loadMoreControl;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 @property (nonatomic, strong) UICollectionViewFlowLayout *layout;
 @property (nonatomic, strong) NSMutableSet *retainViews;
@@ -20,6 +24,53 @@
 @end
 
 @implementation XTUICollectionView
+
++ (NSString *)xtr_refreshControl:(NSString *)objectRef {
+    XTUICollectionView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUICollectionView class]]) {
+        if ([listView.myRefreshControl isKindOfClass:[XTUIRefreshControl class]]) {
+            return [(XTUIRefreshControl *)(listView.myRefreshControl) objectUUID];
+        }
+    }
+    return nil;
+}
+
++ (void)xtr_setRefreshControl:(NSString *)rcRef objectRef:(NSString *)objectRef {
+    XTUICollectionView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUICollectionView class]]) {
+        XTUIRefreshControl *refreshControl = [XTMemoryManager find:rcRef];
+        if ([refreshControl isKindOfClass:[XTUIRefreshControl class]]) {
+            listView.myRefreshControl = refreshControl;
+        }
+        else {
+            listView.myRefreshControl = nil;
+        }
+    }
+}
+
++ (NSString *)xtr_loadMoreControl:(NSString *)objectRef {
+    XTUICollectionView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUICollectionView class]]) {
+        if ([listView.loadMoreControl isKindOfClass:[XTUILoadMoreControl class]]) {
+            return [(XTUILoadMoreControl *)(listView.loadMoreControl) objectUUID];
+        }
+    }
+    return nil;
+}
+
++ (void)xtr_setLoadMoreControl:(NSString *)rcRef objectRef:(NSString *)objectRef {
+    XTUICollectionView *listView = [XTMemoryManager find:objectRef];
+    if ([listView isKindOfClass:[XTUICollectionView class]]) {
+        XTUILoadMoreControl *loadMoreControl = [XTMemoryManager find:rcRef];
+        if ([loadMoreControl isKindOfClass:[XTUILoadMoreControl class]]) {
+            listView.loadMoreControl = loadMoreControl;
+        }
+        else {
+            listView.loadMoreControl = nil;
+        }
+    }
+}
+
 
 + (void)xtr_registerCell:(NSString *)reuseIdentifier objectRef:(NSString *)objectRef {
     XTUICollectionView *view = [XTMemoryManager find:objectRef];
@@ -114,12 +165,44 @@
     }];
 }
 
+- (void)setMyRefreshControl:(XTUIRefreshControl *)myRefreshControl {
+    if (@available(iOS 10.0, *)) {
+        [self.innerView setRefreshControl:myRefreshControl];
+    }
+    else {
+        if (_myRefreshControl != nil) {
+            [_myRefreshControl removeFromSuperview];
+        }
+        [self.innerView addSubview:myRefreshControl];
+    }
+    _myRefreshControl = myRefreshControl;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.innerView.frame = self.bounds;
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDataSource
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    JSValue *value = self.scriptObject;
+    if (value != nil) {
+        [value invokeMethod:@"handleScroll" withArguments:@[]];
+    }
+    if (scrollView.contentOffset.y + scrollView.bounds.size.height > scrollView.contentSize.height - 200.0) {
+        [self collectionViewWillTriggerLoadMoreControl];
+    }
+}
+
+- (void)collectionViewWillTriggerLoadMoreControl {
+    if (self.loadMoreControl != nil) {
+        self.loadMoreControl.collectionView = self;
+        if (self.loadMoreControl.enabled && !self.loadMoreControl.isLoading) {
+            [self.loadMoreControl startLoading];
+        }
+    }
+}
 
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView
                                    cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {

@@ -12,6 +12,10 @@
 
 @protocol XTUICollectionViewExport <XTUIViewExport, JSExport>
 
++ (NSString *)xtr_refreshControl:(NSString *)objectRef;
++ (void)xtr_setRefreshControl:(NSString *)rcRef objectRef:(NSString *)objectRef;
++ (NSString *)xtr_loadMoreControl:(NSString *)objectRef;
++ (void)xtr_setLoadMoreControl:(NSString *)rcRef objectRef:(NSString *)objectRef;
 + (void)xtr_registerCell:(NSString *)reuseIdentifier objectRef:(NSString *)objectRef;
 + (void)xtr_setItems:(JSValue *)items objectRef:(NSString *)objectRef;
 + (void)xtr_reloadData:(NSString *)objectRef;

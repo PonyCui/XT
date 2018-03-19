@@ -773,6 +773,8 @@ export enum CollectionViewScrollDirection {
 
 export class CollectionView extends ScrollView {
 
+    refreshControl?: RefreshControl
+    loadMoreControl?: LoadMoreControl
     scrollDirection: CollectionViewScrollDirection
     items: (CollectionItem | CollectionSection)[]
     register(clazz: typeof CollectionCell, reuseIdentifier: string): void
