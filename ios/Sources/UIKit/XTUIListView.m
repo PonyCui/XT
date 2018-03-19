@@ -283,8 +283,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *reuseIdentifier = @"Cell";
-    if (indexPath.row < self.items.count) {
-        reuseIdentifier = self.items[indexPath.row][@"reuseIdentifier"] ?: @"Cell";
+    if (indexPath.section < self.items.count) {
+        NSArray *items = self.items[indexPath.section][@"items"];
+        if ([items isKindOfClass:[NSArray class]]) {
+            if (indexPath.row < items.count) {
+                reuseIdentifier = items[indexPath.row][@"reuseIdentifier"];
+                if (![reuseIdentifier isKindOfClass:[NSString class]]) {
+                    reuseIdentifier = @"Cell";
+                }
+            }
+        }
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     if (cell == nil) {

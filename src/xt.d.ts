@@ -758,6 +758,14 @@ export class CollectionCell extends View {
 
 }
 
+export class CollectionSection {
+
+    public headerView?: View
+    public footerView?: View
+    public items: CollectionItem[]
+
+}
+
 export enum CollectionViewScrollDirection {
     Vertical,
     Horizontal,
@@ -766,7 +774,7 @@ export enum CollectionViewScrollDirection {
 export class CollectionView extends ScrollView {
 
     scrollDirection: CollectionViewScrollDirection
-    items: CollectionItem[]
+    items: (CollectionItem | CollectionSection)[]
     register(clazz: typeof CollectionCell, reuseIdentifier: string): void
     edgeInsets: Insets
     lineSpacing: number
@@ -968,6 +976,7 @@ declare global {
         CollectionItem: CollectionItem,
         CollectionEntity: typeof CollectionEntity,
         CollectionCell: typeof CollectionCell,
+        CollectionSection: typeof CollectionSection,
         CollectionViewScrollDirection: typeof CollectionViewScrollDirection,
         CollectionView: typeof CollectionView,
     };

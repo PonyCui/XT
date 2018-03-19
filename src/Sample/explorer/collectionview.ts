@@ -34,7 +34,7 @@ export class CollectionViewSample extends UI.ViewController {
 
 	setupCollectionView() {
 		this.collectionView.register(SampleCell, "Cell")
-		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Vertical
+		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Horizontal
 		this.collectionView.edgeInsets = UI.InsetsMake(20, 10, 20, 10)
 		this.collectionView.lineSpacing = 20
 		this.collectionView.itemSpacing = 20
@@ -45,7 +45,12 @@ export class CollectionViewSample extends UI.ViewController {
 				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
 			})
 		}
-		this.collectionView.items = items
+		const firstSection = new UI.CollectionSection()
+		firstSection.headerView = new UI.View()
+		firstSection.headerView.frame = UI.RectMake(0, 0, 44, 44)
+		firstSection.headerView.backgroundColor = UI.Color.yellowColor
+		firstSection.items = items
+		this.collectionView.items = [firstSection]
 		this.collectionView.reloadData()
 	}
 

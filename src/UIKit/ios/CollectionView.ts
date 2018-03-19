@@ -1,7 +1,7 @@
 import { ScrollView } from "./ScrollView";
 import { Size, SizeMake, Insets, InsetsMake } from "../interface/Rect";
 import { View } from "./View";
-import { CollectionItem } from "../interface/CollectionView";
+import { CollectionItem, CollectionSection } from "../interface/CollectionView";
 
 export class CollectionCell extends View {
 
@@ -63,7 +63,8 @@ export class CollectionView extends ScrollView {
         _XTUICollectionView.xtr_setScrollDirectionObjectRef(value, this.objectRef)
     }
 
-    items: CollectionItem[]
+    items: (CollectionItem | CollectionSection)[]
+    private _sectionsItems: CollectionSection[]
 
     register(clazz: typeof CollectionCell, reuseIdentifier: string, context: any = undefined) {
         _XTUICollectionView.xtr_registerCellObjectRef(reuseIdentifier, this.objectRef)
@@ -90,53 +91,78 @@ export class CollectionView extends ScrollView {
     }
 
     reloadData() {
-        _XTUICollectionView.xtr_setItemsObjectRef(this.items, this.objectRef);
+        this._sectionsItems = []
+        let defaultSection = new CollectionSection()
+        this.items.forEach(item => {
+            if (item instanceof CollectionSection) {
+                defaultSection = new CollectionSection()
+                if (item.headerView) {
+                    (item as any).__headerViewObjectRef = item.headerView.objectRef
+                }
+                if (item.footerView) {
+                    (item as any).__footerViewObjectRef = item.footerView.objectRef
+                }
+                this._sectionsItems.push(item)
+            }
+            else {
+                if (this._sectionsItems.indexOf(defaultSection) < 0) {
+                    this._sectionsItems.push(defaultSection)
+                }
+                defaultSection.items.push(item)
+            }
+        })
+        _XTUICollectionView.xtr_setItemsObjectRef(this._sectionsItems, this.objectRef);
         _XTUICollectionView.xtr_reloadData(this.objectRef);
     }
 
-    requestItemSize(width: number, height: number, itemIndex: number): Size {
-        if (this.items[itemIndex] && typeof this.items[itemIndex].itemSize === "function") {
-            return this.items[itemIndex].itemSize(width, height)
+    requestItemSize(width: number, height: number, sectionIndex: number, rowIndex: number): Size {
+        const item = this._sectionsItems[sectionIndex] && this._sectionsItems[sectionIndex].items[rowIndex]
+        if (item && typeof item.itemSize === "function") {
+            return item.itemSize(width, height);
         }
         return SizeMake(0, 0)
     }
 
-    requestItemCell(itemIndex: number): string {
-        if (this.items[itemIndex]) {
-            if (this.registedClasses[this.items[itemIndex].reuseIdentifier] !== undefined) {
-                const clazz: typeof CollectionCell = this.registedClasses[this.items[itemIndex].reuseIdentifier];
+    requestItemCell(sectionIndex: number, rowIndex: number): string {
+        const item = this._sectionsItems[sectionIndex] && this._sectionsItems[sectionIndex].items[rowIndex]
+        if (item) {
+            if (this.registedClasses[item.reuseIdentifier] !== undefined) {
+                const clazz: typeof CollectionCell = this.registedClasses[item.reuseIdentifier];
                 const cell = new clazz(undefined);
-                cell.reuseIdentifier = this.items[itemIndex].reuseIdentifier || "Cell";
-                cell.context = this.registedContexts[this.items[itemIndex].reuseIdentifier];
+                cell.reuseIdentifier = item.reuseIdentifier || "Cell";
+                cell.context = this.registedContexts[item.reuseIdentifier];
                 return cell.objectRef;
             }
         }
         return new CollectionCell(undefined).objectRef;
     }
 
-    handleRenderItem(itemIndex: number, cellRef: string): void {
+    handleRenderItem(sectionIndex: number, rowIndex: number, cellRef: string): void {
         if (typeof cellRef !== "string") { return }
-        if (this.items[itemIndex]) {
+        const item = this._sectionsItems[sectionIndex] && this._sectionsItems[sectionIndex].items[rowIndex]
+        if (item) {
             const cell = CollectionCell.findByRef<CollectionCell>(cellRef)
-            cell.currentItem = this.items[itemIndex];
+            cell.currentItem = item;
             cell.didRender();
         }
     }
 
-    handleSelected(itemIndex: number, cellRef: string): void {
+    handleSelected(sectionIndex: number, rowIndex: number, cellRef: string): void {
         if (typeof cellRef !== "string") { return }
-        if (this.items[itemIndex]) {
+        const item = this._sectionsItems[sectionIndex] && this._sectionsItems[sectionIndex].items[rowIndex]
+        if (item) {
             const cell = CollectionCell.findByRef<CollectionCell>(cellRef)
-            cell.currentItem = this.items[itemIndex];
+            cell.currentItem = item;
             cell.didSelected();
         }
     }
 
-    handleHighlighted(itemIndex: number, highlighted: boolean, cellRef: string): void {
+    handleHighlighted(sectionIndex: number, rowIndex: number, highlighted: boolean, cellRef: string): void {
         if (typeof cellRef !== "string") { return }
-        if (this.items[itemIndex]) {
+        const item = this._sectionsItems[sectionIndex] && this._sectionsItems[sectionIndex].items[rowIndex]
+        if (item) {
             const cell = CollectionCell.findByRef<CollectionCell>(cellRef)
-            cell.currentItem = this.items[itemIndex];
+            cell.currentItem = item;
             cell.didHighlighted(highlighted);
         }
     }

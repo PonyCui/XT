@@ -15,6 +15,7 @@
 @property (nonatomic, readwrite) UICollectionView *innerView;
 @property (nonatomic, copy) NSArray<NSDictionary *> *items;
 @property (nonatomic, strong) UICollectionViewFlowLayout *layout;
+@property (nonatomic, strong) NSMutableSet *retainViews;
 
 @end
 
@@ -77,9 +78,40 @@
             self.innerView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
         [self.innerView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"Cell"];
+        [self.innerView registerClass:[UICollectionReusableView class]
+           forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                  withReuseIdentifier:@"SectionView"];
+        [self.innerView registerClass:[UICollectionReusableView class]
+           forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                  withReuseIdentifier:@"SectionView"];
+        self.retainViews = [NSMutableSet set];
         [self addSubview:self.innerView];
     }
     return self;
+}
+
+- (void)setItems:(NSArray<NSDictionary *> *)items {
+    _items = items;
+    [_items enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        {
+            NSString *objectRef = obj[@"__headerViewObjectRef"];
+            if ([objectRef isKindOfClass:[NSString class]]) {
+                UIView *view = [XTMemoryManager find:objectRef];
+                if ([view isKindOfClass:[UIView class]]) {
+                    [self.retainViews addObject:view];
+                }
+            }
+        }
+        {
+            NSString *objectRef = obj[@"__footerViewObjectRef"];
+            if ([objectRef isKindOfClass:[NSString class]]) {
+                UIView *view = [XTMemoryManager find:objectRef];
+                if ([view isKindOfClass:[UIView class]]) {
+                    [self.retainViews addObject:view];
+                }
+            }
+        }
+    }];
 }
 
 - (void)layoutSubviews {
@@ -92,8 +124,16 @@
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView
                                    cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     NSString *reuseIdentifier = @"Cell";
-    if (indexPath.row < self.items.count) {
-        reuseIdentifier = self.items[indexPath.row][@"reuseIdentifier"] ?: @"Cell";
+    if (indexPath.section < self.items.count) {
+        NSArray *items = self.items[indexPath.section][@"items"];
+        if ([items isKindOfClass:[NSArray class]]) {
+            if (indexPath.row < items.count) {
+                reuseIdentifier = items[indexPath.row][@"reuseIdentifier"];
+                if (![reuseIdentifier isKindOfClass:[NSString class]]) {
+                    reuseIdentifier = @"Cell";
+                }
+            }
+        }
     }
     UICollectionViewCell *cell;
     @try {
@@ -104,7 +144,7 @@
     }
     XTUIView *itemView = [cell.contentView viewWithTag:-1000];
     if (itemView == nil) {
-        NSString *requestViewObjectRef = [self.scriptObject invokeMethod:@"requestItemCell" withArguments:@[@(indexPath.item)]].toString;
+        NSString *requestViewObjectRef = [self.scriptObject invokeMethod:@"requestItemCell" withArguments:@[@(indexPath.section), @(indexPath.row)]].toString;
         XTUIView *requestView = [XTMemoryManager find:requestViewObjectRef];
         if ([requestView isKindOfClass:[XTUIView class]]) {
             itemView = requestView;
@@ -115,14 +155,73 @@
         }
     }
     [self.scriptObject invokeMethod:@"handleRenderItem" withArguments:@[
-                                                                        @(indexPath.item),
+                                                                        @(indexPath.section),
+                                                                        @(indexPath.row),
                                                                         itemView.objectUUID ?: [NSNull null],
                                                                         ]];
     return cell;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    if (section < self.items.count) {
+        NSString *objectRef = self.items[section][@"__headerViewObjectRef"];
+        if ([objectRef isKindOfClass:[NSString class]]) {
+            UIView *view = [XTMemoryManager find:objectRef];
+            if ([view isKindOfClass:[UIView class]]) {
+                if (self.layout.scrollDirection == UICollectionViewScrollDirectionVertical) {
+                    return CGSizeMake(collectionView.bounds.size.width, view.frame.size.height);
+                }
+                else if (self.layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+                    return CGSizeMake(view.frame.size.width, collectionView.bounds.size.height);
+                }
+            }
+        }
+    }
+    return CGSizeZero;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *sectionView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"SectionView" forIndexPath:indexPath];
+    [[sectionView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    if (kind == UICollectionElementKindSectionHeader) {
+        if (indexPath.section < self.items.count) {
+            NSString *objectRef = self.items[indexPath.section][@"__headerViewObjectRef"];
+            if ([objectRef isKindOfClass:[NSString class]]) {
+                UIView *view = [XTMemoryManager find:objectRef];
+                if ([view isKindOfClass:[UIView class]]) {
+                    view.frame = sectionView.bounds;
+                    [sectionView addSubview:view];
+                }
+            }
+        }
+    }
+    if (kind == UICollectionElementKindSectionFooter) {
+        if (indexPath.section < self.items.count) {
+            NSString *objectRef = self.items[indexPath.section][@"__footerViewObjectRef"];
+            if ([objectRef isKindOfClass:[NSString class]]) {
+                UIView *view = [XTMemoryManager find:objectRef];
+                if ([view isKindOfClass:[UIView class]]) {
+                    view.frame = sectionView.bounds;
+                    [sectionView addSubview:view];
+                }
+            }
+        }
+    }
+    return sectionView;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return [self.items count];
+}
+
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.items.count;
+    if (section < self.items.count) {
+        NSArray *items = self.items[section][@"items"];
+        if ([items isKindOfClass:[NSArray class]]) {
+            return items.count;
+        }
+    }
+    return 0;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -130,7 +229,8 @@
     XTUIView *itemView = [cell.contentView viewWithTag:-1000];
     if ([itemView isKindOfClass:[XTUIView class]]) {
         [self.scriptObject invokeMethod:@"handleSelected" withArguments:@[
-                                                                          @(indexPath.item),
+                                                                          @(indexPath.section),
+                                                                          @(indexPath.row),
                                                                           itemView.objectUUID ?: [NSNull null],
                                                                           ]];
     }
@@ -141,7 +241,8 @@
     XTUIView *itemView = [cell.contentView viewWithTag:-1000];
     if ([itemView isKindOfClass:[XTUIView class]]) {
         [self.scriptObject invokeMethod:@"handleHighlighted" withArguments:@[
-                                                                             @(indexPath.item),
+                                                                             @(indexPath.section),
+                                                                             @(indexPath.row),
                                                                              @(YES),
                                                                              itemView.objectUUID ?: [NSNull null],
                                                                              ]];
@@ -153,7 +254,8 @@
     XTUIView *itemView = [cell.contentView viewWithTag:-1000];
     if ([itemView isKindOfClass:[XTUIView class]]) {
         [self.scriptObject invokeMethod:@"handleHighlighted" withArguments:@[
-                                                                             @(indexPath.item),
+                                                                             @(indexPath.section),
+                                                                             @(indexPath.row),
                                                                              @(NO),
                                                                              itemView.objectUUID ?: [NSNull null],
                                                                              ]];
@@ -166,7 +268,8 @@
     return [self.scriptObject invokeMethod:@"requestItemSize" withArguments:@[
                                                                               @(collectionView.bounds.size.width),
                                                                               @(collectionView.bounds.size.height),
-                                                                              @(indexPath.item),
+                                                                              @(indexPath.section),
+                                                                              @(indexPath.row),
                                                                               ]].toSize;
 }
 

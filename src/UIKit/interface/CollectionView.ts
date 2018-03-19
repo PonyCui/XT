@@ -29,6 +29,14 @@ export class CollectionCell extends View {
 
 }
 
+export class CollectionSection {
+
+    public headerView?: View
+    public footerView?: View
+    public items: CollectionItem[] = [];
+
+}
+
 export enum CollectionViewScrollDirection {
     Vertical,
     Horizontal,
@@ -37,7 +45,7 @@ export enum CollectionViewScrollDirection {
 export class CollectionView extends ScrollView {
 
     scrollDirection: CollectionViewScrollDirection
-    items: CollectionItem[]
+    items: (CollectionItem | CollectionSection)[]
     register(clazz: typeof CollectionCell, reuseIdentifier: string, context: any = undefined) { }
     edgeInsets: Insets = InsetsMake(0, 0, 0, 0)
     lineSpacing: number = 0
