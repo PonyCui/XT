@@ -1,7 +1,8 @@
 import { ScrollView } from "./ScrollView";
 import { Size, SizeMake, Insets, InsetsMake, Rect, RectMake, RectEqual, Point } from "../interface/Rect";
-import { View } from "./View";
+import { View, InteractionState } from "./View";
 import { CollectionItem } from "../interface/CollectionView";
+import { LongPressGestureRecognizer } from "../libraries/touch/LongPressGestureRecognizer";
 
 export class CollectionCell extends View {
 
@@ -19,6 +20,39 @@ export class CollectionCell extends View {
         this.selectionView.alpha = 0.0;
         this.addSubview(this.selectionView);
         this.addSubview(this.contentView);
+        this.userInteractionEnabled = true
+        this.longPressDuration = 0.05
+        this.onTap = () => {
+            this.highligted = true
+            this.selectionView.hidden = false
+            this.didSelected();
+            setTimeout(() => {
+                View.animationWithDuration(0.15, () => {
+                    this.highligted = false
+                }, () => { this.selectionView.hidden = true })
+            }, 250)
+        }
+        this.onLongPress = (state: InteractionState) => {
+            if (state == InteractionState.Began) {
+                this.highligted = true
+                this.selectionView.hidden = false
+            }
+            else if (state == InteractionState.Ended) {
+                this.didSelected();
+                View.animationWithDuration(0.15, () => {
+                    this.highligted = false
+                }, () => { this.selectionView.hidden = true })
+            }
+            else if (state == InteractionState.Cancelled) {
+                this.highligted = false
+                this.selectionView.hidden = true
+            }
+        }
+        this.gestureRecongnizers.forEach(t => {
+            if (t instanceof LongPressGestureRecognizer) {
+                t.cancellable = true
+            }
+        })
     }
 
     layoutSubviews() {
@@ -30,6 +64,11 @@ export class CollectionCell extends View {
     // Private
 
     _isBusy = false
+
+    public set highligted(value: boolean) {
+        this.didHighlighted(value)
+        this.selectionView.alpha = value ? 1.0 : 0.0;
+    }
 
 }
 
@@ -55,35 +94,43 @@ class CollectionViewFlowLayout {
             const itemSizes = this.collectionView.items.map(item => {
                 return item.itemSize(this.collectionView.bounds.width, this.collectionView.bounds.height)
             })
+            const sizeEqually = itemSizes.length > 0 && itemSizes.every(v => {
+                return v.width == itemSizes[0].width && v.height == itemSizes[0].height
+            })
             let firstItem = false
             let currentX = 0
             let currentY = 0
             let lineHeight = 0;
             let lineContentWidth = 0;
+            let lastItemGap = 0;
             let lineStartIndex = 0;
             let lineEndIndex = -1;
             this.itemFrames = itemSizes.map((item, idx) => {
                 if (idx > lineEndIndex) {
                     firstItem = true
                     currentX = 0
-                    currentY += lineHeight + this.collectionView.lineSpacing
+                    if (lineEndIndex > -1) {
+                        currentY += lineHeight + this.collectionView.lineSpacing
+                    }
                 }
                 if (firstItem) {
+                    lastItemGap = (wrapWidth - lineContentWidth) / (lineEndIndex - lineStartIndex)
+                    lineContentWidth = 0;
                     lineHeight = 0;
-                    lineStartIndex = idx
-                    lineEndIndex = idx
-                    let left = 0
+                    lineStartIndex = idx;
+                    lineEndIndex = idx;
+                    let left = 0;
                     for (let index = idx; index < itemSizes.length; index++) {
                         const elementSize = itemSizes[index]
                         lineHeight = Math.max(lineHeight, elementSize.height)
                         lineContentWidth += elementSize.width
                         left += this.collectionView.itemSpacing + elementSize.width
-                        if (left >= wrapWidth) {
+                        if (left > wrapWidth) {
                             lineEndIndex = index;
                             break;
                         }
                         else if (index + 1 < itemSizes.length &&
-                            left + this.collectionView.itemSpacing + itemSizes[index + 1].width >= wrapWidth) {
+                            left + itemSizes[index + 1].width > wrapWidth) {
                             lineEndIndex = index;
                             break;
                         }
@@ -97,10 +144,83 @@ class CollectionViewFlowLayout {
                 this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.edgeInsets.right)
                 this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.edgeInsets.bottom)
                 if (lineEndIndex === Infinity) {
-                    currentX += frame.width + this.collectionView.itemSpacing
+                    if (sizeEqually) {
+                        currentX += frame.width + lastItemGap
+                    }
+                    else {
+                        currentX += frame.width + this.collectionView.itemSpacing
+                    }
                 }
                 else if (lineEndIndex - lineStartIndex > 0) {
                     currentX += frame.width + (wrapWidth - lineContentWidth) / (lineEndIndex - lineStartIndex)
+                }
+                return frame
+            })
+        }
+        else if (this.collectionView.scrollDirection === CollectionViewScrollDirection.Horizontal) {
+            const wrapHeight = this.collectionView.bounds.height - this.collectionView.edgeInsets.top - this.collectionView.edgeInsets.bottom
+            const itemSizes = this.collectionView.items.map(item => {
+                return item.itemSize(this.collectionView.bounds.width, this.collectionView.bounds.height)
+            })
+            const sizeEqually = itemSizes.length > 0 && itemSizes.every(v => {
+                return v.width == itemSizes[0].width && v.height == itemSizes[0].height
+            })
+            let firstItem = false
+            let currentX = 0
+            let currentY = 0
+            let lineWidth = 0;
+            let lineContentHeight = 0;
+            let lastItemGap = 0;
+            let lineStartIndex = 0;
+            let lineEndIndex = -1;
+            this.itemFrames = itemSizes.map((item, idx) => {
+                if (idx > lineEndIndex) {
+                    firstItem = true
+                    currentY = 0
+                    if (lineEndIndex > -1) {
+                        currentX += lineWidth + this.collectionView.lineSpacing
+                    }
+                }
+                if (firstItem) {
+                    lastItemGap = (wrapHeight - lineContentHeight) / (lineEndIndex - lineStartIndex)
+                    lineContentHeight = 0;
+                    lineWidth = 0;
+                    lineStartIndex = idx;
+                    lineEndIndex = idx;
+                    let top = 0;
+                    for (let index = idx; index < itemSizes.length; index++) {
+                        const elementSize = itemSizes[index]
+                        lineWidth = Math.max(lineWidth, elementSize.width)
+                        lineContentHeight += elementSize.height
+                        top += this.collectionView.itemSpacing + elementSize.height
+                        if (top > wrapHeight) {
+                            lineEndIndex = index;
+                            break;
+                        }
+                        else if (index + 1 < itemSizes.length &&
+                            top + itemSizes[index + 1].height > wrapHeight) {
+                            lineEndIndex = index;
+                            break;
+                        }
+                        else {
+                            lineEndIndex = Infinity;
+                        }
+                    }
+                    firstItem = false
+                }
+                const frame = RectMake(this.collectionView.edgeInsets.left + currentX + (lineWidth - item.width) / 2.0, this.collectionView.edgeInsets.top + currentY, item.width, item.height)
+                this.contentSize.width = Math.max(this.contentSize.width, frame.x + frame.width + this.collectionView.edgeInsets.right)
+                this.contentSize.height = Math.max(this.contentSize.height, frame.y + frame.height + this.collectionView.edgeInsets.bottom)
+                if (lineEndIndex === Infinity) {
+                    if (sizeEqually) {
+                        currentY += frame.height + lastItemGap
+                    }
+                    else {
+                        currentY += frame.height + this.collectionView.itemSpacing
+                    }
+                }
+                else if (lineEndIndex - lineStartIndex > 0) {
+                    currentY += frame.height + (wrapHeight - lineContentHeight) / (lineEndIndex - lineStartIndex)
                 }
                 return frame
             })
@@ -137,7 +257,17 @@ export class CollectionView extends ScrollView {
         }
     }
 
-    scrollDirection: CollectionViewScrollDirection = CollectionViewScrollDirection.Vertical
+    private _scrollDirection: CollectionViewScrollDirection = CollectionViewScrollDirection.Vertical
+
+	public get scrollDirection(): CollectionViewScrollDirection  {
+		return this._scrollDirection;
+	}
+
+	public set scrollDirection(value: CollectionViewScrollDirection ) {
+        this._scrollDirection = value;
+        this.showsVerticalScrollIndicator = value === CollectionViewScrollDirection.Vertical
+        this.showsHorizontalScrollIndicator = value === CollectionViewScrollDirection.Horizontal
+	}
 
     items: CollectionItem[]
 
@@ -177,14 +307,17 @@ export class CollectionView extends ScrollView {
         let visibleIndexes: number[] = []
         const visibleRect = RectMake(contentOffset.x, contentOffset.y, bounds.width, bounds.height)
         this.layout.itemFrames.forEach((itemFrame, idx) => {
-            if (itemFrame.x > visibleRect.x &&
-                itemFrame.x < visibleRect.x + visibleRect.width &&
-                itemFrame.y > visibleRect.y &&
-                itemFrame.y < visibleRect.y + visibleRect.height) {
+            if (itemFrame.x + itemFrame.width >= visibleRect.x &&
+                itemFrame.x <= visibleRect.x + visibleRect.width &&
+                itemFrame.y + itemFrame.height >= visibleRect.y &&
+                itemFrame.y <= visibleRect.y + visibleRect.height) {
                 visibleIndexes.push(idx)
             }
         })
-        const visibleCells: CollectionCell[] = visibleIndexes.map(index => {
+        const renderingIndexes = visibleIndexes.filter(index => {
+            return this._reusingCells.filter(cell => cell._isBusy && cell.currentItem === this.items[index]).length == 0
+        })
+        const visibleCells: CollectionCell[] = renderingIndexes.map(index => {
             const dataItem = this.items[index]
             const cell = this._reusingCells.filter(cell => { return !cell._isBusy && cell.reuseIdentifier === dataItem.reuseIdentifier })[0]
                 || (this.reuseMapping[dataItem.reuseIdentifier] !== undefined ? new this.reuseMapping[dataItem.reuseIdentifier]() : undefined)
@@ -245,9 +378,6 @@ export class CollectionView extends ScrollView {
                 cell._isBusy = false;
             });
         }
-
-
-
     }
 
 }

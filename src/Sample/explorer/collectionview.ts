@@ -12,7 +12,7 @@ class SampleCell extends UI.CollectionCell {
 	}
 
 	didRender() {
-		this.contentView.backgroundColor = UI.Color.redColor
+		this.contentView.backgroundColor = UI.Color.grayColor
 	}
 
 }
@@ -34,36 +34,18 @@ export class CollectionViewSample extends UI.ViewController {
 
 	setupCollectionView() {
 		this.collectionView.register(SampleCell, "Cell")
-		// this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Horizontal
+		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Vertical
 		this.collectionView.edgeInsets = UI.InsetsMake(20, 10, 20, 10)
 		this.collectionView.lineSpacing = 20
 		this.collectionView.itemSpacing = 20
-		this.collectionView.items = [
-			{
+		let items = [];
+		for (let index = 0; index < 20000; index++) {
+			items.push({
 				reuseIdentifier: "Cell",
 				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
-			},
-			{
-				reuseIdentifier: "Cell",
-				itemSize: (width: number, height: number) => UI.SizeMake(100, 44),
-			},
-			{
-				reuseIdentifier: "Cell",
-				itemSize: (width: number, height: number) => UI.SizeMake(60, 44),
-			},
-			{
-				reuseIdentifier: "Cell",
-				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
-			},
-			{
-				reuseIdentifier: "Cell",
-				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
-			},
-			{
-				reuseIdentifier: "Cell",
-				itemSize: (width: number, height: number) => UI.SizeMake(44, 44),
-			},
-		]
+			})
+		}
+		this.collectionView.items = items
 		this.collectionView.reloadData()
 	}
 
