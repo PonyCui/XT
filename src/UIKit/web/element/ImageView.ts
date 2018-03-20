@@ -40,19 +40,11 @@ export class ImageViewElement extends ViewElement {
     xtr_loadImage(url: string, fadeIn: boolean = true) {
         if (this._currentUrl === url) { return; }
         this._currentUrl = url
-        clearTimeout(this._loadImageTimer)
-        cancelAnimationFrame(this._fadeInHandler)
         if (this.contentObject) {
-            if (!this._nullHref) {
-                this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", "")
-                this._nullHref = true
-            }
-            this._loadImageTimer = setTimeout(() => {
-                this._nullHref = false
-                if (this.contentObject) {
-                    this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
-                }
-            }, 300)
+            this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", "")
+            requestAnimationFrame(() => {
+                this.contentObject && this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
+            })
         }
     }
 

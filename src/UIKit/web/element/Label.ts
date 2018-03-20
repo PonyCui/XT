@@ -35,7 +35,7 @@ export class LabelElement extends ViewElement {
         this.wrapperObject.style.width = "100%"
         this.wrapperObject.style.height = "100%"
         this.spanObject.style.width = Math.max(0, value.width).toString() + "px";
-        this.spanObject.style.maxHeight = Math.max(0, value.height).toString() + "px";
+        this.spanObject.style.height = Math.max(0, value.height).toString() + "px";
         this.adjustTextAlignment();
     }
 

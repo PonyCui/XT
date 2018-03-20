@@ -122,7 +122,7 @@ export class ViewElement extends BaseElement {
 
     private previousMaskParams: { clipsToBounds?: boolean, width?: number, height?: number, cornerRadius?: number } = {};
 
-    private resetMaskElement() {
+    protected resetMaskElement() {
         if (this.previousMaskParams.clipsToBounds === this.clipsToBounds && this.previousMaskParams.width === this.frame.width && this.previousMaskParams.height === this.frame.height && this.previousMaskParams.cornerRadius === this.cornerRadius) { return; }
         this.previousMaskParams.clipsToBounds = this.clipsToBounds
         this.previousMaskParams.width = this.frame.width

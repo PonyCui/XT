@@ -146,7 +146,7 @@ export class ListSection {
 }
 
 
-class RefreshAnimationView extends View {
+export class RefreshAnimationView extends View {
 
     leftDot = new View
     midDot = new View
