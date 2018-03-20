@@ -147,10 +147,9 @@ export class ListView extends ScrollView {
         }
     }
 
-    public items: (ListItem | ListSection)[];
-    private _sectionsItems: ListSection[]
+    public items: (ListItem | ListSection)[] = [];
 
-    renderItem?: (cell: ListCell, item: ListItem) => void
+    private _sectionsItems: ListSection[]
 
     register(clazz: typeof ListCell, reuseIdentifier: string, context: any = undefined) {
         this.registedClasses[reuseIdentifier] = clazz;
@@ -230,7 +229,6 @@ export class ListView extends ScrollView {
             const cell = ListCell.findByRef<ListCell>(cellRef)
             cell.currentItem = this._sectionsItems[sectionIndex].items[rowIndex];
             cell.isLastCell = rowIndex >= this._sectionsItems[sectionIndex].items.length - 1
-            this.renderItem && this.renderItem(cell, this._sectionsItems[sectionIndex].items[rowIndex]);
             cell.didRender();
         }
     }

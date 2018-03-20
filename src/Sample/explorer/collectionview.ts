@@ -7,7 +7,6 @@ class UserCell extends UI.CollectionCell {
 
 	constructor() {
 		super()
-		this.iconImageView.cornerRadius = 44
 		this.iconImageView.clipsToBounds = true
 		this.iconImageView.backgroundColor = UI.Color.lightGrayColor
 		this.addSubview(this.iconImageView)
@@ -19,8 +18,9 @@ class UserCell extends UI.CollectionCell {
 
 	layoutSubviews() {
 		super.layoutSubviews()
-		this.iconImageView.frame = UI.RectMake(0, 0, 88, 88)
-		this.nicknameLabel.frame = UI.RectMake(0, 88, 88, 32)
+		this.iconImageView.cornerRadius = this.bounds.width / 2
+		this.iconImageView.frame = UI.RectMake(0, 0, this.bounds.width, this.bounds.width)
+		this.nicknameLabel.frame = UI.RectMake(0, this.bounds.width, this.bounds.width, 32)
 	}
 
 	didHighlighted(value: boolean) {
@@ -61,10 +61,6 @@ export class CollectionViewSample extends UI.ViewController {
 		this.collectionView.sectionInsets = UI.InsetsMake(20, 20, 20, 20)
 		this.collectionView.lineSpacing = 20
 		this.collectionView.itemSpacing = 20
-		this.collectionView.items = [{
-			reuseIdentifier: "Cell",
-			itemSize: () => UI.SizeMake(88, 88 + 32)
-		}]
 		this.collectionView.alpha = 0.0
 		this.setupRefreshControl()
 		this.setupLoadMoreControl()
@@ -93,8 +89,6 @@ export class CollectionViewSample extends UI.ViewController {
 		this.collectionView.loadMoreControl = new UI.LoadMoreControl()
 		this.collectionView.loadMoreControl.enabled = true
 		this.collectionView.loadMoreControl.onLoad = () => {
-			console.log("loadMoreControl");
-			
 			this.loadData(() => {
 				if (this.collectionView.loadMoreControl) {
 					this.collectionView.loadMoreControl.enabled = this.since < 300
@@ -113,7 +107,7 @@ export class CollectionViewSample extends UI.ViewController {
 						this.dataItems.push({
 							...it,
 							reuseIdentifier: "Cell",
-							itemSize: () => UI.SizeMake(88, 88 + 32)
+							itemSize: (width: number) => UI.SizeMake((width - 80) / 3.0, (width - 80) / 3.0 + 32)
 						})
 						this.since = it["id"]
 					})

@@ -231,8 +231,6 @@ export class ListView extends ScrollView {
     private reuseMapping: { [key: string]: typeof ListCell } = {};
     private reuseContexts: { [key: string]: any } = {};
 
-    public renderItem?: (cell: ListCell, item: ListItem) => void
-
     public register(clazz: typeof ListCell, reuseIdentifier: string, context: any) {
         this.reuseMapping[reuseIdentifier] = clazz;
         this.reuseContexts[reuseIdentifier] = context;
@@ -268,15 +266,7 @@ export class ListView extends ScrollView {
         this.reloadData()
     }
 
-    private _items: (ListItem | ListSection)[] = [];
-
-    public get items() {
-        return this._items;
-    }
-
-    public set items(value: (ListItem | ListSection)[]) {
-        this._items = value;
-    }
+    public items: (ListItem | ListSection)[] = [];
 
     private _cacheRows: {
         minY: number;
@@ -429,7 +419,6 @@ export class ListView extends ScrollView {
             cell._isBusy = true;
             cell.currentItem = row.item;
             cell.isLastCell = this._lastRows[row.maxY] === true
-            this.renderItem && this.renderItem(cell, row.item);
             cell.didRender();
             if (this._reusingCells.indexOf(cell) < 0) {
                 this._reusingCells.push(cell);

@@ -65,7 +65,8 @@ export class CollectionView extends ScrollView {
         _XTUICollectionView.xtr_setScrollDirectionObjectRef(value, this.objectRef)
     }
 
-    items: (CollectionItem | CollectionSection)[]
+    items: (CollectionItem | CollectionSection)[] = []
+    
     private _sectionsItems: CollectionSection[]
 
     register(clazz: typeof CollectionCell, reuseIdentifier: string, context: any = undefined) {

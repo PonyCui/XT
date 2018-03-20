@@ -125,6 +125,8 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     public set contentOffset(value: Point) {
+        console.log(performance.now() - (this as any).s);
+        (this as any).s = performance.now();
         if (View._animationEnabled) {
             if (this.contentOffset.x != value.x) { View.addAnimation(this as any, "contentOffsetX", this.contentOffset.x, value.x); }
             if (this.contentOffset.y != value.y) { View.addAnimation(this as any, "contentOffsetY", this.contentOffset.y, value.y); }

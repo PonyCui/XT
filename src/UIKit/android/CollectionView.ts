@@ -323,7 +323,7 @@ export class CollectionView extends ScrollView {
         this.showsHorizontalScrollIndicator = value === CollectionViewScrollDirection.Horizontal
     }
 
-    items: (CollectionItem | CollectionSection)[]
+    items: (CollectionItem | CollectionSection)[] = []
     sectionsItems: CollectionSection[]
     flatSegments: number[] = []
     flatItems: CollectionItem[]
