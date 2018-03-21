@@ -4,6 +4,7 @@ import { Rect, RectMake } from "../../interface/Rect";
 import { ContentMode, ImageRenderingMode } from "../../interface/ImageView";
 import { Color } from "../../interface/Color";
 import { Application } from "../Application";
+import { RequestIdleCallback } from "./requestIdleCallback";
 
 export class ImageViewElement extends ViewElement {
 
@@ -13,7 +14,7 @@ export class ImageViewElement extends ViewElement {
         if (this._image) {
             this.nativeObject.removeChild(this._image.source)
         }
-        this._image = value;        
+        this._image = value;
         if (value) {
             this.nativeObject.appendChild(value.source)
             this.resetRatio();
@@ -34,17 +35,34 @@ export class ImageViewElement extends ViewElement {
             this._image.source.style.display = "none"
         }
         this._image = undefined
-        Image.fromURL(url, (it) => {
-            if (it.URLString == this._currentUrl) {
-                this.xtr_setImage(it)
-                if (fadeIn) {
-                    this.xtr_fadeIn(0.0)
+        if (RequestIdleCallback.isBusy) {
+            RequestIdleCallback.add(() => {
+                Image.fromURL(url, (it) => {
+                    if (it.URLString == this._currentUrl) {
+                        this.xtr_setImage(it)
+                        if (fadeIn) {
+                            this.xtr_fadeIn(0.0)
+                        }
+                        else {
+                            it.source.style.opacity = "1.0"
+                        }
+                    }
+                })
+            }, this.objectRef)
+        }
+        else {
+            Image.fromURL(url, (it) => {
+                if (it.URLString == this._currentUrl) {
+                    this.xtr_setImage(it)
+                    if (fadeIn) {
+                        this.xtr_fadeIn(0.0)
+                    }
+                    else {
+                        it.source.style.opacity = "1.0"
+                    }
                 }
-                else {
-                    it.source.style.opacity = "1.0"
-                }
-            }
-        })
+            })
+        }
     }
 
     xtr_fadeIn(currentValue: number) {
@@ -87,7 +105,7 @@ export class ImageViewElement extends ViewElement {
     }
 
     private resetTintColor() {
-        
+
     }
 
     xtr_tintColorDidChange() {

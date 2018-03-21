@@ -9,12 +9,13 @@ import { isPointInside, convertPointToChildView } from '../libraries/coordinate/
 declare function require(name: string): any;
 import { Scroller, ScrollerDelegate } from '../libraries/scroller/scroller'
 import { Animation } from '../libraries/scroller/animation';
+import { RequestIdleCallback } from "./element/requestIdleCallback";
 
 export class ScrollView extends View implements ScrollerDelegate {
 
     private readonly innerView: View = new View();
-    private readonly horizontalScrollIndicator: View = new View();;
-    private readonly verticalScrollIndicator: View = new View();;
+    private readonly horizontalScrollIndicator: View = new View();
+    private readonly verticalScrollIndicator: View = new View();
     protected scroller: Scroller;
 
     constructor() {
@@ -294,6 +295,7 @@ export class ScrollView extends View implements ScrollerDelegate {
     }
 
     scrollerWillBeginDragging(): void {
+        RequestIdleCallback.isBusy = true
         View.animationWithDuration(0.15, () => {
             this.verticalScrollIndicator.alpha = 1.0;
             this.horizontalScrollIndicator.alpha = 1.0;
@@ -337,6 +339,8 @@ export class ScrollView extends View implements ScrollerDelegate {
             this.verticalScrollIndicator.alpha = 0.0;
             this.horizontalScrollIndicator.alpha = 0.0;
         })
+        RequestIdleCallback.consume()
+        RequestIdleCallback.isBusy = false
     }
 
     wheelScroll(deltaPoint: { x: number, y: number }): void {
