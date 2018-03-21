@@ -93,7 +93,7 @@ export class NavigationController extends ViewController {
                 this.runAfterAnimated && this.runAfterAnimated();
                 fromViewController && fromViewController.viewDidDisappear()
                 if (fromViewController) {
-                    fromViewController.view.hidden = true
+                    fromViewController.view.removeFromSuperview()
                 }
                 toViewController.viewDidAppear()
             })
@@ -116,7 +116,7 @@ export class NavigationController extends ViewController {
         const toViewController: ViewController = this.childViewControllers[this.childViewControllers.length - 2]
         fromViewController.viewWillDisappear()
         toViewController.viewWillAppear()
-        toViewController.view.hidden = false
+        this.view.addSubview(toViewController.view)
         if (animated) {
             this.isAnimating = true
             fromViewController.view.frame = this.view.bounds;
@@ -156,7 +156,7 @@ export class NavigationController extends ViewController {
         const toViewController: ViewController = viewController
         targetViewControllers.forEach(it => it.viewWillDisappear())
         toViewController.viewWillAppear()
-        toViewController.view.hidden = false
+        this.view.addSubview(toViewController.view)
         if (animated) {
             this.isAnimating = true
             fromViewController.view.frame = this.view.bounds;

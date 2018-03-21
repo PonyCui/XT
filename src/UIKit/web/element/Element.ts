@@ -10,7 +10,7 @@ if (typeof performance === "undefined") {
 export class BaseElement {
 
     objectRef = performance.now().toString() + "-" + Math.random()
-    nativeObject: SVGGElement
+    nativeObject: HTMLElement
     scriptObject: any
 
     constructor(scriptObject: any) {

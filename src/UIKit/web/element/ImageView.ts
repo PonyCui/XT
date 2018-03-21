@@ -7,27 +7,17 @@ import { Application } from "../Application";
 
 export class ImageViewElement extends ViewElement {
 
-    tintColorFilterWrapper: SVGFilterElement | undefined = undefined
-    tintColorFilter: SVGFEColorMatrixElement | undefined = undefined
-
-    loadContent() {
-        super.loadContent();
-        this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "image");
-    }
-
     private _image: Image | undefined
 
     xtr_setImage(value: Image | undefined) {
-        this._image = value;
+        if (this._image) {
+            this.nativeObject.removeChild(this._image.source)
+        }
+        this._image = value;        
         if (value) {
-            const contentObject = this.contentObject as SVGImageElement
-            contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", value.URLString)
+            this.nativeObject.appendChild(value.source)
             this.resetRatio();
             this.resetTintColor();
-        }
-        else {
-            const contentObject = this.contentObject as SVGImageElement
-            contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", "")
         }
     }
 
@@ -40,32 +30,32 @@ export class ImageViewElement extends ViewElement {
     xtr_loadImage(url: string, fadeIn: boolean = true) {
         if (this._currentUrl === url) { return; }
         this._currentUrl = url
-        if (this.contentObject) {
-            this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", "")
-            requestAnimationFrame(() => {
-                this.contentObject && this.contentObject.setAttributeNS("http://www.w3.org/1999/xlink", "href", url)
-            })
+        if (this._image) {
+            this._image.source.style.display = "none"
         }
+        this._image = undefined
+        Image.fromURL(url, (it) => {
+            if (it.URLString == this._currentUrl) {
+                this.xtr_setImage(it)
+                if (fadeIn) {
+                    this.xtr_fadeIn(0.0)
+                }
+                else {
+                    it.source.style.opacity = "1.0"
+                }
+            }
+        })
     }
 
     xtr_fadeIn(currentValue: number) {
         this._fadeInHandler = requestAnimationFrame(() => {
             currentValue += 0.05
             if (currentValue > 1.0) { return }
-            if (this.contentObject) {
-                this.contentObject.style.opacity = currentValue.toString()
+            if (this._image) {
+                this._image.source.style.opacity = currentValue.toString()
             }
             this.xtr_fadeIn(currentValue)
         })
-    }
-
-    xtr_setFrame(value: Rect) {
-        super.xtr_setFrame(value)
-        if (this.contentObject) {
-            this.contentObject.setAttribute("width", value.width.toString())
-            this.contentObject.setAttribute("height", value.height.toString())
-            this.resetRatio();
-        }
     }
 
     private _contentMode: number = 0
@@ -77,59 +67,27 @@ export class ImageViewElement extends ViewElement {
     }
 
     private resetRatio() {
-        if (this.contentObject) {
+        if (this._image) {
             if (this._contentMode == ContentMode.ScaleToFill) {
-                this.contentObject.setAttribute("preserveAspectRatio", "xMinYMin")
-                const frame = this.xtr_frame()
-                if (this._image && frame.width > 0.0 && frame.height > 0.0) {
-                    let widthRatio = 1.0
-                    let heightRatio = 1.0
-                    const targetRatio = frame.width / frame.height
-                    const imageRatio = this._image.size.width / this._image.size.height;
-                    if (targetRatio < imageRatio) {
-                        const hPI = frame.width / (this._image.size.width / this._image.size.height)
-                        heightRatio = frame.height / hPI;
-                    }
-                    else if (targetRatio >= imageRatio) {
-                        const wPI = frame.height / (this._image.size.height / this._image.size.width)
-                        widthRatio = frame.width / wPI;
-                    }
-                    this.contentObject.setAttribute("transform", "matrix(" + widthRatio.toFixed(3) + ", 0.0, 0.0, " + heightRatio.toFixed(3) + ", 0.0, 0.0)")
-                }
+                this._image.source.style.width = "100%"
+                this._image.source.style.height = "100%"
+                this._image.source.style.setProperty("object-fit", "fill")
             }
             else if (this._contentMode == ContentMode.ScaleAspectFit) {
-                this.contentObject.setAttribute("preserveAspectRatio", "xMidYMid meet")
-                this.contentObject.removeAttribute("transform");
+                this._image.source.style.width = "100%"
+                this._image.source.style.height = "100%"
+                this._image.source.style.setProperty("object-fit", "contain")
             }
             else if (this._contentMode == ContentMode.ScaleAspectFill) {
-                this.contentObject.setAttribute("preserveAspectRatio", "xMidYMid slice")
-                this.contentObject.removeAttribute("transform");
+                this._image.source.style.width = "100%"
+                this._image.source.style.height = "100%"
+                this._image.source.style.setProperty("object-fit", "cover")
             }
         }
     }
 
     private resetTintColor() {
-        if (this._image && this.contentObject && this._image.renderingMode === ImageRenderingMode.Template) {
-            const tintColor: Color = this.scriptObject.tintColor
-            if (tintColor === undefined) {
-                return;
-            }
-            const tintColorFilterWrapper = this.tintColorFilterWrapper || document.createElementNS("http://www.w3.org/2000/svg", "filter")
-            const tintColorFilter = this.tintColorFilter || document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix")
-            tintColorFilter.setAttribute("values", "0 0 0 0 " + tintColor.r.toFixed(3) + " 0 0 0 0 " + tintColor.g.toFixed(3) + " 0 0 0 0 " + tintColor.b.toFixed(3) + " 0 0 0 " + tintColor.a.toFixed(3) + " 0")
-            tintColorFilterWrapper.setAttribute('id', this.objectRef + ".tintColorFilter");
-            tintColorFilterWrapper.innerHTML = '';
-            tintColorFilterWrapper.appendChild(tintColorFilter);
-            this.tintColorFilterWrapper = tintColorFilterWrapper;
-            this.tintColorFilter = tintColorFilter;
-            if (!Application.sharedApplication()!.defsElement.contains(tintColorFilterWrapper)) {
-                Application.sharedApplication()!.defsElement.appendChild(tintColorFilterWrapper)
-            }
-            this.contentObject.style.filter = 'url(#' + (this.objectRef + ".tintColorFilter") + ')'
-        }
-        else if (this.contentObject) {
-            this.contentObject.style.filter = ''
-        }
+        
     }
 
     xtr_tintColorDidChange() {

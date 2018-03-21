@@ -4,6 +4,7 @@ import { Rect } from "../../interface/Rect";
 
 export class HRViewElement extends ViewElement {
 
+    svgObject: SVGElement;
     lineObject: SVGLineElement;
 
     xtr_setFrame(value: Rect) {
@@ -67,7 +68,11 @@ export class HRViewElement extends ViewElement {
     loadContent() {
         super.loadContent()
         this.lineObject = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        this.contentObject = this.lineObject
+        this.svgObject = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        this.svgObject.style.width = "100%"
+        this.svgObject.style.height = "100%"
+        this.svgObject.appendChild(this.lineObject)
+        this.nativeObject.appendChild(this.svgObject)
     }
 
 }

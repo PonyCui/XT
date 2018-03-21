@@ -6,7 +6,12 @@ export class WindowElement extends ViewElement {
     static _allowDefault = false;
 
     constructor(scriptObject: any) {
-        super(scriptObject)
+        super(scriptObject);
+        this.nativeObject.style.position = "absolute"
+        this.nativeObject.style.width = "100%"
+        this.nativeObject.style.height = "100%"
+        this.nativeObject.style.overflow = "hidden"
+        this.setupSizeObserver();
         this.setupTouches();
     }
 
@@ -16,13 +21,26 @@ export class WindowElement extends ViewElement {
         }
     }
 
+    private currentSize = { width: 0, height: 0 }
+
+    private setupSizeObserver() {
+        window.addEventListener("resize", () => {
+            if (this.currentSize.width !== this.nativeObject.clientWidth ||
+                this.currentSize.height !== this.nativeObject.clientHeight) {
+                this.currentSize.width = this.nativeObject.clientWidth
+                this.currentSize.height = this.nativeObject.clientHeight
+                this.scriptObject.frame = { x: 0, y: 0, width: this.currentSize.width, height: this.currentSize.height }
+            }
+        })
+    }
+
     private firstTouchIdentifier: any = undefined
     private mouseClicked = false
-    private svgObject: SVGElement
+    private refObject: HTMLElement
 
     setupTouches() {
-        const svgObject = () => {
-            return this.nativeObject.parentElement instanceof SVGElement ? this.nativeObject.parentElement : undefined
+        const refObject = () => {
+            return this.nativeObject.parentElement instanceof HTMLElement ? this.nativeObject.parentElement : undefined
         }
         this.nativeObject.addEventListener("touchstart", (e) => {
             if (this.firstTouchIdentifier !== undefined) { return }
@@ -32,8 +50,8 @@ export class WindowElement extends ViewElement {
                 this.firstTouchIdentifier = e.touches[index].identifier
             }
             if (touch) {
-                this.svgObject = svgObject()!
-                const windowBounds = this.svgObject.getBoundingClientRect()
+                this.refObject = refObject()!
+                const windowBounds = this.refObject.getBoundingClientRect()
                 this.scriptObject.handlePointerDown("0", e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }
@@ -47,7 +65,7 @@ export class WindowElement extends ViewElement {
                 }
             }
             if (touch) {
-                const windowBounds = this.svgObject.getBoundingClientRect()
+                const windowBounds = this.refObject.getBoundingClientRect()
                 const points: any = {};
                 points["0"] = { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top };
                 this.scriptObject.handlePointersMove(e.timeStamp, points)
@@ -64,7 +82,7 @@ export class WindowElement extends ViewElement {
             }
             if (touch) {
                 this.firstTouchIdentifier = undefined
-                const windowBounds = this.svgObject.getBoundingClientRect()
+                const windowBounds = this.refObject.getBoundingClientRect()
                 this.scriptObject.handlePointerUp("0", e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }
@@ -79,7 +97,7 @@ export class WindowElement extends ViewElement {
             }
             if (touch) {
                 this.firstTouchIdentifier = undefined
-                const windowBounds = this.svgObject.getBoundingClientRect()
+                const windowBounds = this.refObject.getBoundingClientRect()
                 this.scriptObject.handlePointerCancel("0", e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }
@@ -88,8 +106,8 @@ export class WindowElement extends ViewElement {
         this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousedown" : "pointerdown", (e) => {
             if (e.which >= 2) { e.preventDefault(); return; }
             this.mouseClicked = true
-            this.svgObject = svgObject()!
-            const windowBounds = this.svgObject.getBoundingClientRect()
+            this.refObject = refObject()!
+            const windowBounds = this.refObject.getBoundingClientRect()
             this.scriptObject.handlePointerDown("0", e.timeStamp, { x: e.clientX - windowBounds.left, y: e.clientY - windowBounds.top })
             if (!WindowElement._allowDefault) { e.preventDefault(); }
             else { WindowElement._allowDefault = false; }
@@ -97,7 +115,7 @@ export class WindowElement extends ViewElement {
         this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mousemove" : "pointermove", (e) => {
             if (!this.mouseClicked) { return }
             const points: any = {};
-            const windowBounds = this.svgObject.getBoundingClientRect()
+            const windowBounds = this.refObject.getBoundingClientRect()
             points["0"] = { x: e.clientX - windowBounds.left, y: e.clientY - windowBounds.top };
             this.scriptObject.handlePointersMove(e.timeStamp, points)
             if (!WindowElement._allowDefault) { e.preventDefault(); }
@@ -105,7 +123,7 @@ export class WindowElement extends ViewElement {
         })
         this.nativeObject.addEventListener(navigator.vendor === "Apple Computer, Inc." ? "mouseup" : "pointerup", (e) => {
             if (!this.mouseClicked) { return }
-            const windowBounds = this.svgObject.getBoundingClientRect()
+            const windowBounds = this.refObject.getBoundingClientRect()
             this.scriptObject.handlePointerUp("0", e.timeStamp, { x: e.clientX - windowBounds.left, y: e.clientY - windowBounds.top })
             if (!WindowElement._allowDefault) { e.preventDefault(); }
             else { WindowElement._allowDefault = false; }
@@ -115,7 +133,8 @@ export class WindowElement extends ViewElement {
             e.preventDefault()
         });
         this.nativeObject.addEventListener('mousewheel', (e: any) => {
-            const windowBounds = this.svgObject.getBoundingClientRect()
+            this.refObject = refObject()!
+            const windowBounds = this.refObject.getBoundingClientRect()
             this.scriptObject.handleWheelScroll(
                 { x: e.clientX - windowBounds.left, y: e.clientY - windowBounds.top },
                 { x: e.deltaX, y: e.deltaY }

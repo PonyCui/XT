@@ -5,6 +5,7 @@ export class ScrollViewElement extends ViewElement {
 
     constructor(scriptObject: any) {
         super(scriptObject)
+        this.nativeObject.style.overflow = "hidden"
     }
 
     private contentOffset: Point = { ...PointZero }

@@ -1,25 +1,20 @@
 import { BaseElement } from './Element'
-import { Rect, RectEqual, Point, RectMake, Size } from '../../interface/Rect';
+import { Rect, RectEqual, Point, RectMake, Size, SizeEqual } from '../../interface/Rect';
 import { TransformMatrix, TransformMatrixAlgorithm } from '../../interface/TransformMatrix';
 import { Color } from '../../interface/Color';
 import { Application } from '../Application';
 
 export class ViewElement extends BaseElement {
 
-    nativeObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    backgroundObject = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    contentObject: SVGElement | undefined = undefined
-    containerObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    clipPathObject?: SVGClipPathElement = undefined
-    filterObject?: SVGFilterElement = undefined
+    nativeObject: HTMLElement = document.createElement("div");
 
     constructor(scriptObject: any) {
         super(scriptObject);
         this.nativeObject.setAttribute('id', this.objectRef);
-        this.backgroundObject.setAttribute('visibility', 'hidden');
+        this.nativeObject.style.position = "absolute"
+        this.nativeObject.style.left = "0px";
+        this.nativeObject.style.top = "0px";
         this.loadContent();
-        if (this.contentObject instanceof SVGElement) { this.nativeObject.appendChild(this.contentObject) }
-        this.nativeObject.appendChild(this.containerObject);
     }
 
     protected loadContent() { }
@@ -32,10 +27,20 @@ export class ViewElement extends BaseElement {
 
     public xtr_setFrame(value: Rect) {
         if (!RectEqual(this.frame, value)) {
-            this.frame = {...value, width: Math.max(0, value.width), height: Math.max(0, value.height)};
-            this.resetTransform();
-            this.resetMaskElement();
-            this.resetHover();
+            if (this.frame.width == value.width && this.frame.height == value.height) {
+                this.frame = { ...value, width: Math.max(0, value.width), height: Math.max(0, value.height) };
+                this.resetTransform()
+            }
+            else {
+                this.frame = { ...value, width: Math.max(0, value.width), height: Math.max(0, value.height) };
+                this.nativeObject.style.width = Math.max(0, value.width).toString() + "px";
+                this.nativeObject.style.height = Math.max(0, value.height).toString() + "px";
+                this.resetTransform()
+                // this.resetHover();
+            }
+
+
+
         }
     }
 
@@ -67,45 +72,18 @@ export class ViewElement extends BaseElement {
     public xtr_setTransform(value: TransformMatrix) {
         if (this.transform.a !== value.a || this.transform.b !== value.b || this.transform.c !== value.c || this.transform.d !== value.d || this.transform.tx !== value.tx || this.transform.ty !== value.ty) {
             this.transform = value;
-            this.resetTransform();
+            this.resetTransform()
         }
+    }
+
+    public resetTransform() {
+        this.nativeObject.style.transform = 'matrix(' + this.transform.a + ', ' + this.transform.b + ', ' + this.transform.c + ', ' + this.transform.d + ', ' + (this.transform.tx + this.frame.x) + ', ' + (this.transform.ty + this.frame.y) + ')'
     }
 
     private _cacheTransform: any = undefined
     private _cacheNewTransform: any = undefined
     private _cacheWidth: any = undefined
     private _cacheHeight: any = undefined
-
-    private resetTransform() {
-        if (!this.transform.isIdentity()) {
-            if (this._cacheTransform === this.transform && this._cacheNewTransform !== undefined) {
-                const newTransform = this._cacheNewTransform
-                this.nativeObject.setAttribute('transform', 'matrix(' + newTransform.a + ', ' + newTransform.b + ', ' + newTransform.c + ', ' + newTransform.d + ', ' + (newTransform.tx + this.frame.x) + ', ' + (newTransform.ty + this.frame.y) + ')')
-            }
-            else {
-                const obj = new TransformMatrixAlgorithm()
-                const unMatrix = TransformMatrix.unmatrix(this.transform)
-                obj.translate(-this.frame.width / 2.0, -this.frame.height / 2.0, 0.0)
-                obj.rotate(-(unMatrix.degree * Math.PI / 180))
-                obj.scale(unMatrix.scale.x, unMatrix.scale.y, 1.0)
-                obj.translate(unMatrix.translate.x, unMatrix.translate.y, 0.0)
-                obj.translate(this.frame.width / 2.0, this.frame.height / 2.0, 0.0)
-                const newTransform = new TransformMatrix(obj.props[0], obj.props[1], obj.props[4], obj.props[5], obj.props[12], obj.props[13])
-                this.nativeObject.setAttribute('transform', 'matrix(' + newTransform.a + ', ' + newTransform.b + ', ' + newTransform.c + ', ' + newTransform.d + ', ' + (newTransform.tx + this.frame.x) + ', ' + (newTransform.ty + this.frame.y) + ')')
-                this._cacheTransform = this.transform
-                this._cacheNewTransform = newTransform
-            }
-        }
-        else {
-            this.nativeObject.setAttribute('transform', 'matrix(' + this.transform.a + ', ' + this.transform.b + ', ' + this.transform.c + ', ' + this.transform.d + ', ' + (this.transform.tx + this.frame.x) + ', ' + (this.transform.ty + this.frame.y) + ')')
-        }
-        if (!(this._cacheWidth === this.frame.width && this._cacheHeight === this.frame.height)) {
-            this._cacheWidth = this.frame.width
-            this._cacheHeight = this.frame.height
-            this.backgroundObject.setAttribute('width', this.frame.width.toString())
-            this.backgroundObject.setAttribute('height', this.frame.height.toString())
-        }
-    }
 
     private clipsToBounds = false
 
@@ -116,43 +94,8 @@ export class ViewElement extends BaseElement {
     public xtr_setClipsToBounds(value: boolean) {
         if (this.clipsToBounds != value) {
             this.clipsToBounds = value;
-            this.resetMaskElement();
+            this.nativeObject.style.overflow = "hidden"
         }
-    }
-
-    private previousMaskParams: { clipsToBounds?: boolean, width?: number, height?: number, cornerRadius?: number } = {};
-
-    protected resetMaskElement() {
-        if (this.previousMaskParams.clipsToBounds === this.clipsToBounds && this.previousMaskParams.width === this.frame.width && this.previousMaskParams.height === this.frame.height && this.previousMaskParams.cornerRadius === this.cornerRadius) { return; }
-        this.previousMaskParams.clipsToBounds = this.clipsToBounds
-        this.previousMaskParams.width = this.frame.width
-        this.previousMaskParams.height = this.frame.height
-        this.previousMaskParams.cornerRadius = this.cornerRadius
-        if (this.clipsToBounds) {
-            const clipPathObject = this.clipPathObject || document.createElementNS("http://www.w3.org/2000/svg", "clipPath")
-            clipPathObject.setAttribute('id', this.objectRef + ".clipPath");
-            clipPathObject.innerHTML = '';
-            clipPathObject.appendChild(this.createMaskPath())
-            this.clipPathObject = clipPathObject;
-            if (!Application.sharedApplication()!.defsElement.contains(clipPathObject)) {
-                Application.sharedApplication()!.defsElement.appendChild(clipPathObject)
-            }
-            this.nativeObject.style.clipPath = 'url(#' + (this.objectRef + ".clipPath") + ')'
-        }
-        else {
-            this.nativeObject.style.clipPath = null
-        }
-    }
-
-    private createMaskPath(): SVGElement {
-        const maskPath = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        maskPath.setAttribute("width", this.frame.width.toString());
-        maskPath.setAttribute("height", this.frame.height.toString());
-        if (this.cornerRadius > 0) {
-            maskPath.setAttribute("rx", this.cornerRadius.toString())
-            maskPath.setAttribute("ry", this.cornerRadius.toString())
-        }
-        return maskPath
     }
 
     private backgroundColor: Color = Color.clearColor;
@@ -163,23 +106,7 @@ export class ViewElement extends BaseElement {
 
     public xtr_setBackgroundColor(value: Color) {
         this.backgroundColor = value;
-        this.backgroundObject.setAttribute('fill', 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')')
-        this.resetBackgroundVisibility()
-    }
-
-    private resetBackgroundVisibility() {
-        if (this.backgroundColor.a > 0 || (this.borderWidth > 0 && this.borderColor.a > 0)) {
-            this.backgroundObject.setAttribute('visibility', 'inherit');
-            if (this.backgroundColor.a == 0) {
-                this.backgroundObject.setAttribute('fill', 'none')
-            }
-            if (this.backgroundObject.parentNode === null) {
-                this.nativeObject.insertBefore(this.backgroundObject, this.nativeObject.childNodes[0])
-            }
-        }
-        else {
-            this.backgroundObject.setAttribute('visibility', 'hidden');
-        }
+        this.nativeObject.style.backgroundColor = 'rgba(' + (this.backgroundColor.r * 255).toFixed(0) + ', ' + (this.backgroundColor.g * 255).toFixed(0) + ', ' + (this.backgroundColor.b * 255).toFixed(0) + ', ' + this.backgroundColor.a.toString() + ')'
     }
 
     private alpha = 1.0
@@ -191,7 +118,7 @@ export class ViewElement extends BaseElement {
     public xtr_setAlpha(value: number) {
         if (this.alpha != value) {
             this.alpha = value;
-            this.nativeObject.setAttribute('opacity', this.alpha.toString())
+            this.nativeObject.style.opacity = this.alpha.toString()
         }
     }
 
@@ -206,7 +133,7 @@ export class ViewElement extends BaseElement {
     public xtr_setHidden(value: boolean) {
         if (this.hidden !== value) {
             this.hidden = value
-            this.nativeObject.setAttribute('visibility', this.hidden ? 'hidden' : 'inherit');
+            this.nativeObject.style.visibility = this.hidden ? 'hidden' : 'inherit'
         }
     }
 
@@ -231,9 +158,7 @@ export class ViewElement extends BaseElement {
     public xtr_setCornerRadius(value: number) {
         if (this.cornerRadius != value) {
             this.cornerRadius = value;
-            this.backgroundObject.setAttribute("rx", value.toString())
-            this.backgroundObject.setAttribute("ry", value.toString())
-            this.resetMaskElement();
+            this.nativeObject.style.borderRadius = value.toString() + "px"
         }
     }
 
@@ -246,9 +171,10 @@ export class ViewElement extends BaseElement {
     public xtr_setBorderWidth(value: number) {
         if (this.borderWidth != value) {
             this.borderWidth = value;
-            this.backgroundObject.setAttribute("stroke-width", value.toString())
+            this.nativeObject.style.borderWidth = value.toString() + "px"
+            this.nativeObject.style.borderStyle = value > 0 ? "solid" : "unset"
+            this.nativeObject.style.boxSizing = value > 0 ? "border-box" : "unset"
         }
-        this.resetBackgroundVisibility()
     }
 
     private borderColor: Color = Color.clearColor;
@@ -259,8 +185,7 @@ export class ViewElement extends BaseElement {
 
     public xtr_setBorderColor(value: Color) {
         this.borderColor = value;
-        this.backgroundObject.setAttribute('stroke', 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')')
-        this.resetBackgroundVisibility()
+        this.nativeObject.style.borderColor = 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + this.borderColor.a.toString() + ')'
     }
 
     private shadowColor: Color = Color.clearColor;
@@ -271,7 +196,7 @@ export class ViewElement extends BaseElement {
 
     public xtr_setShadowColor(value: Color) {
         this.shadowColor = value;
-        this.resetFilter();
+        this.resetShadow()
     }
 
     private shadowOpacity = 0.0
@@ -283,7 +208,7 @@ export class ViewElement extends BaseElement {
     public xtr_setShadowOpacity(value: number) {
         if (this.shadowOpacity != value) {
             this.shadowOpacity = value;
-            this.resetFilter()
+            this.resetShadow()
         }
     }
 
@@ -296,7 +221,7 @@ export class ViewElement extends BaseElement {
     public xtr_setShadowOffset(value: Size) {
         if (this.shadowOffset != value) {
             this.shadowOffset = value;
-            this.resetFilter()
+            this.resetShadow()
         }
     }
 
@@ -309,36 +234,14 @@ export class ViewElement extends BaseElement {
     public xtr_setShadowRadius(value: number) {
         if (this.shadowRadius != value) {
             this.shadowRadius = value;
-            this.resetFilter()
+            this.resetShadow()
         }
     }
 
-    private resetFilter() {
-        if (this.shadowOpacity > 0.0) {
-            const filterObject = this.filterObject || document.createElementNS("http://www.w3.org/2000/svg", "filter");
-            filterObject.setAttribute("x", "-500%")
-            filterObject.setAttribute("y", "-500%")
-            filterObject.setAttribute("width", "1000%")
-            filterObject.setAttribute("height", "1000%")
-            filterObject.setAttribute('id', this.objectRef + ".filter");
-            filterObject.innerHTML = '';
-            if (this.shadowColor !== undefined) {
-                const shadowObject = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
-                shadowObject.setAttribute("dx", this.shadowOffset.width.toString());
-                shadowObject.setAttribute("dy", this.shadowOffset.height.toString());
-                shadowObject.setAttribute("stdDeviation", this.shadowRadius.toString());
-                shadowObject.setAttribute("flood-color", 'rgba(' + (this.shadowColor.r * 255).toFixed(0) + ', ' + (this.shadowColor.g * 255).toFixed(0) + ', ' + (this.shadowColor.b * 255).toFixed(0) + ', ' + this.shadowColor.a.toString() + ')')
-                shadowObject.setAttribute("flood-opacity", this.shadowOpacity.toString());
-                filterObject.appendChild(shadowObject);
-            }
-            this.filterObject = filterObject;
-            if (!Application.sharedApplication()!.defsElement.contains(filterObject)) {
-                Application.sharedApplication()!.defsElement.appendChild(filterObject)
-            }
-            this.nativeObject.style.filter = 'url(#' + (this.objectRef + ".filter") + ')'
-        }
-        else {
-            this.nativeObject.style.filter = '';
+    private resetShadow() {
+        if (this.shadowOpacity > 0 && this.shadowColor.a > 0) {
+            const shadowColor = 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + (this.borderColor.a * this.shadowOpacity).toString() + ')'
+            this.nativeObject.style.boxShadow = this.shadowOffset.width.toString() + "px " + this.shadowOffset.height.toString() + "px " + this.shadowRadius.toString() + "px " + shadowColor
         }
     }
 
@@ -365,7 +268,7 @@ export class ViewElement extends BaseElement {
 
     public xtr_removeFromSuperview() {
         if (this.superview !== undefined) {
-            this.superview.containerObject.removeChild(this.nativeObject);
+            this.superview.nativeObject.removeChild(this.nativeObject);
             this.superview.subviews = this.superview.subviews.filter(t => t != this);
             this.superview = undefined;
         }
@@ -375,7 +278,7 @@ export class ViewElement extends BaseElement {
         if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         if (atIndex < this.subviews.length) {
             subview.superview = this
-            this.containerObject.insertBefore(subview.nativeObject, this.subviews[atIndex].nativeObject)
+            this.nativeObject.insertBefore(subview.nativeObject, this.subviews[atIndex].nativeObject)
             this.subviews.splice(atIndex, 0, subview);
         }
         else {
@@ -387,25 +290,25 @@ export class ViewElement extends BaseElement {
         if (index1 < index2) {
             const index1View = this.subviews[index1];
             const index2View = this.subviews[index2];
-            this.containerObject.removeChild(index1View.nativeObject);
-            this.containerObject.insertBefore(index1View.nativeObject, index2View.nativeObject)
-            this.containerObject.removeChild(index2View.nativeObject);
-            this.containerObject.insertBefore(index2View.nativeObject, this.containerObject.children[index1]);
+            this.nativeObject.removeChild(index1View.nativeObject);
+            this.nativeObject.insertBefore(index1View.nativeObject, index2View.nativeObject)
+            this.nativeObject.removeChild(index2View.nativeObject);
+            this.nativeObject.insertBefore(index2View.nativeObject, this.nativeObject.children[index1]);
         }
         else if (index1 > index2) {
             const index1View = this.subviews[index1];
             const index2View = this.subviews[index2];
-            this.containerObject.removeChild(index2View.nativeObject);
-            this.containerObject.insertBefore(index2View.nativeObject, index1View.nativeObject)
-            this.containerObject.removeChild(index1View.nativeObject);
-            this.containerObject.insertBefore(index1View.nativeObject, this.containerObject.children[index2]);
+            this.nativeObject.removeChild(index2View.nativeObject);
+            this.nativeObject.insertBefore(index2View.nativeObject, index1View.nativeObject)
+            this.nativeObject.removeChild(index1View.nativeObject);
+            this.nativeObject.insertBefore(index1View.nativeObject, this.nativeObject.children[index2]);
         }
     }
 
     public xtr_addSubview(subview: ViewElement) {
         if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         subview.superview = this
-        this.containerObject.appendChild(subview.nativeObject)
+        this.nativeObject.appendChild(subview.nativeObject)
         this.subviews.push(subview)
     }
 
@@ -413,7 +316,7 @@ export class ViewElement extends BaseElement {
         if (subview.superview !== undefined) { subview.xtr_removeFromSuperview() }
         subview.superview = this
         this.subviews.splice(this.subviews.indexOf(siblingSubview), 0, subview);
-        this.containerObject.insertBefore(subview.nativeObject, siblingSubview.nativeObject)
+        this.nativeObject.insertBefore(subview.nativeObject, siblingSubview.nativeObject)
     }
 
     public xtr_insertSubviewAboveSiblingSubview(subview: ViewElement, siblingSubview: ViewElement) {
@@ -424,14 +327,14 @@ export class ViewElement extends BaseElement {
         else {
             subview.superview = this
             this.subviews.splice(this.subviews.indexOf(siblingSubview) + 1, 0, subview);
-            this.containerObject.insertBefore(subview.nativeObject, this.containerObject.children[this.subviews.indexOf(siblingSubview) + 1])
+            this.nativeObject.insertBefore(subview.nativeObject, this.nativeObject.children[this.subviews.indexOf(siblingSubview) + 1])
         }
     }
 
     public xtr_bringSubviewToFront(subview: ViewElement) {
         if (this.subviews.length > 1) {
-            this.containerObject.removeChild(subview.nativeObject)
-            this.containerObject.appendChild(subview.nativeObject)
+            this.nativeObject.removeChild(subview.nativeObject)
+            this.nativeObject.appendChild(subview.nativeObject)
             this.subviews = this.subviews.filter(t => t != subview)
             this.subviews.push(subview)
         }
@@ -439,8 +342,8 @@ export class ViewElement extends BaseElement {
 
     public xtr_sendSubviewToBack(subview: ViewElement) {
         if (this.subviews.length > 1) {
-            this.containerObject.removeChild(subview.nativeObject)
-            this.containerObject.insertBefore(subview.nativeObject, this.containerObject.firstChild)
+            this.nativeObject.removeChild(subview.nativeObject)
+            this.nativeObject.insertBefore(subview.nativeObject, this.nativeObject.firstChild)
             this.subviews = this.subviews.filter(t => t != subview)
             this.subviews.unshift(subview)
         }

@@ -6,34 +6,22 @@ import { Rect } from "../../interface/Rect";
 
 export class LabelElement extends ViewElement {
 
-    private foreignObject: SVGForeignObjectElement
-    private wrapperObject: HTMLDivElement
-    private spanObject: HTMLSpanElement
-
+    spanObject: HTMLSpanElement;
+    
     loadContent() {
         super.loadContent();
-        this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
-        this.wrapperObject = document.createElement("div");
-        this.wrapperObject.style.cssText = "display: -webkit-box; display: flex;";
-        this.wrapperObject.style.webkitAlignItems = this.wrapperObject.style.webkitBoxAlign = this.wrapperObject.style.alignItems = "center";
-        this.wrapperObject.style.webkitBoxAlign = this.wrapperObject.style.webkitJustifyContent = this.wrapperObject.style.justifyContent = "center";
         this.spanObject = document.createElement("span");
         this.spanObject.style.userSelect = "none";
         this.spanObject.style.cursor = "default"
-        this.wrapperObject.appendChild(this.spanObject);
-        this.foreignObject.appendChild(this.wrapperObject);
-        this.contentObject = this.foreignObject;
         this.numberOfLines = 1;
         this.adjustTextAlignment();
         this.xtr_setFont(Font.systemFontOfSize(14.0))
+        this.nativeObject.style.display = "table"
+        this.nativeObject.appendChild(this.spanObject)
     }
 
     public xtr_setFrame(value: Rect) {
         super.xtr_setFrame(value);
-        this.foreignObject.setAttribute("width", Math.max(0, value.width).toString())
-        this.foreignObject.setAttribute("height", Math.max(0, value.height).toString())
-        this.wrapperObject.style.width = "100%"
-        this.wrapperObject.style.height = "100%"
         this.spanObject.style.width = Math.max(0, value.width).toString() + "px";
         this.spanObject.style.height = Math.max(0, value.height).toString() + "px";
         this.adjustTextAlignment();
@@ -154,7 +142,7 @@ export class LabelElement extends ViewElement {
         else {
             this.spanObject.style.lineHeight = this.lineSpace > 0 ? (this.font.pointSize + this.lineSpace * 2).toString() + "px" : null;
             this.spanObject.style.textOverflow = this.lineBreakMode === LineBreakMode.TruncatingTail ? "ellipsis" : null;
-            this.spanObject.style.display = "block";
+            this.spanObject.style.display = "table-cell";
             this.spanObject.style.verticalAlign = "middle";
             this.spanObject.style.overflow = "hidden";
             this.spanObject.style.wordWrap = "break-word";

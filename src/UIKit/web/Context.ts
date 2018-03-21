@@ -51,35 +51,12 @@ export class Context extends XT.BaseObject {
     public attachTo(node: HTMLElement | undefined) {
         if (this.application === undefined) { return }
         this.attachNode = node || document.body;
-        this.attachNode.appendChild(this.application.rootElement)
+        if (this.application.keyWindow) {
+            this.attachNode.appendChild(this.application.keyWindow.nativeObject.nativeObject)
+        }
         if (this.attachNode === document.body && this.application.keyWindow) {
             this.application.keyWindow.isBody = true
         }
-        let previousOrientation = document.body.clientWidth > document.body.clientHeight ? 1 : 0
-        let inputMode = false
-        window.addEventListener("resize", () => {
-            if (document.activeElement instanceof HTMLInputElement ||
-                document.activeElement instanceof HTMLTextAreaElement) {
-                inputMode = true
-                return;
-            }
-            else if (inputMode) {
-                if (this.attachNode && this.application && this.application.rootElement) {
-                    this.attachNode.removeChild(this.application.rootElement)
-                    this.attachNode.appendChild(this.application.rootElement)
-                    this.resize()
-                }
-                inputMode = false
-                return;
-            }
-            let currentOrientation = document.body.clientWidth > document.body.clientHeight ? 1 : 0
-            if (currentOrientation != previousOrientation) {
-                window.location.reload()
-            }
-            else if (this.attachNode && this.application && this.application.rootElement) {
-                this.resize()
-            }
-        })
         this.resize()
     }
 

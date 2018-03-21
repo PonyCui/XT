@@ -10,37 +10,23 @@ const scaleOptions = [3, 2]
 export class Image extends XT.BaseObject {
 
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
-        const request = new XMLHttpRequest()
-        request.open('GET', url, true)
-        request.responseType = "arraybuffer"
-        request.onload = (e) => {
-            if (request.status < 400 && request.readyState == 4) {
-                const blob = new Blob([request.response]);
-                const url = URL.createObjectURL(blob);
-                const imgElement = document.createElement('img');
-                imgElement.onload = () => {
-                    const scale = (function (url) {
-                        if (url.indexOf('@2x')) {
-                            return 2.0;
-                        }
-                        else if (url.indexOf('@3x')) {
-                            return 3.0;
-                        }
-                        else {
-                            return 1.0;
-                        }
-                    })(url)
-                    const size = SizeMake(imgElement.width / scale, imgElement.height / scale)
-                    const image = new Image(url, size, scale);
-                    success(image)
+        const imgElement = document.createElement('img');
+        imgElement.onload = () => {
+            const scale = (function (url) {
+                if (url.indexOf('@2x')) {
+                    return 2.0;
                 }
-                imgElement.src = url;
-            }
-            else {
-                failure && failure(Error("Image load failure code " + request.status))
-            }
+                else if (url.indexOf('@3x')) {
+                    return 3.0;
+                }
+                else {
+                    return 1.0;
+                }
+            })(url)
+            const image = new Image(imgElement, scale);
+            success(image)
         }
-        request.send();
+        imgElement.src = url
     }
 
     static fromBase64(value: string, scale: number, bitmapWidth: number = 0, bitmapHeight: number = 0): Image | undefined {
@@ -51,7 +37,9 @@ export class Image extends XT.BaseObject {
         const url = URL.createObjectURL(blob);
         const imgElement = document.createElement('img');
         imgElement.src = url;
-        return new Image(url, SizeMake((bitmapWidth || 0.0) / scale, (bitmapHeight || 0.0) / scale), scale)
+        imgElement.width = bitmapWidth
+        imgElement.height = bitmapHeight
+        return new Image(imgElement, scale)
     }
 
     private static _base64ToArrayBuffer(base64: string) {
@@ -64,11 +52,14 @@ export class Image extends XT.BaseObject {
         return bytes.buffer;
     }
 
-    constructor(
-        readonly URLString: string,
-        readonly size: Size = { width: 0, height: 0 },
-        readonly scale: number = 1.0,
-        readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original) { super() }
+    URLString: string
+    size: Size
+
+    constructor(readonly source: HTMLImageElement, readonly scale: number = 1.0, readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original) {
+        super()
+        this.URLString = source.src
+        this.size = SizeMake(source.width / scale, source.height / scale)
+    }
 
     toObject(): any {
         return {
@@ -78,8 +69,14 @@ export class Image extends XT.BaseObject {
         }
     }
 
+    clone(): Image {
+        const imgElement = document.createElement('img')
+        imgElement.src = this.source.src
+        return new Image(imgElement, this.scale, this.renderingMode)
+    }
+
     public imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {
-        return new Image(this.URLString, this.size, this.scale, renderingMode)
+        return new Image(this.source, this.scale, renderingMode)
     }
 
 }
@@ -115,7 +112,7 @@ export class ImageView extends View {
 
     public set image(value: Image | undefined) {
         this._image = value;
-        this.nativeObject.xtr_setImage(value);
+        this.nativeObject.xtr_setImage(value ? value.clone() : undefined);
     }
 
     public tintColorDidChange() {

@@ -7,7 +7,7 @@ export class ActivityIndicatorViewElement extends ViewElement {
 
     loadContent() {
         super.loadContent()
-        this.contentObject = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+        // this.contentObject = document.createElementNS('http://www.w3.org/2000/svg', 'g')
     }
 
     xtr_setFrame(frame: any) {
@@ -57,8 +57,8 @@ export class ActivityIndicatorViewElement extends ViewElement {
         }
         const tintColor = this.scriptObject.tintColor
         content = content.replace(/fill="#28292f"/g, 'fill="rgba(' + (tintColor.r * 255).toFixed(0) + ', ' + (tintColor.g * 255).toFixed(0) + ', ' + (tintColor.b * 255).toFixed(0) + ', ' + tintColor.a.toString() + ')"');
-        (this.contentObject as SVGGElement).innerHTML = content;
-        (this.contentObject as SVGGElement).setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, " + ((this.xtr_bounds().width - size) / 2.0) + ", " + ((this.xtr_bounds().height - size) / 2.0) + ")")
+        // (this.contentObject as SVGGElement).innerHTML = content;
+        // (this.contentObject as SVGGElement).setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, " + ((this.xtr_bounds().width - size) / 2.0) + ", " + ((this.xtr_bounds().height - size) / 2.0) + ")")
     }
 
 }
