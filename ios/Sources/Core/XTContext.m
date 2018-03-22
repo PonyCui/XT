@@ -61,6 +61,7 @@
         }];
         [self evaluateScript:@"var window = {}; var global = window; var objectRefs = {};"];
         [self loadCoreComponents];
+        [self loadShimScript];
         [self loadCoreScript];
         self.isGlobalVariableDidSetup = YES;
     }
@@ -73,6 +74,14 @@
     self[@"_XTExtObject"] = [XTExtObject class];
     [XTPolyfill addPolyfills:self];
     [XTMemoryManager attachContext:self];
+}
+
+- (void)loadShimScript {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.es6-shim.min" ofType:@"js"];
+    if (path) {
+        NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+        [self evaluateScript:script];
+    }
 }
 
 - (void)loadCoreScript {

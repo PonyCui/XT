@@ -3,6 +3,7 @@ import { Debug } from "./Debug";
 import { BaseObject } from './BaseObject';
 import { BaseArray } from './BaseArray';
 import { ExtObject } from './ExtObject';
+require("es6-shim")
 
 declare var module: any
 

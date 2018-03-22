@@ -24,6 +24,7 @@
 		90BB25621FBC3CB100286398 /* ModulizeAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25611FBC3CB100286398 /* ModulizeAppDelegate.m */; };
 		90BB25661FBC3D0F00286398 /* ModulizeStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BB25641FBC3D0F00286398 /* ModulizeStartViewController.m */; };
 		90BB25671FBC3D0F00286398 /* ModulizeStartViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 90BB25651FBC3D0F00286398 /* ModulizeStartViewController.xib */; };
+		90E12CC120639F1600173064 /* xt.es6-shim.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 90E12CC020639F1600173064 /* xt.es6-shim.min.js */; };
 		90EA879720198F5A0012A985 /* XTUIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA879620198F5A0012A985 /* XTUIContext.m */; };
 		90EA879C201992860012A985 /* XTUIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA8798201992850012A985 /* XTUIApplication.m */; };
 		90EA879D201992860012A985 /* XTUIApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90EA879A201992850012A985 /* XTUIApplicationDelegate.m */; };
@@ -111,6 +112,7 @@
 		90BB25631FBC3D0F00286398 /* ModulizeStartViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModulizeStartViewController.h; sourceTree = "<group>"; };
 		90BB25641FBC3D0F00286398 /* ModulizeStartViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModulizeStartViewController.m; sourceTree = "<group>"; };
 		90BB25651FBC3D0F00286398 /* ModulizeStartViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ModulizeStartViewController.xib; sourceTree = "<group>"; };
+		90E12CC020639F1600173064 /* xt.es6-shim.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "xt.es6-shim.min.js"; sourceTree = "<group>"; };
 		90EA879520198F5A0012A985 /* XTUIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTUIContext.h; sourceTree = "<group>"; };
 		90EA879620198F5A0012A985 /* XTUIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTUIContext.m; sourceTree = "<group>"; };
 		90EA8798201992850012A985 /* XTUIApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTUIApplication.m; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 			isa = PBXGroup;
 			children = (
 				90EA881C201B2D470012A985 /* xt.core.ios.min.js */,
+				90E12CC020639F1600173064 /* xt.es6-shim.min.js */,
 				90AFB4FF201988A9001E9DA7 /* XTCore.h */,
 				90AFB500201988A9001E9DA7 /* XTCore.m */,
 				90AFB4EB20197F4E001E9DA7 /* XTComponent.h */,
@@ -505,6 +508,7 @@
 			files = (
 				905708141F4EB2AF00D5EC05 /* LaunchScreen.storyboard in Resources */,
 				90EA87F5201AD13F0012A985 /* sample.min.js in Resources */,
+				90E12CC120639F1600173064 /* xt.es6-shim.min.js in Resources */,
 				90EA87F32019C48F0012A985 /* xt.uikit.ios.min.js in Resources */,
 				90EA881D201B2D470012A985 /* xt.core.ios.min.js in Resources */,
 				90BB25671FBC3D0F00286398 /* ModulizeStartViewController.xib in Resources */,

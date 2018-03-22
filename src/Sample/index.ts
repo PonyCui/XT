@@ -20,14 +20,14 @@ class AppDelegate extends UI.ApplicationDelegate {
 
 const sampleApplication = new UI.Application('app', new AppDelegate());
 
-let lastFrameTime = performance.now()
+// let lastFrameTime = performance.now()
 
-const runFPSCounter = () => {
-    if (performance.now() - lastFrameTime > 18) {
-        console.log(performance.now() - lastFrameTime);
-    }
-    lastFrameTime = performance.now()
-    requestAnimationFrame(runFPSCounter)
-}
+// const runFPSCounter = () => {
+//     if (performance.now() - lastFrameTime > 18) {
+//         console.log(performance.now() - lastFrameTime);
+//     }
+//     lastFrameTime = performance.now()
+//     requestAnimationFrame(runFPSCounter)
+// }
 
 // runFPSCounter()
