@@ -62,8 +62,24 @@ export class ActivityIndicatorViewElement extends ViewElement {
         }
         const tintColor = this.scriptObject.tintColor
         content = content.replace(/fill="#28292f"/g, 'fill="rgba(' + (tintColor.r * 255).toFixed(0) + ', ' + (tintColor.g * 255).toFixed(0) + ', ' + (tintColor.b * 255).toFixed(0) + ', ' + tintColor.a.toString() + ')"');
-        (this.contentObject as SVGElement).innerHTML = content;
-        (this.contentObject as SVGElement).style.transform = "matrix(1.0, 0.0, 0.0, 1.0, " + ((this.xtr_bounds().width - size) / 2.0) + ", " + ((this.xtr_bounds().height - size) / 2.0) + ")"
+        if (content.length > 0) {
+
+            this.contentObject.innerHTML = content;
+            if (this.contentObject.childNodes.length === 0) {
+                var dummy = document.createElement('div');
+                dummy.innerHTML = '<svg>' + content + '</svg>';
+                if (dummy.childNodes[0].childNodes[0]) {
+                    this.contentObject.appendChild(dummy.childNodes[0].childNodes[0])
+                }
+            }
+            this.contentObject.style.transform = "matrix(1.0, 0.0, 0.0, 1.0, " + ((this.xtr_bounds().width - size) / 2.0) + ", " + ((this.xtr_bounds().height - size) / 2.0) + ")"
+            this.contentObject.style.webkitTransform = this.contentObject.style.transform
+        }
+        else {
+            for (let index = 0; index < this.contentObject.childNodes.length; index++) {
+                this.contentObject.removeChild(this.contentObject.childNodes[index])
+            }
+        }
     }
 
 }
