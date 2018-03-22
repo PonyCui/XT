@@ -5,6 +5,7 @@ import { UserDefaultsSample } from "./userdefaults";
 import { FileManagerSample } from "./filemanager";
 import { NotificationSample } from "./notification";
 import { WSSample } from "./ws";
+import { DatabaseSample } from "./database";
 
 
 class Header extends UI.View {
@@ -192,6 +193,16 @@ export class FoundationList extends UI.ViewController {
                 action: () => {
                     if (this.navigationController) {
                         this.navigationController.pushViewController(new WSSample())
+                    }
+                },
+            },
+            {
+                reuseIdentifier: "Cell",
+                rowHeight: () => 44,
+                name: "Database",
+                action: () => {
+                    if (this.navigationController) {
+                        this.navigationController.pushViewController(new DatabaseSample())
                     }
                 },
             },

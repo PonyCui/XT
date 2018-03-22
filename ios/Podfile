@@ -6,5 +6,6 @@ target 'XTSample' do
   pod 'CocoaSecurity'
   pod 'SocketRocket'
   pod 'YYWebImage'
+  pod 'FMDB'
 
 end

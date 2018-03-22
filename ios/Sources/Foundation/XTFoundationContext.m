@@ -17,6 +17,7 @@
 #import "XTFFileManager.h"
 #import "XTFNotification.h"
 #import "XTFWebSocket.h"
+#import "XTFDatabase.h"
 
 @implementation XTFoundationContext
 
@@ -35,6 +36,7 @@
     self[@"_XTFFileManager"] = [XTFFileManager class];
     self[@"_XTFNotification"] = [XTFNotification class];
     self[@"_XTFWebSocket"] = [XTFWebSocket class];
+    self[@"_XTFDatabase"] = [XTFDatabase class];
 }
 
 - (void)loadScript {

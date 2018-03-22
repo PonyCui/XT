@@ -886,6 +886,28 @@ export class WebSocket extends XT.BaseObject /* @available(0.1.1) */ {
     close(): void
 }
 
+export class DatabaseResultSet extends XT.BaseObject {
+
+    intValue(column: number): number
+    longValue(column: number): number
+    longlongValue(column: number): number
+    boolValue(column: number): boolean
+    stringValue(column: number): string
+
+}
+
+export class Database extends XT.BaseObject {
+
+    static ResultSet: typeof DatabaseResultSet
+
+    constructor(name: string)
+
+    open(): Promise<boolean>
+    executeQuery(sql: string, ...values: any[]): Promise<typeof Database.ResultSet>
+    executeStatements(sql: string, ...values: any[]): Promise<boolean>
+
+}
+
 declare var require: (path: string) => any;
 
 declare global {
@@ -993,5 +1015,6 @@ declare global {
         URLSessionTask: typeof URLSessionTask,
         UserDefaults: typeof UserDefaults,
         WebSocket: typeof WebSocket,
+        Database: typeof Database,
     }
 }

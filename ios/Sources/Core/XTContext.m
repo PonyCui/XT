@@ -59,7 +59,7 @@
         [self setExceptionHandler:^(JSContext *context, JSValue *exception) {
             NSLog(@"%@", [exception toString]);
         }];
-        [self evaluateScript:@"var window = {}; var global = window; var objectRefs = {};"];
+        [self evaluateScript:@"var window = {isFinite: function(){return true;}}; var global = window; var objectRefs = {};"];
         [self loadCoreComponents];
         [self loadShimScript];
         [self loadCoreScript];
@@ -77,10 +77,19 @@
 }
 
 - (void)loadShimScript {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.es6-shim.min" ofType:@"js"];
-    if (path) {
-        NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
-        [self evaluateScript:script];
+    {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.es6-polyfill.min" ofType:@"js"];
+        if (path) {
+            NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+            [self evaluateScript:script];
+        }
+    }
+    if ([UIDevice currentDevice].systemVersion.floatValue < 10.3) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"xt.es6-promise.min" ofType:@"js"];
+        if (path) {
+            NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+            [self evaluateScript:script];
+        }
     }
 }
 
