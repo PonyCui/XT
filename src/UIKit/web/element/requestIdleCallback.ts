@@ -5,7 +5,12 @@ export class RequestIdleCallback {
     static queue: { [key: string]: () => void } = {};
 
     static add(task: () => void, key: string) {
-        this.queue[key] = task;
+        if (!this.isBusy) {
+            task()
+        }
+        else {
+            this.queue[key] = task;
+        }
     }
 
     static consume() {

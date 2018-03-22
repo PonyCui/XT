@@ -164,6 +164,7 @@ export class TextField extends View {
             }
             this.addSubview(view)
             this._clearView = view;
+            this.layoutSubviews()
             this.nativeObject.resetContentRects();
             this.nativeObject.resetFieldViewOpacity();
         }
@@ -304,10 +305,17 @@ export class TextField extends View {
         this.nativeObject.xtr_blur();
     }
 
-    // Private Methods
-
-    private setOptions(options: string[], defaultValue: string = "") {
-        this.nativeObject.setOptions(options, defaultValue)
+    layoutSubviews() {
+        super.layoutSubviews()
+        if (this._clearView) {
+            this._clearView.frame = RectMake(this.bounds.width - 36.0, 0, 36.0, this.bounds.height)
+        }
+        if (this._rightView) {
+            this._rightView.frame = RectMake(this.bounds.width - this._rightView.frame.width, (this.bounds.height - this._rightView.frame.height) / 2.0, this._rightView.frame.width, this._rightView.frame.height)
+        }
+        if (this._leftView) {
+            this._leftView.frame = RectMake(0.0, (this.bounds.height - this._leftView.frame.height) / 2.0, this._leftView.frame.width, this._leftView.frame.height)
+        }
     }
 
 }

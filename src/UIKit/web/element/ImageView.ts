@@ -35,26 +35,12 @@ export class ImageViewElement extends ViewElement {
             this._image.source.style.display = "none"
         }
         this._image = undefined
-        if (RequestIdleCallback.isBusy) {
-            RequestIdleCallback.add(() => {
-                Image.fromURL(url, (it) => {
-                    if (it.URLString == this._currentUrl) {
-                        this.xtr_setImage(it)
-                        if (fadeIn) {
-                            this.xtr_fadeIn(0.0)
-                        }
-                        else {
-                            it.source.style.opacity = "1.0"
-                        }
-                    }
-                })
-            }, this.objectRef)
-        }
-        else {
+        const startTime = performance.now()
+        RequestIdleCallback.add(() => {
             Image.fromURL(url, (it) => {
                 if (it.URLString == this._currentUrl) {
                     this.xtr_setImage(it)
-                    if (fadeIn) {
+                    if (fadeIn && performance.now() - startTime > 100) {
                         this.xtr_fadeIn(0.0)
                     }
                     else {
@@ -62,7 +48,7 @@ export class ImageViewElement extends ViewElement {
                     }
                 }
             })
-        }
+        }, this.objectRef)
     }
 
     xtr_fadeIn(currentValue: number) {

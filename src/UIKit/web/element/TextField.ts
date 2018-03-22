@@ -10,99 +10,45 @@ let measureSpan: HTMLSpanElement = document.createElement("span")
 
 export class TextFieldElement extends ViewElement {
 
-    private inputGroup: SVGGElement
-    private inputGroupMask: SVGMaskElement
-    private foreignObject: SVGForeignObjectElement
     private inputObject: HTMLInputElement
-    private placeholderObject: SVGTextElement
+    private placeholderObject: HTMLSpanElement
 
     loadContent() {
         super.loadContent();
         this.leftViewWidth = 0;
         this.rightViewWidth = 0;
-        this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        this.inputGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        this.inputGroupMask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
-        this.inputGroupMask.setAttribute('id', this.objectRef + ".inputGroup.mask");
-        this.inputGroupMask.innerHTML = '';
-        setTimeout(() => {
-            if (!Application.sharedApplication()!.defsElement.contains(this.inputGroupMask)) {
-                Application.sharedApplication()!.defsElement.appendChild(this.inputGroupMask)
-            }
-        })
-        this.inputGroup.style.mask = 'url(#' + (this.objectRef + ".inputGroup.mask") + ')'
-        this.foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
         this.inputObject = document.createElement("input");
         this.inputObject.style.backgroundColor = "transparent"
+        this.inputObject.style.position = "absolute"
+        this.inputObject.style.width = "100%"
+        this.inputObject.style.height = "100%"
         this.inputObject.style.border = "none"
         this.inputObject.style.outline = "none"
         this.inputObject.style.color = "black"
         this.inputObject.style.fontSize = "14px"
         this.inputObject.addEventListener("focus", () => {
             this.editing = true
-            this.resetContentRects()
-            this.inputObject.dispatchEvent(new Event("setting"));
             if (this.scriptObject.didBeginEditing) {
                 this.scriptObject.didBeginEditing();
             }
         })
         this.inputObject.addEventListener("blur", () => {
             this.editing = false
-            this.resetContentRects()
-            this.inputObject.dispatchEvent(new Event("setting"));
             if (this.scriptObject.didEndEditing) {
                 this.scriptObject.didEndEditing();
             }
         })
-        this.foreignObject.appendChild(this.inputObject);
-        if (this.shouldSetupChromePatcher()) {
-            this.setupChromePatcher();
-        }
+        this.nativeObject.appendChild(this.inputObject)
         this.setupInputChangeListener()
-        this.placeholderObject = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        this.placeholderObject.style.fill = "#a0a0a0"
+        this.placeholderObject = document.createElement("span")
+        this.placeholderObject.style.color = "#a0a0a0"
         this.placeholderObject.style.fontSize = "14px"
-        this.placeholderObject.setAttribute("alignment-baseline", "central")
-        this.placeholderObject.setAttribute("x", this.shouldSetupIOSPatcher() ? "8" : "0")
-        this.inputGroup.appendChild(this.placeholderObject);
-        this.inputGroup.appendChild(this.foreignObject)
-        this.contentObject.appendChild(this.inputGroup);
+        this.placeholderObject.style.position = "absolute"
+        this.placeholderObject.style.width = "100%"
+        this.placeholderObject.style.height = "100%"
+        this.nativeObject.appendChild(this.placeholderObject)
         this.setupReturnKeyListenner();
-        this.setupShouldChangeListenner();
     }
-
-    // Private - Select {
-
-    private selectObject: HTMLSelectElement
-
-    setOptions(options: string[], defaultValue: string) {
-        this.foreignObject.innerHTML = '';
-        this.selectObject = document.createElement("select")
-        this.selectObject.style.backgroundColor = "transparent"
-        this.selectObject.style.width = "100%"
-        this.selectObject.style.height = "100%"
-        this.selectObject.style.border = "none"
-        this.selectObject.style.outline = "none"
-        this.selectObject.style.color = this.inputObject.style.color
-        this.selectObject.style.fontSize = this.inputObject.style.fontSize
-        options.forEach(option => {
-            const el = document.createElement("option")
-            el.innerText = option;
-            if (option === defaultValue) {
-                el.setAttribute("selected", "selected")
-            }
-            this.selectObject.appendChild(el);
-        })
-        this.foreignObject.appendChild(this.selectObject);
-        this.selectObject.addEventListener("change", () => {
-            if (this.scriptObject.didEndEditing) {
-                this.scriptObject.didEndEditing();
-            }
-        })
-        this.resetContentRects()
-    }
-
-    // }
 
     private _editing = false
 
@@ -222,6 +168,7 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_setFrame(value: Rect) {
         super.xtr_setFrame(value);
+        this.placeholderObject.style.lineHeight = value.height.toString() + "px"
         this.resetContentRects();
     }
 
@@ -275,60 +222,6 @@ export class TextFieldElement extends ViewElement {
     }
 
     public xtr_setReturnKeyType(value: any) { }
-
-    private resetContentRects() {
-        const inputWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
-        const inputHeight = this.xtr_frame().height
-        this.inputGroup.setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, " + (this.activeLeftViewWidth + (this.shouldSetupIOSPatcher() ? 0.0 : 8.0)).toString() + ", 0.0)");
-        if (this.selectObject !== undefined) {
-            this.inputGroup.setAttribute("transform", "matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)");
-        }
-        this.foreignObject.setAttribute('width', inputWidth.toString())
-        this.foreignObject.setAttribute('height', inputHeight.toString())
-        if (this.scriptObject.leftView) {
-            this.scriptObject.leftView.frame = { x: 0, y: (inputHeight - this.scriptObject.leftView.frame.height) / 2.0, width: this.scriptObject.leftView.frame.width, height: this.scriptObject.leftView.frame.height };
-        }
-        if (this.scriptObject.rightView) {
-            this.scriptObject.rightView.frame = { x: this.xtr_frame().width - this.rightViewWidth, y: (inputHeight - this.scriptObject.rightView.frame.height) / 2.0, width: this.scriptObject.rightView.frame.width, height: this.scriptObject.rightView.frame.height };
-        }
-        if (this.scriptObject._clearView) {
-            this.scriptObject._clearView.frame = { x: this.xtr_frame().width - 36, y: 0, width: 36, height: inputHeight };
-        }
-        if (this.shouldSetupChromePatcher()) {
-            this.inputObject.style.width = this.inputObject.style.width || "1000px";
-        }
-        else {
-            this.inputObject.style.width = inputWidth + "px";
-        }
-        this.inputObject.style.height = inputHeight + "px";
-        switch (this.textAlignment) {
-            case TextAlignment.Left:
-                this.placeholderObject.style.textAnchor = "start"
-                this.placeholderObject.setAttribute("x", this.shouldSetupIOSPatcher() ? "8" : "0")
-                break;
-            case TextAlignment.Center:
-                this.placeholderObject.style.textAnchor = "middle"
-                this.placeholderObject.setAttribute("x", (inputWidth / 2.0).toString())
-                break;
-            case TextAlignment.Right:
-                this.placeholderObject.style.textAnchor = "end"
-                this.placeholderObject.setAttribute("x", (inputWidth - 8).toString())
-                break;
-        }
-        this.placeholderObject.setAttribute("y", (inputHeight / 2).toString())
-        this.resetInputGroupMaskPath();
-    }
-
-    private resetInputGroupMaskPath() {
-        const inputWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth)
-        const inputHeight = this.xtr_frame().height
-        const maskPath = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        maskPath.setAttribute("width", inputWidth.toString());
-        maskPath.setAttribute("height", inputHeight.toString());
-        maskPath.style.fill = "white";
-        this.inputGroupMask.innerHTML = '';
-        this.inputGroupMask.appendChild(maskPath);
-    }
 
     private resetFieldViewOpacity() {
         if (this.scriptObject.leftView) {
@@ -394,15 +287,11 @@ export class TextFieldElement extends ViewElement {
     }
 
     public xtr_text(): string {
-        if (this.selectObject) {
-            return this.selectObject.value;
-        }
         return this.inputObject.value || "";
     }
 
     public xtr_setText(value: string) {
         this.inputObject.value = value
-        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
     }
 
     private font: Font = Font.systemFontOfSize(14.0)
@@ -443,28 +332,28 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_setTextAlignment(value: TextAlignment) {
         this.textAlignment = value;
-        this.resetContentRects();
-        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); return; }
         switch (value) {
             case TextAlignment.Left:
                 this.inputObject.style.textAlign = "left";
+                this.placeholderObject.style.textAlign = "left";
                 break;
             case TextAlignment.Center:
                 this.inputObject.style.textAlign = "center";
+                this.placeholderObject.style.textAlign = "center";
                 break;
             case TextAlignment.Right:
                 this.inputObject.style.textAlign = "right";
+                this.placeholderObject.style.textAlign = "right";
                 break;
         }
-        this.inputObject.dispatchEvent(new Event("setting"));
     }
 
     public xtr_placeholder(): string {
-        return this.placeholderObject.innerHTML
+        return this.placeholderObject.innerText
     }
 
     public xtr_setPlaceholder(value: string) {
-        this.placeholderObject.innerHTML = value;
+        this.placeholderObject.innerText = value;
     }
 
     private placeholderColor: Color = Color.blackColor
@@ -475,7 +364,7 @@ export class TextFieldElement extends ViewElement {
 
     public xtr_setPlaceholderColor(value: Color) {
         this.placeholderColor = value;
-        this.placeholderObject.style.fill = 'rgba(' + (this.placeholderColor.r * 255).toFixed(0) + ', ' + (this.placeholderColor.g * 255).toFixed(0) + ', ' + (this.placeholderColor.b * 255).toFixed(0) + ', ' + this.placeholderColor.a.toString() + ')'
+        this.placeholderObject.style.color = 'rgba(' + (this.placeholderColor.r * 255).toFixed(0) + ', ' + (this.placeholderColor.g * 255).toFixed(0) + ', ' + (this.placeholderColor.b * 255).toFixed(0) + ', ' + this.placeholderColor.a.toString() + ')'
     }
 
     private clearsOnBeginEditing: Boolean = false
@@ -505,9 +394,6 @@ export class TextFieldElement extends ViewElement {
         }
         this.editing = true;
         this.inputObject.focus();
-        setTimeout(() => {
-            if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
-        }, 250)
         if (this.scriptObject.didBeginEditing) {
             this.scriptObject.didBeginEditing()
         }
@@ -519,7 +405,6 @@ export class TextFieldElement extends ViewElement {
         }
         this.inputObject.blur();
         this.editing = false;
-        if (this.shouldSetupChromePatcher()) { this.inputObject.dispatchEvent(new Event("setting")); }
         if (this.scriptObject.didEndEditing) {
             this.scriptObject.didEndEditing()
         }
@@ -551,95 +436,19 @@ export class TextFieldElement extends ViewElement {
         })
     }
 
-    private setupShouldChangeListenner() { }
-
-    private shouldSetupChromePatcher(): boolean {
-        return navigator.vendor === "Google Inc."
-    }
-
-    private shouldSetupIOSPatcher(): boolean {
-        return navigator.vendor === "Apple Computer, Inc." && (navigator.userAgent.indexOf("iPhone OS") >= 0 || navigator.userAgent.indexOf("iPad OS") >= 0)
-    }
-
-    private setupChromePatcher() {
-        if (measureSpan.parentNode === null) {
-            measureSpan.style.opacity = "0.0"
-            measureSpan.style.position = "absolute"
-            measureSpan.style.display = "inline-block"
-            measureSpan.style.whiteSpace = "nowrap"
-            measureSpan.style.left = "-10000000px"
-            measureSpan.style.top = "-10000000px"
-            // measureSpan.style.left = "44px"
-            // measureSpan.style.top = "20px"
-            document.body.appendChild(measureSpan);
-        }
-        const patcher = () => {
-            const groupWidth = (this.xtr_frame().width - this.activeLeftViewWidth - this.activeRightViewWidth - 8)
-            const currentText = this.inputObject.value;
-            measureSpan.style.fontSize = this.inputObject.style.fontSize
-            measureSpan.style.fontFamily = this.inputObject.style.fontFamily || "Arial"
-            measureSpan.style.fontWeight = this.inputObject.style.fontWeight
-            measureSpan.style.fontStyle = this.inputObject.style.fontStyle
-            let textWidth: number;
-            if (this.secureTextEntry) {
-                let str = "";
-                for (let index = 0; index < currentText.length; index++) {
-                    str += ")";
-                }
-                measureSpan.innerText = str;
-                textWidth = measureSpan.offsetWidth * 1.05;
-            }
-            else {
-                measureSpan.innerText = currentText;
-                textWidth = measureSpan.offsetWidth;
-            }
-            let inputWidth = parseInt((this.inputObject.style.width || "1000").replace("px", ""))
-            if (textWidth > inputWidth / 2) {
-                inputWidth *= 2;
-                this.inputObject.style.width = inputWidth.toString() + 'px';
-            }
-            if (this.textAlignment === TextAlignment.Right) {
-                if (textWidth < groupWidth) {
-                    this.inputObject.style.paddingLeft = (groupWidth - textWidth - 8).toString() + "px";
-                    this.inputObject.style.marginLeft = null;
-                }
-                else {
-                    this.inputObject.style.paddingLeft = null;
-                    this.inputObject.style.marginLeft = (groupWidth - textWidth - 8).toString() + "px";
-                }
-            }
-            if (this.textAlignment === TextAlignment.Center) {
-                if (textWidth < groupWidth) {
-                    this.inputObject.style.paddingLeft = ((groupWidth - textWidth) / 2.0).toString() + "px";
-                    this.inputObject.style.marginLeft = null;
-                }
-                else {
-                    this.inputObject.style.paddingLeft = null;
-                    this.inputObject.style.marginLeft = (groupWidth - textWidth - 8).toString() + "px";
-                }
-            }
-            else {
-                if (textWidth > groupWidth) {
-                    this.inputObject.style.marginLeft = (groupWidth - textWidth - 8).toString() + "px";
-                }
-                else {
-                    this.inputObject.style.marginLeft = null
-                }
-            }
-        }
-        this.inputObject.addEventListener('input', patcher)
-        this.inputObject.addEventListener('setting', patcher)
-    }
-
     private setupInputChangeListener() {
         this.inputObject.addEventListener('input', () => {
             const currentText = this.inputObject.value;
-            this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0");
+            this.placeholderObject.style.opacity = currentText.length > 0 ? "0.0" : "1.0"
+            this.resetContentRects()
         })
-        this.inputObject.addEventListener('setting', () => {
-            const currentText = this.inputObject.value;
-            this.placeholderObject.setAttribute("opacity", currentText.length > 0 ? "0.0" : "1.0");
-        })
+    }
+
+    private resetContentRects() {
+        this.inputObject.style.paddingLeft = this.activeLeftViewWidth.toString() + "px"
+        this.placeholderObject.style.paddingLeft = this.activeLeftViewWidth.toString() + "px"
+        this.inputObject.style.paddingRight = this.activeRightViewWidth.toString() + "px"
+        this.placeholderObject.style.paddingRight = this.activeRightViewWidth.toString() + "px"
     }
 
 }

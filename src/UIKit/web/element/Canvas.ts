@@ -42,10 +42,12 @@ export class CanvasElement extends ViewElement {
 
     loadContent() {
         super.loadContent();
-        // this.contentObject = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        // this.canvasElement = this.contentObject as SVGGElement
-        // this.canvasObject = document.createElement("canvas");
-        // this.ctx = this.canvasObject.getContext('2d') as CanvasRenderingContext2D
+        this.canvasElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        this.canvasElement.style.width = "100%"
+        this.canvasElement.style.height = "100%"
+        this.canvasObject = document.createElement("canvas");
+        this.ctx = this.canvasObject.getContext('2d') as CanvasRenderingContext2D
+        this.nativeObject.appendChild(this.canvasElement)
     }
 
     public xtr_globalAlpha(): number {

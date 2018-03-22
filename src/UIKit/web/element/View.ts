@@ -240,7 +240,7 @@ export class ViewElement extends BaseElement {
 
     private resetShadow() {
         if (this.shadowOpacity > 0 && this.shadowColor.a > 0) {
-            const shadowColor = 'rgba(' + (this.borderColor.r * 255).toFixed(0) + ', ' + (this.borderColor.g * 255).toFixed(0) + ', ' + (this.borderColor.b * 255).toFixed(0) + ', ' + (this.borderColor.a * this.shadowOpacity).toString() + ')'
+            const shadowColor = 'rgba(' + (this.shadowColor.r * 255).toFixed(0) + ', ' + (this.shadowColor.g * 255).toFixed(0) + ', ' + (this.shadowColor.b * 255).toFixed(0) + ', ' + (this.shadowColor.a * this.shadowOpacity).toFixed(3) + ')'
             this.nativeObject.style.boxShadow = this.shadowOffset.width.toString() + "px " + this.shadowOffset.height.toString() + "px " + this.shadowRadius.toString() + "px " + shadowColor
         }
     }
