@@ -78,6 +78,7 @@ export class ViewElement extends BaseElement {
 
     public resetTransform() {
         this.nativeObject.style.transform = 'matrix(' + this.transform.a + ', ' + this.transform.b + ', ' + this.transform.c + ', ' + this.transform.d + ', ' + (this.transform.tx + this.frame.x) + ', ' + (this.transform.ty + this.frame.y) + ')'
+        this.nativeObject.style.webkitTransform = this.nativeObject.style.transform
     }
 
     private _cacheTransform: any = undefined

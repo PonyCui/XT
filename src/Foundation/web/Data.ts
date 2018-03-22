@@ -51,7 +51,21 @@ export class Data extends XT.BaseObject {
     isEqualTo(data: Data): boolean {
         const b1 = new Uint8Array(this.buffer)
         const b2 = new Uint8Array(data.buffer)
-        return b1.length == b2.length && b1.every((v, i) => v === b2[i])
+        return b1.length == b2.length && this.every(b1, (v, i) => v === b2[i])
+    }
+
+    private every(array: Uint8Array, callback: (v: any, i: number) => boolean): boolean {
+        if (typeof array.every === "function") {
+            return array.every(callback)
+        }
+        else {
+            for (let index = 0; index < array.length; index++) {
+                if (!callback(array[index], index)) {
+                    return false
+                }
+            }
+            return true
+        }
     }
 
     length(): number {
