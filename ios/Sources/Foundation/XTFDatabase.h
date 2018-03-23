@@ -15,8 +15,34 @@
 
 @protocol XTFDatabaseExport<JSExport>
 
-+ (NSString *)create:(NSString *)name;
++ (NSString *)create:(NSString *)name location:(NSString *)location;
+
 + (void)xtr_openWithResolver:(JSValue *)resolver rejector:(JSValue *)rejector objectRef:(NSString *)objectRef;
+
++ (void)xtr_executeQuery:(NSString *)sql
+                  values:(NSArray *)values
+                resolver:(JSValue *)resolver
+                rejector:(JSValue *)rejector
+               objectRef:(NSString *)objectRef;
+
++ (void)xtr_executeUpdate:(NSString *)sql
+                  values:(NSArray *)values
+                resolver:(JSValue *)resolver
+                rejector:(JSValue *)rejector
+               objectRef:(NSString *)objectRef;
+
++ (void)xtr_executeStatements:(NSString *)sql
+                     resolver:(JSValue *)resolver
+                     rejector:(JSValue *)rejector
+                    objectRef:(NSString *)objectRef;
+
++ (void)xtr_executeTransaction:(JSValue *)execBlock
+                      rollback:(BOOL)rollback
+                      resolver:(JSValue *)resolver
+                      rejector:(JSValue *)rejector
+                     objectRef:(NSString *)objectRef;
+
++ (void)xtr_destoryWithResolver:(JSValue *)resolver rejector:(JSValue *)rejector objectRef:(NSString *)objectRef;
 
 @end
 

@@ -1,33 +1,68 @@
-export class DatabaseResultSet extends XT.BaseObject {
-
-    intValue(column: number): number { throw "Not Implemented!" }
-    longValue(column: number): number { throw "Not Implemented!" }
-    longlongValue(column: number): number { throw "Not Implemented!" }
-    boolValue(column: number): boolean { throw "Not Implemented!" }
-    stringValue(column: number): string { throw "Not Implemented!" }
-
-}
-
 export class Database extends XT.BaseObject {
 
-    static ResultSet: typeof DatabaseResultSet
-
-    constructor(name: string) {
+    constructor(name: string, location: "document" | "cache" | "tmp" = "document") {
         super(undefined, false)
-        this.objectRef = _XTFDatabase.create(name)
+        this.objectRef = _XTFDatabase.createLocation(name, location)
     }
 
     open(): Promise<boolean> {
         return new Promise<boolean>((resolver, rejector) => {
             _XTFDatabase.xtr_openWithResolverRejectorObjectRef(() => {
                 resolver(true)
-            }, () => {
-                rejector()
+            }, (reason: string) => {
+                rejector(reason)
             }, this.objectRef)
         })
     }
-    
-    executeQuery(sql: string, ...values: any[]): Promise<typeof Database.ResultSet> { throw "Not Implemented!" }
-    executeStatements(sql: string, ...values: any[]): Promise<boolean> { throw "Not Implemented!" }
+
+    executeQuery(sql: string, ...values: any[]): Promise<{ [key: string]: any }[]> {
+        return new Promise<{ [key: string]: any }[]>((resolver, rejector) => {
+            _XTFDatabase.xtr_executeQueryValuesResolverRejectorObjectRef(sql, values, (results: any[]) => {
+                resolver(results)
+            }, (reason: string) => {
+                rejector(reason)
+            }, this.objectRef)
+        })
+    }
+
+    executeUpdate(sql: string, ...values: any[]): Promise<boolean> {
+        return new Promise<boolean>((resolver, rejector) => {
+            _XTFDatabase.xtr_executeUpdateValuesResolverRejectorObjectRef(sql, values, () => {
+                resolver(true)
+            }, (reason: string) => {
+                rejector(reason)
+            }, this.objectRef)
+        })
+    }
+
+    executeStatements(sql: string): Promise<boolean> {
+        return new Promise<boolean>((resolver, rejector) => {
+            _XTFDatabase.xtr_executeStatementsResolverRejectorObjectRef(sql, () => {
+                resolver(true)
+            }, (reason: string) => {
+                rejector(reason)
+            }, this.objectRef)
+        })
+    }
+
+    executeTransaction(exec: () => void, rollback: boolean): Promise<boolean> {
+        return new Promise<boolean>((resolver, rejector) => {
+            _XTFDatabase.xtr_executeTransactionRollbackResolverRejectorObjectRef(exec, rollback, () => {
+                resolver(true)
+            }, (reason: string) => {
+                rejector(reason)
+            }, this.objectRef)
+        })
+    }
+
+    destory(): Promise<boolean> {
+        return new Promise<boolean>((resolver, rejector) => {
+            _XTFDatabase.xtr_destoryWithResolverRejectorObjectRef(() => {
+                resolver(true)
+            }, (reason: string) => {
+                rejector(reason)
+            }, this.objectRef)
+        })
+    }
 
 }

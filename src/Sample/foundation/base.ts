@@ -24,6 +24,8 @@ export class TestBase extends UI.ViewController {
 
     setup() { }
 
+    tearDown() { }
+
     private funcList: Function[] | undefined = undefined
 
     run() {
@@ -45,6 +47,7 @@ export class TestBase extends UI.ViewController {
         }
         else {
             this.log(true, "All Tests", 0)
+            this.tearDown();
         }
     }
 
