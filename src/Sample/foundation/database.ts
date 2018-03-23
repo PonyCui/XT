@@ -10,7 +10,7 @@ export class DatabaseSample extends TestBase {
     }
 
     tearDown() {
-        // this.database.destory()
+        this.database.destory()
     }
 
     async openTests(_: TestCase) {

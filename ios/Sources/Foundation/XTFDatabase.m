@@ -104,6 +104,10 @@ typedef NSError *(^XTFTransactionExecution)(FMDatabase *database);
                       rejector:(JSValue *)rejector
                      objectRef:(NSString *)objectRef {
     XTFDatabase *database = [XTMemoryManager find:objectRef];
+    if (database.inTransaction) {
+        [rejector callWithArguments:@[@"Already inTransaction."]];
+        return;
+    }
     if ([database isKindOfClass:[XTFDatabase class]]) {
         database.inTransaction = YES;
         [execBlock callWithArguments:nil];

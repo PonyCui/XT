@@ -32,7 +32,8 @@ class XTFoundationContext(appContext: Context, attachingContext: XTContext?) : X
                 XTFURLRequest.JSExports(this),
                 XTFURLResponse.JSExports(this),
                 XTFURLSession.JSExports(this),
-                XTFURLSessionTask.JSExports(this)
+                XTFURLSessionTask.JSExports(this),
+                XTFDatabase.JSExports(this)
         )
         components.forEach {
             val obj = it.exports()
