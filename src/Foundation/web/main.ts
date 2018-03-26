@@ -7,6 +7,7 @@ import { URLSession } from './URLSession'
 import { URLSessionTask } from './URLSessionTask'
 import { UserDefaults } from './UserDefaults'
 import { WebSocket } from './WebSocket'
+import { Database } from './Database';
 
 declare var module: any
 module.exports = {
@@ -21,4 +22,5 @@ module.exports = {
     URLSessionTask,
     UserDefaults,
     WebSocket,
+    Database,
 }

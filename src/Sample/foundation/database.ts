@@ -73,8 +73,8 @@ export class DatabaseSample extends TestBase {
         try {
             try {
                 await this.database.executeTransaction(() => {
-                    this.database.executeUpdate("INSERT INTO car VALUES (?, ?)", 1, "XXX")
                     this.database.executeUpdate("INSERT INTO car VALUES (?, ?)", null, "皇冠")
+                    this.database.executeUpdate("INSERT INTO car VALUES (?, ?)", 1, "XXX")
                 }, true)
             } catch (error) {
                 const rows = await this.database.executeQuery("SELECT * FROM car WHERE name = ?", "皇冠")

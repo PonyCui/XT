@@ -2,12 +2,12 @@ if (typeof window === "object") {
     window.XTFrameworkLoader = {
         distUrl: "https://cdn.jsdelivr.net/npm/xt-studio@0.2.0/dist",
         componentsUrl: {
-            "XT": function () { return window.XTFrameworkLoader.distUrl + "/Core/xt.core.web.min.js" },
-            "NS": function () { return window.XTFrameworkLoader.distUrl + "/Foundation/xt.foundation.web.min.js" },
-            "UI": function () { return window.XTFrameworkLoader.distUrl + "/UIKit/xt.uikit.web.min.js" },
             "SparkMD5": function () { return "https://cdn.jsdelivr.net/npm/spark-md5@3.0.0/spark-md5.min.js" },
             "sha1": function () { return "https://cdn.jsdelivr.net/npm/js-sha1@0.6.0/build/sha1.min.js" },
             "pako": function () { return "https://cdn.jsdelivr.net/npm/pako@1.0.6/dist/pako.min.js" },
+            "XT": function () { return window.XTFrameworkLoader.distUrl + "/Core/xt.core.web.min.js" },
+            "NS": function () { return window.XTFrameworkLoader.distUrl + "/Foundation/xt.foundation.web.min.js" },
+            "UI": function () { return window.XTFrameworkLoader.distUrl + "/UIKit/xt.uikit.web.min.js" },
         },
         loadUrl: function (url, onLoad) {
             var codeRequest = new XMLHttpRequest();
@@ -23,9 +23,6 @@ if (typeof window === "object") {
             codeRequest.send();
         },
         loadComponents: function (code, components, completion) {
-            if (code.indexOf("NS.") >= 0) {
-                components.push("NS");
-            }
             if (code.indexOf(".md5()") >= 0) {
                 components.push("SparkMD5")
             }
@@ -35,24 +32,23 @@ if (typeof window === "object") {
             if (code.indexOf("FileManager") >= 0) {
                 components.push("pako")
             }
-            var loadedCount = 0;
-            var onLoad = function () {
-                loadedCount++;
-                if (loadedCount == components.length) {
-                    completion();
-                }
+            if (code.indexOf("NS.") >= 0) {
+                components.push("NS");
             }
-            for (var index = 0; index < components.length; index++) {
-                if (window[components[index]] === undefined) {
-                    var element = document.createElement("script");
-                    element.src = window.XTFrameworkLoader.componentsUrl[components[index]]();
-                    element.onload = onLoad;
-                    document.body.appendChild(element);
+            var loadComponent = function () {
+                for (var index = 0; index < components.length; index++) {
+                    var comID = components[index];
+                    if (typeof window[comID] === "undefined") {
+                        var element = document.createElement("script");
+                        element.src = window.XTFrameworkLoader.componentsUrl[comID]();
+                        element.onload = loadComponent;
+                        document.body.appendChild(element);
+                        return;
+                    }
                 }
-                else {
-                    onLoad()
-                }
+                completion()
             }
+            loadComponent()
         },
         autoload: function () {
             var elements = document.querySelectorAll('.UIContext')
