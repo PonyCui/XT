@@ -82,6 +82,8 @@
 + (void)xtr_activeDoubleTap:(NSString *)objectRef;
 + (void)xtr_activeLongPress:(NSString *)objectRef;
 + (void)xtr_activePan:(NSString *)objectRef;
++ (void)xtr_activeRotate:(NSString *)objectRef;
++ (void)xtr_activePinch:(NSString *)objectRef;
 + (void)xtr_animationWithDuration:(CGFloat)duration
                         animation:(JSValue *)animation
                        completion:(JSValue *)completion;

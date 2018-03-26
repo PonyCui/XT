@@ -21,6 +21,8 @@
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
+@property (nonatomic, strong) UIRotationGestureRecognizer *rotationGestureRecognizer;
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 
 @end
 
@@ -724,6 +726,49 @@
                                         [JSValue fromPoint:[sender velocityInView:nil]],
                                         [JSValue fromPoint:[sender translationInView:nil]],
                                     ]];
+    }
+}
+
++ (void)xtr_activeRotate:(NSString *)objectRef {
+    XTUIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTUIView class]]) {
+        if (obj.rotationGestureRecognizer == nil) {
+            obj.rotationGestureRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:obj action:@selector(handleRotate:)];
+            [obj addGestureRecognizer:obj.rotationGestureRecognizer];
+        }
+    }
+}
+
+- (void)handleRotate:(UIRotationGestureRecognizer *)sender {
+    CGFloat degree = sender.rotation * 180 / M_PI;
+    JSValue *scriptObject = self.scriptObject;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handleRotate"
+                     withArguments:@[
+                                     @(sender.state),
+                                     @(degree),
+                                     ]];
+    }
+}
+
++ (void)xtr_activePinch:(NSString *)objectRef {
+    XTUIView *obj = [XTMemoryManager find:objectRef];
+    if ([obj isKindOfClass:[XTUIView class]]) {
+        if (obj.pinchGestureRecognizer == nil) {
+            obj.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:obj action:@selector(handlePinch:)];
+            [obj addGestureRecognizer:obj.pinchGestureRecognizer];
+        }
+    }
+}
+
+- (void)handlePinch:(UIPinchGestureRecognizer *)sender {
+    JSValue *scriptObject = self.scriptObject;
+    if (scriptObject != nil) {
+        [scriptObject invokeMethod:@"handlePinch"
+                     withArguments:@[
+                                     @(sender.state),
+                                     @(sender.scale),
+                                     ]];
     }
 }
 

@@ -13,7 +13,7 @@ export class BaseObject {
     retain(owner?: any): this
     release(): this
     constructor(objects?: { [key: string]: any } | undefined, isBaseObject?: boolean)
-    objectRef: string /** @Private */
+    objectRef: string /** @private */
 }
 
 export enum ClassType /* @available(0.1.1) */ {
@@ -125,6 +125,8 @@ export class View extends XT.BaseObject /* @available(0.1.1) */ {
     onDoubleTap?: () => void
     onLongPress?: (state: InteractionState, viewLocation: () => Point, absLocation: Point) => void
     onPan?: (state: InteractionState, viewLocation: () => Point, absLocation: Point, velocity: Point, translation: Point) => void
+    onRotate?: (state: InteractionState, degree: number) => void /** @private */
+    onPinch?: (state: InteractionState, scale: number) => void /** @private */
     // Mark: View Animation
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void): void
     static springAnimationDuration: number

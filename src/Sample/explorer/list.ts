@@ -20,6 +20,8 @@ import { CoreList } from "../core/list";
 import { CanvasSample } from "./canvas";
 import { ExtViewSample } from "./extview";
 import { CollectionViewSample } from "./collectionview";
+import { RotateSample } from "./rotate";
+import { PinchSample } from "./pinch";
 
 class ListHeader extends UI.View {
 
@@ -438,6 +440,26 @@ export class List extends UI.ViewController {
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new PanSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Rotate",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new RotateSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "Pinch",
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new PinchSample())
                             }
                         },
                     },

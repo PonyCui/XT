@@ -499,6 +499,52 @@ export class View extends XT.BaseObject {
         }
     }
 
+    private _onRotate?: (state: InteractionState, degree: number) => void
+
+    public get onRotate() {
+        return this._onRotate
+    }
+
+    public set onRotate(value: ((state: InteractionState, degree: number) => void) | undefined) {
+        this._onRotate = value
+        _XTUIView.xtr_activeRotate(this.objectRef)
+    }
+
+    handleRotate(state: number, degree: number) {
+        if (state === 1) {
+            this.onRotate && this.onRotate(InteractionState.Began, degree);
+        }
+        else if (state === 2) {
+            this.onRotate && this.onRotate(InteractionState.Changed, degree);
+        }
+        else if (state === 3 || state === 4 || state === 5) {
+            this.onRotate && this.onRotate(InteractionState.Ended, degree);
+        }
+    }
+
+    private _onPinch?: (state: InteractionState, scale: number) => void
+
+    public get onPinch() {
+        return this._onPinch
+    }
+
+    public set onPinch(value: ((state: InteractionState, scale: number) => void) | undefined) {
+        this._onPinch = value
+        _XTUIView.xtr_activePinch(this.objectRef)
+    }
+
+    handlePinch(state: number, scale: number) {
+        if (state === 1) {
+            this.onPinch && this.onPinch(InteractionState.Began, scale);
+        }
+        else if (state === 2) {
+            this.onPinch && this.onPinch(InteractionState.Changed, scale);
+        }
+        else if (state === 3 || state === 4 || state === 5) {
+            this.onPinch && this.onPinch(InteractionState.Ended, scale);
+        }
+    }
+
     // Mark: View Animation
 
     static animationWithDuration(duration: number, animations: () => void, completion?: () => void) {
