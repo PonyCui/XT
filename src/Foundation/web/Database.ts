@@ -2,6 +2,7 @@ export class Database extends XT.BaseObject {
 
     private databaseQueue: any
     private inTransaction: boolean = false
+    private inTransactionRollback: boolean = false
     private transactionExecutions: ((db: any) => Promise<any>)[] = []
 
     constructor(readonly name: string, readonly location: "document" | "cache" | "tmp" = "document") {
@@ -49,7 +50,7 @@ export class Database extends XT.BaseObject {
                         resolver()
                     }, (db: any, error: any) => {
                         rejector(error)
-                        return true
+                        return this.inTransactionRollback
                     })
                 })
             })
@@ -75,7 +76,7 @@ export class Database extends XT.BaseObject {
                         resolver()
                     }, (db: any, error: any) => {
                         rejector(error)
-                        return true
+                        return this.inTransactionRollback
                     })
                 })
             })
@@ -98,6 +99,7 @@ export class Database extends XT.BaseObject {
             return new Promise<boolean>((resolver, rejector) => { rejector("Already inTransaction.") })
         }
         this.inTransaction = true
+        this.inTransactionRollback = rollback
         return new Promise<boolean>((resolver, rejector) => {
             exec()
             this.databaseQueue.transaction((db: any) => {
@@ -114,6 +116,7 @@ export class Database extends XT.BaseObject {
 
     private clearTransaction() {
         this.inTransaction = false
+        this.inTransactionRollback = false
         this.transactionExecutions = []
     }
 
