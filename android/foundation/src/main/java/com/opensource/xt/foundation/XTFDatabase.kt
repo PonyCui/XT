@@ -33,14 +33,16 @@ class XTFDatabase(val context: XTContext, name: String, location: String): XTCom
             private val dbPool: MutableMap<String, Queue> = mutableMapOf()
 
             fun databaseQueueWithFile(file: File): Queue {
+                file.parentFile.mkdirs()
                 return dbPool[file.absolutePath] ?: kotlin.run {
-                    val instance = Queue(SQLiteDatabase.openOrCreateDatabase(file, null))
+                    val instance = Queue(SQLiteDatabase.openOrCreateDatabase(file.absolutePath, null))
                     dbPool[file.absolutePath] = instance
                     return@run instance
                 }
             }
 
             fun destoryQueueWithFile(file: File) {
+                file.parentFile.mkdirs()
                 databaseQueueWithFile(file)?.db.close()
                 dbPool.remove(file.absolutePath)
                 SQLiteDatabase.deleteDatabase(file)
@@ -76,7 +78,6 @@ class XTFDatabase(val context: XTContext, name: String, location: String): XTCom
 
     fun open(): Exception? {
         return try {
-            dbFile.parentFile.mkdirs()
             this.databaseQueue = Queue.databaseQueueWithFile(dbFile)
             null
         } catch (e: Exception) { e }
