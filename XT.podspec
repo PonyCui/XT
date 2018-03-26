@@ -28,6 +28,7 @@ Pod::Spec.new do |s|
     foundation.dependency "XT/Core"
     foundation.dependency "CocoaSecurity"
     foundation.dependency "SocketRocket"
+    foundation.dependency "FMDB"
   end
 
   s.subspec "UIKit" do |uikit|
