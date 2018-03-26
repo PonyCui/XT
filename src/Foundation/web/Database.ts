@@ -21,7 +21,7 @@ export class Database extends XT.BaseObject {
 
     executeQuery(sql: string, ...values: any[]): Promise<{ [key: string]: any }[]> {
         if (this.inTransaction) {
-            return new Promise<any>((resolver, rejector) => { rejector("xxxx") })
+            return new Promise<any>((resolver, rejector) => { rejector("Do not executeQuery while runing transaction.") })
         }
         return new Promise<{ [key: string]: any }[]>((resolver, rejector) => {
             this.databaseQueue.transaction((db: any) => {
@@ -95,7 +95,7 @@ export class Database extends XT.BaseObject {
 
     executeTransaction(exec: () => void, rollback: boolean): Promise<boolean> {
         if (this.inTransaction) {
-            return new Promise<boolean>((resolver, rejector) => { rejector("ddddd") })
+            return new Promise<boolean>((resolver, rejector) => { rejector("Already inTransaction.") })
         }
         this.inTransaction = true
         return new Promise<boolean>((resolver, rejector) => {

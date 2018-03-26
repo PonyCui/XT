@@ -886,7 +886,7 @@ export class WebSocket extends XT.BaseObject /* @available(0.1.1) */ {
     close(): void
 }
 
-export class Database extends XT.BaseObject {
+export class Database extends XT.BaseObject /* @available(0.3.0) */  {
 
     constructor(name: string, location?: "document" | "cache" | "tmp")
 
