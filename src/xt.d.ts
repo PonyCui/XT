@@ -901,9 +901,9 @@ export class Database extends XT.BaseObject /* @available(0.3.0) */  {
 
 }
 
-declare var require: (path: string) => any;
-
 declare global {
+    // @ts-ignore
+    var require: (path: string) => any;
     const XT: {
         minSDK: typeof minSDK,
         currentSDK: typeof currentSDK,
