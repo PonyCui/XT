@@ -66,9 +66,11 @@ export class ViewController extends XT.BaseObject {
 
     public get safeAreaInsets(): Insets {
         if (screen.availHeight == 812 && navigator.userAgent.match(/(iPhone)/)) {
-            return InsetsMake(0, 0, 34, 0)    
+            return InsetsMake(
+                window.location.href.indexOf("XT-Playground-Web") > 0 ? 24 : 0
+                , 0, 34, 0)
         }
-        return InsetsMake(0, 0, 0, 0)
+        return InsetsMake(window.location.href.indexOf("XT-Playground-Web") > 0 ? 20 : 0, 0, 0, 0)
     }
 
     loadView(): void {

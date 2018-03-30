@@ -71,3 +71,17 @@ if (typeof window === "object") {
     };
     setTimeout(window.XTFrameworkLoader.autoload, 100);
 }
+
+try {
+    var exports = {};
+    var namespaces = ["UI", "NS", "XT"];
+    for (var index = 0; index < namespaces.length; index++) {
+        var prefix = namespaces[index];
+        if (typeof window[prefix] === "object") {
+            for (var aKey in window[prefix]) {
+                exports[aKey] = window[prefix][aKey]
+            }
+        }
+    }
+    module.exports = exports
+} catch (error) { }
