@@ -97,25 +97,25 @@
 }
 
 + (NSDictionary *)xtr_size:(NSString *)objectRef {
-    UIImage *image = [XTMemoryManager find:objectRef];
-    if ([image isKindOfClass:[UIImage class]]) {
-        return [JSValue fromSize:image.size];
+    XTUIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[XTUIImage class]]) {
+        return [JSValue fromSize:image.image.size];
     }
     return @{};
 }
 
 + (CGFloat)xtr_scale:(NSString *)objectRef {
-    UIImage *image = [XTMemoryManager find:objectRef];
-    if ([image isKindOfClass:[UIImage class]]) {
-        return image.scale;
+    XTUIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[XTUIImage class]]) {
+        return image.image.scale;
     }
     return 1.0;
 }
 
 + (NSInteger)xtr_renderingMode:(NSString *)objectRef {
-    UIImage *image = [XTMemoryManager find:objectRef];
-    if ([image isKindOfClass:[UIImage class]]) {
-        return image.renderingMode;
+    XTUIImage *image = [XTMemoryManager find:objectRef];
+    if ([image isKindOfClass:[XTUIImage class]]) {
+        return image.image.renderingMode;
     }
     return 0;
 }
