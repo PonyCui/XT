@@ -27,6 +27,7 @@ export interface GestureRecongnizer {
 
 export interface GestureOwner {
 
+    frame: { x: number, y: number, width: number, height: number }
     gestureRecongnizers: GestureRecongnizer[]
 
 }

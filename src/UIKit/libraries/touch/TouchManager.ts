@@ -13,6 +13,7 @@ export interface Touch {
 
     _maybeTap: boolean
     _startPoint: { x: number, y: number }
+    touchID: string
     timestamp: number
     phase: TouchPhase
     tapCount: number
@@ -57,6 +58,7 @@ export class TouchManager {
             this.touches[pid] = {
                 _maybeTap: true,
                 _startPoint: { x, y },
+                touchID: pid,
                 timestamp: timestamp,
                 phase: TouchPhase.Began,
                 tapCount: 1,
@@ -82,6 +84,7 @@ export class TouchManager {
                 this.touches[pid] = {
                     _maybeTap: this.touches[pid] && this.touches[pid]._maybeTap === true && (Math.abs(this.touches[pid]._startPoint.x - points[pid].x) < 8 || Math.abs(this.touches[pid]._startPoint.y - points[pid].y) < 8),
                     _startPoint: this.touches[pid]._startPoint,
+                    touchID: pid,
                     timestamp: timestamp,
                     phase: TouchPhase.Moved,
                     tapCount: 1,
@@ -105,13 +108,14 @@ export class TouchManager {
 
     handlePointerUp(pid: string, timestamp: number, x: number, y: number, vx: number | undefined = undefined, vy: number | undefined = undefined) {
         if (this.target) {
-            if (this.touches[pid]._maybeTap) {
+            if (this.touches[pid] && this.touches[pid]._maybeTap) {
                 tapHistory = tapHistory.filter(t => timestamp - t.timestamp < 350)
                 tapHistory.push({ timestamp, x, y })
             }
             this.touches[pid] = {
-                _maybeTap: this.touches[pid]._maybeTap,
-                _startPoint: this.touches[pid]._startPoint,
+                _maybeTap: this.touches[pid] && this.touches[pid]._maybeTap,
+                _startPoint: this.touches[pid] ? this.touches[pid]._startPoint : { x: 0, y: 0 },
+                touchID: pid,
                 timestamp: timestamp,
                 phase: TouchPhase.Ended,
                 tapCount: tapHistory.filter(t => Math.abs(t.x - x) < 44 && Math.abs(t.y - y) < 44).length,

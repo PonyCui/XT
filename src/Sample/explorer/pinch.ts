@@ -39,7 +39,7 @@ export class PinchSample extends UI.ViewController {
         view.backgroundColor = UI.Color.grayColor
         view.userInteractionEnabled = true
         view.onPinch = (state, scale) => {
-            if (state == UI.InteractionState.Began) { }
+            if (state == UI.InteractionState.Began) { view.backgroundColor = UI.Color.yellowColor }
             else if (state == UI.InteractionState.Changed) {
                 view.transform = new UI.TransformMatrix().postScale(scale, scale)
             }
