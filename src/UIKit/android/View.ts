@@ -9,6 +9,7 @@ import { GestureOwner, GestureRecongnizer, GestureManager, GestureRecognizerStat
 import { TapGestureRecognizer } from '../libraries/touch/TapGestureRecognizer';
 import { LongPressGestureRecognizer } from '../libraries/touch/LongPressGestureRecognizer';
 import { PanGestureRecognizer } from '../libraries/touch/PanGestureRecognizer';
+import { PinchGestureRecognizer } from '../libraries/touch/PinchGestureRecognizer';
 declare function require(name: string): any;
 const AutoLayout = require("autolayout");
 
@@ -596,6 +597,35 @@ export class View extends XT.BaseObject implements Touchable, CoordinateOwner, G
             value && value(interactionState, panGesture.locationInView.bind(panGesture), absLocation, panGesture.velocity, panGesture.translation);
         };
         this.gestureRecongnizers.push(panGesture);
+    }
+
+    public set onRotate(value: ((state: InteractionState, degree: number) => void) | undefined) {
+
+    }
+
+    public set onPinch(value: ((state: InteractionState, scale: number) => void) | undefined) {
+        this.gestureRecongnizers = this.gestureRecongnizers.filter(t => !(t instanceof PinchGestureRecognizer))
+        const pinchGesture = new PinchGestureRecognizer();
+        pinchGesture.owner = this
+        pinchGesture.fire = (state) => {
+            let interactionState = InteractionState.Began;
+            switch (state) {
+                case GestureRecognizerState.Began:
+                    interactionState = InteractionState.Began;
+                    break;
+                case GestureRecognizerState.Changed:
+                    interactionState = InteractionState.Changed;
+                    break;
+                case GestureRecognizerState.Ended:
+                    interactionState = InteractionState.Ended;
+                    break;
+                case GestureRecognizerState.Cancelled:
+                    interactionState = InteractionState.Cancelled;
+                    break;
+            }
+            value && value(interactionState, pinchGesture.currentScale);
+        };
+        this.gestureRecongnizers.push(pinchGesture);
     }
 
     // Mark: View Animation

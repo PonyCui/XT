@@ -230,67 +230,94 @@ open class XTUIFragment: Fragment() {
         override fun onTouchEvent(event: MotionEvent?): Boolean {
             val xtrContext = view?.get()?.xtrContext ?: return false
             velocityTracker.addMovement(event)
-            when (event?.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (event.y / resources.displayMetrics.density < this.topLayoutLength && navigationBar != null) {
-                        currentTouchScriptObject = navigationBar?.get()?.scriptObject()
-                        currentTouchAdjustingY = 0.0
-                    }
-                    else {
-                        currentTouchScriptObject = view?.get()?.scriptObject()
-                        currentTouchAdjustingY = this.topLayoutLength
-                    }
-                    val pid = event.getPointerId(0).toString()
-                    val timestamp = System.nanoTime() / 1000000
-                    val point = XTUIUtils.fromPoint(XTUIPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
-                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
-                        XTContext.invokeMethod(it, "handlePointerDown", listOf(pid, timestamp, point))
-                    }
-                    XTContext.release(point)
+            if (event?.actionMasked == MotionEvent.ACTION_POINTER_DOWN) {
+                if (event.y / resources.displayMetrics.density < this.topLayoutLength && navigationBar != null) {
+                    currentTouchScriptObject = navigationBar?.get()?.scriptObject()
+                    currentTouchAdjustingY = 0.0
                 }
-                MotionEvent.ACTION_MOVE -> {
-                    velocityTracker.computeCurrentVelocity(1000)
-                    val timestamp = System.nanoTime() / 1000000
-                    val points = V8Object(xtrContext.runtime)
-                    (0 until event.pointerCount).forEach { pointerID ->
-                        val point = XTUIPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density - currentTouchAdjustingY))
+                else {
+                    currentTouchScriptObject = view?.get()?.scriptObject()
+                    currentTouchAdjustingY = this.topLayoutLength
+                }
+                val pid = event.actionIndex.toString()
+                val timestamp = System.nanoTime() / 1000000
+                val point = XTUIUtils.fromPoint(XTUIPoint((event.getX(event.actionIndex) / resources.displayMetrics.density).toDouble(), (event.getY(event.actionIndex)/ resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
+                currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
+                    XTContext.invokeMethod(it, "handlePointerDown", listOf(pid, timestamp, point))
+                }
+                XTContext.release(point)
+            }
+            else if (event?.actionMasked == MotionEvent.ACTION_DOWN) {
+                if (event.y / resources.displayMetrics.density < this.topLayoutLength && navigationBar != null) {
+                    currentTouchScriptObject = navigationBar?.get()?.scriptObject()
+                    currentTouchAdjustingY = 0.0
+                }
+                else {
+                    currentTouchScriptObject = view?.get()?.scriptObject()
+                    currentTouchAdjustingY = this.topLayoutLength
+                }
+                val pid = event.getPointerId(0).toString()
+                val timestamp = System.nanoTime() / 1000000
+                val point = XTUIUtils.fromPoint(XTUIPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
+                currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
+                    XTContext.invokeMethod(it, "handlePointerDown", listOf(pid, timestamp, point))
+                }
+                XTContext.release(point)
+            }
+            else if (event?.actionMasked == MotionEvent.ACTION_MOVE) {
+                velocityTracker.computeCurrentVelocity(1000)
+                val timestamp = System.nanoTime() / 1000000
+                val points = V8Object(xtrContext.runtime)
+                (0 until event.pointerCount).forEach { pointerID ->
+                    val point = XTUIPoint((event.getX(pointerID) / resources.displayMetrics.density).toDouble(), (event.getY(pointerID) / resources.displayMetrics.density - currentTouchAdjustingY))
 
-                        (XTUIUtils.fromPoint(point, xtrContext.runtime) as? V8Object)?.let {
-                            points.add(pointerID.toString(), it)
-                            XTContext.release(it)
-                        }
-                    }
-                    val velocities = V8Object(xtrContext.runtime)
-                    (0 until event.pointerCount).forEach { pointerID ->
-                        val velocity = XTUIPoint(velocityTracker.getXVelocity(pointerID).toDouble(), velocityTracker.getYVelocity(pointerID).toDouble())
-                        (XTUIUtils.fromPoint(velocity, xtrContext.runtime) as? V8Object)?.let {
-                            velocities.add(pointerID.toString(), it)
-                            XTContext.release(it)
-                        }
-                    }
-                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
-                        XTContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points, velocities))
-                    }
-                    XTContext.release(velocities)
-                    XTContext.release(points)
-                }
-                MotionEvent.ACTION_UP -> {
-                    velocityTracker.computeCurrentVelocity(1000)
-                    val pid = event.getPointerId(0).toString()
-                    val timestamp = System.nanoTime() / 1000000
-                    val point = XTUIUtils.fromPoint(XTUIPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
-                    val velocity = XTUIUtils.fromPoint(XTUIPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
-                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
-                        XTContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
+                    (XTUIUtils.fromPoint(point, xtrContext.runtime) as? V8Object)?.let {
+                        points.add(pointerID.toString(), it)
                         XTContext.release(it)
                     }
-                    XTContext.release(point)
-                    XTContext.release(velocity)
-                    velocityTracker.clear()
                 }
-                MotionEvent.ACTION_CANCEL -> {
-                    velocityTracker.clear()
+                val velocities = V8Object(xtrContext.runtime)
+                (0 until event.pointerCount).forEach { pointerID ->
+                    val velocity = XTUIPoint(velocityTracker.getXVelocity(pointerID).toDouble(), velocityTracker.getYVelocity(pointerID).toDouble())
+                    (XTUIUtils.fromPoint(velocity, xtrContext.runtime) as? V8Object)?.let {
+                        velocities.add(pointerID.toString(), it)
+                        XTContext.release(it)
+                    }
                 }
+                currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
+                    XTContext.invokeMethod(it, "handlePointersMove", listOf(timestamp, points, velocities))
+                }
+                XTContext.release(velocities)
+                XTContext.release(points)
+            }
+            else if (event?.actionMasked == MotionEvent.ACTION_POINTER_UP) {
+                val pid = event.actionIndex.toString()
+                val timestamp = System.nanoTime() / 1000000
+                val point = XTUIUtils.fromPoint(XTUIPoint((event.getX(event.actionIndex) / resources.displayMetrics.density).toDouble(), (event.getY(event.actionIndex)/ resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
+                val velocity = XTUIUtils.fromPoint(XTUIPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
+                currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
+                    XTContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
+                    XTContext.release(it)
+                }
+                XTContext.release(point)
+                XTContext.release(velocity)
+            }
+            else if (event?.actionMasked == MotionEvent.ACTION_UP) {
+                velocityTracker.computeCurrentVelocity(1000)
+                val pid = event.getPointerId(0).toString()
+                val timestamp = System.nanoTime() / 1000000
+                val point = XTUIUtils.fromPoint(XTUIPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
+                val velocity = XTUIUtils.fromPoint(XTUIPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
+                currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
+                    XTContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
+                    XTContext.release(it)
+                }
+                XTContext.release(point)
+                XTContext.release(velocity)
+                velocityTracker.clear()
+            }
+            else if (event?.actionMasked == MotionEvent.ACTION_CANCEL) {
+                velocityTracker.clear()
             }
             return true
         }

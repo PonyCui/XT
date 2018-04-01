@@ -68,7 +68,7 @@ export class PinchGestureRecognizer implements GestureRecongnizer {
     }
 
     touchesCancelled(owner: GestureOwner, touches: Touch[], event: Event, triggerBlock?: (gestureRecongnizer: GestureRecongnizer) => boolean, releaseBlock?: () => void): boolean {
-
+        this.fire && this.fire(GestureRecognizerState.Cancelled)
         return false
     }
 
