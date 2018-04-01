@@ -72,7 +72,7 @@ export class TouchManager {
     }
 
     invokeTouchesBeganRecursive(target: Touchable, touches: Touch[], event: Event) {
-        target.touchesBegan(target.multipleTouchEnabled ? touches : [touches[0]], {})
+        target.touchesBegan(touches, {})
         if (target.superview) {
             this.invokeTouchesBeganRecursive(target.superview, touches, event)
         }
@@ -100,7 +100,7 @@ export class TouchManager {
     }
 
     invokeTouchesMovedRecursive(target: Touchable, touches: Touch[], event: Event) {
-        target.touchesMoved(target.multipleTouchEnabled ? touches : [touches[0]], {})
+        target.touchesMoved(touches, {})
         if (target.superview) {
             this.invokeTouchesMovedRecursive(target.superview, touches, event)
         }
@@ -134,7 +134,7 @@ export class TouchManager {
     }
 
     invokeTouchesEndedRecursive(target: Touchable, touches: Touch[], event: Event) {
-        target.touchesEnded(target.multipleTouchEnabled ? touches : [touches[0]], {})
+        target.touchesEnded(touches, {})
         if (target.superview) {
             this.invokeTouchesEndedRecursive(target.superview, touches, event)
         }
@@ -155,7 +155,7 @@ export class TouchManager {
     }
 
     invokeTouchesCancelledRecursive(target: Touchable, touches: Touch[], event: Event) {
-        target.touchesCancelled(target.multipleTouchEnabled ? touches : [touches[0]], {})
+        target.touchesCancelled(touches, {})
         if (target.superview) {
             this.invokeTouchesCancelledRecursive(target.superview, touches, event)
         }

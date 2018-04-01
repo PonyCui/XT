@@ -42,41 +42,60 @@ export class WindowElement extends ViewElement {
             return this.nativeObject.parentElement instanceof HTMLElement ? this.nativeObject.parentElement : undefined
         }
         if ('ontouchstart' in document.documentElement) {
-            this.nativeObject.addEventListener("touchstart", (e) => {
+            let firstTouchID: number = 0
+            let allReleased: boolean = false
+            const requestTouchIdentifier = (e: TouchEvent, touch: Touch) => {
+                if (touch.identifier >= 0) {
+                    return touch.identifier.toString()
+                }
+                else {
+                    if (firstTouchID === 0) {
+                        firstTouchID = e.touches[0].identifier
+                    }
+                    let touchID = (touch.identifier - firstTouchID).toString()
+                    if (e.touches.length == 0) { allReleased = true }
+                    return touchID
+                }
+            }
+            this.nativeObject.addEventListener("touchstart", (e: TouchEvent) => {
+                if (allReleased) {
+                    firstTouchID = 0
+                    allReleased = false
+                }
                 this.refObject = refObject()!
                 const windowBounds = this.refObject.getBoundingClientRect()
                 for (let index = 0; index < e.changedTouches.length; index++) {
                     const touch = e.changedTouches[index];
-                    this.scriptObject.handlePointerDown(touch.identifier.toString(), e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
+                    this.scriptObject.handlePointerDown(requestTouchIdentifier(e, touch), e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
                 }
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }
             })
-            this.nativeObject.addEventListener("touchmove", (e) => {
+            this.nativeObject.addEventListener("touchmove", (e: TouchEvent) => {
                 const windowBounds = this.refObject.getBoundingClientRect()
                 const points: any = {};
                 for (let index = 0; index < e.changedTouches.length; index++) {
                     const touch = e.changedTouches[index];
-                    points[touch.identifier.toString()] = { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top };
+                    points[requestTouchIdentifier(e, touch)] = { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top };
                 }
                 this.scriptObject.handlePointersMove(e.timeStamp, points)
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }
             })
-            this.nativeObject.addEventListener("touchend", (e) => {
+            this.nativeObject.addEventListener("touchend", (e: TouchEvent) => {
                 const windowBounds = this.refObject.getBoundingClientRect()
                 for (let index = 0; index < e.changedTouches.length; index++) {
                     const touch = e.changedTouches[index];
-                    this.scriptObject.handlePointerUp(touch.identifier.toString(), e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
+                    this.scriptObject.handlePointerUp(requestTouchIdentifier(e, touch), e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
                 }
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }
             })
-            document.addEventListener("touchcancel", (e) => {
+            this.nativeObject.addEventListener("touchcancel", (e: TouchEvent) => {
                 const windowBounds = this.refObject.getBoundingClientRect()
                 for (let index = 0; index < e.changedTouches.length; index++) {
                     const touch = e.changedTouches[index];
-                    this.scriptObject.handlePointerCancel(touch.identifier.toString(), e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
+                    this.scriptObject.handlePointerCancel(requestTouchIdentifier(e, touch), e.timeStamp, { x: touch.clientX - windowBounds.left, y: touch.clientY - windowBounds.top })
                 }
                 if (!WindowElement._allowDefault) { e.preventDefault(); }
                 else { WindowElement._allowDefault = false; }

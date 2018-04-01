@@ -22,7 +22,7 @@ if (typeof window === "object") {
             }.bind(this));
             codeRequest.send();
         },
-        loadComponents: function (code, components, completion) {
+        loadComponents: function (code, components, completion, failure) {
             if (code.indexOf(".md5()") >= 0) {
                 components.push("SparkMD5")
             }
@@ -39,6 +39,7 @@ if (typeof window === "object") {
                 for (var index = 0; index < components.length; index++) {
                     var comID = components[index];
                     if (typeof window[comID] === "undefined") {
+                        components.shift()
                         var element = document.createElement("script");
                         element.src = window.XTFrameworkLoader.componentsUrl[comID]();
                         element.onload = loadComponent;
@@ -72,16 +73,3 @@ if (typeof window === "object") {
     setTimeout(window.XTFrameworkLoader.autoload, 100);
 }
 
-try {
-    var exports = {};
-    var namespaces = ["UI", "NS", "XT"];
-    for (var index = 0; index < namespaces.length; index++) {
-        var prefix = namespaces[index];
-        if (typeof window[prefix] === "object") {
-            for (var aKey in window[prefix]) {
-                exports[aKey] = window[prefix][aKey]
-            }
-        }
-    }
-    module.exports = exports
-} catch (error) { }

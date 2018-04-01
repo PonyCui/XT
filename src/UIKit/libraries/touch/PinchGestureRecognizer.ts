@@ -26,11 +26,11 @@ export class PinchGestureRecognizer implements GestureRecongnizer {
         this.resetState()
         if (touches.length > 0) {
             if (touches[0].touchID === "0") {
-                this.firstStartPoint = touches[0]._startPoint
+                this.firstStartPoint = { ...touches[0]._startPoint }
                 this.currentFirstStartPoint = this.firstStartPoint
             }
             if (touches[0].touchID === "1") {
-                this.secondStartPoint = touches[0]._startPoint
+                this.secondStartPoint = { ...touches[0]._startPoint }
                 this.currentSecondStartPoint = this.secondStartPoint
                 this.startDistance = Math.sqrt(Math.pow(this.secondStartPoint.x - this.firstStartPoint.x, 2) + Math.pow(this.secondStartPoint.y - this.firstStartPoint.y, 2))
                 this.recognized = true
@@ -84,23 +84,30 @@ export class PinchGestureRecognizer implements GestureRecongnizer {
 
     private measureScale(touches: Touch[]): number {
         if (touches.length) {
-            if (touches[0].touchID === "0") {
+            if (touches[0] && touches[0].touchID === "0") {
                 this.currentFirstStartPoint = touches[0].rawLocation
             }
-            else if (touches[0].touchID === "1") {
-                this.currentSecondStartPoint = touches[0].rawLocation
+            if (touches[1] && touches[1].touchID === "1") {
+                this.currentSecondStartPoint = touches[1].rawLocation
             }
             const currentDistance = Math.sqrt(Math.pow(this.currentFirstStartPoint.x - this.currentSecondStartPoint.x, 2) + Math.pow(this.currentFirstStartPoint.y - this.currentSecondStartPoint.y, 2))
+
             const deltaDistance = currentDistance - this.startDistance
             let frameDistance: number
             if (this.owner) {
-                frameDistance = Math.sqrt(Math.pow(this.owner.frame.width, 2) +  Math.pow(this.owner.frame.height, 2)) / 4.0
+                frameDistance = Math.sqrt(Math.pow(this.owner.frame.width, 2) + Math.pow(this.owner.frame.height, 2))
+                if (deltaDistance / frameDistance < 0.0) {
+                    frameDistance = frameDistance / 2.0
+                }
+                else if (deltaDistance / frameDistance > 0.0) {
+                    frameDistance = frameDistance / 4.0
+                }
             }
             else {
                 frameDistance = 0
             }
             // console.log(Math.max(0.0, 1.0 + deltaDistance / frameDistance));
-            
+
             return Math.max(0.01, 1.0 + deltaDistance / frameDistance)
         }
         else {
