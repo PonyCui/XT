@@ -297,7 +297,6 @@ open class XTUIFragment: Fragment() {
                 val velocity = XTUIUtils.fromPoint(XTUIPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
                 currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                     XTContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
-                    XTContext.release(it)
                 }
                 XTContext.release(point)
                 XTContext.release(velocity)
@@ -308,7 +307,7 @@ open class XTUIFragment: Fragment() {
                 val timestamp = System.nanoTime() / 1000000
                 val point = XTUIUtils.fromPoint(XTUIPoint((event.x / resources.displayMetrics.density).toDouble(), (event.y / resources.displayMetrics.density - currentTouchAdjustingY)), xtrContext.runtime)
                 val velocity = XTUIUtils.fromPoint(XTUIPoint(velocityTracker.getXVelocity(event.actionIndex).toDouble(), velocityTracker.getYVelocity(event.actionIndex).toDouble()), xtrContext.runtime)
-                currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
+                    currentTouchScriptObject?.takeIf { !it.isReleased }?.let {
                     XTContext.invokeMethod(it, "handlePointerUp", listOf(pid, timestamp, point, velocity))
                     XTContext.release(it)
                 }
