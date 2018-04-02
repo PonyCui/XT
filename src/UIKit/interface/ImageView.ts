@@ -13,6 +13,8 @@ export class Image extends XT.BaseObject {
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
+    static fromSource(localPath: string): Image { throw Error("Not Implemented.") }
+
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) { }
 
     static fromBase64(value: string, scale: number): Image | undefined { return undefined }

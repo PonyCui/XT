@@ -18,6 +18,10 @@ export class Image extends XT.BaseObject {
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
 
+    static fromSource(localPath: string): Image {
+        return new Image("")
+    }
+
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         _XTUIImage.xtr_fromURL(url, (imageRef?: string) => {
             if (typeof imageRef === "string") {

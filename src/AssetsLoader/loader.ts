@@ -27,6 +27,12 @@ export default function () {
                 else if (resourcePath.endsWith('@3x.png')) {
                     scale = 3.0
                 }
+                else if (resourcePath.endsWith('@2x.jpg')) {
+                    scale = 2.0
+                }
+                else if (resourcePath.endsWith('@3x.jpg')) {
+                    scale = 3.0
+                }
                 callback(null, `
                     module.exports = UI.Image.fromBase64('`+ base64EncodedString + `', ` + scale.toFixed(0) + `, ` + width.toFixed(0) + `, ` + height.toFixed(0) + `).retain();
                 `)

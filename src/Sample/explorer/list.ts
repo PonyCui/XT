@@ -36,7 +36,7 @@ class ListHeader extends UI.View {
     }
 
     setupLogoImageView() {
-        this.logoImageView.image = require('../assets/logo@2x.png')
+        this.logoImageView.image = UI.Image.fromSource('../assets/logo@2x.png')
         this.addSubview(this.logoImageView)
     }
 

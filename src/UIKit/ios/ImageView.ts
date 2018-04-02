@@ -6,6 +6,10 @@ import { ImageRenderingMode } from "../interface/ImageView";
 
 export class Image extends XT.BaseObject {
 
+    static fromSource(localPath: string): Image {
+        return new Image("")
+    }
+    
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         _XTUIImage.xtr_fromURLSuccessFailure(url, (ref: string) => {
             if (success) {

@@ -16,6 +16,7 @@ var setting = {
     },
     module: {
         rules: [
+            { test: /\.ts?$/, loader: require.resolve('./src/AssetsLoader/replacer') },
             { test: /\.(png|jpg)?$/, loader: require.resolve('./src/AssetsLoader/loader') },
             { test: /\.ts?$/, loader: require.resolve('./src/Shim/loader') },
             { test: /\.ts?$/, loader: "awesome-typescript-loader" },

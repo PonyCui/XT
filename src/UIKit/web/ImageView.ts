@@ -9,6 +9,12 @@ const scaleOptions = [3, 2]
 
 export class Image extends XT.BaseObject {
 
+    static fromSource(localPath: string): Image {
+        let imgTag = document.createElement("image") as HTMLImageElement
+        imgTag.src = ""
+        return new Image(imgTag)
+    }
+
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void) {
         const imgElement = document.createElement('img');
         imgElement.onload = () => {

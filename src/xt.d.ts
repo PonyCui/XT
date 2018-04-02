@@ -284,6 +284,7 @@ export class Image extends XT.BaseObject /* @available(0.1.1) */ {
     readonly size: Size;
     readonly scale: number;
     readonly renderingMode: ImageRenderingMode;
+    static fromSource(localPath: string): Image
     static fromURL(url: string, success: (image: Image) => void, failure?: (error: Error) => void): void
     static fromBase64(value: string, scale: number, bitmapWidth?: number, bitmapHeight?: number): Image | undefined
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image
