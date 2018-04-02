@@ -1,6 +1,6 @@
 {
   "name": "xt-studio",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "",
   "main": "index.js",
   "types": "./src/xt.d.ts",
