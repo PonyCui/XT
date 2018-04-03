@@ -135,7 +135,7 @@ export class Button extends View {
 
     public onHover?: (hovered: boolean) => void
 
-    private _color: Color = this.tintColor
+    private _color: Color | undefined = undefined
 
     public get color(): Color {
         return this._color || this.tintColor;

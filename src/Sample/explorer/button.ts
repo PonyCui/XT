@@ -42,6 +42,7 @@ export class ButtonSample extends UI.ViewController {
         wrapper.addSubview(summary)
         // Sample Code {
         const view = new UI.Button()
+        view.tintColor = UI.Color.redColor
         view.frame = UI.RectMake(0, 66, 200, 44)
         view.backgroundColor = UI.Color.whiteColor
         view.title = "Tap me!"
