@@ -14,7 +14,6 @@
 @interface XTUINavigationBar()
 
 @property (nonatomic, strong) UINavigationBar *innerView;
-@property (nonatomic, strong) UIVisualEffectView *blurView;
 @property (nonatomic, strong) UINavigationItem *innerItem;
 @property (nonatomic, strong) UIBarButtonItem *backItem;
 
@@ -163,19 +162,12 @@ static UIImage *backButtonImage;
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setupBlurView];
         [self setupInnerView];
         [self setupBackItem];
         [self setTranslucent:NO];
         [self setLightContent:NO];
     }
     return self;
-}
-
-- (void)setupBlurView {
-    UIVisualEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
-    [self addSubview:self.blurView];
 }
 
 - (void)setupInnerView {
@@ -227,7 +219,6 @@ static UIImage *backButtonImage;
 
 - (void)setTranslucent:(BOOL)translucent {
     _translucent = translucent;
-    self.blurView.hidden = !translucent;
     [self.innerView setShadowImage:[UIImage new]];
 }
 
@@ -247,7 +238,6 @@ static UIImage *backButtonImage;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.blurView.frame = self.bounds;
     self.innerView.frame = CGRectMake(0, self.bounds.size.height - 44.0, self.bounds.size.width, 44.0);
 }
 

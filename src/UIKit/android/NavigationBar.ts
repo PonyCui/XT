@@ -149,13 +149,13 @@ export class NavigationBar extends View {
         this.titleView.text = value
     }
 
-    // public get translucent(): boolean {
-    //     return _XTUINavigationBar.xtr_translucent(this.objectRef)
-    // }
+    public get translucent(): boolean {
+        return _XTUINavigationBar.xtr_translucent(this.objectRef)
+    }
 
-    // public set translucent(value: boolean) {
-    //     _XTUINavigationBar.xtr_setTranslucent(value, this.objectRef)
-    // }
+    public set translucent(value: boolean) {
+        _XTUINavigationBar.xtr_setTranslucent(value, this.objectRef)
+    }
 
     private _lightContent: boolean = false
 

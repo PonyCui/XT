@@ -42,6 +42,7 @@ open class XTUIFragment: Fragment() {
     open var navigationBar: XTUINavigationBar? = null
         set(value) {
             field = value
+            value?.fragment = WeakReference(this)
             resetContents()
         }
 
@@ -112,7 +113,8 @@ open class XTUIFragment: Fragment() {
         this.navigationBar?.takeIf { !navigationHidden }?.let { navigationBar ->
             rootView.navigationBar = WeakReference(navigationBar)
             rootView.addView(navigationBar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            rootView.topLayoutLength = 48.0 + getStatusBarHeight()
+            rootView.topLayoutLength = if (navigationBar.translucent) 0.0 else 48.0 + getStatusBarHeight()
+            rootView.navigationBarHeight = 48.0 + getStatusBarHeight()
             rootView.bottomLayoutLength = getSoftButtonsBarHeight()
         } ?: kotlin.run { rootView.navigationBar = null }
         rootView.resetLayout()
@@ -185,6 +187,8 @@ open class XTUIFragment: Fragment() {
                 resetLayout()
             }
 
+        var navigationBarHeight = 0.0
+
         var bottomLayoutLength = 0.0
             set(value) {
                 field = value
@@ -207,7 +211,7 @@ open class XTUIFragment: Fragment() {
             when (currentOrientation) {
                 Orientation.LandScape -> {
                     navigationBar?.get()?.let {
-                        it.frame = XTUIRect(0.0, 0.0, (this.width / resources.displayMetrics.density - this.bottomLayoutLength), this.topLayoutLength)
+                        it.frame = XTUIRect(0.0, 0.0, (this.width / resources.displayMetrics.density - this.bottomLayoutLength), this.navigationBarHeight)
                     }
                     view?.get()?.let {
                         it.frame = XTUIRect(0.0, this.topLayoutLength, (this.width / resources.displayMetrics.density - this.bottomLayoutLength), (this.height / resources.displayMetrics.density - this.topLayoutLength))
@@ -215,7 +219,7 @@ open class XTUIFragment: Fragment() {
                 }
                 else -> {
                     navigationBar?.get()?.let {
-                        it.frame = XTUIRect(0.0, 0.0, (this.width / resources.displayMetrics.density).toDouble(), this.topLayoutLength)
+                        it.frame = XTUIRect(0.0, 0.0, (this.width / resources.displayMetrics.density).toDouble(), this.navigationBarHeight)
                     }
                     view?.get()?.let {
                         it.frame = XTUIRect(0.0, this.topLayoutLength, (this.width / resources.displayMetrics.density).toDouble(), (this.height / resources.displayMetrics.density).toDouble() - this.topLayoutLength - this.bottomLayoutLength)
@@ -231,7 +235,7 @@ open class XTUIFragment: Fragment() {
             val xtrContext = view?.get()?.xtrContext ?: return false
             velocityTracker.addMovement(event)
             if (event?.actionMasked == MotionEvent.ACTION_POINTER_DOWN) {
-                if (event.y / resources.displayMetrics.density < this.topLayoutLength && navigationBar != null) {
+                if (event.y / resources.displayMetrics.density < this.navigationBarHeight && navigationBar != null) {
                     currentTouchScriptObject = navigationBar?.get()?.scriptObject()
                     currentTouchAdjustingY = 0.0
                 }
@@ -248,7 +252,7 @@ open class XTUIFragment: Fragment() {
                 XTContext.release(point)
             }
             else if (event?.actionMasked == MotionEvent.ACTION_DOWN) {
-                if (event.y / resources.displayMetrics.density < this.topLayoutLength && navigationBar != null) {
+                if (event.y / resources.displayMetrics.density < this.navigationBarHeight && navigationBar != null) {
                     currentTouchScriptObject = navigationBar?.get()?.scriptObject()
                     currentTouchAdjustingY = 0.0
                 }

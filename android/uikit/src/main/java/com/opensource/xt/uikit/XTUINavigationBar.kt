@@ -18,6 +18,8 @@ class XTUINavigationBar @JvmOverloads constructor(
         xtrContext: XTUIContext, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : XTUIView(xtrContext, attrs, defStyleAttr), XTComponentInstance {
 
+    var fragment: WeakReference<XTUIFragment>? = null
+
     var window: WeakReference<Window>? = null
         set(value) {
             field = value
@@ -28,6 +30,12 @@ class XTUINavigationBar @JvmOverloads constructor(
         set(value) {
             field = value
             resetStatusBar()
+        }
+
+    var translucent: Boolean = false
+        set(value) {
+            field = value
+            fragment?.get()?.resetContents()
         }
 
     override var backgroundColor: XTUIColor
@@ -53,6 +61,8 @@ class XTUINavigationBar @JvmOverloads constructor(
         override fun exports(): V8Object {
             val exports = super.exports()
             exports.registerJavaMethod(this, "xtr_setLightContent", "xtr_setLightContent", arrayOf(Boolean::class.java, String::class.java))
+            exports.registerJavaMethod(this, "xtr_translucent", "xtr_translucent", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_setTranslucent", "xtr_setTranslucent", arrayOf(Boolean::class.java, String::class.java))
             return exports
         }
 
@@ -60,6 +70,16 @@ class XTUINavigationBar @JvmOverloads constructor(
             val view = XTMemoryManager.find(objectRef) as? XTUINavigationBar ?: return
             view.lightContent = value
         }
+
+        fun xtr_translucent(objectRef: String): Boolean {
+            return (XTMemoryManager.find(objectRef) as? XTUINavigationBar)?.translucent ?: false
+        }
+
+        fun xtr_setTranslucent(value: Boolean, objectRef: String) {
+            val view = XTMemoryManager.find(objectRef) as? XTUINavigationBar ?: return
+            view.translucent = value
+        }
+
     }
 
 }
