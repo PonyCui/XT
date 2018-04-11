@@ -141,11 +141,11 @@
 
 - (UIEdgeInsets)contentInset {
     UIEdgeInsets insets = [self.innerView contentInset];
-    return UIEdgeInsetsMake(insets.top, insets.left, insets.bottom + 20, insets.right);
+    return UIEdgeInsetsMake(insets.top, insets.left, insets.bottom, insets.right);
 }
 
 - (void)setContentInset:(UIEdgeInsets)contentInset {
-    [self.innerView setContentInset:UIEdgeInsetsMake(contentInset.top, contentInset.left, contentInset.bottom - 20, contentInset.right)];
+    [self.innerView setContentInset:UIEdgeInsetsMake(contentInset.top, contentInset.left, contentInset.bottom, contentInset.right)];
 }
 
 - (void)dealloc {
