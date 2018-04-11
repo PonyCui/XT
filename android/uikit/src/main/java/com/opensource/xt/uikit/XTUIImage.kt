@@ -33,6 +33,9 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
             exports.registerJavaMethod(this, "xtr_fromURL", "xtr_fromURL", arrayOf(String::class.java, V8Function::class.java, V8Function::class.java))
             exports.registerJavaMethod(this, "xtr_fromBase64", "xtr_fromBase64", arrayOf(String::class.java, Int::class.java))
             exports.registerJavaMethod(this, "xtr_imageWithImageRenderingMode", "xtr_imageWithImageRenderingMode", arrayOf(String::class.java, Int::class.java))
+            exports.registerJavaMethod(this, "xtr_size", "xtr_size", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_scale", "xtr_scale", arrayOf(String::class.java))
+            exports.registerJavaMethod(this, "xtr_renderingMode", "xtr_renderingMode", arrayOf(String::class.java))
             return exports
         }
 
@@ -153,6 +156,27 @@ class XTUIImage(val bitmap: Bitmap, val scale: Int, val renderingMode: Int): XTC
                 return managedObject.objectUUID
             }
             return null
+        }
+
+        fun xtr_size(imageRef: String): V8Object? {
+            (XTMemoryManager.find(imageRef) as? XTUIImage)?.let {
+                return XTUIUtils.fromSize(it.size, context.runtime)
+            }
+            return null
+        }
+
+        fun xtr_scale(imageRef: String): Int {
+            (XTMemoryManager.find(imageRef) as? XTUIImage)?.let {
+                return it.scale
+            }
+            return 1
+        }
+
+        fun xtr_renderingMode(imageRef: String): Int {
+            (XTMemoryManager.find(imageRef) as? XTUIImage)?.let {
+                return it.renderingMode
+            }
+            return 0
         }
 
     }

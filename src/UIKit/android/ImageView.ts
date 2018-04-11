@@ -14,10 +14,6 @@ export class Image extends XT.BaseObject {
         this.objectRef = objectRef
     }
 
-    readonly size: Size;
-    readonly scale: number;
-    readonly renderingMode: ImageRenderingMode = ImageRenderingMode.Original;
-
     static fromSource(localPath: string): Image {
         return new Image("")
     }
@@ -45,6 +41,18 @@ export class Image extends XT.BaseObject {
             size: this.size,
             renderingMode: this.renderingMode,
         }
+    }
+
+    public get size(): Size {
+        return _XTUIImage.xtr_size(this.objectRef)
+    }
+
+    public get scale(): number {
+        return _XTUIImage.xtr_scale(this.objectRef)
+    }
+
+    public get renderingMode(): ImageRenderingMode {
+        return _XTUIImage.xtr_renderingMode(this.objectRef)
     }
 
     imageWithImageRenderingMode(renderingMode: ImageRenderingMode): Image {

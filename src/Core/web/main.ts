@@ -8,7 +8,7 @@ require("es6-shim")
 declare var module: any
 
 module.exports = {
-    currentSDK: "0.4.2",
+    currentSDK: "0.4.3",
     platform: "Web",
     BaseObject,
     ExtObject,
