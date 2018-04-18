@@ -79,7 +79,10 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
         return this
     }
 
+    private var isViewLoaded = false
+
     open fun viewDidLoad() {
+        isViewLoaded = true
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewDidLoad")
             XTContext.release(it)
@@ -115,6 +118,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
     }
 
     open fun viewWillLayoutSubviews() {
+        if (!isViewLoaded) { return }
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewWillLayoutSubviews")
             XTContext.release(it)
@@ -122,6 +126,7 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
     }
 
     open fun viewDidLayoutSubviews() {
+        if (!isViewLoaded) { return }
         scriptObject()?.let {
             XTContext.invokeMethod(it, "viewDidLayoutSubviews")
             XTContext.release(it)
