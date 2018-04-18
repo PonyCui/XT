@@ -22,6 +22,7 @@ import { ExtViewSample } from "./extview";
 import { CollectionViewSample } from "./collectionview";
 import { RotateSample } from "./rotate";
 import { PinchSample } from "./pinch";
+import { StackViewSample } from "./stackview";
 
 class ListHeader extends UI.View {
 
@@ -488,6 +489,17 @@ export class List extends UI.ViewController {
                         action: () => {
                             if (this.navigationController) {
                                 this.navigationController.pushViewController(new AutoLayoutSample())
+                            }
+                        },
+                    },
+                    {
+                        reuseIdentifier: "Cell",
+                        rowHeight: () => 44,
+                        name: "StackView",
+
+                        action: () => {
+                            if (this.navigationController) {
+                                this.navigationController.pushViewController(new StackViewSample())
                             }
                         },
                     },

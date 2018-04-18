@@ -727,13 +727,13 @@ export class ActivityIndicatorView extends View /* @available(0.1.1) */ {
     stopAnimating(): void
 }
 
-export class ExtView extends View {
+export class ExtView extends View /* @available(0.1.1) */ {
     static className: string
     defineFunction(prop: string): any
     defineProperty(prop: string, defaultValue?: any): any
 }
 
-export interface CollectionItem {
+export interface CollectionItem /* @available(0.1.1) */ {
 
     [key: string]: any,
     reuseIdentifier: string
@@ -741,7 +741,7 @@ export interface CollectionItem {
 
 }
 
-export class CollectionEntity implements CollectionItem {
+export class CollectionEntity implements CollectionItem /* @available(0.1.1) */ {
 
     [key: string]: any;
     reuseIdentifier: string;
@@ -749,7 +749,7 @@ export class CollectionEntity implements CollectionItem {
 
 }
 
-export class CollectionCell extends View {
+export class CollectionCell extends View /* @available(0.1.1) */ {
 
     readonly reuseIdentifier: string
     readonly currentItem?: CollectionItem
@@ -760,7 +760,7 @@ export class CollectionCell extends View {
 
 }
 
-export class CollectionSection {
+export class CollectionSection /* @available(0.1.1) */ {
 
     public headerView?: View
     public footerView?: View
@@ -768,12 +768,12 @@ export class CollectionSection {
 
 }
 
-export enum CollectionViewScrollDirection {
+export enum CollectionViewScrollDirection /* @available(0.1.1) */ {
     Vertical,
     Horizontal,
 }
 
-export class CollectionView extends ScrollView {
+export class CollectionView extends ScrollView /* @available(0.1.1) */ {
 
     refreshControl?: RefreshControl
     loadMoreControl?: LoadMoreControl
@@ -784,6 +784,44 @@ export class CollectionView extends ScrollView {
     lineSpacing: number
     itemSpacing: number
     reloadData(): void
+
+}
+
+export enum LayoutConstraintAxis /* @available(0.5.0) */ {
+    Horizontal,
+    Vertical
+}
+
+export enum StackViewDistribution /* @available(0.5.0) */ {
+    Fill,
+    FillEqually,
+    FillProportionally,
+    EqualSpacing,
+}
+
+export enum StackViewAlignment /* @available(0.5.0) */ {
+    Fill,
+    Leading,
+    Center,
+    Trailing,
+}
+
+export class StackItem {
+
+    minWidth?: number
+    minHeight?: number
+
+    constructor(view: View)
+
+}
+
+export class StackView extends View /* @available(0.5.0) */ {
+
+    axis: LayoutConstraintAxis
+    distribution: StackViewDistribution
+    alignment: StackViewAlignment
+    spacing: number
+    setItems(items: StackItem[]): void
 
 }
 
@@ -996,6 +1034,11 @@ declare global {
         CollectionSection: typeof CollectionSection,
         CollectionViewScrollDirection: typeof CollectionViewScrollDirection,
         CollectionView: typeof CollectionView,
+        LayoutConstraintAxis: typeof LayoutConstraintAxis,
+        StackViewDistribution: typeof StackViewDistribution,
+        StackViewAlignment: typeof StackViewAlignment,
+        StackItem: typeof StackItem,
+        StackView: typeof StackView,
     };
     const NS: {
         Data: typeof Data,
