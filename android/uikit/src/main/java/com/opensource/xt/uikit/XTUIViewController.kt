@@ -87,6 +87,8 @@ open class XTUIViewController: XTUIFragment(), XTComponentInstance, KeyboardHeig
             XTContext.invokeMethod(it, "viewDidLoad")
             XTContext.release(it)
         }
+        this.viewWillLayoutSubviews()
+        this.viewDidLayoutSubviews()
     }
 
     open fun viewWillAppear() {
