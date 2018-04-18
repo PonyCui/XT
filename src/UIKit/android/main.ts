@@ -166,3 +166,14 @@ export const CollectionCell = MCollectionCell
 export const CollectionView = MCollectionView
 export const CollectionViewScrollDirection = MCollectionViewScrollDirection
 export const CollectionSection = ICollectionSection
+
+import { LayoutConstraintAxis as ILayoutConstraintAxis } from "../interface/LayoutConstraintAxis";
+import { LayoutConstraintAxis as MLayoutConstraintAxis } from "./LayoutConstraintAxis";
+export const LayoutConstraintAxis = MLayoutConstraintAxis
+
+import { StackViewDistribution as IStackViewDistribution, StackViewAlignment as IStackViewAlignment, StackItem as IStackItem, StackView as IStackView } from "../interface/StackView";
+import { StackViewDistribution as MStackViewDistribution, StackViewAlignment as MStackViewAlignment, StackItem as MStackItem, StackView as MStackView } from "./StackView";
+export const StackItem = MStackItem
+export const StackView = MStackView
+export const StackViewDistribution = MStackViewDistribution
+export const StackViewAlignment = MStackViewAlignment
