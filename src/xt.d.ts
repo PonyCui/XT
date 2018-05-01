@@ -779,7 +779,7 @@ export class CollectionView extends ScrollView /* @available(0.1.1) */ {
     loadMoreControl?: LoadMoreControl
     scrollDirection: CollectionViewScrollDirection
     items: (CollectionItem | CollectionSection)[]
-    register(clazz: typeof CollectionCell, reuseIdentifier: string): void
+    register(clazz: typeof CollectionCell, reuseIdentifier: string, context?: any): void
     sectionInsets: Insets
     lineSpacing: number
     itemSpacing: number

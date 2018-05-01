@@ -116,7 +116,6 @@ class CollectionViewFlowLayout {
                     }
                 }
                 if (firstItem) {
-                    lastItemGap = (wrapWidth - lineContentWidth) / (lineEndIndex - lineStartIndex)
                     lineContentWidth = 0;
                     lineHeight = 0;
                     lineStartIndex = idx;
@@ -140,6 +139,7 @@ class CollectionViewFlowLayout {
                             lineEndIndex = Infinity;
                         }
                     }
+                    lastItemGap = (wrapWidth - lineContentWidth) / (lineEndIndex - lineStartIndex)
                     firstItem = false
                 }
                 if (this.collectionView.flatSegments.indexOf(idx) >= 0) {
@@ -379,6 +379,8 @@ export class CollectionView extends ScrollView {
             }
         })
         this.layout.reload()
+        console.log(this.layout);
+        
         this.contentSize = SizeMake(this.layout.contentSize.width, this.layout.contentSize.height)
         this.reloadVisibleItems()
     }
