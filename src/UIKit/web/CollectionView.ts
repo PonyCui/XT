@@ -379,8 +379,6 @@ export class CollectionView extends ScrollView {
             }
         })
         this.layout.reload()
-        console.log(this.layout);
-        
         this.contentSize = SizeMake(this.layout.contentSize.width, this.layout.contentSize.height)
         this.reloadVisibleItems()
     }
