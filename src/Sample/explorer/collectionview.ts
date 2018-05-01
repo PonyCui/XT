@@ -1,122 +1,182 @@
-/// <reference path="../../xt.d.ts" />
+class Cell extends UI.CollectionCell {
 
-class UserCell extends UI.CollectionCell {
+    iconImageView = new UI.ImageView
+    titleLabel = new UI.Label
 
-	iconImageView = new UI.ImageView
-	nicknameLabel = new UI.Label
+    constructor() {
+        super()
+        this.iconImageView.contentMode = UI.ContentMode.ScaleAspectFit
+        this.addSubview(this.iconImageView)
+        this.titleLabel.font = UI.Font.systemFontOfSize(12)
+        this.titleLabel.textColor = UI.Color.colorWithHex('#565656')
+        this.titleLabel.textAlignment = UI.TextAlignment.Center
+        this.addSubview(this.titleLabel)
+    }
 
-	constructor() {
-		super()
-		this.iconImageView.clipsToBounds = true
-		this.iconImageView.backgroundColor = UI.Color.lightGrayColor
-		this.addSubview(this.iconImageView)
-		this.nicknameLabel.font = UI.Font.systemFontOfSize(15)
-		this.nicknameLabel.text = "#nickname"
-		this.nicknameLabel.textAlignment = UI.TextAlignment.Center
-		this.addSubview(this.nicknameLabel)
-	}
+    layoutSubviews() {
+        super.layoutSubviews()
+        this.iconImageView.frame = UI.RectMake((this.bounds.width - 30) / 2, (this.bounds.height - 30) / 2.0 - 15, 30, 30)
+        this.titleLabel.frame = UI.RectMake(0, this.bounds.height / 2.0 + 10, this.bounds.width, 18)
+    }
 
-	layoutSubviews() {
-		super.layoutSubviews()
-		this.iconImageView.cornerRadius = this.bounds.width / 2
-		this.iconImageView.frame = UI.RectMake(0, 0, this.bounds.width, this.bounds.width)
-		this.nicknameLabel.frame = UI.RectMake(0, this.bounds.width, this.bounds.width, 32)
-	}
-
-	didHighlighted(value: boolean) {
-
-	}
-
-	didRender() {
-		super.didRender()
-		if (this.currentItem) {
-			this.iconImageView.loadImage(this.currentItem.avatar_url)
-			this.nicknameLabel.text = this.currentItem.login
-		}
-	}
+    didRender() {
+        super.didRender()
+        if (this.currentItem) {
+            this.iconImageView.image = this.currentItem.icon
+            this.titleLabel.text = this.currentItem.title || ""
+        }
+    }
 
 }
 
 export class CollectionViewSample extends UI.ViewController {
 
-	collectionView = new UI.CollectionView
+    collectionView = new UI.CollectionView
 
-	viewDidLoad() {
-		super.viewDidLoad()
-		this.title = "CollectionView"
-		this.showNavigationBar()
-		this.view.addSubview(this.collectionView)
-		this.view.addConstraints(UI.LayoutConstraint.constraintsWithVisualFormat(
-			"HV:|-0-[collectionView]-0-|", this
-		))
-		this.setupCollectionView()
-	}
+    viewDidLoad() {
+        super.viewDidLoad()
+        this.collectionView.register(Cell, "Cell", this)
+		this.collectionView.sectionInsets = UI.InsetsMake(0, 15, 0, 15)
+		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Horizontal
+        this.view.addSubview(this.collectionView)
+        this.loadData()
+    }
 
-	private since = 0
-	private dataItems: any[] = []
+    loadData() {
+        let creativeCenter = (() => {
+            let section = new UI.CollectionSection
+            let headerView = new UI.View
+            headerView.frame = UI.RectMake(0, 0, 0, 44)
+            let headerTitleView = new UI.Label
+            headerTitleView.frame = UI.RectMake(15, 0, 44, 44)
+            headerTitleView.font = UI.Font.boldSystemFontOfSize(14)
+            headerTitleView.textColor = UI.Color.colorWithHex('#2c2c2c')
+            headerTitleView.text = "创作中心"
+            headerView.addSubview(headerTitleView)
+            section.headerView = headerView
+            section.items = [
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "我的投稿",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    // icon: UI.Image.fromSource('./res/icon_my_draft@2x.png'),
+                    title: "我的草稿",
+                },
+            ]
+            return section
+        })()
+        let subscribeCenter = (() => {
+            let section = new UI.CollectionSection
+			let headerView = new UI.View
+			headerView.backgroundColor
+            headerView.frame = UI.RectMake(0, 0, 0, 44)
+            let headerTitleView = new UI.Label
+            headerTitleView.frame = UI.RectMake(15, 0, 44, 44)
+            headerTitleView.font = UI.Font.boldSystemFontOfSize(14)
+            headerTitleView.textColor = UI.Color.colorWithHex('#2c2c2c')
+            headerTitleView.text = "订阅"
+            headerView.addSubview(headerTitleView)
+            section.headerView = headerView
+            section.items = [
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "关注的作者",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "关注的角色",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "我的收藏",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+					},
+					title: "我的收藏",
+                },
+            ]
+            return section
+        })()
+        let othersCenter = (() => {
+            let section = new UI.CollectionSection
+            let headerView = new UI.View
+            headerView.frame = UI.RectMake(0, 0, 0, 44)
+            let headerTitleView = new UI.Label
+            headerTitleView.frame = UI.RectMake(15, 0, 44, 44)
+            headerTitleView.font = UI.Font.boldSystemFontOfSize(14)
+            headerTitleView.textColor = UI.Color.colorWithHex('#2c2c2c')
+            headerTitleView.text = "其他"
+            headerView.addSubview(headerTitleView)
+            section.headerView = headerView
+            section.items = [
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "我的积分",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "我的消息",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                    //icon: UI.Image.fromSource('./res/icon_my_post@2x.png'),
+                    title: "个人资料",
+                },
+                {
+                    reuseIdentifier: "Cell",
+                    itemSize: (width, height) => {
+                        return UI.SizeMake((width - 30) / 4.0, (width - 30) / 4.0)
+                    },
+                },
+            ]
+            return section
+        })()
+        this.collectionView.items = [
+            creativeCenter,
+            subscribeCenter,
+            othersCenter,
+        ]
+        this.collectionView.reloadData()
+    }
 
-	setupCollectionView() {
-		this.collectionView.register(UserCell, "Cell")
-		this.collectionView.scrollDirection = UI.CollectionViewScrollDirection.Vertical
-		this.collectionView.sectionInsets = UI.InsetsMake(20, 20, 20, 20)
-		this.collectionView.lineSpacing = 20
-		this.collectionView.itemSpacing = 20
-		this.collectionView.alpha = 0.0
-		this.setupRefreshControl()
-		this.setupLoadMoreControl()
-		this.loadData(() => {
-			UI.View.animationWithDuration(0.3, () => {
-				this.collectionView.alpha = 1.0
-			})
-		})
-	}
-
-	setupRefreshControl() {
-		this.collectionView.refreshControl = new UI.RefreshControl()
-		this.collectionView.refreshControl.onRefresh = () => {
-			this.since = 0
-			this.dataItems = []
-			this.loadData(() => {
-				this.collectionView.refreshControl && this.collectionView.refreshControl.endRefreshing()
-				if (this.collectionView.loadMoreControl) {
-					this.collectionView.loadMoreControl.enabled = true
-				}
-			})
-		}
-	}
-
-	setupLoadMoreControl() {
-		this.collectionView.loadMoreControl = new UI.LoadMoreControl()
-		this.collectionView.loadMoreControl.enabled = true
-		this.collectionView.loadMoreControl.onLoad = () => {
-			this.loadData(() => {
-				if (this.collectionView.loadMoreControl) {
-					this.collectionView.loadMoreControl.enabled = this.since < 300
-					this.collectionView.loadMoreControl.endLoading()
-				}
-			})
-		}
-	}
-
-	loadData(complete: () => void) {
-		NS.URLSession.sharedSession.dataTaskWithURL("http://xt-studio.com/GHUser/" + this.since.toString() + ".json", (data) => {
-			if (data) {
-				try {
-					const json: any[] = JSON.parse(data.utf8String()!)
-					json.forEach(it => {
-						this.dataItems.push({
-							...it,
-							reuseIdentifier: "Cell",
-							itemSize: (width: number) => UI.SizeMake((width - 80) / 3.0, (width - 80) / 3.0 + 32)
-						})
-						this.since = it["id"]
-					})
-					this.collectionView.items = this.dataItems
-					this.collectionView.reloadData()
-					complete()
-				} catch (e) { console.log(e.message) }
-			}
-		}).resume()
-	}
+    viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        this.collectionView.frame = this.view.bounds
+    }
 
 }

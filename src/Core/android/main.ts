@@ -7,7 +7,7 @@ import { ExtObject } from './ExtObject';
 declare var module: any
 
 module.exports = {
-    currentSDK: "0.4.4",
+    currentSDK: "0.4.5",
     platform: "Android",
     BaseObject,
     ExtObject,

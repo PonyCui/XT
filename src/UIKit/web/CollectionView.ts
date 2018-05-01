@@ -108,7 +108,7 @@ class CollectionViewFlowLayout {
             let lineEndIndex = -1;
             let footerView: View | undefined = undefined;
             this.itemFrames = itemSizes.map((item, idx) => {
-                if (idx > lineEndIndex) {
+                if (idx > lineEndIndex || this.collectionView.flatSegments.indexOf(idx) >= 0) {
                     firstItem = true
                     currentX = 0
                     if (lineEndIndex > -1) {
@@ -200,7 +200,7 @@ class CollectionViewFlowLayout {
             let lineEndIndex = -1;
             let footerView: View | undefined = undefined;
             this.itemFrames = itemSizes.map((item, idx) => {
-                if (idx > lineEndIndex) {
+                if (idx > lineEndIndex || this.collectionView.flatSegments.indexOf(idx) >= 0) {
                     firstItem = true
                     currentY = 0
                     if (lineEndIndex > -1) {
@@ -237,8 +237,6 @@ class CollectionViewFlowLayout {
                 if (this.collectionView.flatSegments.indexOf(idx) >= 0) {
                     const sectionIndex = this.collectionView.flatSegments.indexOf(idx)
                     const sectionItem = this.collectionView.sectionsItems[sectionIndex]
-                    currentX += sectionIndex > 0 ? this.collectionView.sectionInsets.right + lineWidth : 0
-                    currentY = 0
                     currentX += sectionIndex > 0 ? this.collectionView.sectionInsets.right : 0
                     if (footerView) {
                         footerView.frame = RectMake(currentX, 0, footerView.frame.width, this.collectionView.bounds.height)

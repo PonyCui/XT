@@ -1,6 +1,6 @@
 if (typeof window === "object") {
     window.XTFrameworkLoader = {
-        distUrl: "https://cdn.jsdelivr.net/npm/xt-studio@0.4.4/dist",
+        distUrl: "https://cdn.jsdelivr.net/npm/xt-studio@0.4.5/dist",
         componentsUrl: {
             "SparkMD5": function () { return "https://cdn.jsdelivr.net/npm/spark-md5@3.0.0/spark-md5.min.js" },
             "sha1": function () { return "https://cdn.jsdelivr.net/npm/js-sha1@0.6.0/build/sha1.min.js" },
