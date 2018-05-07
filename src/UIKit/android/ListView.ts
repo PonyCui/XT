@@ -280,7 +280,12 @@ export class ListView extends ScrollView {
     public reloadData() {
         this.subviews.forEach(it => {
             if ((it as any).__is__header__ === true) { it.removeFromSuperview() }
-            if ((it as any).__is__footer__ === true) { it.removeFromSuperview() }
+            else if ((it as any).__is__footer__ === true) { it.removeFromSuperview() }
+        })
+        this._reusingCells.forEach(it => {
+            it.currentItem = undefined
+            it._isBusy = false
+            it.removeFromSuperview()
         })
         let currentY = 0;
         this._cacheRows = [];
