@@ -489,6 +489,7 @@ export class ViewController extends XT.BaseObject /* @available(0.1.1) */ {
     readonly navigationBar: NavigationBar
     showNavigationBar(animated?: boolean): void
     hideNavigationBar(animated?: boolean): void
+    disableGestureBack: boolean
 }
 
 export class NavigationBarButtonItem /* @available(0.1.1) */ {

@@ -228,4 +228,6 @@ export class ViewController extends XT.BaseObject {
         _XTUIViewController.xtr_hideNavigationBar(animated, this.objectRef)
     }
 
+    disableGestureBack: boolean = false
+
 }

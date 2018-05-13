@@ -60,4 +60,6 @@ export class ViewController extends XT.BaseObject {
     showNavigationBar(animated: boolean = false): void { }
     hideNavigationBar(animated: boolean = false): void { }
 
+    disableGestureBack: boolean
+
 }

@@ -324,6 +324,14 @@
             [value invokeMethod:@"viewDidAppear" withArguments:@[]];
         }
     }
+    if (self.scriptObject != nil) {
+        JSValue *value = self.scriptObject;
+        if (value != nil) {
+            if ([[value valueForProperty:@"disableGestureBack"] toBool]) {
+                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+            }
+        }
+    }
 }
 
 static UINavigationController *tmpNavigationController;
@@ -344,6 +352,7 @@ static BOOL onPanning;
             [value invokeMethod:@"viewWillDisappear" withArguments:@[]];
         }
     }
+    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
