@@ -205,7 +205,7 @@ export class ListView extends ScrollView {
 
     requestRowHeight(width: number, rowIndex: number, sectionIndex: number): number {
         if (this._sectionsItems[sectionIndex] && this._sectionsItems[sectionIndex].items[rowIndex] && typeof this._sectionsItems[sectionIndex].items[rowIndex].rowHeight === "function") {
-            return this._sectionsItems[sectionIndex].items[rowIndex].rowHeight(width);
+            return Math.max(0.0, this._sectionsItems[sectionIndex].items[rowIndex].rowHeight(width));
         }
         return 0.0
     }

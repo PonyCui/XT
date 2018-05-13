@@ -66,7 +66,7 @@ export class CollectionView extends ScrollView {
     }
 
     items: (CollectionItem | CollectionSection)[] = []
-    
+
     private _sectionsItems: CollectionSection[]
 
     register(clazz: typeof CollectionCell, reuseIdentifier: string, context: any = undefined) {
@@ -99,13 +99,16 @@ export class CollectionView extends ScrollView {
         this.items.forEach(item => {
             if (item instanceof CollectionSection) {
                 defaultSection = new CollectionSection()
+                let nativeItem: any = {}
+                nativeItem.items = item.items
                 if (item.headerView) {
-                    (item as any).__headerViewObjectRef = item.headerView.objectRef
+                    nativeItem.__headerViewObjectRef = item.headerView.objectRef
+                    
                 }
                 if (item.footerView) {
-                    (item as any).__footerViewObjectRef = item.footerView.objectRef
+                    nativeItem.__footerViewObjectRef = item.footerView.objectRef
                 }
-                this._sectionsItems.push(item)
+                this._sectionsItems.push(nativeItem)
             }
             else {
                 if (this._sectionsItems.indexOf(defaultSection) < 0) {

@@ -177,6 +177,7 @@
         if ([obj isKindOfClass:[XTUIViewController class]]) {
             [(XTUIViewController *)obj setInnerView:view];
         }
+        [obj viewDidLoad];
     }
 }
 
@@ -194,6 +195,9 @@
         }
         if (!obj.navigationBar.translucent) {
             topLength = 0;
+        }
+        if (topLength == 0) {
+            topLength = 20;
         }
         return [JSValue fromInsets:UIEdgeInsetsMake(topLength, 0, bottomLength, 0)];
     }
@@ -273,6 +277,7 @@
 #pragma mark - ViewController callbacks
 
 - (void)loadView {
+    self.view = [UIView new];
     if (self.scriptObject != nil) {
         JSValue *value = self.scriptObject;
         if (value != nil) {

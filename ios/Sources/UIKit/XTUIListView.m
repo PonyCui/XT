@@ -114,6 +114,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.innerView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+        self.innerView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         [self.innerView setBackgroundColor:[UIColor clearColor]];
         self.innerView.delegate = self;
         [(UITableView *)self.innerView setDataSource:self];
@@ -328,8 +329,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.scriptObject != nil) {
-        return [[self.scriptObject invokeMethod:@"requestRowHeight"
-                                            withArguments:@[@(tableView.bounds.size.width), @(indexPath.row), @(indexPath.section)]] toDouble];
+        CGFloat rowHeight = [[self.scriptObject invokeMethod:@"requestRowHeight"
+                                               withArguments:@[@(tableView.bounds.size.width), @(indexPath.row), @(indexPath.section)]] toDouble];
+        return MAX(0.0, rowHeight);
     }
     return 88.0;
 }

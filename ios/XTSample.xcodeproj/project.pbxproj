@@ -11,6 +11,7 @@
 		9001FA752047E94E005D8736 /* XTUILoadMoreControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 9001FA742047E94E005D8736 /* XTUILoadMoreControl.m */; };
 		9001FA7A2050018E005D8736 /* XTBaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9001FA792050018D005D8736 /* XTBaseObject.m */; };
 		903211F02045506800272AEF /* XTFrameworkLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 903211EF2045506800272AEF /* XTFrameworkLoader.m */; };
+		903252E420A83D3B002C24CB /* app.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 903252E320A83D3B002C24CB /* app.min.js */; };
 		905708061F4EB2AF00D5EC05 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 905708051F4EB2AF00D5EC05 /* main.m */; };
 		9057080F1F4EB2AF00D5EC05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9057080D1F4EB2AF00D5EC05 /* Main.storyboard */; };
 		905708111F4EB2AF00D5EC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905708101F4EB2AF00D5EC05 /* Assets.xcassets */; };
@@ -90,6 +91,7 @@
 		9001FA792050018D005D8736 /* XTBaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTBaseObject.m; sourceTree = "<group>"; };
 		903211EE2045506800272AEF /* XTFrameworkLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTFrameworkLoader.h; sourceTree = "<group>"; };
 		903211EF2045506800272AEF /* XTFrameworkLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XTFrameworkLoader.m; sourceTree = "<group>"; };
+		903252E320A83D3B002C24CB /* app.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = app.min.js; path = ../../../CaliApp/dist/app.min.js; sourceTree = "<group>"; };
 		905708011F4EB2AF00D5EC05 /* XTSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XTSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		905708051F4EB2AF00D5EC05 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9057080E1F4EB2AF00D5EC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				90EA881F201B2FBC0012A985 /* FooClass.m */,
 				90EE56F8205776EF006AD6FD /* FooView.h */,
 				90EE56F9205776EF006AD6FD /* FooView.m */,
+				903252E320A83D3B002C24CB /* app.min.js */,
 				90EA87F4201AD13F0012A985 /* sample.min.js */,
 				9057080D1F4EB2AF00D5EC05 /* Main.storyboard */,
 				905708101F4EB2AF00D5EC05 /* Assets.xcassets */,
@@ -486,7 +489,7 @@
 				TargetAttributes = {
 					905708001F4EB2AF00D5EC05 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 8M2FQ87SLP;
+						DevelopmentTeam = 544P5CH38C;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -521,6 +524,7 @@
 				90EA881D201B2D470012A985 /* xt.core.ios.min.js in Resources */,
 				90BB25671FBC3D0F00286398 /* ModulizeStartViewController.xib in Resources */,
 				90E12CC62063C3E700173064 /* xt.es6-promise.min.js in Resources */,
+				903252E420A83D3B002C24CB /* app.min.js in Resources */,
 				905708111F4EB2AF00D5EC05 /* Assets.xcassets in Resources */,
 				9057080F1F4EB2AF00D5EC05 /* Main.storyboard in Resources */,
 				90EA8818201AE5C50012A985 /* xt.foundation.ios.min.js in Resources */,
@@ -781,7 +785,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES;
-				DEVELOPMENT_TEAM = 8M2FQ87SLP;
+				DEVELOPMENT_TEAM = 544P5CH38C;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"COCOAPODS=1",
@@ -801,7 +805,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES;
-				DEVELOPMENT_TEAM = 8M2FQ87SLP;
+				DEVELOPMENT_TEAM = 544P5CH38C;
 				INFOPLIST_FILE = XTSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

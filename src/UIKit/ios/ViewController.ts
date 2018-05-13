@@ -75,7 +75,14 @@ export class ViewController extends XT.BaseObject {
     }
 
     public get view() {
-        return View.findByRef(_XTUIViewController.xtr_view(this.objectRef));
+        const ref = _XTUIViewController.xtr_view(this.objectRef)
+        if (typeof ref !== "string") {
+            this.loadView()
+            return this.view
+        }
+        else {
+            return View.findByRef(ref)
+        }
     }
 
     public set view(value: View) {

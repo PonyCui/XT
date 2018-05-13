@@ -116,6 +116,7 @@
     XTUIButton *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIButton class]]) {
         obj.vertical = vertical;
+        [obj resetInset];
     }
 }
 
@@ -131,6 +132,7 @@
     XTUIButton *obj = [XTMemoryManager find:objectRef];
     if ([obj isKindOfClass:[XTUIButton class]]) {
         obj.inset = inset;
+        [obj resetInset];
     }
 }
 
@@ -250,6 +252,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.innerView.frame = self.bounds;
+    [self resetInset];
 }
 
 @end
