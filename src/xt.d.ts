@@ -752,6 +752,7 @@ export class CollectionEntity implements CollectionItem /* @available(0.1.1) */ 
 
 export class CollectionCell extends View /* @available(0.1.1) */ {
 
+    readonly context?: any
     readonly reuseIdentifier: string
     readonly currentItem?: CollectionItem
     readonly contentView: View
